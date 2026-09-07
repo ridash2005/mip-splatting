@@ -20,31 +20,51 @@ python tools/kaggle_push.py kaggle/r0_smoke.py \
     --out results/kaggle_runs/r0_smoke_v3
 ```
 
-## The accelerator problem
+## Choosing the accelerator
 
-**The API cannot choose the GPU.** `ApiSaveKernelRequest` carries a boolean
-`enable_gpu` and nothing else — kagglesdk 0.1.28 has no accelerator field
-anywhere in it — and every API-pushed launch so far has been allocated a Tesla
-P100 (compute capability 6.0), which 3DGS cannot run on:
+Kaggle allocates a **Tesla P100 (compute capability 6.0)** to every plain
+`enable_gpu: true` push, and 3DGS cannot run on it (F15). Eleven consecutive
+pushes got one. It is not a lottery and retrying does not help.
 
-| launch | GPU | outcome |
-|---|---|---|
-| 1 | Tesla P100 | aborted at check 1 in 7 s (F15) |
-| 2 | **Tesla T4 ×2** | got as far as `train.py`, died on the missing `open3d` |
-| 3–8 | Tesla P100 ×6 | aborted at check 1 |
+The accelerator is selected by a **`machineShape`** field on
+`/api/v1/kernels/push`. That name is not guesswork — it is read out of
+kagglesdk 0.1.37's wire schema, whose docstring says:
 
-Launch 2 is the only one that got a T4, and it is the only one not pushed from
-this tool in this session. So the accelerator looks like a per-notebook setting
-that an API push resets to the default, not a per-launch lottery.
+> The machine shape to use for this session. Currently supported options:
+> `NvidiaTeslaT4`, `NvidiaTeslaP100`, `Tpu1VmV38`.
 
-The kernel prints `R0_ABORT=WRONG_ACCELERATOR` on that path so the retry is
-never confused with a real failure, and `--retry-wrong-gpu N` relaunches on that
-marker alone. Each wrong-GPU launch costs about 30 seconds, so retrying is
-nearly free — but if the setting really is sticky, retrying cannot fix it.
+Neither installed client can send it. kagglesdk 0.1.28's `ApiSaveKernelRequest`
+has no `machine_shape` field and rejects unknown attributes client-side, and
+both newer kagglesdk and `kaggle` 2.x require Python ≥ 3.11 while this machine
+has 3.10. So `tools/kaggle_push.py --accelerator` serialises the body kagglesdk
+would have sent, adds the field, and posts it directly with the same Bearer
+token.
+
+Confirmed by running it — a probe kernel pushed with
+`machineShape=NvidiaTeslaT4` reported:
+
+```
+GPU 0: Tesla T4 (UUID: GPU-1e1b2616-...)
+GPU 1: Tesla T4 (UUID: GPU-1afb1f2e-...)
+```
+
+So `NvidiaTeslaT4` yields the two-T4 configuration, which is what the shipped
+`GPUtil` dispatcher wants for R1 (F13).
+
+**The API validates none of this.** An unrecognised field name and an invalid
+`machineShape` value both return HTTP 200 with an empty `error`, and you get a
+P100 anyway. `accelerator` and `acceleratorId` were both tried first and are
+silently ignored. That is why the kernel asserts the capability itself in
+check 1 and prints the GPU it actually got, instead of trusting the request —
+and why `--accelerator`'s choices are limited to the three the schema documents.
+
+`--retry-wrong-gpu N` remains as a backstop for a genuinely transient
+allocation, keyed off the kernel's `R0_ABORT=WRONG_ACCELERATOR` marker and
+nothing else.
 
 ### Fallback: launch from the web UI
 
-The accelerator dropdown exists only there.
+Still available if the field ever stops working.
 
 1. Open <https://www.kaggle.com/code/rickaryadas/btp-r0-smoke-lego-7k-v2>. It
    already holds the current script — every push updates it.
@@ -55,11 +75,12 @@ The accelerator dropdown exists only there.
 4. Pull the result down without pushing anything over it:
 
 ```bash
-python tools/kaggle_push.py kaggle/r0_smoke.py --fetch-only \
-    --slug btp-r0-smoke-lego-7k-v2 --poll-timeout 21600 \
-    --out results/kaggle_runs/r0_smoke_v3
+python tools/kaggle_push.py kaggle/r0_smoke.py --fetch-only     --slug btp-r0-smoke-lego-7k-v2 --poll-timeout 21600     --out results/kaggle_runs/r0_smoke_v3
 make report SUMMARY=results/kaggle_runs/r0_smoke_v3/summary.json OUT=results/R0-report.md
 ```
+
+Note: only **two** concurrent batch GPU sessions are allowed per account —
+a third push returns `Maximum batch GPU session count of 2 reached.`
 
 ## What the run costs
 

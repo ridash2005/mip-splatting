@@ -7,6 +7,7 @@ FIGDIR := figures
 # GPU, so it runs on the dev machine as well as inside the Kaggle kernel.
 selftest:
 	python tools/selftest_pipeline.py
+	python tools/test_instruments.py
 
 # arm-b-3dgs-baseline must differ from main by the §3 diff and nothing else.
 # Run this after every push to main: the kernel clones both branches, and a

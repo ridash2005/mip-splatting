@@ -47,6 +47,65 @@ measurement.
 
 \input{generated/table2-mtmt}
 
+\section{Why arm B sits above published 3DGS}
+\label{sec:densification}
+
+Arm A lands within half a decibel of the published Mip-Splatting numbers at
+every scale of both protocols. Arm B does not: it is several decibels
+\emph{above} published 3DGS, and by the largest margin at $\tfrac18$, where the
+published method collapses hardest. A reproduction that overshoots its target by
+five decibels is not a success, and it is not noise --- the run-to-run spread of
+\S\ref{sec:spread} is smaller by two orders of magnitude. It has a cause, and
+the cause matters for how both tables are read.
+
+\keybox{the repository's densification is not 3DGS's}{%
+\texttt{densify\_and\_prune} in this codebase splits on a quantile over
+accumulated \emph{absolute} gradients:
+\texttt{grads\_abs} is taken from \texttt{viewspace\_point\_tensor.grad[:,\,2:]}
+and thresholded at $Q = \mathrm{quantile}(\texttt{grads\_abs},\,1-\rho)$, where
+$\rho$ is the fraction of primitives passing the ordinary gradient test. That is
+the Gaussian Opacity Fields criterion, added to \texttt{mip-splatting} in commit
+\texttt{24af724} (April 2024) --- \emph{after} the Mip-Splatting paper's numbers
+were produced. Original 3DGS splits on $\lVert\nabla\rVert \geq \tau_{\mathrm{pos}}$
+alone.}
+
+Arm B is therefore 3DGS's \emph{band-limit} semantics --- \texttt{filter\_3D}
+identically zero and \texttt{kernel\_size}~$=0.3$, exact by
+Proposition~\ref{prop:reduction} and verified on the saved models --- running on
+GOF's \emph{densification}. It is exactly 3DGS in the sense this thesis needs,
+and it is not the 3DGS whose numbers Mip-Splatting published.
+
+This was anticipated. The reading list of Appendix~\ref{app:reading} carries the
+GOF entry with the note ``a reproduction hazard if the commit is not pinned''.
+It is now observed rather than predicted, and three consequences follow.
+
+\begin{enumerate}[leftmargin=1.4em,itemsep=3pt]
+  \item \textbf{Arm B carries no L1 claim against published 3DGS.} The published
+        column in Tables~\ref{tab:stmt} and \ref{tab:mtmt} is a target for arm A
+        and a \emph{reference point of a different configuration} for arm B. Its
+        deltas are reported, and they are not reproduction error.
+  \item \textbf{The between-arm comparison is unaffected.} Both arms share the
+        densification, the dataloader, the metrics implementation and the LPIPS
+        backbone; the four-file diff of \S\ref{sec:onecodebase} is the only
+        difference between them. So the gap column remains exactly what
+        \S\ref{sec:onecodebase} claims it is --- the method, not the plumbing ---
+        and it is the control for all later work, which is the L3 discipline of
+        Table~\ref{tab:levels}.
+  \item \textbf{The published $\tfrac18$ gap is not reproducible in this
+        codebase, and should not be quoted as if it were.} A better
+        densification recovers much of what the missing band-limit costs. That
+        is itself informative: it says the $15.64$\,dB figure of
+        \S\ref{sec:cost} is a property of 3DGS-as-published, not a bound on
+        what a filter-free method can do.
+\end{enumerate}
+
+Pinning the pre-GOF commit and re-running arm B would restore the published
+comparison, at the cost of a densification that no longer matches arm A --- which
+would move the difference between the arms out of the filter and back into the
+plumbing. Given that Table~\ref{tab:levels} makes the self-run baseline the
+control, the shared-densification choice is the correct one and the overshoot is
+the price of it. The alternative is recorded here so the choice is visible.
+
 \section{Run-to-run spread (I-3)}
 \label{sec:spread}
 Parity is not a testable claim without a $\sigma$. Repeats of an identical

@@ -71,7 +71,7 @@ for scene in SCENES:
         break
 print(f"found camera JSON for {len(cams)}/{len(SCENES)} scenes", flush=True)
 
-results, failed = {}, {}
+results, failed, skipped = {}, {}, []
 for ply in plys:
     parts = ply.split("/")
     try:
@@ -80,8 +80,11 @@ for ply in plys:
     except Exception:
         failed[ply] = "could not parse arm/scene from path"
         continue
-    if scene not in cams or arm not in ARMS:
-        failed[f"{arm}/{scene}"] = "no camera JSON" if scene not in cams else "arm skipped"
+    if arm not in ARMS:
+        skipped.append(f"{arm}/{scene}")      # deliberate, not a failure
+        continue
+    if scene not in cams:
+        failed[f"{arm}/{scene}"] = "no camera JSON found under /kaggle/input"
         continue
     try:
         data = inst.load_ply(ply)
@@ -154,7 +157,7 @@ for ply in plys:
 
 summary = {
     "rung": RUNG, "source_kernel": RUNG_KERNEL, "iteration": ITER,
-    "results": results, "failed": failed,
+    "results": results, "failed": failed, "skipped": skipped,
     "n_done": len(results),
     "session_seconds": time.time() - SESSION_START,
 }

@@ -86,8 +86,11 @@ try:
     # copy is sufficient for both arms' training runs. Built one at a time,
     # without -q, so a real compile failure prints its actual error instead of
     # only pip's final wheel-build summary.
-    sh(f"pip install {WORK}/armA/submodules/diff-gaussian-rasterization")
-    sh(f"pip install {WORK}/armA/submodules/simple-knn")
+    # -v: pip otherwise summarises a failed setup.py build as "see above for
+    # output" with nothing actually above it — the real compiler error is
+    # swallowed unless verbose output is forced.
+    sh(f"pip install -v {WORK}/armA/submodules/diff-gaussian-rasterization")
+    sh(f"pip install -v {WORK}/armA/submodules/simple-knn")
     import GPUtil  # noqa: F401
     import lpips as _lpips_mod  # noqa: F401
     import diff_gaussian_rasterization  # noqa: F401

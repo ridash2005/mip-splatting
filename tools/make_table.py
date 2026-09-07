@@ -9,6 +9,14 @@ error, not a table with published numbers quietly substituted in.
     python tools/make_table.py --table 2 --runs results/runs.csv --md results/table2.md
 """
 import argparse, csv, os, sys
+
+# The report is UTF-8 (arrows, section signs, en dashes). A Windows console
+# defaults to cp1252 and would raise UnicodeEncodeError on the way out, so the
+# stream is reconfigured rather than the text degraded.
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+
 from collections import defaultdict
 
 SCALE_ORDER = {"1x": 0, "1/2": 1, "1/4": 2, "1/8": 3}

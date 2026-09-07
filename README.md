@@ -50,28 +50,71 @@ HF_USERNAME     = rickaryadas
 
 ## Environment
 
-**Local dev machine**: NVIDIA GeForce MX350, 2 GB VRAM, driver reports compute
-capability below the repo's minimum. **Fails F15 (Compute Capability 7.0+
-required) — do not attempt training here.** This machine is used only for git
-operations, tooling, and orchestrating remote runs.
+**Local dev machine**: NVIDIA GeForce MX350, 2 GB VRAM, compute capability below
+the repo's minimum. **Fails F15 (7.0+ required) — do not attempt training here.**
+Used only for git, tooling, and orchestrating remote runs. The reporting half of
+the pipeline does run here: `make selftest`.
 
-**Training target**: Kaggle, 2×T4 (CC 7.5), accelerator confirmed against
-`torch.cuda.get_device_capability()` in-session (§6 check 1) before any run.
-Kaggle quota (30 h/week, 12 h/session — secondary-source figures, to be read
-off the notebook sidebar and confirmed in session 1 per §8.1) is not yet
-verified from a live session.
+**Training target**: Kaggle. `torch.cuda.get_device_capability()` is asserted
+in-session (§6 check 1) before any run, and the kernel aborts on anything below
+(7, 0).
+
+**Accelerator allocation is not ours to choose.** `ApiSaveKernelRequest` carries
+a boolean `enable_gpu` and nothing else — kagglesdk 0.1.28 has no accelerator
+field — and Kaggle hands out whichever GPU is free. Three launches of the same
+unchanged kernel got, in order: P100 (CC 6.0), Tesla T4 ×2 (CC 7.5), P100. So
+the accelerator is a per-launch lottery, not a sticky notebook setting, and
+`tools/kaggle_push.py --retry-wrong-gpu N` relaunches on the kernel's
+`R0_ABORT=WRONG_ACCELERATOR` marker and on nothing else. A wrong-GPU launch
+aborts in about 30 seconds, so retrying costs no meaningful quota. Setting the
+accelerator to "GPU T4 x2" in the web UI and launching there is the manual
+fallback.
+
+Kaggle quota (§8.1) still to be read off the notebook sidebar; the secondary
+figures are 30 h/week, 12 h/session, ~20 GB `/kaggle/working`.
+
+### Environment measured in-session
+
+| | |
+|---|---|
+| image | Python 3.12, torch 2.10.0+cu128, CUDA 12.8, driver 580.159.04 |
+| accelerator seen | Tesla T4 ×2 (CC 7.5) — passes F15; Tesla P100 (CC 6.0) — aborts |
+
+### The two deviations from a clean `pip install`, and why
+
+Neither touches the method; both are recorded in the run's notes and in the CSV.
+
+1. **`#include <cfloat>` added to `submodules/simple-knn/simple_knn.cu`.** That
+   file uses `FLT_MAX` without including it. Older toolchains pulled `<float.h>`
+   in transitively; CUDA 12.8 with GCC 13 does not, and the build fails outright.
+   A compile fix, applied identically to both arms.
+2. **`open3d`.** `train.py` imports it and never uses it. The kernel installs it;
+   only if the image cannot provide it does the run neutralise that single import
+   — and only after proving at run time that `o3d`/`open3d` appear exactly twice
+   in the file (the import line and nothing else).
+
+An earlier revision also rewrote `auxiliary.h` to drop an unused projection
+block. That silenced a warning and nothing more, so it was a rasteriser source
+edit outside §3; it has been reverted.
 
 ## Status
 
 - [x] Forked upstream, cloned, remotes set up.
-- [x] F1/F3/F4/F5 spot-checked against source at the forked commit — match the
-      prompt exactly (see commit history on `main`).
-- [x] Arm B diff applied verbatim on `arm-b-3dgs-baseline`, diff printed in its
-      commit.
+- [x] F1/F3/F4/F5 spot-checked against source at the forked commit.
+- [x] Arm B diff applied verbatim on `arm-b-3dgs-baseline`. `git diff
+      main..arm-b-3dgs-baseline` is exactly 4 files, 7 insertions, 1 deletion —
+      the §3 diff and nothing else, which the kernel's check 4 now enforces.
 - [x] Tooling scaffolded: `results/runs.csv` header, `tools/split_by_scale.py`,
       `tools/make_table.py`, `tools/make_figures.py`, `Makefile`.
-- [ ] §6 pre-flight (12 checks) — blocked on a Kaggle GPU session; not runnable
-      on the local machine (fails check 1).
+- [x] **Reporting chain verified end to end** — `make selftest`
+      (`tools/selftest_pipeline.py`) runs splitter → CSV → tables → figures on a
+      fixture with planted answers and checks each stage recovers them. It found
+      two silent bugs: `make figures --mode measured` was drawing the *published*
+      curve under a measured filename because the CSV's `3dgs` slug never matched
+      the figures' `3DGS` key, and figures 5–6 were defined below `main()` and so
+      were never drawn at all.
+- [x] CUDA extensions build on the Kaggle image (2×T4, torch 2.10/cu128).
+- [ ] §6 pre-flight (12 checks) — running.
 - [ ] R0 smoke run.
 - [ ] R1 (primary target), R2, R3, R5, R4 (optional).
 
@@ -91,11 +134,17 @@ Everything regenerates from `results/runs.csv` — no number is ever typed into
 a document by hand.
 
 ```
+make selftest   # the reporting chain, against a fixture with known answers
 make table1     # R1 Blender STMT: 3DGS vs Mip-Splatting, 4 test scales
 make table2     # R2 Blender MTMT
 make figures    # figures/, redrawn from measured rows with the published curve
                 # kept as a faint reference line
 ```
+
+`ITERS` selects which runs a table or figure averages, and defaults to 30000 —
+the R1/R2 target. `make table1 ITERS=7000` reads the R0 smoke rows instead.
+Without it, a 7 000-iteration smoke row and a 30 000-iteration R1 row would be
+averaged into a number that describes neither.
 
 ## Licence
 

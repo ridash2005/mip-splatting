@@ -1,7 +1,7 @@
 RUNS   := results/runs.csv
 FIGDIR := figures
 
-.PHONY: selftest table1 table2 figures figures-published clean-figures
+.PHONY: selftest table1 table2 figures figures-published report clean-figures
 
 # The reporting chain, verified against a fixture with known answers. Needs no
 # GPU, so it runs on the dev machine as well as inside the Kaggle kernel.
@@ -20,6 +20,14 @@ table2:
 
 figures:
 	python tools/make_figures.py --mode measured --runs $(RUNS) --iterations $(ITERS) --out $(FIGDIR)
+
+# The §13 report for one rung, rendered from the summary.json its kernel wrote.
+#   make report SUMMARY=results/kaggle_runs/r0_smoke_v3/summary.json OUT=results/R0-report.md
+SUMMARY ?= results/kaggle_runs/r0_smoke_v3/summary.json
+OUT     ?= results/R0-report.md
+
+report:
+	python tools/report_rung.py $(SUMMARY) --md $(OUT)
 
 # Target-only reference figures (published numbers, never our measurements).
 # Kept separate so `make figures` can never be satisfied by them.

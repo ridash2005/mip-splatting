@@ -14,7 +14,15 @@ into a document by hand.
     python make_figures.py --mode published --out figures/
     python make_figures.py --mode measured  --runs results/runs.csv --out figures/
 """
-import argparse, os, csv, math
+import argparse, os, csv, math, sys
+
+# The report is UTF-8 (arrows, section signs, en dashes). A Windows console
+# defaults to cp1252 and would raise UnicodeEncodeError on the way out, so the
+# stream is reconfigured rather than the text degraded.
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt

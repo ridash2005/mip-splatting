@@ -47,6 +47,7 @@ RESUME_AT = 2000
 LOGDIR = f"{WORK}/logs"
 KEEP_QUALITATIVE = 8      # renders kept per arm after metrics, for the report
 
+SESSION_START = time.time()
 checks = []
 timings = {}
 notes = []
@@ -442,6 +443,7 @@ def run_arm(arm_dir, out_dir, extra_flags, label, tag):
     sh(f"OMP_NUM_THREADS=4 python render.py -m {out_dir} --skip_train",
        cwd=arm_dir, log_name=f"render_{tag}")
     stats["render_seconds"] = time.time() - t0
+    timings[f"render_{tag}"] = stats["render_seconds"]
 
     method_dir = os.path.join(out_dir, "test", f"ours_{ITERS}")
     preds = [d for d in os.listdir(method_dir) if d.startswith("test_preds_")]
@@ -644,7 +646,12 @@ def build_summary():
         "stats_A": statA,
         "stats_B": statB,
         "timings_seconds": dict(timings),
-        "gpu_hours_used": sum(timings.values()) / 3600.0,
+        # Wall clock for the whole session, not the sum of the stages that
+        # happen to be timed -- installs, the clone and the build are GPU-hours
+        # the quota is charged for just the same.
+        "session_seconds": time.time() - SESSION_START,
+        "gpu_hours_used": (time.time() - SESSION_START) / 3600.0,
+        "stage_hours": sum(timings.values()) / 3600.0,
         "notes": list(notes),
         "checks": [dict(c) for c in checks],
         "all_checks_pass_or_skip": all(c["passed"] is not False for c in checks),
@@ -673,14 +680,23 @@ check(9.1, "tools/selftest_pipeline.py: reporting chain verified against a fixtu
 # =============================================================== check 11: resume
 resume_dir = f"{WORK}/out_resume_test/{SCENE}"
 resume_ok, resume_detail = False, ""
+# torch 2.6 flipped torch.load's default to weights_only=True. train.py calls
+# `torch.load(checkpoint)` bare, and gaussians.capture() puts a numpy scalar
+# (spatial_lr_scale) in the checkpoint, so resuming dies with
+# "Unsupported global: GLOBAL numpy._core.multiarray.scalar".
+# TORCH_FORCE_NO_WEIGHTS_ONLY_LOAD=1 is torch's own escape hatch and restores
+# the pre-2.6 default. It is an environment setting, like TORCH_CUDA_ARCH_LIST
+# -- NOT a source edit, so §14 is untouched. The checkpoint is one this run
+# wrote seconds earlier, so trusting it is not a real risk.
+RESUME_ENV = "OMP_NUM_THREADS=4 TORCH_FORCE_NO_WEIGHTS_ONLY_LOAD=1"
 try:
-    sh(f"OMP_NUM_THREADS=4 python train.py -s {WORK}/multi-scale/{SCENE} -m {resume_dir} "
+    sh(f"{RESUME_ENV} python train.py -s {WORK}/multi-scale/{SCENE} -m {resume_dir} "
        f"--eval --white_background --iterations {RESUME_AT} --test_iterations -1 "
        f"--checkpoint_iterations {RESUME_AT} --kernel_size 0.1",
        cwd=f"{WORK}/armA", log_name="resume")
     ckpt = f"{resume_dir}/chkpnt{RESUME_AT}.pth"
     ckpt_ok = os.path.exists(ckpt)
-    sh(f"OMP_NUM_THREADS=4 python train.py -s {WORK}/multi-scale/{SCENE} -m {resume_dir} "
+    sh(f"{RESUME_ENV} python train.py -s {WORK}/multi-scale/{SCENE} -m {resume_dir} "
        f"--eval --white_background --iterations {ITERS} --test_iterations -1 "
        f"--start_checkpoint {ckpt} --kernel_size 0.1",
        cwd=f"{WORK}/armA", log_name="resume")

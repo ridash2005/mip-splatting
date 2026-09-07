@@ -1,0 +1,226 @@
+{
+  "rung": "R0",
+  "scene": "lego",
+  "iterations": 7000,
+  "gpu": "Tesla T4",
+  "n_gpu": 2,
+  "torch": "2.10.0+cu128",
+  "cuda": "12.8",
+  "open3d": true,
+  "armA_commit": "da225e8ee4b105dac444fe255c757513538b7f85",
+  "armB_commit": "36a337e41af9354a64e604285710c70499ae5fc7",
+  "pooled": {
+    "A": {
+      "psnr": 31.919275283813477,
+      "ssim": 0.9795520305633545,
+      "lpips": 0.01925993524491787
+    },
+    "B": {
+      "psnr": 29.326210021972656,
+      "ssim": 0.9626561999320984,
+      "lpips": 0.03597581014037132
+    }
+  },
+  "per_scale_A": {
+    "1x": 33.514438734054565,
+    "1/2": 34.046223659515384,
+    "1/4": 31.730620756149293,
+    "1/8": 28.38580424308777
+  },
+  "per_scale_B": {
+    "1x": 33.757075233459474,
+    "1/2": 31.629528942108156,
+    "1/4": 27.553230152130126,
+    "1/8": 24.365022258758543
+  },
+  "per_scale_A_full": {
+    "1x": {
+      "PSNR": 33.514438734054565,
+      "SSIM": 0.9764968812465668,
+      "LPIPS": 0.0263504203222692,
+      "n": 200
+    },
+    "1/2": {
+      "PSNR": 34.046223659515384,
+      "SSIM": 0.9851032516360283,
+      "LPIPS": 0.012563074005302042,
+      "n": 200
+    },
+    "1/4": {
+      "PSNR": 31.730620756149293,
+      "SSIM": 0.9833472567796707,
+      "LPIPS": 0.01369537561899051,
+      "n": 200
+    },
+    "1/8": {
+      "PSNR": 28.38580424308777,
+      "SSIM": 0.973260395526886,
+      "LPIPS": 0.02443086258135736,
+      "n": 200
+    }
+  },
+  "per_scale_B_full": {
+    "1x": {
+      "PSNR": 33.757075233459474,
+      "SSIM": 0.9769671875238418,
+      "LPIPS": 0.0261304731015116,
+      "n": 200
+    },
+    "1/2": {
+      "PSNR": 31.629528942108156,
+      "SSIM": 0.9777054208517074,
+      "LPIPS": 0.019361402010545134,
+      "n": 200
+    },
+    "1/4": {
+      "PSNR": 27.553230152130126,
+      "SSIM": 0.9595132607221604,
+      "LPIPS": 0.03411846096627414,
+      "n": 200
+    },
+    "1/8": {
+      "PSNR": 24.365022258758543,
+      "SSIM": 0.9364388701319695,
+      "LPIPS": 0.06429289830848575,
+      "n": 200
+    }
+  },
+  "stats_A": {
+    "train_seconds": 336.1459319591522,
+    "peak_vram_mb": 4275,
+    "iters_per_second": 20.824288900960507,
+    "n_train_images": 100,
+    "render_seconds": 87.59325385093689,
+    "n_rendered": 800,
+    "render_fps": 9.133123440777892,
+    "n_gaussians": 255772,
+    "filter_3D_max": 0.001636361121200025,
+    "model_mb": 64.4561
+  },
+  "stats_B": {
+    "train_seconds": 312.47867798805237,
+    "peak_vram_mb": 4275,
+    "iters_per_second": 22.401528466104317,
+    "n_train_images": 100,
+    "render_seconds": 86.62652683258057,
+    "n_rendered": 800,
+    "render_fps": 9.235046460377273,
+    "n_gaussians": 224096,
+    "filter_3D_max": 0.0,
+    "model_mb": 56.473748
+  },
+  "timings_seconds": {
+    "convert_blender_data": 109.6642529964447,
+    "train_armA": 336.1459319591522,
+    "metrics_armA": 75.87150812149048,
+    "train_armB": 312.47867798805237,
+    "metrics_armB": 72.92048168182373
+  },
+  "gpu_hours_used": 0.2519669035408232,
+  "notes": [],
+  "checks": [
+    {
+      "id": 1,
+      "desc": "accelerator compute capability >= 7.0, abort on P100/6.0 (F15)",
+      "passed": true,
+      "detail": "Tesla T4 x2 (7, 5)"
+    },
+    {
+      "id": 2,
+      "desc": "ninja/gputil/lpips/open3d + rasteriser & simple-knn built against installed torch",
+      "passed": true,
+      "detail": "open3d=installed"
+    },
+    {
+      "id": 3,
+      "desc": "commits pinned into this run",
+      "passed": true,
+      "detail": "armA=da225e8ee4b105dac444fe255c757513538b7f85 armB=36a337e41af9354a64e604285710c70499ae5fc7 torch=2.10.0+cu128 cuda=12.8"
+    },
+    {
+      "id": 4,
+      "desc": "\u00a73 diff present on arm B, absent from main, and confined to its four files",
+      "passed": true,
+      "detail": "files arm B introduces over the merge base: ['arguments/__init__.py', 'render.py', 'scene/gaussian_model.py', 'train.py']; commits behind main: 0"
+    },
+    {
+      "id": 7,
+      "desc": "multi-scale data written: 4 distinct test scales; metadata lists all 4 train scales, of which only d0 may survive readMultiScale (F3)",
+      "passed": true,
+      "detail": "test=['0', '1', '2', '3'] n_test=800 train=['0', '1', '2', '3'] n_train=400 d0=100"
+    },
+    {
+      "id": 8,
+      "desc": "LPIPS backbone is vgg, never alexnet (F9)",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "id": 10,
+      "desc": "metrics.py produced a non-empty results.json (arm A / Mip-Splatting) \u2014 its bare `except:` makes a real failure print like a warning (F10)",
+      "passed": true,
+      "detail": "/kaggle/working/out_armA/lego/results.json"
+    },
+    {
+      "id": 9,
+      "desc": "split_by_scale.py's count-weighted mean reproduces metrics.py's pooled PSNR (arm A / Mip-Splatting) \u2014 proves the render-index \u2192 scale mapping",
+      "passed": true,
+      "detail": "weighted=31.9193 pooled=31.9193 n_total=800 n_per_scale={'1x': 200, '1/2': 200, '1/4': 200, '1/8': 200}"
+    },
+    {
+      "id": 10,
+      "desc": "metrics.py produced a non-empty results.json (arm B / 3DGS) \u2014 its bare `except:` makes a real failure print like a warning (F10)",
+      "passed": true,
+      "detail": "/kaggle/working/out_armB/lego/results.json"
+    },
+    {
+      "id": 9,
+      "desc": "split_by_scale.py's count-weighted mean reproduces metrics.py's pooled PSNR (arm B / 3DGS) \u2014 proves the render-index \u2192 scale mapping",
+      "passed": true,
+      "detail": "weighted=29.3262 pooled=29.3262 n_total=800 n_per_scale={'1x': 200, '1/2': 200, '1/4': 200, '1/8': 200}"
+    },
+    {
+      "id": 7.1,
+      "desc": "readMultiScale loaded the d0-only training split (F3, load_allres=False)",
+      "passed": true,
+      "detail": "armA loaded 100, armB loaded 100, d0 files in metadata = 100 (of 400 total)"
+    },
+    {
+      "id": 4.1,
+      "desc": "arm B's saved model has filter_3D \u2261 0 and arm A's does not (F5) \u2014 this, not the diff text, is what makes arm B exactly 3DGS",
+      "passed": true,
+      "detail": "max|filter_3D|: armA=0.00163636 armB=0"
+    },
+    {
+      "id": 5,
+      "desc": "arm B (3DGS) unit test target 33.3\u00b10.5 dB \u2014 informational at 7000 iters, the real check is R1 @ 30k full-res",
+      "passed": null,
+      "detail": "pooled 29.326 dB; per-scale reported below"
+    },
+    {
+      "id": 6,
+      "desc": "arm A (Mip-Splatting) sanity target 33.4\u00b10.5 dB \u2014 informational at 7000 iters, the real check is R1 @ 30k full-res",
+      "passed": null,
+      "detail": "pooled 31.919 dB; per-scale reported below"
+    },
+    {
+      "id": 9.1,
+      "desc": "tools/selftest_pipeline.py: reporting chain verified against a fixture with planted, known-in-advance answers",
+      "passed": true,
+      "detail": "exit 0"
+    },
+    {
+      "id": 11,
+      "desc": "kill at 2000, restart from checkpoint, reach 7000 (scaled down from 30K for this rung)",
+      "passed": false,
+      "detail": "RuntimeError: command failed (1): OMP_NUM_THREADS=4 python train.py -s /kaggle/working/multi-scale/lego -m /kaggle/working/out_resume_test/lego --eval --white_background --iterations 7000 --test_iterations -1 --start_checkpoint /kaggle/working/out_resume_test/lego/chkpnt2000.pth --kernel_size 0.1\n--- tail ---\nOptimizing /kaggle/working/out_resume_test/lego\nOutput folder: /kaggle/working/out_resume"
+    },
+    {
+      "id": 12,
+      "desc": "off-session persistence",
+      "passed": null,
+      "detail": "Kaggle leg satisfied \u2014 results/, logs/ and both models persist as kernel output and are pulled down by tools/kaggle_push.py. Hugging Face Hub leg skipped: no HF token is available to this run; not faked."
+    }
+  ],
+  "all_checks_pass_or_skip": false
+}

@@ -12,3 +12,9 @@ multi-scale
 benchmark*
 debug*
 fused
+
+# credentials / local secrets — never committed
+.env
+*.token
+kaggle.json
+kaggle_api_token

@@ -40,7 +40,78 @@ measurement.
 
 \input{generated/table1-stmt}
 
+\keybox{arm A is a full L1 reproduction}{%
+Mip-Splatting reproduces to within $\pm0.20$\,dB at \emph{all four} test scales:
+$+0.08$, $+0.01$, $-0.07$, $-0.09$. By the criterion of
+Table~\ref{tab:levels}, declared before any run, this is L1 --- numerical
+reproduction --- on the protocol the paper reports it on. Nothing about the
+harness, the dataloader, the LPIPS backbone or the per-scale recovery is in
+doubt.}
+
 \input{generated/table-cost}
+
+\subsection*{Gate G2, and why it does not pass}
+\label{sec:g2}
+
+G2 was declared in advance as: 3DGS falls $\gtrsim13$\,dB from full to
+$\tfrac18$; Mip-Splatting falls $\lesssim6$\,dB; the gap at $\tfrac18$ exceeds
+$9$\,dB. Measured on this run:
+
+\begin{table}[htbp]
+  \centering
+  \caption{Gate G2 on R1, against the thresholds set before the run.}
+  \label{tab:g2}
+  \small
+  \begin{tabular}{lrrl}
+    \toprule
+    criterion & threshold & measured & verdict \\
+    \midrule
+    3DGS falls, full $\rightarrow \tfrac18$        & $\gtrsim 13$\,dB & $9.09$\,dB & \fail \\
+    Mip-Splatting falls, full $\rightarrow \tfrac18$ & $\lesssim 6$\,dB & $4.86$\,dB & \pass \\
+    gap at $\tfrac18$                              & $> 9$\,dB        & $4.07$\,dB & \fail \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+The protocol's instruction on a G2 failure is to stop, and to diagnose in a
+stated order: (a) the splitter's index mapping; (b) whether arm B's
+\texttt{filter\_3D} is really zero at step 30\,000; (c) \texttt{--white\_background}.
+All three were checked, and none of them is the cause:
+
+\begin{enumerate}[leftmargin=1.4em,itemsep=2pt]
+  \item The splitter's count-weighted mean reproduces \texttt{metrics.py}'s
+        pooled PSNR to within $0.01$\,dB on every scene of every run --- the
+        mapping is right, and it is asserted per scene rather than spot-checked.
+  \item \texttt{filter\_3D} read back from all eight of arm B's saved point
+        clouds is identically zero, and non-zero on all eight of arm A's. The
+        reduction is exact.
+  \item \texttt{--white\_background} was passed to every job.
+\end{enumerate}
+
+The cause is the one identified in \S\ref{sec:densification}: arm B is not
+published 3DGS, because this repository's densification is GOF's. A better
+densification recovers most of what the missing band-limit costs, so the
+collapse that G2's thresholds were calibrated against does not occur here.
+Arm B's $\tfrac18$ figure is $6.82$\,dB above published --- almost exactly the
+$6.8$\,dB by which the measured gap falls short of the expected one.
+
+\keybox{what this means, stated precisely}{%
+G2 as written cannot be met in this codebase, and that is a property of the
+gate's premise rather than of the experiment. The gate assumed the 3DGS arm
+would carry published-3DGS densification; the single-codebase decision of
+\S\ref{sec:onecodebase} --- which is \emph{forced} by the multi-scale loader, not
+chosen for convenience --- brings GOF's densification with it, to both arms
+equally.
+
+What does reproduce, and is what the thesis actually relies on: 3DGS degrades
+$1.9\times$ faster than Mip-Splatting across the same range ($9.09$ against
+$4.86$\,dB), and Mip-Splatting leads at every reduced scale by a margin that
+grows monotonically with the scale gap. That is correct in sign, ordering and
+order of magnitude under a stated deviation, which is L2 by
+Table~\ref{tab:levels}. The gate should be restated against a self-run control
+rather than against a published number produced by a different densification,
+and \S\ref{sec:densification} records the alternative that was considered and
+not taken.}
 
 \section{Table 2 --- Blender MTMT}
 \label{sec:table2}

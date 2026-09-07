@@ -17,15 +17,25 @@ ARM_NAME = {"A": "Mip-Splatting", "B": "3DGS"}
 TABLE_LOAD_ALLRES = {1: "False", 2: "True"}  # R1 = STMT (single-scale train), R2 = MTMT
 
 
-def load(runs_path, load_allres):
+def load(runs_path, load_allres, iterations):
+    """Average the per-scene rows into one row per (arm, test_scale).
+
+    `iterations` is required: results/runs.csv legitimately holds 7 000-iteration
+    R0 smoke rows next to 30 000-iteration R1/R2 rows, and averaging across them
+    yields a number that describes neither run.
+    """
     if not os.path.exists(runs_path):
-        return None
+        return None, set()
     acc = defaultdict(lambda: defaultdict(list))
+    seen_iters = set()
     with open(runs_path, newline="") as f:
         for r in csv.DictReader(f):
             if r.get("dataset") != "blender" or not r.get("psnr"):
                 continue
             if r.get("load_allres") != load_allres:
+                continue
+            seen_iters.add(r.get("iterations", ""))
+            if r.get("iterations") != str(iterations):
                 continue
             arm = r.get("arm")
             if arm not in ARM_NAME:
@@ -40,7 +50,7 @@ def load(runs_path, load_allres):
         for sc, vals in byscale.items():
             n = len(vals)
             out[arm][sc] = tuple(sum(v[i] for v in vals) / n for i in range(3)) + (n,)
-    return out or None
+    return (out or None), {i for i in seen_iters if i}
 
 
 def render(rows, table_num):
@@ -70,16 +80,25 @@ def main():
                           "2 = R2 Blender MTMT (load_allres=True)")
     ap.add_argument("--runs", default="results/runs.csv")
     ap.add_argument("--md", help="write markdown here in addition to stdout")
+    ap.add_argument("--iterations", type=int, default=30000,
+                     help="only average rows from runs of this length (default 30000, "
+                          "the R1/R2 target). Pass 7000 for the R0 smoke rows.")
     a = ap.parse_args()
 
-    rows = load(a.runs, TABLE_LOAD_ALLRES[a.table])
+    rows, seen = load(a.runs, TABLE_LOAD_ALLRES[a.table], a.iterations)
     if not rows:
         raise SystemExit(
             f"no usable rows in {a.runs} for table {a.table} "
-            f"(need both arms, all 4 test scales, load_allres={TABLE_LOAD_ALLRES[a.table]}) "
-            "— run the ladder first.")
+            f"(need both arms, all 4 test scales, load_allres={TABLE_LOAD_ALLRES[a.table]}, "
+            f"iterations={a.iterations}) — run the ladder first. "
+            f"Iteration counts present for this protocol: {sorted(seen) or 'none'}.")
 
     md = render(rows, a.table)
+    n = {arm: max(v[3] for v in sc.values()) for arm, sc in rows.items()}
+    md += ("\n\n"
+           f"R{a.table} · Blender {'STMT' if a.table == 1 else 'MTMT'} · "
+           f"{a.iterations} iterations · scenes averaged: "
+           + ", ".join(f"arm {k} n={v}" for k, v in sorted(n.items())))
     print(md)
     if a.md:
         os.makedirs(os.path.dirname(a.md) or ".", exist_ok=True)

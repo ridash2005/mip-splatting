@@ -233,48 +233,56 @@ def fig_cost_quality(out):
 
 
 # ------------------------------------------------------------------- measured
-def load_runs(path):
-    """Collapse results/runs.csv into {(protocol, method): [psnr @ 1x, 1/2, 1/4, 1/8]}."""
+# results/runs.csv stores the method as a lowercase slug; the figures key off the
+# display names used in STMT/MTMT above. Without this mapping every measured key
+# misses, load_runs still returns a non-empty dict, the "refuses to draw" gate
+# passes, and fig 1 silently draws the PUBLISHED curve under a "measured" filename
+# — exactly what §11/§14 forbid. Any slug not listed here is a hard error.
+METHOD_LABEL = {"3dgs": "3DGS", "mip-splatting": "Mip-Splatting"}
+
+
+def load_runs(path, iterations=None):
+    """Collapse results/runs.csv into {(protocol, method): [psnr @ 1x, 1/2, 1/4, 1/8]}.
+
+    `iterations` restricts to one training length. Averaging a 7 000-iteration
+    smoke row together with a 30 000-iteration R1 row would produce a number that
+    describes neither run, so the caller must say which one it wants.
+    """
     if not path or not os.path.exists(path):
         return None
     order = {"1x": 0, "1/2": 1, "1/4": 2, "1/8": 3}
-    acc = {}
+    acc, seen_iters, bad_methods = {}, set(), set()
     with open(path, newline="") as f:
         for r in csv.DictReader(f):
             if r.get("dataset") != "blender" or not r.get("psnr"):
                 continue
+            seen_iters.add(r.get("iterations", ""))
+            if iterations is not None and r.get("iterations") != str(iterations):
+                continue
+            label = METHOD_LABEL.get((r.get("method") or "").strip().lower())
+            if label is None:
+                bad_methods.add(r.get("method"))
+                continue
             proto = ("Single-scale train → multi-scale test"
                      if r.get("train_scale") == "1x"
                      else "Multi-scale train → multi-scale test")
-            key = (proto, r["method"])
+            key = (proto, label)
             acc.setdefault(key, {}).setdefault(r["test_scale"], []).append(float(r["psnr"]))
+    if bad_methods:
+        raise SystemExit(
+            f"unrecognised method slug(s) {sorted(bad_methods)} in {path}; "
+            f"known: {sorted(METHOD_LABEL)}. Refusing to draw rather than drop rows.")
     out = {}
     for key, byscale in acc.items():
         if len(byscale) < 4:
             continue
         out[key] = [sum(byscale[s]) / len(byscale[s]) for s in sorted(byscale, key=order.get)]
+    if not out:
+        print(f"note: no complete 4-scale group in {path} at iterations={iterations}; "
+              f"iteration counts present: {sorted(i for i in seen_iters if i)}")
     return out or None
 
 
-def main():
-    ap = argparse.ArgumentParser()
-    ap.add_argument("--mode", choices=["published", "measured"], default="published")
-    ap.add_argument("--runs", default="results/runs.csv")
-    ap.add_argument("--out",  default="figures")
-    a = ap.parse_args()
-    measured = load_runs(a.runs) if a.mode == "measured" else None
-    if a.mode == "measured" and not measured:
-        raise SystemExit(
-            "no usable rows in %s — refusing to draw a 'measured' figure with published "
-            "numbers in it. Run the ladder first." % a.runs)
-    fig_scale_degradation(a.out, measured)
-    fig_zoom(a.out)
-    fig_budget(a.out)
-    fig_cost_quality(a.out)
-
-
-if __name__ == "__main__":
-    main()
 
 
 # ------------------------------------------------------------------- fig 5/6
@@ -358,3 +366,41 @@ def fig_anisotropy_curve(out):
     ax.set_ylabel("depth / lateral uncertainty", fontsize=7.5)
     _clean(ax)
     _save(fig, out, "fig6-anisotropy")
+
+
+# ------------------------------------------------------------------- entry point
+# Defined last on purpose: figs 5/6 are declared below fig 4, and a main() placed
+# above them would run before those names exist — which is why `make figures`
+# previously emitted four figures and silently skipped the two theory ones.
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--mode", choices=["published", "measured"], default="published")
+    ap.add_argument("--runs", default="results/runs.csv")
+    ap.add_argument("--out",  default="figures")
+    ap.add_argument("--iterations", type=int, default=30000,
+                    help="only average rows from runs of this length (default 30000, "
+                         "the R1/R2 target). Pass 7000 to draw the R0 smoke rows.")
+    a = ap.parse_args()
+    measured = load_runs(a.runs, a.iterations) if a.mode == "measured" else None
+    if a.mode == "measured" and not measured:
+        raise SystemExit(
+            "no usable rows in %s at iterations=%s — refusing to draw a 'measured' "
+            "figure with published numbers in it. Run the ladder first."
+            % (a.runs, a.iterations))
+    if measured:
+        # ASCII only: this runs on a Windows cp1252 console too, and a figure
+        # tool must not die reporting what it is about to draw.
+        for (proto, name), vals in sorted(measured.items()):
+            proto_code = "STMT" if proto.startswith("Single") else "MTMT"
+            print(f"measured series: {proto_code} / {name} -> "
+                  + ", ".join(f"{v:.2f}" for v in vals))
+    fig_scale_degradation(a.out, measured)
+    fig_zoom(a.out)
+    fig_budget(a.out)
+    fig_cost_quality(a.out)
+    fig_fisher_geometry(a.out)
+    fig_anisotropy_curve(a.out)
+
+
+if __name__ == "__main__":
+    main()

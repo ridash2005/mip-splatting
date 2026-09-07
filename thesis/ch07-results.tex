@@ -129,29 +129,108 @@ peak of $\rZeroPeakVram$\,MB of VRAM. The last of these matters for scope: 16\,G
 is nowhere near binding on the Blender scenes, so the compute envelope of
 \S\ref{ch:design} constrains the \emph{real} scenes and not these.
 
+\section{The instruments --- I-1 and I-2}
+\label{sec:instrumentresults}
+
+Both instruments are functions of the primitive positions and the capture
+geometry alone, so neither needs the images, the rasteriser, or a training run
+of its own. Both were therefore run over every trained scene, and over the five
+capture protocols of \S\ref{sec:stress}, at a total cost of two minutes.
+
+\input{generated/table-instruments}
+
+\subsection*{I-1 on the standard benchmark: the floor binds everywhere}
+On the full orbit, the estimation term $s^2/\lambda_i$ exceeds
+Mip-Splatting's floor $f_k^2$ on \textbf{zero} primitives, in \emph{every}
+direction of \emph{every} scene. The median ratio
+$\sqrt{s^2/\lambda_{\min}}\,/\,f_k$ is $0.35$, and even at the 99th percentile
+it is below $0.5$: the floor dominates the estimation term by a factor of two to
+three throughout. No primitive is unseen by every camera, so the artefactual
+right tail of \S\ref{sec:instruments} does not arise and nothing had to be
+excluded.
+
+By Proposition~\ref{prop:reduction} this means B1 \emph{is} Mip-Splatting on
+these scenes --- exactly, not approximately. That is worth stating plainly:
+
+\keybox{no gain is available on the standard Blender benchmark}{%
+The eight Blender scenes are 100-camera full orbits, the best-conditioned
+capture in the suite. Section~\ref{sec:anisotropy} predicts parity there, and
+the measurement is stronger than the prediction: the anisotropy is $1.14\times$
+where Table~\ref{tab:regimes} anticipated $1.6\times$. A method evaluated only
+on this benchmark could not show an improvement, and if one appeared it would be
+a bug.}
+
+\subsection*{I-2 across the stress suite: the regime structure is real}
+The refutation condition at gate G3 is that the floor exceeds the estimation
+term on nearly every primitive in \emph{every} scene --- which would make
+Proposition~\ref{prop:reduction} apply universally and collapse the method to
+its baseline everywhere. It does not. Degrading the capture moves the balance
+exactly as Equation~\eqref{eq:anisotropy} requires:
+
+\begin{itemize}[leftmargin=1.4em,itemsep=2pt]
+  \item \textbf{One-sided arc} ($80^\circ$ span): the estimation term exceeds
+        the floor along the worst-constrained direction on $100\,\%$ of
+        primitives, while still lying below it in the best-constrained
+        directions. That is precisely the anisotropic regime the filter is built
+        for --- a scalar floor is wrong here in one direction and right in the
+        others.
+  \item \textbf{Low-parallax cone} ($20^\circ$ span): the estimation term
+        exceeds the floor in \emph{all} directions on $100\,\%$ of primitives,
+        by a median factor of $12$. Per scene the measured
+        $\sigma_{\mathrm{depth}}/\sigma_{\mathrm{lat}}$ runs from $4.5\times$ at
+        a $29^\circ$ span to $19.2\times$ at $10^\circ$ --- against the
+        $19\times$ that Table~\ref{tab:regimes} predicts at $6^\circ$.
+  \item \textbf{Grazing} views degrade the conditioning mildly ($1.45\times$),
+        and \textbf{mixed focal} barely at all ($1.16\times$ against the full
+        orbit's $1.14\times$).
+\end{itemize}
+
+So gates G3 and G4 are both passed, and the regime table of
+\S\ref{sec:anisotropy} is confirmed as a measurement rather than left as a
+prediction --- before a line of method code exists. This is the cheapest
+falsification the project had available, and it did not fire.
+
+\paragraph{One prediction not borne out.} Section~\ref{sec:defects} argues that
+mixing cameras is the third defect of the scalar filter, and \S\ref{sec:stress}
+expected the mixed-focal protocol to expose it. It does not show up in the
+anisotropy: $1.16\times$ against $1.14\times$ is nothing. It does show up in the
+magnitude --- the median ratio of estimation term to floor rises from $0.35$ to
+$0.47$, a $35\,\%$ relative shift --- but that is still far below unity, so the
+floor continues to bind and Proposition~\ref{prop:reduction} still applies. The
+honest reading is that the mixed-camera defect is a statement about the
+\emph{value} of $f_k$, not about its isotropy, and that this protocol as
+constructed does not stress it hard enough to matter. Either the protocol needs
+a wider focal spread than $2$--$4\times$, or the defect is real but small; the
+present measurement does not distinguish those, and it is not reported as though
+it did.
+
 \section{Table 3 --- the stress suite}
 \label{sec:table3}
 
 \begin{table}[htbp]
   \centering
-  \caption{Where the claim lives. The predicted column is filled from
-  Equation~\eqref{eq:anisotropy} \emph{now}, before the method exists.
-  Agreement between the predicted and measured columns is the thesis's central
-  empirical result; disagreement in the full-orbit row is a bug, and
-  disagreement in the low-parallax row is a refutation.}
+  \caption{Where the claim lives. The conditioning column is now
+  \emph{measured} (\S\ref{sec:instrumentresults}); the PSNR columns await the
+  method. The predicted column was filled from Equation~\eqref{eq:anisotropy}
+  before any run. Agreement between prediction and measurement is the thesis's
+  central empirical result; disagreement in the full-orbit row would be a bug,
+  and in the low-parallax row a refutation.}
   \label{tab:stress}
   \small
   \begin{tabular}{lccccc}
     \toprule
-    protocol & $\theta$ & $\lambda_3/\lambda_1$ & Mip-S. PSNR & B1 PSNR & $\Delta$ predicted \\
+    protocol & span & $\sigma_D/\sigma_L$ measured & Mip-S. PSNR & B1 PSNR & $\Delta$ predicted \\
     \midrule
-    full orbit    & ${\sim}75^\circ$ & \notmeasured & \notmeasured & \notmeasured & $\approx 0$ \\
-    one-sided arc & ${\sim}20^\circ$ & \notmeasured & \notmeasured & \notmeasured & $> 0$ \\
-    low-parallax  & ${\sim}6^\circ$  & \notmeasured & \notmeasured & \notmeasured & $\gg 0$ \\
-    mixed focal   & ---              & \notmeasured & \notmeasured & \notmeasured & $> 0$ \\
-    grazing       & ---              & \notmeasured & \notmeasured & \notmeasured & $> 0$ \\
+    full orbit    & $179^\circ$ & $1.14\times$ & \notmeasured & \notmeasured & $\approx 0$ \\
+    one-sided arc & $80^\circ$  & $2.28\times$ & \notmeasured & \notmeasured & $> 0$ \\
+    low-parallax  & $20^\circ$  & $9.45\times$ & \notmeasured & \notmeasured & $\gg 0$ \\
+    mixed focal   & $179^\circ$ & $1.16\times$ & \notmeasured & \notmeasured & $> 0$ \\
+    grazing       & $168^\circ$ & $1.45\times$ & \notmeasured & \notmeasured & $> 0$ \\
     \bottomrule
   \end{tabular}
+  \par\vspace{2pt}\footnotesize Median over the eight Blender scenes. Spans are
+  the maximum pairwise angle subtended at the capture centre by the selected
+  cameras, measured on the subset that was actually built rather than assumed.
 \end{table}
 
 \section{Table 4 --- B2, angular identifiability}

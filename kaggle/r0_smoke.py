@@ -192,17 +192,28 @@ def neutralise_unused_open3d_import(repo_dir):
     notes so the report can state it.
     """
     path = os.path.join(repo_dir, "train.py")
+    marker = "# import open3d as o3d  # unused; neutralised by kaggle/r0_smoke.py"
     with open(path) as f:
         source = f.read()
-    uses = len(re.findall(r"\bo3d\b", source)) + len(re.findall(r"\bopen3d\b", source))
-    if uses != 2:      # 'open3d' and 'o3d' on the import line, nowhere else
+    if marker in source:
+        print(f"open3d import already neutralised in {path}", flush=True)
+        return True
+
+    # Count references in CODE only. Counting the raw file would let this
+    # function's own replacement comment satisfy its guard on a second call,
+    # turning the proof into a tautology.
+    code = "\n".join(ln.split("#", 1)[0] for ln in source.splitlines())
+    uses = len(re.findall(r"\bo3d\b", code)) + len(re.findall(r"\bopen3d\b", code))
+    if uses != 2:      # 'open3d' and 'o3d', both on the import line, nowhere else
         raise RuntimeError(
-            f"refusing to touch {path}: open3d/o3d referenced {uses} times, "
+            f"refusing to touch {path}: open3d/o3d referenced {uses} times in code, "
             "so the import is NOT unused and removing it would change behaviour")
+
+    patched = source.replace("import open3d as o3d\n", marker + "\n", 1)
+    if patched == source:
+        raise RuntimeError(f"could not find the open3d import line to neutralise in {path}")
     with open(path, "w") as f:
-        f.write(source.replace(
-            "import open3d as o3d\n",
-            "# import open3d as o3d  # unused; neutralised by kaggle/r0_smoke.py\n", 1))
+        f.write(patched)
     print(f"NOTE: neutralised the unused open3d import in {path}", flush=True)
     return True
 

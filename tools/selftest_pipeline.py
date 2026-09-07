@@ -21,6 +21,7 @@ any table this repo prints until it is fixed.
 import csv
 import json
 import os
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -233,12 +234,95 @@ def main():
         ok("make_figures.py refuses 'measured' with no rows (never draws published as measured)",
            r5.returncode != 0, (r5.stderr or "").strip()[-160:])
 
+    check_kernel_helpers()
+
     print()
     if failures:
         print(f"{len(failures)} FAILED: " + "; ".join(failures))
         return 1
     print("reporting chain verified end to end.")
     return 0
+
+
+def load_kernel_helpers():
+    """Exec kaggle/r0_smoke.py's preamble to get at its pure helper functions.
+
+    The kernel is a top-to-bottom script: importing it would run nvidia-smi and
+    `import torch`. Everything above the `check 1: GPU` banner is definitions
+    only, so that prefix execs safely anywhere.
+    """
+    src = open(os.path.join(REPO, "kaggle", "r0_smoke.py"), encoding="utf-8").read()
+    marker = "# =============================================================== check 1: GPU"
+    if marker not in src:
+        return None
+    ns = {"__name__": "r0_smoke_preamble"}
+    exec(compile(src[:src.index(marker)], "r0_smoke.py<preamble>", "exec"), ns)
+    return ns
+
+
+def check_kernel_helpers():
+    """Exercise the kernel's build-time fixes against a copy of this repo.
+
+    These run inside a compute-capability 7.0+ Kaggle session, which has proved
+    to be the scarce resource in this project. A helper that raises there costs
+    a whole session; here it costs nothing.
+    """
+    ns = load_kernel_helpers()
+    if ns is None:
+        ok("kaggle/r0_smoke.py preamble is loadable", False, "banner not found")
+        return
+    ok("kaggle/r0_smoke.py preamble execs with no GPU present", True)
+
+    with tempfile.TemporaryDirectory(prefix="btp-kernel-") as d:
+        repo = os.path.join(d, "repo")
+        for rel in ("submodules/simple-knn", "."):
+            os.makedirs(os.path.join(repo, rel), exist_ok=True)
+        shutil.copy(os.path.join(REPO, "submodules", "simple-knn", "simple_knn.cu"),
+                    os.path.join(repo, "submodules", "simple-knn", "simple_knn.cu"))
+        shutil.copy(os.path.join(REPO, "train.py"), os.path.join(repo, "train.py"))
+
+        knn = os.path.join(repo, "submodules", "simple-knn", "simple_knn.cu")
+        ns["patch_simple_knn_flt_max"](repo)
+        src = open(knn).read()
+        ok("simple-knn <cfloat> fix applied, and FLT_MAX is really used there",
+           "#include <cfloat>" in src and "FLT_MAX" in src)
+        before = src
+        ns["patch_simple_knn_flt_max"](repo)      # must be idempotent
+        ok("simple-knn fix is idempotent (the kernel applies it to both arms)",
+           open(knn).read() == before)
+
+        train = os.path.join(repo, "train.py")
+        ns["neutralise_unused_open3d_import"](repo)
+        after = open(train).read()
+        ok("open3d fallback comments out the import and nothing else",
+           "# import open3d as o3d" in after
+           and "\nimport open3d as o3d\n" not in after
+           and len(after.splitlines()) == len(open(os.path.join(REPO, "train.py"),
+                                                   encoding="utf-8").read().splitlines()))
+        ns["neutralise_unused_open3d_import"](repo)      # must be idempotent
+        ok("open3d fallback is idempotent (the kernel applies it to both arms)",
+           open(train).read() == after)
+
+        # The guard that matters: if o3d were actually used, removing the import
+        # would change behaviour, and the fallback must refuse rather than
+        # silently break training inside a scarce GPU session.
+        used = os.path.join(d, "used")
+        os.makedirs(used, exist_ok=True)
+        with open(os.path.join(used, "train.py"), "w", encoding="utf-8") as f:
+            f.write("import open3d as o3d\n\npcd = o3d.geometry.PointCloud()\n")
+        try:
+            ns["neutralise_unused_open3d_import"](used)
+            refused = False
+        except RuntimeError as e:
+            refused = "NOT unused" in str(e)
+        ok("open3d fallback REFUSES when o3d is actually used in the file", refused)
+
+    # The scale parser both the kernel and the splitter depend on.
+    ok("scale_of maps convert_blender_data's naming to 0..3",
+       [sbs.scale_of(f"test/{i:03d}_d{j}.png") for i, j in
+        ((0, 0), (7, 1), (42, 2), (199, 3))] == [0, 1, 2, 3])
+    ok("scale_of returns None for a name with no _d<j> suffix",
+       sbs.scale_of("test/00000.png") is None)
 
 
 if __name__ == "__main__":

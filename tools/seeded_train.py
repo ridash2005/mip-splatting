@@ -29,6 +29,14 @@ import sys
 
 SEED = int(os.environ.get("BTP_SEED", "0"))
 
+# Python puts THIS script's directory (tools/) on sys.path, not the working
+# directory, so `import utils.general_utils` would fail even when invoked from
+# the repository root -- which is how train.py is always run. Put the repo root
+# first, exactly as running train.py directly would.
+REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
+if REPO_ROOT not in sys.path:
+    sys.path.insert(0, REPO_ROOT)
+
 
 def main():
     import numpy as np
@@ -58,17 +66,26 @@ def main():
     # them. The rung kernel therefore pre-generates each seed's point cloud
     # serially into its own source directory and sets this.
     if SEED and os.environ.get("BTP_KEEP_INIT") != "1":
-        try:
-            i = sys.argv.index("-s")
-        except ValueError:
-            i = sys.argv.index("--source_path")
-        ply = os.path.join(sys.argv[i + 1], "points3d.ply")
-        if os.path.exists(ply):
-            os.remove(ply)
-            print(f"[seeded_train] removed cached {ply} so seed {SEED} draws its own",
-                  flush=True)
+        src = None
+        for flag in ("-s", "--source_path"):
+            if flag in sys.argv:
+                i = sys.argv.index(flag)
+                if i + 1 < len(sys.argv):
+                    src = sys.argv[i + 1]
+                break
+        if src is None:
+            print("[seeded_train] no -s/--source_path given; leaving any cached "
+                  "initial point cloud alone", flush=True)
+        else:
+            ply = os.path.join(src, "points3d.ply")
+            if os.path.exists(ply):
+                os.remove(ply)
+                print(f"[seeded_train] removed cached {ply} so seed {SEED} draws its own",
+                      flush=True)
 
-    runpy.run_path("train.py", run_name="__main__")
+    # Resolved against the repo root rather than the cwd, so the launcher
+    # behaves the same however it is invoked.
+    runpy.run_path(os.path.join(REPO_ROOT, "train.py"), run_name="__main__")
 
 
 if __name__ == "__main__":

@@ -1,0 +1,39 @@
+{
+  "rung": "R5",
+  "protocol": "STMT",
+  "load_allres": false,
+  "seeds": [
+    1,
+    2
+  ],
+  "scenes": [
+    "lego",
+    "chair"
+  ],
+  "iterations": 30000,
+  "gpu": "Tesla T4",
+  "n_gpu": 2,
+  "torch": "2.10.0+cu128",
+  "cuda": "12.8",
+  "open3d": true,
+  "armA_commit": "967469e650fe3f50da562768a3fd092e11869047",
+  "armB_commit": "6eb4ce17e0f557c7c1c630e432a99ebc69b4f8eb",
+  "convert_seconds": 197.04775381088257,
+  "done": {},
+  "failed": {
+    "A/lego/s1": "RuntimeError: command failed (1): OMP_NUM_THREADS=4 CUDA_VISIBLE_DEVICES=0 BTP_SEED=1 BTP_KEEP_INIT=1 python tools/seeded_train.py -s /kaggle/working/multi-scale/lego__s1 -m /kaggle/working/out_armA/lego_s1 --eval --white_background --iterations 30000 --test_iterations -1 --port 6209  --kernel_size 0.1\n--- tail ---\nTraceback (most recent call last):\n  File \"/kaggle/working/armA/tools/seeded_train.py\", line 75, in <module>\n    main()\n  File \"/kaggle/working/armA/tools/seeded_train.py\", line 36, in main\n    import utils.general_utils as gu\nModuleNotFoundError: No module named 'utils'\n",
+    "B/lego/s1": "RuntimeError: command failed (1): OMP_NUM_THREADS=4 CUDA_VISIBLE_DEVICES=1 BTP_SEED=1 BTP_KEEP_INIT=1 python tools/seeded_train.py -s /kaggle/working/multi-scale/lego__s1 -m /kaggle/working/out_armB/lego_s1 --eval --white_background --iterations 30000 --test_iterations -1 --port 6210  --kernel_size 0.3 --disable_3D_filter\n--- tail ---\nTraceback (most recent call last):\n  File \"/kaggle/working/armB/tools/seeded_train.py\", line 75, in <module>\n    main()\n  File \"/kaggle/working/armB/tools/seeded_train.py\", line 36, in main\n    import utils.general_utils as gu\nModuleNotFoundError: No module named",
+    "A/chair/s1": "RuntimeError: command failed (1): OMP_NUM_THREADS=4 CUDA_VISIBLE_DEVICES=0 BTP_SEED=1 BTP_KEEP_INIT=1 python tools/seeded_train.py -s /kaggle/working/multi-scale/chair__s1 -m /kaggle/working/out_armA/chair_s1 --eval --white_background --iterations 30000 --test_iterations -1 --port 6209  --kernel_size 0.1\n--- tail ---\nTraceback (most recent call last):\n  File \"/kaggle/working/armA/tools/seeded_train.py\", line 75, in <module>\n    main()\n  File \"/kaggle/working/armA/tools/seeded_train.py\", line 36, in main\n    import utils.general_utils as gu\nModuleNotFoundError: No module named 'utils'\n",
+    "B/chair/s1": "RuntimeError: command failed (1): OMP_NUM_THREADS=4 CUDA_VISIBLE_DEVICES=1 BTP_SEED=1 BTP_KEEP_INIT=1 python tools/seeded_train.py -s /kaggle/working/multi-scale/chair__s1 -m /kaggle/working/out_armB/chair_s1 --eval --white_background --iterations 30000 --test_iterations -1 --port 6210  --kernel_size 0.3 --disable_3D_filter\n--- tail ---\nTraceback (most recent call last):\n  File \"/kaggle/working/armB/tools/seeded_train.py\", line 75, in <module>\n    main()\n  File \"/kaggle/working/armB/tools/seeded_train.py\", line 36, in main\n    import utils.general_utils as gu\nModuleNotFoundError: No module nam",
+    "A/lego/s2": "RuntimeError: command failed (1): OMP_NUM_THREADS=4 CUDA_VISIBLE_DEVICES=0 BTP_SEED=2 BTP_KEEP_INIT=1 python tools/seeded_train.py -s /kaggle/working/multi-scale/lego__s2 -m /kaggle/working/out_armA/lego_s2 --eval --white_background --iterations 30000 --test_iterations -1 --port 6209  --kernel_size 0.1\n--- tail ---\nTraceback (most recent call last):\n  File \"/kaggle/working/armA/tools/seeded_train.py\", line 75, in <module>\n    main()\n  File \"/kaggle/working/armA/tools/seeded_train.py\", line 36, in main\n    import utils.general_utils as gu\nModuleNotFoundError: No module named 'utils'\n",
+    "B/lego/s2": "RuntimeError: command failed (1): OMP_NUM_THREADS=4 CUDA_VISIBLE_DEVICES=1 BTP_SEED=2 BTP_KEEP_INIT=1 python tools/seeded_train.py -s /kaggle/working/multi-scale/lego__s2 -m /kaggle/working/out_armB/lego_s2 --eval --white_background --iterations 30000 --test_iterations -1 --port 6210  --kernel_size 0.3 --disable_3D_filter\n--- tail ---\nTraceback (most recent call last):\n  File \"/kaggle/working/armB/tools/seeded_train.py\", line 75, in <module>\n    main()\n  File \"/kaggle/working/armB/tools/seeded_train.py\", line 36, in main\n    import utils.general_utils as gu\nModuleNotFoundError: No module named",
+    "A/chair/s2": "RuntimeError: command failed (1): OMP_NUM_THREADS=4 CUDA_VISIBLE_DEVICES=0 BTP_SEED=2 BTP_KEEP_INIT=1 python tools/seeded_train.py -s /kaggle/working/multi-scale/chair__s2 -m /kaggle/working/out_armA/chair_s2 --eval --white_background --iterations 30000 --test_iterations -1 --port 6209  --kernel_size 0.1\n--- tail ---\nTraceback (most recent call last):\n  File \"/kaggle/working/armA/tools/seeded_train.py\", line 75, in <module>\n    main()\n  File \"/kaggle/working/armA/tools/seeded_train.py\", line 36, in main\n    import utils.general_utils as gu\nModuleNotFoundError: No module named 'utils'\n",
+    "B/chair/s2": "RuntimeError: command failed (1): OMP_NUM_THREADS=4 CUDA_VISIBLE_DEVICES=1 BTP_SEED=2 BTP_KEEP_INIT=1 python tools/seeded_train.py -s /kaggle/working/multi-scale/chair__s2 -m /kaggle/working/out_armB/chair_s2 --eval --white_background --iterations 30000 --test_iterations -1 --port 6210  --kernel_size 0.3 --disable_3D_filter\n--- tail ---\nTraceback (most recent call last):\n  File \"/kaggle/working/armB/tools/seeded_train.py\", line 75, in <module>\n    main()\n  File \"/kaggle/working/armB/tools/seeded_train.py\", line 36, in main\n    import utils.general_utils as gu\nModuleNotFoundError: No module nam"
+  },
+  "session_seconds": 446.7642443180084,
+  "gpu_hours_used": 0.12410117917590671,
+  "complete": false,
+  "filter_3D_max": {},
+  "armB_all_zero": true,
+  "armA_all_nonzero": true
+}

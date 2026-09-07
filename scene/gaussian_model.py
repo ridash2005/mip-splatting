@@ -188,7 +188,10 @@ class GaussianModel:
         #TODO remove hard coded value
         #TODO box to gaussian transform
         filter_3D = distance / focal_length * (0.2 ** 0.5)
-        self.filter_3D = filter_3D[..., None]
+        if getattr(self, "_disable_3D_filter", False):
+            self.filter_3D = torch.zeros_like(filter_3D[..., None])
+        else:
+            self.filter_3D = filter_3D[..., None]
         
     def oneupSHdegree(self):
         if self.active_sh_degree < self.max_sh_degree:

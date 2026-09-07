@@ -59,16 +59,18 @@ the pipeline does run here: `make selftest`.
 in-session (§6 check 1) before any run, and the kernel aborts on anything below
 (7, 0).
 
-**Accelerator allocation is not ours to choose.** `ApiSaveKernelRequest` carries
-a boolean `enable_gpu` and nothing else — kagglesdk 0.1.28 has no accelerator
-field — and Kaggle hands out whichever GPU is free. Three launches of the same
-unchanged kernel got, in order: P100 (CC 6.0), Tesla T4 ×2 (CC 7.5), P100. So
-the accelerator is a per-launch lottery, not a sticky notebook setting, and
-`tools/kaggle_push.py --retry-wrong-gpu N` relaunches on the kernel's
-`R0_ABORT=WRONG_ACCELERATOR` marker and on nothing else. A wrong-GPU launch
-aborts in about 30 seconds, so retrying costs no meaningful quota. Setting the
-accelerator to "GPU T4 x2" in the web UI and launching there is the manual
-fallback.
+**Choosing the accelerator.** Kaggle allocates a Tesla P100 (compute capability
+6.0) to every plain `enable_gpu: true` push — eleven consecutive pushes got one,
+and 3DGS cannot run on it (F15). The accelerator is selected by a `machineShape`
+field on `/api/v1/kernels/push`, whose name and permitted values are read out of
+kagglesdk 0.1.37's wire schema. Neither installed client can send it (kagglesdk
+0.1.28 has no such field; newer kagglesdk and `kaggle` 2.x need Python ≥ 3.11,
+this machine has 3.10), so `tools/kaggle_push.py --accelerator NvidiaTeslaT4`
+posts the body directly with the field added. A probe kernel confirmed it
+returns `GPU 0: Tesla T4 / GPU 1: Tesla T4`. The API validates none of it — a
+bad field name or value returns HTTP 200 and silently yields a P100 — which is
+why the kernel asserts the capability itself and prints the GPU it got. See
+[`kaggle/README.md`](kaggle/README.md).
 
 Kaggle quota (§8.1) still to be read off the notebook sidebar; the secondary
 figures are 30 h/week, 12 h/session, ~20 GB `/kaggle/working`.
@@ -78,7 +80,9 @@ figures are 30 h/week, 12 h/session, ~20 GB `/kaggle/working`.
 | | |
 |---|---|
 | image | Python 3.12, torch 2.10.0+cu128, CUDA 12.8, driver 580.159.04 |
-| accelerator seen | Tesla T4 ×2 (CC 7.5) — passes F15; Tesla P100 (CC 6.0) — aborts |
+| accelerator | `machineShape=NvidiaTeslaT4` → **Tesla T4 ×2** (CC 7.5), passes F15 |
+| default (no `machineShape`) | Tesla P100 (CC 6.0) — aborts at check 1 |
+| concurrency | 2 batch GPU sessions per account |
 
 ### The two deviations from a clean `pip install`, and why
 

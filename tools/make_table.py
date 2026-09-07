@@ -105,7 +105,7 @@ def main():
     n = {arm: max(v[3] for v in sc.values()) for arm, sc in rows.items()}
     md += ("\n\n"
            f"R{a.table} · Blender {'STMT' if a.table == 1 else 'MTMT'} · "
-           f"{a.iterations} iterations · scenes averaged: "
+           f"{a.iterations} iterations · rows averaged per scale: "
            + ", ".join(f"arm {k} n={v}" for k, v in sorted(n.items())))
     print(md)
     if a.md:

@@ -104,26 +104,61 @@ edit outside §3; it has been reverted.
 ## Status
 
 - [x] Forked upstream, cloned, remotes set up.
-- [x] F1/F3/F4/F5 spot-checked against source at the forked commit.
 - [x] Arm B diff applied verbatim on `arm-b-3dgs-baseline`. `git diff
-      main..arm-b-3dgs-baseline` is exactly **4 files, 7 insertions, 1 deletion**
-      — the §3 diff and nothing else, which the kernel's check 4 enforces on
-      every run.
-- [x] **Reporting chain verified end to end** — `make selftest`, 34 assertions,
-      no GPU needed. It runs splitter → CSV → tables → figures on a fixture with
-      planted answers, and execs the kernel's preamble to exercise its build
-      fixes. See "What the self-test caught" below.
-- [x] CUDA extensions build on the Kaggle image (2×T4, torch 2.10 / CUDA 12.8) —
-      `results/kaggle_runs/r0_smoke_v2/02_t4x2_open3d_failure.log`.
-- [x] Measured instrumentation wired in: train_seconds, iterations/second,
-      render_fps, n_gaussians, model_mb, peak_vram_mb, all written to the CSV.
-- [x] §13 report generator (`make report`), driven entirely by the kernel's
-      `summary.json`.
-- [ ] **R0 smoke run — blocked on GPU allocation, not on code.** Every check that
-      can run without a T4 is green; the run needs compute capability 7.0+ and
-      Kaggle has allocated a P100 to every API-pushed launch. See Environment.
-- [ ] §6 pre-flight, all twelve, in one green session.
+      main...arm-b-3dgs-baseline` is exactly **4 files, 7 insertions, 1
+      deletion**, enforced on every run by the kernel's check 4.
+- [x] **Reporting chain verified end to end** — `make selftest`, 37 assertions,
+      no GPU. See "What the self-test caught" below.
+- [x] **R0 complete. All twelve §6 checks pass or are honestly skipped.**
+      `lego`, 7000 iterations, both arms, Tesla T4 ×2, 0.47 GPU-hours.
+      Skips are checks 5/6 (their 33.3/33.4 dB targets are 30 000-iteration
+      values, so they are recorded, not scored) and check 12's Hugging Face leg
+      (no token; the Kaggle persistence leg is satisfied).
 - [ ] R1 (primary target), R2, R3, R5, R4 (optional).
+
+### R0 result — `results/R0-report.md`
+
+| test scale | 3DGS (arm B) | Mip-Splatting (arm A) | gap |
+|---|---|---|---|
+| 1x | 33.78 | 33.52 | −0.26 |
+| 1/2 | 31.65 | 34.04 | +2.39 |
+| 1/4 | 27.56 | 31.72 | +4.16 |
+| 1/8 | 24.37 | 28.37 | +4.00 |
+
+Mean of two runs at each scale; L3, and only L3. Sign and ordering reproduce —
+3DGS falls 9.4 dB full→⅛ against Mip-Splatting's 5.1, and Mip-Splatting leads at
+every reduced scale. The magnitudes do not, and are not claimed to: 7 000
+iterations is not the 30 000 the published numbers are measured at (F11).
+
+Mip-Splatting already sits within 0.3 dB of published at every scale, while
+3DGS is **+4.7 to +6.7 dB above** its published targets. The aliasing collapse
+deepens with training, so the gap should widen toward the published 10.98 dB at
+30 K — which is exactly what G2 tests.
+
+**§3 verified on the artefact, not the diff text.** `filter_3D` read back out of
+the saved point clouds is **0.0 for arm B and 0.00163636 for arm A** (check
+4.1). `render.py` never recomputes the filter — `load_ply` reads it from the PLY
+— so the PLY is what decides whether arm B is really 3DGS.
+
+### Measured, replacing §7's estimates (G1)
+
+| | |
+|---|---|
+| training throughput | 20.8 it/s (arm A), 22.4 it/s (arm B) on a Tesla T4 |
+| render | 9.1 fps over 800 test views |
+| peak VRAM | **4 275 MB** — 16 GB is nowhere near binding on Blender |
+| model | 256 k Gaussians / 64 MB (A) vs 224 k / 56 MB (B) |
+| R0 cost | **0.47 GPU-hours** against the ≤ 1 budgeted |
+| implied R1 | ~24 min training per scene per arm → 8 scenes × 2 arms ≈ **6–7 GPU-h**, against §7's 10–16 |
+
+### Run-to-run spread, free
+
+The rung was run twice at identical seed and config. The largest per-scale PSNR
+difference is **0.039 dB** — five times below L1's ±0.20 dB tolerance, so the
+harness's own nondeterminism (CUDA atomics in the rasteriser) cannot threaten an
+L1 claim. Gaussian counts moved by 0.1–0.7 %. Both runs are in
+`results/runs.csv`; it is append-only, and neither was removed to tidy the
+table.
 
 ### What the self-test caught
 

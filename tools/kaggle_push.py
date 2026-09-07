@@ -108,7 +108,7 @@ def apply_overrides(text, overrides):
 
 
 def push(client, script_path, username, slug, title, datasets, session_timeout=None,
-         accelerator=None, overrides=None, kernel_sources=None):
+         accelerator=None, overrides=None, kernel_sources=None, gpu=True):
     with open(script_path, encoding="utf-8") as f:
         text = f.read()
     text = apply_overrides(text, overrides)
@@ -119,7 +119,9 @@ def push(client, script_path, username, slug, title, datasets, session_timeout=N
     req.language = "python"
     req.kernel_type = "script"
     req.is_private = True
-    req.enable_gpu = True
+    # CPU sessions come from a separate pool, so a probe or a pure-NumPy job
+    # need not wait behind the two-concurrent-GPU-session limit.
+    req.enable_gpu = gpu
     req.enable_internet = True
     req.dataset_data_sources = datasets or []
     # A finished rung's output, mounted read-only under /kaggle/input. This is
@@ -231,6 +233,9 @@ def main():
     ap.add_argument("--out", default=None)
     ap.add_argument("--no-wait", action="store_true", help="push and exit without polling")
     ap.add_argument("--session-timeout", type=int, default=None)
+    ap.add_argument("--no-gpu", action="store_true",
+                     help="run on a CPU session, which is a separate pool from the "
+                          "two concurrent GPU sessions an account may hold")
     ap.add_argument("--kernel-source", action="append", default=[],
                      metavar="USER/SLUG",
                      help="attach another kernel's output as an input, mounted "
@@ -272,7 +277,7 @@ def main():
         for attempt in range(1, a.retry_wrong_gpu + 2):
             _, actual_slug = push(client, a.script, a.username, a.slug, a.title,
                                   a.dataset, a.session_timeout, a.accelerator,
-                                  a.set, a.kernel_source)
+                                  a.set, a.kernel_source, not a.no_gpu)
             if a.no_wait:
                 return
             status = poll(client, a.username, actual_slug, timeout=a.poll_timeout)

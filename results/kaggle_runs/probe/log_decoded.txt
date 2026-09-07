@@ -1,0 +1,21 @@
+inputs: ['datasets']
+COLMAP-ish: /kaggle/input/datasets/ngoctuyen610/mipnerf-360-dataset/mipnerf360/bicycle -> ['images', 'images_2', 'images_4', 'images_8', 'sparse']
+COLMAP-ish: /kaggle/input/datasets/ngoctuyen610/mipnerf-360-dataset/mipnerf360/bonsai -> ['images', 'images_2', 'images_4', 'images_8', 'sparse']
+COLMAP-ish: /kaggle/input/datasets/ngoctuyen610/mipnerf-360-dataset/mipnerf360/counter -> ['images', 'images_2', 'images_4', 'images_8', 'sparse']
+COLMAP-ish: /kaggle/input/datasets/ngoctuyen610/mipnerf-360-dataset/mipnerf360/flowers -> ['images', 'images_2', 'images_4', 'images_8', 'sparse']
+COLMAP-ish: /kaggle/input/datasets/ngoctuyen610/mipnerf-360-dataset/mipnerf360/garden -> ['images', 'images_2', 'images_4', 'images_8', 'sparse']
+COLMAP-ish: /kaggle/input/datasets/ngoctuyen610/mipnerf-360-dataset/mipnerf360/kitchen -> ['images', 'images_2', 'images_4', 'images_8', 'sparse']
+COLMAP-ish: /kaggle/input/datasets/ngoctuyen610/mipnerf-360-dataset/mipnerf360/room -> ['images', 'images_2', 'images_4', 'images_8', 'sparse']
+COLMAP-ish: /kaggle/input/datasets/ngoctuyen610/mipnerf-360-dataset/mipnerf360/stump -> ['images', 'images_2', 'images_4', 'images_8', 'sparse']
+COLMAP-ish: /kaggle/input/datasets/ngoctuyen610/mipnerf-360-dataset/mipnerf360/treehill -> ['images', 'images_2', 'images_4', 'images_8', 'sparse']
+COLMAP-ish: /kaggle/input/datasets/thnhdg/tandt-db/db/drjohnson -> ['images', 'sparse']
+COLMAP-ish: /kaggle/input/datasets/thnhdg/tandt-db/db/playroom -> ['images', 'sparse']
+COLMAP-ish: /kaggle/input/datasets/thnhdg/tandt-db/tandt/train -> ['images', 'sparse']
+COLMAP-ish: /kaggle/input/datasets/thnhdg/tandt-db/tandt/truck -> ['images', 'sparse']
+PROBE_JSON={"n": 13, "paths": ["/kaggle/input/datasets/ngoctuyen610/mipnerf-360-dataset/mipnerf360/bicycle", "/kaggle/input/datasets/ngoctuyen610/mipnerf-360-dataset/mipnerf360/bonsai", "/kaggle/input/datasets/ngoctuyen610/mipnerf-360-dataset/mipnerf360/counter", "/kaggle/input/datasets/ngoctuyen610/mipnerf-360-dataset/mipnerf360/flowers", "/kaggle/input/datasets/ngoctuyen610/mipnerf-360-dataset/mipnerf360/garden", "/kaggle/input/datasets/ngoctuyen610/mipnerf-360-dataset/mipnerf360/kitchen", "/kaggle/input/datasets/ngoctuyen610/mipnerf-360-dataset/mipnerf360/room", "/kaggle/input/datasets/ngoctuyen610/mipnerf-360-dataset/mipnerf360/stump", "/kaggle/input/datasets/ngoctuyen610/mipnerf-360-dataset/mipnerf360/treehill", "/kaggle/input/datasets/thnhdg/tandt-db/db/drjohnson", "/kaggle/input/datasets/thnhdg/tandt-db/db/playroom", "/kaggle/input/datasets/thnhdg/tandt-db/tandt/train", "/kaggle/input/datasets/thnhdg/tandt-db/tandt/truck"]}
+/usr/local/lib/python3.12/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\|'
+  cells[i][c] = re.sub('\\\\\|', '|', cell)
+/usr/local/lib/python3.12/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\_'
+  text = re.sub(r'_', '\_', text) # Escape underscores in display text
+[NbConvertApp] Converting notebook __script__.ipynb to html
+[NbConvertApp] Writing 275805 bytes to __results__.html

@@ -1,0 +1,22 @@
+[{"stream_name":"stdout","time":0.780027936,"data":"inputs: ['datasets']\n"}
+,{"stream_name":"stdout","time":8.702927801,"data":"COLMAP-ish: /kaggle/input/datasets/ngoctuyen610/mipnerf-360-dataset/mipnerf360/bicycle -\u003e ['images', 'images_2', 'images_4', 'images_8', 'sparse']\n"}
+,{"stream_name":"stdout","time":8.7029665,"data":"COLMAP-ish: /kaggle/input/datasets/ngoctuyen610/mipnerf-360-dataset/mipnerf360/bonsai -\u003e ['images', 'images_2', 'images_4', 'images_8', 'sparse']\n"}
+,{"stream_name":"stdout","time":8.702970529,"data":"COLMAP-ish: /kaggle/input/datasets/ngoctuyen610/mipnerf-360-dataset/mipnerf360/counter -\u003e ['images', 'images_2', 'images_4', 'images_8', 'sparse']\n"}
+,{"stream_name":"stdout","time":8.702973512,"data":"COLMAP-ish: /kaggle/input/datasets/ngoctuyen610/mipnerf-360-dataset/mipnerf360/flowers -\u003e ['images', 'images_2', 'images_4', 'images_8', 'sparse']\n"}
+,{"stream_name":"stdout","time":8.702976379999999,"data":"COLMAP-ish: /kaggle/input/datasets/ngoctuyen610/mipnerf-360-dataset/mipnerf360/garden -\u003e ['images', 'images_2', 'images_4', 'images_8', 'sparse']\n"}
+,{"stream_name":"stdout","time":8.70297909,"data":"COLMAP-ish: /kaggle/input/datasets/ngoctuyen610/mipnerf-360-dataset/mipnerf360/kitchen -\u003e ['images', 'images_2', 'images_4', 'images_8', 'sparse']\n"}
+,{"stream_name":"stdout","time":8.702981836,"data":"COLMAP-ish: /kaggle/input/datasets/ngoctuyen610/mipnerf-360-dataset/mipnerf360/room -\u003e ['images', 'images_2', 'images_4', 'images_8', 'sparse']\n"}
+,{"stream_name":"stdout","time":8.702984603,"data":"COLMAP-ish: /kaggle/input/datasets/ngoctuyen610/mipnerf-360-dataset/mipnerf360/stump -\u003e ['images', 'images_2', 'images_4', 'images_8', 'sparse']\n"}
+,{"stream_name":"stdout","time":8.702987479,"data":"COLMAP-ish: /kaggle/input/datasets/ngoctuyen610/mipnerf-360-dataset/mipnerf360/treehill -\u003e ['images', 'images_2', 'images_4', 'images_8', 'sparse']\n"}
+,{"stream_name":"stdout","time":8.702990198,"data":"COLMAP-ish: /kaggle/input/datasets/thnhdg/tandt-db/db/drjohnson -\u003e ['images', 'sparse']\n"}
+,{"stream_name":"stdout","time":8.702992905,"data":"COLMAP-ish: /kaggle/input/datasets/thnhdg/tandt-db/db/playroom -\u003e ['images', 'sparse']\n"}
+,{"stream_name":"stdout","time":8.702995738,"data":"COLMAP-ish: /kaggle/input/datasets/thnhdg/tandt-db/tandt/train -\u003e ['images', 'sparse']\n"}
+,{"stream_name":"stdout","time":8.702998283,"data":"COLMAP-ish: /kaggle/input/datasets/thnhdg/tandt-db/tandt/truck -\u003e ['images', 'sparse']\n"}
+,{"stream_name":"stdout","time":8.703002,"data":"PROBE_JSON={\"n\": 13, \"paths\": [\"/kaggle/input/datasets/ngoctuyen610/mipnerf-360-dataset/mipnerf360/bicycle\", \"/kaggle/input/datasets/ngoctuyen610/mipnerf-360-dataset/mipnerf360/bonsai\", \"/kaggle/input/datasets/ngoctuyen610/mipnerf-360-dataset/mipnerf360/counter\", \"/kaggle/input/datasets/ngoctuyen610/mipnerf-360-dataset/mipnerf360/flowers\", \"/kaggle/input/datasets/ngoctuyen610/mipnerf-360-dataset/mipnerf360/garden\", \"/kaggle/input/datasets/ngoctuyen610/mipnerf-360-dataset/mipnerf360/kitchen\", \"/kaggle/input/datasets/ngoctuyen610/mipnerf-360-dataset/mipnerf360/room\", \"/kaggle/input/datasets/ngoctuyen610/mipnerf-360-dataset/mipnerf360/stump\", \"/kaggle/input/datasets/ngoctuyen610/mipnerf-360-dataset/mipnerf360/treehill\", \"/kaggle/input/datasets/thnhdg/tandt-db/db/drjohnson\", \"/kaggle/input/datasets/thnhdg/tandt-db/db/playroom\", \"/kaggle/input/datasets/thnhdg/tandt-db/tandt/train\", \"/kaggle/input/datasets/thnhdg/tandt-db/tandt/truck\"]}\n"}
+,{"stream_name":"stderr","time":11.502482776,"data":"/usr/local/lib/python3.12/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":11.502543025,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":11.913483801,"data":"/usr/local/lib/python3.12/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":11.913537985,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":13.485924306,"data":"[NbConvertApp] Converting notebook __script__.ipynb to html\n"}
+,{"stream_name":"stderr","time":15.070200103,"data":"[NbConvertApp] Writing 275805 bytes to __results__.html\n"}
+]

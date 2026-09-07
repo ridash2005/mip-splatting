@@ -102,17 +102,50 @@ def fetch_log(client, username, slug, out_dir):
 WRONG_GPU_MARKER = "R0_ABORT=WRONG_ACCELERATOR"
 
 
+def save_summary(log_resp, out_dir):
+    """Pull the kernel's R0_SUMMARY_JSON line out of the log and save it.
+
+    The log is Kaggle's JSON event stream, so the marker line can arrive either
+    as raw text or split across events; the raw text is searched either way. The
+    decoded log is written alongside it, because the event stream is unreadable.
+    """
+    raw = log_resp.log
+    try:
+        text = "".join(e["data"] for e in json.loads(raw))
+    except Exception:
+        text = raw
+    decoded = os.path.join(out_dir, "log_decoded.txt")
+    with open(decoded, "w", encoding="utf-8") as f:
+        f.write(text)
+    print(f"wrote {decoded} ({len(text)} chars)")
+    for line in text.splitlines():
+        if line.startswith("R0_SUMMARY_JSON="):
+            summary = json.loads(line[len("R0_SUMMARY_JSON="):])
+            path = os.path.join(out_dir, "summary.json")
+            with open(path, "w", encoding="utf-8") as f:
+                json.dump(summary, f, indent=2)
+            print(f"wrote {path}")
+            return summary
+    print("no R0_SUMMARY_JSON= line in the log — the run did not reach the end.")
+    return None
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("script")
     ap.add_argument("--username", default="rickaryadas")
     ap.add_argument("--slug", required=True)
-    ap.add_argument("--title", required=True)
+    ap.add_argument("--title", help="required unless --fetch-only; Kaggle derives "
+                     "the slug from it (lowercased, dashed)")
     ap.add_argument("--dataset", action="append", default=[],
                      help="owner/slug of a Kaggle dataset to attach; repeatable")
     ap.add_argument("--out", default=None)
     ap.add_argument("--no-wait", action="store_true", help="push and exit without polling")
     ap.add_argument("--session-timeout", type=int, default=None)
+    ap.add_argument("--fetch-only", action="store_true",
+                     help="do not push; poll the existing kernel session and pull its "
+                          "log and summary down. Use after launching from the web UI, "
+                          "which is the only place the accelerator can be chosen.")
     ap.add_argument("--retry-wrong-gpu", type=int, default=0,
                      help="relaunch this many times if Kaggle allocates a GPU below "
                           "compute capability 7.0 (F15). Each such attempt aborts in "
@@ -122,9 +155,19 @@ def main():
     ap.add_argument("--poll-timeout", type=int, default=6 * 3600,
                      help="seconds to wait for the kernel to finish before giving up")
     a = ap.parse_args()
+    if not a.fetch_only and not a.title:
+        ap.error("--title is required unless --fetch-only")
 
     with get_client() as client:
         out_dir = a.out or f"results/kaggle_runs/{a.slug}"
+        if a.fetch_only:
+            # For a run launched from the web UI -- the only way to choose the
+            # accelerator. Nothing is pushed; the finished session's log and
+            # summary are pulled down exactly as they would be after a push.
+            status = poll(client, a.username, a.slug, timeout=a.poll_timeout)
+            log_resp = fetch_log(client, a.username, a.slug, out_dir)
+            save_summary(log_resp, out_dir)
+            sys.exit(1 if status == KernelWorkerStatus.ERROR else 0)
         for attempt in range(1, a.retry_wrong_gpu + 2):
             _, actual_slug = push(client, a.script, a.username, a.slug, a.title,
                                   a.dataset, a.session_timeout)
@@ -141,12 +184,7 @@ def main():
                 time.sleep(a.retry_delay)
                 continue
 
-            for line in log_resp.log.splitlines():
-                if line.startswith("R0_SUMMARY_JSON="):
-                    summary = json.loads(line[len("R0_SUMMARY_JSON="):])
-                    with open(os.path.join(out_dir, "summary.json"), "w") as f:
-                        json.dump(summary, f, indent=2)
-                    print(json.dumps(summary, indent=2))
+            save_summary(log_resp, out_dir)
             if WRONG_GPU_MARKER in log_resp.log:
                 sys.exit(f"gave up after {attempt} attempts: Kaggle never allocated a "
                          "compute-capability 7.0+ GPU. Raise --retry-wrong-gpu, or set "

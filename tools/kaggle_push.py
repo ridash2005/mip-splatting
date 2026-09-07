@@ -26,6 +26,8 @@ import os
 import sys
 import time
 
+import requests
+
 sys.path.insert(0, os.path.dirname(__file__))
 from kaggle_client import get_client  # noqa: E402
 from kagglesdk.kernels.types.kernels_api_service import (  # noqa: E402
@@ -36,7 +38,51 @@ from kagglesdk.kernels.types.kernels_api_service import (  # noqa: E402
 from kagglesdk.kernels.types.kernels_enums import KernelWorkerStatus  # noqa: E402
 
 
-def push(client, script_path, username, slug, title, datasets, session_timeout=None):
+# Kaggle allocates a Tesla P100 (compute capability 6.0) to every plain
+# `enable_gpu: true` push, which 3DGS cannot run on (F15). The accelerator is
+# chosen by a `machineShape` field on /api/v1/kernels/push -- confirmed against
+# kagglesdk 0.1.37's own wire schema, whose docstring reads: "The machine shape
+# to use for this session. Currently supported options: NvidiaTeslaT4,
+# NvidiaTeslaP100, Tpu1VmV38."
+#
+# The installed clients cannot send it: kagglesdk 0.1.28's ApiSaveKernelRequest
+# has no machine_shape field and rejects unknown attributes client-side, and
+# both newer kagglesdk and `kaggle` 2.x require Python >= 3.11 (this machine has
+# 3.10). So the same JSON body kagglesdk would have sent is posted directly with
+# the field added.
+#
+# Verified, not assumed: a probe kernel pushed with machineShape=NvidiaTeslaT4
+# reported `GPU 0: Tesla T4 / GPU 1: Tesla T4`, against P100 on eleven
+# consecutive pushes without it. Note the API does NOT validate this field -- an
+# unrecognised value returns HTTP 200 and silently yields the default P100 --
+# so the choices below are restricted to the three the schema documents.
+ACCELERATORS = ("NvidiaTeslaT4", "NvidiaTeslaP100", "Tpu1VmV38")
+PUSH_URL = "https://www.kaggle.com/api/v1/kernels/push"
+
+
+def push_with_accelerator(body, accelerator):
+    """POST the save-kernel body with the `machineShape` field kagglesdk cannot set.
+
+    Returns (ref, version, url). Raises on a non-2xx or an `error` in the reply.
+    Note the server does not validate machineShape, so a typo is not caught here
+    -- it is caught by the kernel's own check 1, which aborts on anything below
+    compute capability 7.0 and says which GPU it actually got.
+    """
+    body = dict(body, machineShape=accelerator)
+    token = os.environ["KAGGLE_API_TOKEN"]
+    r = requests.post(PUSH_URL, json=body,
+                      headers={"Authorization": f"Bearer {token}",
+                               "Content-Type": "application/json"}, timeout=120)
+    if r.status_code >= 300:
+        raise SystemExit(f"push failed ({r.status_code}): {r.text[:600]}")
+    d = r.json()
+    if d.get("error"):
+        raise SystemExit(f"push failed: {d['error']}")
+    return d.get("ref"), d.get("versionNumber"), d.get("url")
+
+
+def push(client, script_path, username, slug, title, datasets, session_timeout=None,
+         accelerator=None):
     with open(script_path, encoding="utf-8") as f:
         text = f.read()
     req = ApiSaveKernelRequest()
@@ -51,10 +97,19 @@ def push(client, script_path, username, slug, title, datasets, session_timeout=N
     req.dataset_data_sources = datasets or []
     if session_timeout:
         req.session_timeout_seconds = session_timeout
-    resp = client.kernels.kernels_api_client.save_kernel(req)
-    if resp.error:
-        raise SystemExit(f"push failed: {resp.error}")
-    print(f"pushed {resp.ref} (version {resp.version_number}) -> {resp.url}")
+    if accelerator:
+        from kagglesdk.kaggle_object import KaggleObject
+        ref, version, url = push_with_accelerator(KaggleObject.to_dict(req), accelerator)
+        print(f"pushed {ref} (version {version}, accelerator={accelerator}) -> {url}")
+
+        class _R:  # same shape the caller reads off save_kernel's reply
+            pass
+        resp = _R(); resp.ref = ref; resp.version_number = version; resp.url = url
+    else:
+        resp = client.kernels.kernels_api_client.save_kernel(req)
+        if resp.error:
+            raise SystemExit(f"push failed: {resp.error}")
+        print(f"pushed {resp.ref} (version {resp.version_number}) -> {resp.url}")
     # Kaggle derives the actual slug from new_title (must be "title, lowercased
     # with dashes") and silently ignores a mismatched requested slug — always
     # use what it actually assigned, from the tail of resp.ref, not our request.
@@ -142,6 +197,10 @@ def main():
     ap.add_argument("--out", default=None)
     ap.add_argument("--no-wait", action="store_true", help="push and exit without polling")
     ap.add_argument("--session-timeout", type=int, default=None)
+    ap.add_argument("--accelerator", choices=ACCELERATORS,
+                     help="machine shape to request. Without it Kaggle allocates a "
+                          "P100 (CC 6.0), which fails F15. NvidiaTeslaT4 yields "
+                          "Tesla T4 x2 (CC 7.5).")
     ap.add_argument("--fetch-only", action="store_true",
                      help="do not push; poll the existing kernel session and pull its "
                           "log and summary down. Use after launching from the web UI, "
@@ -170,7 +229,7 @@ def main():
             sys.exit(1 if status == KernelWorkerStatus.ERROR else 0)
         for attempt in range(1, a.retry_wrong_gpu + 2):
             _, actual_slug = push(client, a.script, a.username, a.slug, a.title,
-                                  a.dataset, a.session_timeout)
+                                  a.dataset, a.session_timeout, a.accelerator)
             if a.no_wait:
                 return
             status = poll(client, a.username, actual_slug, timeout=a.poll_timeout)

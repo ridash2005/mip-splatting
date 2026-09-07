@@ -1,0 +1,49 @@
+[{"stream_name":"stdout","time":0.938422271,"data":"+ nvidia-smi\n"}
+,{"stream_name":"stdout","time":0.987981932,"data":"Mon Sep  7 11:26:46 2026       \n"}
+,{"stream_name":"stdout","time":0.988035622,"data":"+-----------------------------------------------------------------------------------------+\n"}
+,{"stream_name":"stdout","time":0.988044971,"data":"| NVIDIA-SMI 580.159.04             Driver Version: 580.159.04     CUDA Version: 13.0     |\n"}
+,{"stream_name":"stdout","time":0.988048893,"data":"+-----------------------------------------+------------------------+----------------------+\n"}
+,{"stream_name":"stdout","time":0.988052509,"data":"| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |\n"}
+,{"stream_name":"stdout","time":0.988055879,"data":"| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |\n"}
+,{"stream_name":"stdout","time":0.988059603,"data":"|                                         |                        |               MIG M. |\n"}
+,{"stream_name":"stdout","time":0.988063105,"data":"|=========================================+========================+======================|\n"}
+,{"stream_name":"stdout","time":1.011021836,"data":"|   0  Tesla P100-PCIE-16GB           Off |   00000000:00:04.0 Off |                    0 |\n"}
+,{"stream_name":"stdout","time":1.011042771,"data":"| N/A   34C    P0             26W /  250W |       0MiB /  16384MiB |      0%      Default |\n"}
+,{"stream_name":"stdout","time":1.011047346,"data":"|                                         |                        |                  N/A |\n"}
+,{"stream_name":"stdout","time":1.01105122,"data":"+-----------------------------------------+------------------------+----------------------+\n"}
+,{"stream_name":"stdout","time":1.011127844,"data":"\n"}
+,{"stream_name":"stdout","time":1.011140905,"data":"+-----------------------------------------------------------------------------------------+\n"}
+,{"stream_name":"stdout","time":1.011145614,"data":"| Processes:                                                                              |\n"}
+,{"stream_name":"stdout","time":1.011150016,"data":"|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |\n"}
+,{"stream_name":"stdout","time":1.011154179,"data":"|        ID   ID                                                               Usage      |\n"}
+,{"stream_name":"stdout","time":1.01115804,"data":"|=========================================================================================|\n"}
+,{"stream_name":"stdout","time":1.011389089,"data":"|  No running processes found                                                             |\n"}
+,{"stream_name":"stdout","time":1.011653083,"data":"+-----------------------------------------------------------------------------------------+\n"}
+,{"stream_name":"stderr","time":6.892495609,"data":"/usr/local/lib/python3.12/dist-packages/torch/cuda/__init__.py:435: UserWarning: \n"}
+,{"stream_name":"stderr","time":6.892541233,"data":"    Found GPU0 Tesla P100-PCIE-16GB which is of cuda capability 6.0.\n"}
+,{"stream_name":"stderr","time":6.892544942,"data":"    Minimum and Maximum cuda capability supported by this version of PyTorch is\n"}
+,{"stream_name":"stderr","time":6.892547658,"data":"    (7.0) - (12.0)\n"}
+,{"stream_name":"stderr","time":6.892550072,"data":"    \n"}
+,{"stream_name":"stderr","time":6.892552367,"data":"  queued_call()\n"}
+,{"stream_name":"stderr","time":6.892554635,"data":"/usr/local/lib/python3.12/dist-packages/torch/cuda/__init__.py:435: UserWarning: \n"}
+,{"stream_name":"stderr","time":6.892557003,"data":"    Please install PyTorch with a following CUDA\n"}
+,{"stream_name":"stderr","time":6.892569372,"data":"    configurations:  12.6 following instructions at\n"}
+,{"stream_name":"stderr","time":6.892572088,"data":"    https://pytorch.org/get-started/locally/\n"}
+,{"stream_name":"stderr","time":6.892574525,"data":"    \n"}
+,{"stream_name":"stderr","time":6.892576789,"data":"  queued_call()\n"}
+,{"stream_name":"stderr","time":6.892833148,"data":"/usr/local/lib/python3.12/dist-packages/torch/cuda/__init__.py:435: UserWarning: \n"}
+,{"stream_name":"stderr","time":6.892841096,"data":"Tesla P100-PCIE-16GB with CUDA capability sm_60 is not compatible with the current PyTorch installation.\n"}
+,{"stream_name":"stderr","time":6.892843684,"data":"The current PyTorch install supports CUDA capabilities sm_70 sm_75 sm_80 sm_86 sm_90 sm_100 sm_120.\n"}
+,{"stream_name":"stderr","time":6.892846163,"data":"If you want to use the Tesla P100-PCIE-16GB GPU with PyTorch, please check the instructions at https://pytorch.org/get-started/locally/\n"}
+,{"stream_name":"stderr","time":6.892848579,"data":"\n"}
+,{"stream_name":"stderr","time":6.892850858,"data":"  queued_call()\n"}
+,{"stream_name":"stdout","time":6.894478997,"data":"torch 2.10.0+cu128  cuda 12.8  capability (6, 0)  gpu Tesla P100-PCIE-16GB\n"}
+,{"stream_name":"stdout","time":6.89449648,"data":"[check 1] FAIL — accelerator compute capability \u003e= 7.0, abort on P100/6.0 (F15) — Tesla P100-PCIE-16GB (6, 0)\n"}
+,{"stream_name":"stderr","time":6.894634877,"data":"ABORT: compute capability below 7.0 — refusing to train (F15).\n"}
+,{"stream_name":"stderr","time":10.915774954,"data":"/usr/local/lib/python3.12/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":10.915796239,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":11.232437374,"data":"/usr/local/lib/python3.12/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":11.232472836,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":11.888095526,"data":"[NbConvertApp] Converting notebook __script__.ipynb to html\n"}
+,{"stream_name":"stderr","time":13.181743878,"data":"[NbConvertApp] Writing 331142 bytes to __results__.html\n"}
+]

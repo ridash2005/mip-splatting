@@ -83,14 +83,25 @@ def build_fixture(root):
                 psnr[f"{idx:05d}.png"] = planted[j] + off * 0.1
                 ssim[f"{idx:05d}.png"] = 0.9 + j * 0.01 + off * 0.001
                 lp[f"{idx:05d}.png"] = 0.05 + j * 0.01 + off * 0.001
-            with open(os.path.join(model_dir, "per_view.json"), "w") as f:
-                json.dump({model_dir: {METHOD_DIR:
-                                       {"PSNR": psnr, "SSIM": ssim, "LPIPS": lp}}}, f)
+            # The shape metrics.py actually writes. It does
+            # `json.dump(full_dict[scene_dir], ...)` — the value, not the
+            # enclosing dict — so the top-level key is the METHOD directory,
+            # with no scene_dir above it. The fixture is built from that source
+            # line rather than from what the splitter expected to find, because
+            # the two disagreed and the mismatch does not fail loudly.
+            # arm A is written scene-nested instead, to hold the compatibility
+            # path in method_block() honest against forks that keep it.
+            per_view = {METHOD_DIR: {"PSNR": psnr, "SSIM": ssim, "LPIPS": lp}}
             n = len(file_paths)
+            results = {METHOD_DIR: {"PSNR": sum(psnr.values()) / n,
+                                    "SSIM": sum(ssim.values()) / n,
+                                    "LPIPS": sum(lp.values()) / n}}
+            if arm == "A":
+                per_view, results = {model_dir: per_view}, {model_dir: results}
+            with open(os.path.join(model_dir, "per_view.json"), "w") as f:
+                json.dump(per_view, f)
             with open(os.path.join(model_dir, "results.json"), "w") as f:
-                json.dump({METHOD_DIR: {"PSNR": sum(psnr.values()) / n,
-                                        "SSIM": sum(ssim.values()) / n,
-                                        "LPIPS": sum(lp.values()) / n}}, f)
+                json.dump(results, f)
     return file_paths
 
 
@@ -119,11 +130,22 @@ def main():
             res = sbs.split_scene(model_dir, os.path.join(root, "multi-scale", scene),
                                   METHOD_DIR)
             with open(os.path.join(model_dir, "results.json")) as f:
-                pooled = json.load(f)[METHOD_DIR]["PSNR"]
+                pooled = sbs.method_block(json.load(f), METHOD_DIR)["PSNR"]
             n_tot = sum(v["n"] for v in res.values())
             weighted = sum(v["n"] * v["PSNR"] for v in res.values()) / n_tot
             ok(f"count-weighted mean == pooled results.json PSNR (arm {arm})",
                abs(weighted - pooled) < 1e-9, f"{weighted:.9f} vs {pooled:.9f}")
+
+        # -- 2b: a method name that is not there must fail loudly, not silently
+        #        index into the wrong dictionary
+        r = subprocess.run(
+            [sys.executable, os.path.join(HERE, "split_by_scale.py"),
+             "--model-dir", os.path.join(root, "out_armB", SCENES[0]),
+             "--data-dir", os.path.join(root, "multi-scale", SCENES[0]),
+             "--method", "ours_99999"], capture_output=True, text=True)
+        ok("a wrong --method exits non-zero and names the keys it did find",
+           r.returncode != 0 and METHOD_DIR in (r.stdout + r.stderr),
+           (r.stderr or r.stdout).strip()[-160:])
 
         # -- 3: CSV round trip through the real CLI
         csv_path = os.path.join(root, "runs.csv")

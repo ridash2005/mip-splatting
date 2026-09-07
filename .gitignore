@@ -13,6 +13,11 @@ benchmark*
 debug*
 fused
 
+# generated artefacts -- everything regenerates from results/runs.csv
+figures/
+results/table*.md
+results/R*-report.md
+
 # credentials / local secrets — never committed
 .env
 *.token

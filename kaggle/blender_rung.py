@@ -7,7 +7,7 @@ rewrites at push time with --set:
 
   R1  STMT, the PRIMARY TARGET   RUNG=R1 LOAD_ALLRES=False
   R2  MTMT                       RUNG=R2 LOAD_ALLRES=True   (F3: one flag)
-  R5  seed spread                RUNG=R5 SEED=1 SCENES=lego,chair
+  R5  seed spread                RUNG=R5 SEEDS=[1,2] SCENES=lego,chair
 
 Eight Blender scenes, 30 000 iterations, both arms. R1 fills Table 1 of the
 thesis and is what gate G2 is defined on. R0 established the toolchain and
@@ -41,7 +41,9 @@ RESULTS = f"{WORK}/results"
 # --- parameters, rewritten by `kaggle_push.py --set NAME=VALUE` ---------------
 RUNG = "R1"
 LOAD_ALLRES = False        # F3: STMT vs MTMT is this one flag
-SEED = 0                   # R5 varies this; see seeded_train.py
+SEEDS = [0]                # R5 sweeps these; see tools/seeded_train.py.
+                           # Seed 0 is a plain train.py run, so an R5 sweep
+                           # anchors to the R1/R2 numbers rather than redrawing.
 SCENES = ["ship", "drums", "ficus", "hotdog", "lego", "materials", "mic", "chair"]
 ITERS = 30000
 # -----------------------------------------------------------------------------
@@ -134,22 +136,24 @@ ARMS = {
 done, failed = {}, {}
 
 
-def run_one(gpu, arm, scene):
+def run_one(gpu, arm, scene, seed):
     """train -> render -> metrics -> split -> CSV -> prune, for one (arm, scene)."""
     cfg = ARMS[arm]
-    out = f"{WORK}/out_arm{arm}/{scene}"
-    tag = f"{arm}_{scene}"
+    suffix = "" if seed == 0 else f"_s{seed}"
+    out = f"{WORK}/out_arm{arm}/{scene}{suffix}"
+    tag = f"{arm}_{scene}{suffix}"
     env = f"OMP_NUM_THREADS=4 CUDA_VISIBLE_DEVICES={gpu}"
-    if SEED:
-        env += f" BTP_SEED={SEED}"
-    entry = "tools/seeded_train.py" if SEED else "train.py"
+    if seed:
+        env += f" BTP_SEED={seed} BTP_KEEP_INIT=1"
+    entry = "tools/seeded_train.py" if seed else "train.py"
     protocol_flags = "--load_allres" if LOAD_ALLRES else ""
     port = 6209 + int(gpu)
     st = {}
     probe = kc.VramProbe(gpu=gpu)
     probe.start()
     t = time.time()
-    kc.sh(f"{env} python {entry} -s {WORK}/multi-scale/{scene} -m {out} --eval "
+    src = scene_src(scene, seed)
+    kc.sh(f"{env} python {entry} -s {src} -m {out} --eval "
           f"--white_background --iterations {ITERS} --test_iterations -1 --port {port} "
           f"{protocol_flags} {cfg['flags']}", cwd=cfg["dir"], logdir=LOGDIR,
           log_name=f"train_{tag}")
@@ -182,7 +186,7 @@ def run_one(gpu, arm, scene):
         # prints like a warning, so the file is asserted, never the console.
         raise RuntimeError(f"{tag}: metrics.py failed silently, no {rj} (F10)")
 
-    split = sbs.split_scene(out, f"{WORK}/multi-scale/{scene}", METHOD)
+    split = sbs.split_scene(out, src, METHOD)
     n_tot = sum(v["n"] for v in split.values())
     weighted = sum(v["n"] * v["PSNR"] for v in split.values()) / n_tot
     pooled = sbs.method_block(json.load(open(rj)), METHOD)["PSNR"]
@@ -192,20 +196,20 @@ def run_one(gpu, arm, scene):
     st["pooled_psnr"] = pooled
 
     kc.append_rows(csv_path, sbs.RUNS_CSV_SCHEMA, split, {
-        "run_id": f"{run_id}-{arm}-{scene}", "timestamp_utc": now,
+        "run_id": f"{run_id}-{arm}-{scene}{suffix}", "timestamp_utc": now,
         "method": cfg["method"], "arm": arm, "impl_commit": cfg["commit"],
         "rasteriser_commit": cfg["commit"], "dataset": "blender", "scene": scene,
         "resolution_flag": "-1", "load_allres": str(LOAD_ALLRES),
         "kernel_size": cfg["kernel_size"], "disable_3D_filter": cfg["disable"],
         "train_scale": "1x" if not LOAD_ALLRES else "multi",
-        "iterations": str(ITERS), "seed": str(SEED),
+        "iterations": str(ITERS), "seed": str(seed),
         "n_gaussians": str(st["n_gaussians"]), "model_mb": f"{st['model_mb']:.2f}",
         "peak_vram_mb": str(st["peak_vram_mb"]),
         "train_seconds": f"{st['train_seconds']:.1f}",
         "render_fps": f"{st['render_fps']:.3f}" if st["render_fps"] else "",
         "gpu_model": gpu_name, "platform": "kaggle", "level_claimed": "L1",
         "notes": f"{RUNG} Blender {'MTMT' if LOAD_ALLRES else 'STMT'}, {ITERS} iters, "
-                 f"{len(SCENES)}-scene sweep, seed {SEED}",
+                 f"{len(SCENES)}-scene sweep, seed {seed}",
     })
     removed = kc.prune_renders(out, METHOD, keep=KEEP_QUALITATIVE)
     print(f"[{tag}] done: pooled {pooled:.3f} dB, {st['n_gaussians']} gaussians, "
@@ -223,7 +227,7 @@ def checkpoint_summary():
 def build_summary():
     return {
         "rung": RUNG, "protocol": "MTMT" if LOAD_ALLRES else "STMT",
-        "load_allres": LOAD_ALLRES, "seed": SEED,
+        "load_allres": LOAD_ALLRES, "seeds": SEEDS,
         "scenes": SCENES, "iterations": ITERS,
         "gpu": gpu_name, "n_gpu": n_gpu, "torch": torch.__version__,
         "cuda": torch.version.cuda, "open3d": open3d_ok,
@@ -232,7 +236,7 @@ def build_summary():
         "done": done, "failed": failed,
         "session_seconds": time.time() - SESSION_START,
         "gpu_hours_used": (time.time() - SESSION_START) / 3600.0,
-        "complete": len(done) == 2 * len(SCENES),
+        "complete": len(done) == 2 * len(SCENES) * len(SEEDS),
     }
 
 
@@ -241,7 +245,71 @@ def build_summary():
 # wedge if GPUtil misreports a busy GPU as free.
 import threading  # noqa: E402
 
-jobs = [(arm, scene) for scene in SCENES for arm in ("A", "B")]
+
+def scene_src(scene, seed):
+    """Source directory for one (scene, seed).
+
+    Seed 0 uses the shared directory. A non-zero seed gets its own, holding
+    symlinks to the same images and its own metadata.json and points3d.ply, so
+    two seeds never contend for one initial point cloud and the two arms of a
+    seed share exactly one.
+    """
+    base = f"{WORK}/multi-scale/{scene}"
+    if seed == 0:
+        return base
+    return f"{WORK}/multi-scale/{scene}__s{seed}"
+
+
+def pregenerate_inits():
+    """Draw each non-zero seed's initial point cloud once, before dispatch.
+
+    readMultiScaleNerfSyntheticInfo creates points3d.ply lazily on first load and
+    caches it. Two workers starting together would both create it. Doing it here,
+    serially, removes the race and makes each seed's initialisation an explicit,
+    logged artefact rather than a side effect of whichever job started first.
+    The draw below is the loader's own, reproduced so no images need loading.
+    """
+    sys.path.insert(0, f"{WORK}/armA")
+    from scene.dataset_readers import storePly      # noqa: E402
+    from utils.sh_utils import SH2RGB               # noqa: E402
+    import numpy as np                              # noqa: E402
+
+    for seed in SEEDS:
+        if seed == 0:
+            continue
+        for scene in SCENES:
+            src = scene_src(scene, seed)
+            os.makedirs(src, exist_ok=True)
+            base = f"{WORK}/multi-scale/{scene}"
+            for entry in os.listdir(base):
+                if entry in ("points3d.ply",):
+                    continue
+                dst = os.path.join(src, entry)
+                if os.path.exists(dst):
+                    continue
+                s_ = os.path.join(base, entry)
+                if os.path.isdir(s_):
+                    os.symlink(s_, dst)
+                else:
+                    shutil.copy(s_, dst)
+            ply = os.path.join(src, "points3d.ply")
+            if os.path.exists(ply):
+                continue
+            np.random.seed(seed)
+            num_pts = 100_000
+            xyz = np.random.random((num_pts, 3)) * 2.6 - 1.3
+            shs = np.random.random((num_pts, 3)) / 255.0
+            storePly(ply, xyz, SH2RGB(shs) * 255)
+            print(f"  seed {seed}: drew {num_pts} initial points for {scene}", flush=True)
+
+
+if any(sd != 0 for sd in SEEDS):
+    import shutil  # noqa: E402
+    pregenerate_inits()
+
+
+jobs = [(arm, scene, seed) for seed in SEEDS for scene in SCENES
+        for arm in ("A", "B")]
 lock = threading.Lock()
 queue_idx = [0]
 
@@ -251,11 +319,11 @@ def worker(gpu):
         with lock:
             if queue_idx[0] >= len(jobs):
                 return
-            arm, scene = jobs[queue_idx[0]]
+            arm, scene, seed = jobs[queue_idx[0]]
             queue_idx[0] += 1
-        key = f"{arm}/{scene}"
+        key = f"{arm}/{scene}" + ("" if seed == 0 else f"/s{seed}")
         try:
-            done[key] = run_one(gpu, arm, scene)
+            done[key] = run_one(gpu, arm, scene, seed)
         except Exception as e:
             failed[key] = f"{type(e).__name__}: {e}"[:600]
             traceback.print_exc()
@@ -288,7 +356,7 @@ for path in (f"{WORK}/multi-scale", f"{WORK}/armA/.git", f"{WORK}/armB/.git",
         __import__("shutil").rmtree(path, ignore_errors=True)
 print(f"working dir after prune: {kc.du(WORK)} MB", flush=True)
 
-print(f"completed {len(done)}/{2 * len(SCENES)} jobs; failed: {list(failed)}", flush=True)
+print(f"completed {len(done)}/{2 * len(SCENES) * len(SEEDS)} jobs; failed: {list(failed)}", flush=True)
 print("R1_SUMMARY_JSON=" + json.dumps(summary))   # marker name kept for the pusher
 if failed:
     raise SystemExit(f"{len(failed)} job(s) failed — see the table above.")

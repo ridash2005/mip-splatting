@@ -50,7 +50,14 @@ def main():
     # Drop the cached initial point cloud so this seed draws its own. Only for a
     # non-zero seed: seed 0 must stay bit-identical to a plain train.py run, so
     # the R5 sweep is anchored to the R1/R2 numbers rather than to a fresh draw.
-    if SEED:
+    #
+    # BTP_KEEP_INIT=1 suppresses this. A sweep runs both arms of one (scene,
+    # seed) concurrently on two GPUs, and both would race to delete and rewrite
+    # the same file -- one could read a half-written PLY, and the two arms would
+    # no longer share an initialisation, which is the whole point of pairing
+    # them. The rung kernel therefore pre-generates each seed's point cloud
+    # serially into its own source directory and sets this.
+    if SEED and os.environ.get("BTP_KEEP_INIT") != "1":
         try:
             i = sys.argv.index("-s")
         except ValueError:

@@ -1,0 +1,203 @@
+\chapter{Method I --- the sampling-geometry band-limit}
+\label{ch:method1}
+
+\section{The estimation problem}
+Regard the position $p_k$ of a primitive as a parameter to be estimated from
+image measurements. Camera $n$ observes the primitive's projection at
+\begin{equation}
+  u_n \;=\; \pi_n(p_k) + \varepsilon_n,\qquad
+  \varepsilon_n \sim \mathcal{N}(0,\Sigma_{\mathrm{pix}}),\quad
+  \Sigma_{\mathrm{pix}} = \sigma_{\mathrm{pix}}^2 I_2 ,
+  \label{eq:measurement}
+\end{equation}
+where $\sigma_{\mathrm{pix}}$ is the localisation noise of an image feature, in
+pixels. The log-likelihood of the measurement from view $n$ is, up to constants,
+$-\tfrac12 (u_n-\pi_n(p))^{\!\top}\Sigma_{\mathrm{pix}}^{-1}(u_n-\pi_n(p))$.
+
+\section{The measurement Jacobian is already computed}
+\label{sec:jacobian}
+The Fisher information carried by view $n$ about $p$ is
+\begin{equation}
+  I_n \;=\; \Big(\frac{\partial \pi_n}{\partial p}\Big)^{\!\top}
+            \Sigma_{\mathrm{pix}}^{-1}
+            \Big(\frac{\partial \pi_n}{\partial p}\Big),
+  \qquad \frac{\partial \pi_n}{\partial p} = J_n W_n .
+  \label{eq:fisher-view}
+\end{equation}
+The derivative of image position with respect to world position is the EWA pair
+of Equation~\eqref{eq:ewa}. \emph{No new geometry is introduced}: the quantity
+the renderer forms to project a covariance is the same quantity estimation
+theory requires to bound a position. This identification is the technical core
+of the thesis, and it is what makes the method cheap.
+
+\paragraph{Rank.} $J_nW_n \in \mathbb{R}^{2\times3}$, so $I_n$ has rank at most
+$2$. A single view constrains the two directions transverse to the ray and says
+nothing about depth. For a pinhole camera the eigenvalues of $I_n$ are exactly
+$(0,\ (f/z)^2/\sigma_{\mathrm{pix}}^2,\ (f/z)^2/\sigma_{\mathrm{pix}}^2)$
+(Appendix~\ref{app:rank}). Depth information exists only through parallax.
+
+\section{Accumulation and the bound}
+\label{sec:accumulation}
+Summing over views, weighted by each view's visibility and blending contribution
+$w_{nk}$ --- which the rasteriser already accumulates ---
+\begin{equation}
+  \Lambda_k \;=\; \sum_n w_{nk}\,(J_nW_n)^{\!\top}\Sigma_{\mathrm{pix}}^{-1}(J_nW_n)
+  \;=\; V\,\mathrm{diag}(\lambda_1,\lambda_2,\lambda_3)\,V^{\!\top}.
+  \label{eq:lambda}
+\end{equation}
+By the Cram\'er--Rao bound, any unbiased estimator of $p_k$ satisfies
+$\mathrm{Cov}(\hat p_k) \succeq \Lambda_k^{-1}$. Along eigendirection $i$, the
+position is determined to no better than a standard deviation
+$1/\sqrt{\lambda_i}$.
+
+\keybox{principle}{%
+A primitive should not be narrower, along a given direction, than the
+uncertainty with which the capture determines its position along that direction.
+Structure finer than $s/\sqrt{\lambda_i}$ is not identifiable from the
+measurements; fitting it is fitting noise.}
+
+\section{The filter}
+Hence a per-direction variance, floored at Mip-Splatting's own value and capped
+at a scene-scale fraction:
+\begin{equation}
+  \sigma_i^2 \;=\; \min\!\Big(\max\big(f_k^2,\ s^2/\lambda_i\big),\ (\beta z_{\min,k})^2\Big),
+  \label{eq:filtervar}
+\end{equation}
+\begin{equation}
+  \Sigma_{\mathrm{filt}} = V\,\mathrm{diag}(\sigma_1^2,\sigma_2^2,\sigma_3^2)\,V^{\!\top};
+  \quad \Sigma_k \leftarrow \Sigma_k + \Sigma_{\mathrm{filt}};
+  \quad \alpha_k \leftarrow \alpha_k\sqrt{|\Sigma_k|/|\Sigma_k+\Sigma_{\mathrm{filt}}|}.
+  \label{eq:filter}
+\end{equation}
+Two hyperparameters are introduced and none removed. $s$ is a confidence
+scaling, default $1$ (one standard deviation). $\beta$ caps the filter in
+degenerate directions where $\lambda_i \to 0$; without it an unconstrained
+direction would produce an unbounded primitive. The opacity compensation is
+Mip-Splatting's own, unchanged.
+
+\paragraph{Consistency of the floor and the cap.} The floor must never exceed the
+cap, or Equation~\eqref{eq:filtervar} would be ill-posed. Requiring
+$f_k \le \beta z_{\min,k}$ and substituting Equation~\eqref{eq:mipfilter} gives
+$\beta \ge \sqrt{0.2}/f_{\max}$. For $f_{\max}\approx1000$\,px this is
+$\beta \ge 4.5\times10^{-4}$; the default $\beta=0.01$ carries $22\times$
+headroom.
+
+\section{Mip-Splatting is the one-view, lateral-only special case}
+\label{sec:proposition1}
+Take a single camera with focal length $f$ viewing a primitive at depth $z$ on
+the optical axis. From \S\ref{sec:jacobian} the lateral eigenvalue is
+$\lambda_{\mathrm{lat}} = (f/z)^2/\sigma_{\mathrm{pix}}^2$, so the
+estimation-limited lateral scale is $s/\sqrt{\lambda_{\mathrm{lat}}} =
+s\,\sigma_{\mathrm{pix}}\,z/f$.
+
+\begin{proposition}[Identification of the constant]
+\label{prop:constant}
+Mip-Splatting's 3D smoothing filter is exactly Equation~\eqref{eq:filtervar}
+evaluated for a single view, restricted to the lateral directions, and applied
+isotropically --- provided
+\[ s\cdot\sigma_{\mathrm{pix}} \;=\; \sqrt{0.2} \;\approx\; 0.447\ \text{pixels}. \]
+\end{proposition}
+
+Their constant is therefore not arbitrary: it encodes a sub-pixel localisation
+confidence of $0.447$\,px, slightly under half a pixel. The present method keeps
+that calibration and generalises the geometry around it. This is the strongest
+single argument in the thesis: it converts the relationship between the proposed
+method and its baseline from ``similar in spirit'' into ``the baseline is a
+corollary'', and it explains a magic number in a published paper.
+Appendix~\ref{app:prop1} gives the derivation in full.
+
+\section{The anisotropy, exactly}
+\label{sec:anisotropy}
+Consider two cameras at distance $z$, symmetric about the primitive, subtending
+a parallax angle $\theta$. Evaluating Equation~\eqref{eq:lambda}
+(Appendix~\ref{app:twoview}) gives the closed form
+\begin{equation}
+  \frac{\lambda_3}{\lambda_1} = \sin^2(\theta/2),
+  \qquad
+  \frac{\sigma_{\mathrm{depth}}}{\sigma_{\mathrm{lat}}} = \frac{1}{\sin(\theta/2)} .
+  \label{eq:anisotropy}
+\end{equation}
+This is exact, not asymptotic --- verified numerically against pinhole Jacobians
+at $\theta = 2^\circ, 6^\circ, 15^\circ, 45^\circ, 90^\circ$, agreeing to six
+significant figures (Table~\ref{tab:twoview}).
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\linewidth]{figures/fig5-fisher-geometry.pdf}
+  \caption{The mechanism. Cross-sections of the two filters in the plane of the
+  cameras, normalised to the same lateral extent because the floor makes them
+  agree there by construction. The whole difference is along depth. On a
+  one-sided arc the correct filter is $5.8\times$ longer along depth than
+  Mip-Splatting's isotropic ball; on a full orbit the two nearly coincide.
+  Geometry computed from real pinhole Jacobians, not drawn by hand.}
+  \label{fig:fisher}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.62\linewidth]{figures/fig6-anisotropy.pdf}
+  \caption{Where the method has room. Equation~\eqref{eq:anisotropy} plotted.
+  Mip-Splatting assumes the ratio is $1$ everywhere. At a $6^\circ$ cone it is
+  $19\times$; at $20^\circ$, $5.8\times$; even on a generous $75^\circ$ orbit it
+  is $1.6\times$. The gap between the curve and the line is the quantity this
+  thesis exploits, and it predicts the regime structure of the results before
+  any run.}
+  \label{fig:anisotropy}
+\end{figure}
+
+\begin{table}[htbp]
+  \centering
+  \caption{What Equation~\eqref{eq:anisotropy} predicts. A set of falsifiable
+  predictions, made before the experiments, and the reason the stress suite of
+  \S\ref{sec:stress} exists. A method that helped uniformly everywhere would
+  contradict its own derivation.}
+  \label{tab:regimes}
+  \small
+  \begin{tabular}{lccl}
+    \toprule
+    capture & $\theta$ & $\sigma_D/\sigma_L$ & expectation \\
+    \midrule
+    full orbit (standard benchmarks) & ${\sim}75^\circ$ & $1.6\times$ & parity --- the floor dominates \\
+    one-sided arc & ${\sim}20^\circ$ & $5.8\times$ & gain along depth \\
+    low-parallax cone & ${\sim}6^\circ$ & $19\times$ & largest gain \\
+    single view & $0^\circ$ & $\infty$ & cap $\beta$ binds; scene-scale prior \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\section{Exact reduction to the baseline}
+\label{sec:proposition2}
+
+\begin{proposition}[Exact reduction]
+\label{prop:reduction}
+If $s^2/\lambda_i \le f_k^2$ for every $i$, then Equation~\eqref{eq:filter} is
+identical to Mip-Splatting's Equation~\eqref{eq:mipfilter}.
+\end{proposition}
+
+\begin{proof}
+Under the hypothesis, and given $\beta \ge \sqrt{0.2}/f_{\max}$ so the cap does
+not bind, Equation~\eqref{eq:filtervar} gives $\sigma_i^2 = f_k^2$ for all $i$.
+Then $\Sigma_{\mathrm{filt}} = V(f_k^2 I)V^{\!\top} = f_k^2 VV^{\!\top} = f_k^2 I$,
+since $V$ is orthogonal. The opacity compensation of Equation~\eqref{eq:filter}
+then coincides with Equation~\eqref{eq:opacitycomp}.
+\end{proof}
+
+\paragraph{Consequence.} The filter never smooths \emph{less} than the baseline
+in any direction. Parity on well-conditioned benchmarks is therefore a
+structural property, not an empirical hope --- and a failure to achieve it is a
+bug, testable to numerical precision.
+
+This proposition is implemented as a unit test rather than left as prose: with
+the accumulation disabled the model must reproduce Mip-Splatting to $10^{-6}$,
+and with the filter zeroed entirely it must reproduce 3DGS. The second of these
+is already in force --- it \emph{is} the arm-B construction of
+\S\ref{sec:onecodebase}, and Chapter~\ref{ch:results} reports it verified on the
+saved models rather than asserted.
+
+\section{Cost}
+$\Lambda_k$ is a sum of $N$ outer products of a $2\times3$ matrix, followed by a
+$3\times3$ symmetric eigendecomposition per primitive. It is recomputed on the
+same schedule Mip-Splatting already uses for \texttt{filter\_3D} --- every 100
+iterations, roughly 290 times across a 30\,000-iteration run --- and never at
+render time. Rendering speed is therefore unchanged by construction, which is
+the answer to the first question a graphics audience will ask.

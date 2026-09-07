@@ -1,0 +1,128 @@
+\chapter{Results}
+\label{ch:results}
+
+\keybox{status, stated plainly}{%
+The baseline reproduction has been run and is reported below. The proposed
+method has \status{not} been implemented, and every cell that would report it is
+empty. The protocol, acceptance criteria, compute budget and decision gates were
+frozen before any run, so that a disappointing number later cannot be
+rationalised into a success. Every table and figure in this chapter regenerates
+from \texttt{results/runs.csv} by a single command; no number is typed into this
+document by hand.}
+
+\section{Pre-flight --- the twelve assertions}
+Nothing downstream is trustworthy unless the harness is. The twelve checks of
+the protocol's \S6 are executed by the run itself and reported by it; the table
+below is generated from the kernel's own JSON summary, not transcribed.
+
+\input{generated/table-preflight}
+
+Two of these deserve comment.
+
+\paragraph{Check 4.1 --- what actually makes arm B 3DGS.} The construction of
+\S\ref{sec:onecodebase} is an argument about source code, and an argument is not
+a measurement. \texttt{render.py} never recomputes the 3D filter: it reads
+\texttt{filter\_3D} back from the saved point cloud, which
+\texttt{save\_ply} writes as a per-primitive property. The saved model is
+therefore the artefact that decides whether arm B is really 3DGS. Read back
+directly from the point clouds, $\max|\texttt{filter\_3D}|$ is
+$\armBFilterMax$ for arm B and $\armAFilterMax$ for arm A. The reduction is
+exact, not approximate.
+
+\paragraph{Check 9 --- the per-scale mapping.} The count-weighted mean of the
+four recovered scale groups reproduces \texttt{metrics.py}'s pooled PSNR to
+within $0.01$\,dB on every scene of every run. Without this the four-column
+table would be an assumption about directory ordering rather than a
+measurement.
+
+\section{Table 1 --- baseline reproduction, Blender STMT}
+\label{sec:table1}
+
+\input{generated/table1-stmt}
+
+\input{generated/table-cost}
+
+\section{Table 2 --- Blender MTMT}
+\label{sec:table2}
+
+\input{generated/table2-mtmt}
+
+\section{Run-to-run spread (I-3)}
+\label{sec:spread}
+Parity is not a testable claim without a $\sigma$. Repeats of an identical
+configuration bound the harness's own nondeterminism --- CUDA atomics in the
+rasteriser accumulate in a non-deterministic order, so bit-identical inputs do
+not give bit-identical outputs.
+
+\input{generated/table-seedspread}
+
+The largest spread observed between repeats of one configuration is
+$\repeatSpread$\,dB. Read against L1's $\pm0.20$\,dB tolerance, this says the
+harness's own noise floor cannot by itself decide an L1 claim either way, which
+is the precondition for using these baselines as a control.
+
+\section{Cost, measured}
+\label{sec:measuredcost}
+The estimates in the protocol's \S7 were replaced by measurement at R0, on the
+same free-tier hardware every later rung uses: $\rZeroItersPerSec$ iterations per
+second on a Tesla T4, $\rZeroRenderFps$ rendered test views per second, and a
+peak of $\rZeroPeakVram$\,MB of VRAM. The last of these matters for scope: 16\,GB
+is nowhere near binding on the Blender scenes, so the compute envelope of
+\S\ref{ch:design} constrains the \emph{real} scenes and not these.
+
+\section{Table 3 --- the stress suite}
+\label{sec:table3}
+
+\begin{table}[htbp]
+  \centering
+  \caption{Where the claim lives. The predicted column is filled from
+  Equation~\eqref{eq:anisotropy} \emph{now}, before the method exists.
+  Agreement between the predicted and measured columns is the thesis's central
+  empirical result; disagreement in the full-orbit row is a bug, and
+  disagreement in the low-parallax row is a refutation.}
+  \label{tab:stress}
+  \small
+  \begin{tabular}{lccccc}
+    \toprule
+    protocol & $\theta$ & $\lambda_3/\lambda_1$ & Mip-S. PSNR & B1 PSNR & $\Delta$ predicted \\
+    \midrule
+    full orbit    & ${\sim}75^\circ$ & \notmeasured & \notmeasured & \notmeasured & $\approx 0$ \\
+    one-sided arc & ${\sim}20^\circ$ & \notmeasured & \notmeasured & \notmeasured & $> 0$ \\
+    low-parallax  & ${\sim}6^\circ$  & \notmeasured & \notmeasured & \notmeasured & $\gg 0$ \\
+    mixed focal   & ---              & \notmeasured & \notmeasured & \notmeasured & $> 0$ \\
+    grazing       & ---              & \notmeasured & \notmeasured & \notmeasured & $> 0$ \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\section{Table 4 --- B2, angular identifiability}
+\label{sec:table4}
+
+\begin{table}[htbp]
+  \centering
+  \caption{B2 configurations. Every measured cell is empty; the method is not
+  implemented.}
+  \label{tab:b2}
+  \small
+  \begin{tabular}{lcccc}
+    \toprule
+    configuration & PSNR & model MB & non-DC SH retained & mean $\ell_{\max}$ \\
+    \midrule
+    full degree 3 (baseline)      & \notmeasured & \notmeasured & $100\,\%$ & $3.0$ \\
+    magnitude pruning, matched size & \notmeasured & \notmeasured & \notmeasured & \notmeasured \\
+    B2 --- identifiability masking  & \notmeasured & \notmeasured & \notmeasured & \notmeasured \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\section{What these results do and do not establish}
+They establish a control. Both baselines now exist as this project's own
+measurements, on known hardware, from pinned commits, with the arm separation
+verified on the saved models rather than argued from source. Every later
+comparison is against these numbers and not against the published ones, which is
+the L3 discipline of Table~\ref{tab:levels}.
+
+They establish nothing about the proposed method, because it has not been run.
+The predictions in Tables~\ref{tab:stress} and \ref{tab:b2} were recorded before
+any measurement and are left standing, unmarked and unhedged, so that the
+comparison when it comes is not retrospective.

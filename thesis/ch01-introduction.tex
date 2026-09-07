@@ -1,0 +1,90 @@
+\chapter{Introduction --- the question, and why it is a signal-processing question}
+\label{ch:intro}
+
+A radiance field is reconstructed from a finite set of photographs. The
+photographs sample the scene non-uniformly: closer surfaces are sampled more
+densely than distant ones, some regions are seen from many directions and others
+from a narrow cone, and different cameras contribute different pixel footprints.
+Any reconstruction is therefore subject to a limit on resolvable detail, and
+that limit is a property of the capture, not of the representation chosen to
+hold it.
+
+The originators of NeRF understood this and said so. Their positional encoding
+uses $L$ frequency bands, and they set $L$ from, in their words, ``the maximum
+frequency present in the sampled input images''. That is the right instinct
+applied with the bluntest possible instrument: one scalar, chosen by hand, for
+an entire scene.
+
+3D Gaussian Splatting removed even that. Its authors state plainly that no
+regularisation is applied. A primitive may shrink without bound; nothing in the
+objective prevents it. The consequence is visible the moment the test sampling
+rate departs from the training one --- Section~\ref{sec:cost} quantifies it, in
+the published numbers at $15.64$\,dB and in our own reproduction at
+\StmtArmBDrop\,dB.
+
+Mip-Splatting restored a limit, and the restoration works. But the limit it
+restores is a single scalar per primitive, added in quadrature to all three axes
+of the covariance. This thesis asks what that scalar should have been, and
+answers that it should not have been a scalar at all.
+
+\section{The claim}
+
+\keybox{thesis}{%
+``The maximum frequency present in the sampled input images'' is not one number.
+It falls with depth; it differs across the ray from along it; and it varies over
+the sphere of directions. The accumulated sampling Fisher information is its
+local, directional generalisation. Floored at the per-view Nyquist limit, it
+reduces to Mip-Splatting exactly where the capture is well conditioned, and
+departs from it precisely where the capture is not.}
+
+\section{Why this belongs in an Electrical Engineering department}
+
+Stripped of its graphics vocabulary, the problem is reconstruction from
+non-uniform samples without a matched prefilter --- a classical
+signal-processing failure mode. The objects involved are familiar ones.
+
+\begin{table}[htbp]
+  \centering
+  \caption{The same objects, in two vocabularies.}
+  \small
+  \begin{tabular}{p{0.42\linewidth}p{0.5\linewidth}}
+    \toprule
+    graphics term & signal-processing object \\
+    \midrule
+    Anti-aliasing filter (2D Mip filter) & Reconstruction prefilter matched to the display sampling rate \\
+    3D smoothing filter & Prefilter matched to the \emph{acquisition} sampling rate \\
+    Primitive covariance $\Sigma_k$ & Support of a basis function in a non-orthogonal expansion \\
+    ``Too many small Gaussians'' & Over-parameterisation relative to the information in the measurements \\
+    Floaters and depth artefacts & Fitting components along directions the data does not constrain \\
+    Spherical-harmonic view dependence & Basis expansion whose Gram matrix may be rank-deficient \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+The contribution is to compute the acquisition-side prefilter from estimation
+theory rather than choosing it, and to make it anisotropic because the
+information is.
+
+\section{Contributions}
+
+\begin{enumerate}[leftmargin=1.4em,itemsep=2pt]
+  \item A derivation of the per-primitive, per-direction band-limit from the
+        Fisher information of the capture geometry, using the same Jacobian the
+        renderer already forms (\S\ref{sec:jacobian}--\S\ref{sec:accumulation}).
+  \item A proof that Mip-Splatting's scalar filter is the single-view,
+        lateral-only, isotropised special case, with its constant $\sqrt{0.2}$
+        identified as $s\,\sigma_{\mathrm{pix}} = 0.447$\,px
+        (\S\ref{sec:proposition1}).
+  \item An exact expression for the anisotropy,
+        $\sigma_{\mathrm{depth}}/\sigma_{\mathrm{lat}} = 1/\sin(\theta/2)$, which
+        predicts where the method must help and where it must not
+        (\S\ref{sec:anisotropy}).
+  \item An exact-reduction theorem making parity on well-conditioned benchmarks
+        structural (\S\ref{sec:proposition2}).
+  \item An angular identifiability criterion for spherical-harmonic
+        coefficients --- 76\,\% of the model (Chapter~\ref{ch:method2}).
+  \item A verified, executed reproduction of both baselines on free compute,
+        with the twelve pre-flight assertions and the per-scale recovery that
+        the shipped pipeline cannot produce (Chapters~\ref{ch:design} and
+        \ref{ch:results}).
+\end{enumerate}

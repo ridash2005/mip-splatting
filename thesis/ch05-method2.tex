@@ -1,0 +1,39 @@
+\chapter{Method II --- angular identifiability of spherical harmonics}
+\label{ch:method2}
+
+The same argument applies on the sphere of directions. Each primitive carries
+view-dependent colour as spherical harmonics to degree $3$: $16$ coefficients per
+channel, $48$ floats, against $11$ for position, scale, rotation and opacity
+combined. Non-DC spherical harmonics are $45$ of $59$ floats --- $76\,\%$ of the
+model. They are fitted from however many directions happen to see the primitive,
+which may be very few.
+
+Let $y(d)$ be the vector of SH basis functions evaluated at direction $d$. The
+angular Gram matrix accumulated over views is
+\begin{equation}
+  A_k \;=\; \sum_n w_{nk}\, y(d_{nk})\, y(d_{nk})^{\!\top}.
+  \label{eq:gram}
+\end{equation}
+A coefficient block is determinable only where the corresponding block of $A_k$
+is well conditioned. The criterion is to retain degree $\ell$ for primitive $k$
+only where
+\begin{equation}
+  \ell_{\max}(k) \;=\; \max\big\{\, \ell \;:\; \lambda_{\min}\big(A_k(\ell)\big) > \tau \,\big\},
+  \label{eq:lmax}
+\end{equation}
+and to mask higher degrees to zero. A primitive seen from three directions
+cannot support degree $3$; fitting it produces coefficients that encode noise
+and, worse, produce visible artefacts under novel views that fall outside the
+observed cone.
+
+\keybox{why this is a separate contribution, not a footnote}{%
+B2 is independent of B1. It survives even if the floor-occupancy diagnostic of
+\S\ref{sec:instruments} kills the positional band-limit: the two share a
+principle --- do not fit what the capture does not determine --- but not a
+mechanism, and not a failure mode. B2 also carries a memory result that B1 does
+not, since masked coefficients need not be stored.}
+
+\paragraph{Status.} B2 is derived and specified here; it is
+\status{not yet implemented}. Table~\ref{tab:b2} in Chapter~\ref{ch:results}
+records the configurations it will be measured against, with every measured cell
+empty. The handbook schedules the implementation for W9--W10.

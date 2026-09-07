@@ -1,0 +1,63 @@
+\chapter{Plan, deliverables and reproducibility}
+\label{ch:plan}
+
+\section{Schedule}
+\begin{table}[htbp]
+  \centering
+  \caption{Plan and exit criteria. Rows above the rule are complete.}
+  \label{tab:schedule}
+  \small
+  \begin{tabular}{lp{0.42\linewidth}p{0.34\linewidth}}
+    \toprule
+    week & work & exit \\
+    \midrule
+    W1 & Accounts and quotas; data republished as private datasets; the twelve pre-flight assertions; R0. Literature due-diligence begun. & \textbf{done.} Gates G0, G1. Measured throughput replaced the estimates. \\
+    W2 & R1 and R2, both arms. I-1 attached. Due-diligence continues while runs are queued. & Gate G2. Figure~\ref{fig:degradation} redrawn from our own data; floor histograms. \\
+    \midrule
+    W3 & R5 and R3. I-2 on trained checkpoints --- pure PyTorch. Derivation work in parallel; needs no GPU. & Gates G3, G4. $\sigma$ table; $\Lambda$ conditioning plots. \\
+    W4 & Stress suite constructed from existing images. & Four protocols versioned. \\
+    W5--W6 & Implement $\Lambda$ accumulation; the exact-reduction unit test; wire $\Sigma_{\mathrm{filt}}$ into the covariance path. & reduction test passes to $10^{-6}$; trains to 30\,K without divergence. \\
+    W7--W9 & B1 evaluation across the stress suite; ablations. Mid-term seminar in W8, opening on the I-2 figure. & Table~\ref{tab:stress} populated with measured deltas. \\
+    W10--W13 & B2 implementation and ablation; efficiency curves; writing. R4 as optional overflow. & Autumn report; Table~\ref{tab:b2} populated. \\
+    Spring & B3 sampling-aware densification (stretch); pose-noise sensitivity; variable-length SH storage; paper draft. & thesis and submission. \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\section{Reproducibility artefacts}
+\begin{table}[htbp]
+  \centering
+  \caption{What exists, and what each artefact is for.}
+  \small
+  \begin{tabular}{lp{0.62\linewidth}}
+    \toprule
+    artefact & purpose \\
+    \midrule
+    \texttt{results/runs.csv} & Append-only. One row per (arm, scene, test-scale, seed), carrying both repository commits, LPIPS backbone, resolution flag, peak VRAM, primitive count, wall-clock and the claimed acceptance level. Every table and figure regenerates from it. \\
+    \texttt{tools/make\_tex.py} & Writes every measured table and every inline number in this document. A table with no measured rows is emitted as an explicit placeholder carrying the published targets and nothing in the measured columns; it is never quietly filled from the published column. \\
+    \texttt{tools/make\_figures.py} & Generates every figure. In \texttt{--mode measured} it redraws from the CSV with the published curve retained as a faint reference, and refuses to run if the CSV has no usable rows. \\
+    \texttt{tools/split\_by\_scale.py} & Recovers the per-scale columns that the shipped evaluation pipeline blends into a single average. Without it there is no multi-scale table. \\
+    \texttt{tools/selftest\_pipeline.py} & Runs the whole reporting chain against a fixture with planted, known-in-advance answers, on a machine with no GPU. It is what caught the two silent defects described below. \\
+    \texttt{kaggle/*.py} & The rung kernels, each printing every assertion it makes and ending in a single machine-readable summary line. \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\paragraph{Two defects the self-test caught, and why they matter here.} The
+figure generator's ``measured'' mode was drawing the \emph{published} curve under
+a measured filename, because \texttt{runs.csv} stores the method as
+\texttt{3dgs} while the figures key off \texttt{3DGS}: every lookup missed, the
+non-empty guard still passed, and the output was a plausible-looking lie. Second,
+the per-scale splitter assumed a JSON nesting that \texttt{metrics.py} does not
+write, which would have failed only after both arms had trained. Neither would
+have raised an error where it happened. They are recorded here because a
+reproducibility claim that has never been tested against a fixture with known
+answers is an assertion, not a property.
+
+\section{Licence}
+3DGS is released under the Gaussian-Splatting License of Inria and the Max Planck
+Institut f\"ur Informatik: royalty-free for research and evaluation purposes
+only, redistribution must carry the licence and retain all notices, no commercial
+use without prior consent. Mip-Splatting follows it. This project is squarely
+within permitted use; any code release must ship the licence text, and no dataset
+contents are redistributed.

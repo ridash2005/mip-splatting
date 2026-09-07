@@ -1,0 +1,36 @@
+3D Gaussian Splatting reconstructs a radiance field from a finite, non-uniform
+set of camera samples, but places no limit on how small a primitive may become.
+Mip-Splatting supplies one: a scalar variance floor per primitive,
+$f_k^2 = 0.2\,(d_{\min}/f_{\max})^2$, added in quadrature to all three axes.
+This work argues that the correct limit is neither scalar nor isotropic.
+Treating primitive position as a parameter estimated from noisy image
+measurements, the accumulated sampling Fisher information
+\[
+  \Lambda_k \;=\; \sum_n w_{nk}\,(J_nW_n)^{\!\top}\,\Sigma_{\mathrm{pix}}^{-1}\,(J_nW_n)
+\]
+gives, by the Cram\'er--Rao bound, a direction-dependent floor on how precisely
+the capture localises that primitive.
+
+We prove three things. First, Mip-Splatting's filter is exactly the
+single-view, lateral-only, isotropised special case of this expression, and its
+constant $\sqrt{0.2}$ is precisely the product $s\,\sigma_{\mathrm{pix}}$ --- a
+confidence radius of $0.447$ pixels. Second, for two views subtending a parallax
+angle $\theta$ at the primitive, the ratio of depth to lateral uncertainty is
+exactly $1/\sin(\theta/2)$, so a scalar filter under-smooths along depth by
+$5.8\times$ on a $20^\circ$ arc and by $19\times$ on a $6^\circ$ cone, while
+approaching correctness on a full orbit. Third, flooring the anisotropic filter
+at Mip-Splatting's own value makes the method reduce to that baseline exactly
+when the floor dominates, so parity on well-conditioned benchmarks is a
+structural guarantee rather than an empirical hope. We additionally propose a
+per-primitive angular identifiability criterion that masks spherical-harmonic
+coefficients the capture cannot determine --- 76\,\% of the model's parameters.
+
+\medskip
+\keybox{status of this version}{%
+Both baselines have been reproduced end to end on free compute, and the
+reproduction is the subject of Chapter~\ref{ch:results}: the twelve pre-flight
+assertions, Table~\ref{tab:stmt}, the cost measurements and the run-to-run
+spread are measured results of this project. The proposed method (B1, B2) is
+derived and specified but \status{not yet implemented}; every cell that would
+report it is deliberately empty, and the predictions recorded against those
+cells were frozen before any run.}

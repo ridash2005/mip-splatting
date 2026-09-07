@@ -1,0 +1,69 @@
+\chapter{The gap --- where the band-limit lives in each method}
+\label{ch:gap}
+
+\section{Where the band-limit lives}
+
+\begin{table}[htbp]
+  \centering
+  \caption{The same quantity --- the finest structure the capture can determine
+           --- estimated with successively more of the available geometry.}
+  \small
+  \begin{tabular}{p{0.2\linewidth}p{0.24\linewidth}p{0.26\linewidth}p{0.2\linewidth}}
+    \toprule
+    method & where the limit lives & how it is set & granularity \\
+    \midrule
+    NeRF (2020) & positional-encoding band $L$ & by hand, from ``the maximum frequency present in the sampled input images'' & one scalar, whole model \\
+    3DGS (2023) & nowhere & not set --- no regularisation is applied & absent \\
+    Mip-Splatting (2024) & variance added to the covariance & $f_k^2$ from nearest depth and largest focal, $s=0.2$ & one scalar per primitive \\
+    \textbf{this work} & covariance added to the covariance, floored at the above & accumulated sampling Fisher information & per primitive, per direction \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+The progression is not a sequence of unrelated tricks. NeRF used none of the
+geometry beyond a global glance at the images; 3DGS used none at all;
+Mip-Splatting used one view's worth; this work uses all of it.
+
+\section{What the missing limit costs}
+\label{sec:cost}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\linewidth]{figures/fig1-scale-degradation.pdf}
+  \caption{The failure the band-limit prevents. Blender synthetic, mean PSNR,
+  from Mip-Splatting Tables 1--2 (faint dashed) with this project's own
+  reproduction overlaid where measured. \emph{Left:} trained at one scale,
+  tested at four. 3DGS loses $15.64$\,dB in the published numbers as the test
+  sampling rate departs from the training rate, because primitives have shrunk
+  below what any view resolves; Mip-Splatting loses $4.69$\,dB. \emph{Right:}
+  when the training set already spans all four scales, 3DGS partly recovers but
+  still trails everywhere --- the representation absorbs the scale mismatch into
+  the fit rather than into a prefilter.}
+  \label{fig:degradation}
+\end{figure}
+
+The left panel is the experiment this project inherits, and its magnitude is the
+reason the direction is worth pursuing: an $11$\,dB gap between a method with a
+band-limit and a method without one says the band-limit is doing most of the
+work. The question is then whether the \emph{right} band-limit does more.
+Chapter~\ref{ch:results} reports this project's own measurement of the same
+quantity, which is the control for everything that follows.
+
+\section{The three specific defects of the scalar filter}
+\label{sec:defects}
+
+\begin{enumerate}[leftmargin=1.4em,itemsep=3pt]
+  \item \textbf{It ignores parallax.} $f_k$ depends on one view. A primitive seen
+        from fifty directions is assigned the same limit as one seen from a single
+        direction at the same distance, although the former is far better
+        localised.
+  \item \textbf{It is isotropic.} The lateral limit is applied along depth, where
+        a single view supplies no constraint at all.
+        Section~\ref{sec:anisotropy} shows this under-smooths depth by a factor
+        $1/\sin(\theta/2)$.
+  \item \textbf{It mixes cameras.} $d_{\min}$ and $f_{\max}$ come from different
+        views, so the quotient corresponds to no physical pixel footprint. The
+        repository itself carries the comment
+        \texttt{\#TODO consider focal length and image width} on the current
+        branch.
+\end{enumerate}

@@ -68,12 +68,18 @@ def _clean(ax, ygrid=True):
     if ygrid:
         ax.yaxis.grid(True); ax.xaxis.grid(False)
 
+# LaTeX embeds PDF; the web/report path uses SVG. Both are written so the two
+# consumers never drift apart.
+FORMATS = ["svg", "pdf"]
+
+
 def _save(fig, out, name):
     os.makedirs(out, exist_ok=True)
-    p = os.path.join(out, name + ".svg")
-    fig.savefig(p, bbox_inches="tight", pad_inches=0.02)
+    for ext in FORMATS:
+        p = os.path.join(out, f"{name}.{ext}")
+        fig.savefig(p, bbox_inches="tight", pad_inches=0.02)
+        print("wrote", p)
     plt.close(fig)
-    print("wrote", p)
 
 # ------------------------------------------------------- published reference data
 # Source: Mip-Splatting (Yu et al., CVPR 2024), arXiv:2311.16493.
@@ -385,10 +391,13 @@ def main():
     ap.add_argument("--mode", choices=["published", "measured"], default="published")
     ap.add_argument("--runs", default="results/runs.csv")
     ap.add_argument("--out",  default="figures")
+    ap.add_argument("--formats", default="svg,pdf",
+                    help="comma-separated output formats (pdf is what LaTeX embeds)")
     ap.add_argument("--iterations", type=int, default=30000,
                     help="only average rows from runs of this length (default 30000, "
                          "the R1/R2 target). Pass 7000 to draw the R0 smoke rows.")
     a = ap.parse_args()
+    FORMATS[:] = [x.strip() for x in a.formats.split(",") if x.strip()]
     measured = load_runs(a.runs, a.iterations) if a.mode == "measured" else None
     if a.mode == "measured" and not measured:
         raise SystemExit(

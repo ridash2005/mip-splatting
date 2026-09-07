@@ -1,0 +1,54 @@
+\chapter{Background --- image formation, NeRF, 3DGS, EWA splatting, Mip-Splatting}
+\label{ch:background}
+
+\section{Image formation}
+Both baselines assume the same emission--absorption model. Along a ray
+$r(t)=o+td$ with density $\sigma$ and colour $c$, the rendered radiance is
+\begin{equation}
+  C \;=\; \int T(t)\,\sigma(r(t))\,c(r(t),d)\,\mathrm{d}t,
+  \qquad T(t)=\exp\!\Big(-\!\int_0^t\!\sigma\,\mathrm{d}u\Big).
+\end{equation}
+Discretised, this is the $\alpha$-blending sum both methods use. 3DGS states the
+equivalence between its $\alpha$-blending and NeRF's ray marching directly; the
+two differ in how the field is parameterised and evaluated, not in what is being
+rendered. This is what allows a single argument to span both.
+
+\section{NeRF and its explicit band-limit}
+NeRF stores the field in an MLP applied to a positional encoding $\gamma(x)$ with
+$L$ frequency bands. The MLP's spectral bias means the encoding band sets the
+finest structure representable. The authors set $L$ by hand from the input
+images. The band-limit is therefore present, explicit, global, and manually
+chosen --- one scalar for the entire scene.
+
+\section{3DGS and EWA splatting}
+3DGS represents the field as anisotropic Gaussians with mean $p_k$ and covariance
+$\Sigma_k = RSS^{\!\top}R^{\!\top}$. Projection follows EWA volume splatting: with
+viewing transform $W_n$ and the Jacobian $J_n$ of the affine approximation to the
+projective map,
+\begin{equation}
+  \Sigma' \;=\; J_n W_n \,\Sigma_k\, W_n^{\!\top} J_n^{\!\top}.
+  \label{eq:ewa}
+\end{equation}
+This pair $(J_n, W_n)$ is the object Chapter~\ref{ch:method1} reuses. No
+regularisation is applied to $\Sigma_k$; nothing bounds how small a primitive
+may become.
+
+\section{Mip-Splatting}
+Mip-Splatting adds two filters. The 2D Mip filter is a render-side
+reconstruction prefilter matched to the display sampling rate, and this work does
+not change it. The 3D smoothing filter is the acquisition-side limit at issue
+here: a scalar variance
+\begin{equation}
+  f_k^2 \;=\; 0.2\,\Big(\frac{d_{\min,k}}{f_{\max}}\Big)^{\!2},
+  \qquad \Sigma_k \leftarrow \Sigma_k + f_k^2 I,
+  \label{eq:mipfilter}
+\end{equation}
+with $d_{\min,k}$ the smallest depth at which any camera sees primitive $k$ and
+$f_{\max}$ the largest focal length over cameras, taken independently. The
+opacity is compensated so that total mass is preserved under the convolution,
+\begin{equation}
+  \alpha_k \leftarrow \alpha_k\sqrt{|\Sigma_k| \,/\, |\Sigma_k + f_k^2 I|}.
+  \label{eq:opacitycomp}
+\end{equation}
+Equations~\eqref{eq:mipfilter} and \eqref{eq:opacitycomp} are the baseline this
+thesis generalises, and Proposition~\ref{prop:reduction} recovers them exactly.

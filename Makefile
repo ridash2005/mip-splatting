@@ -1,7 +1,7 @@
 RUNS   := results/runs.csv
 FIGDIR := figures
 
-.PHONY: selftest sync-armb table1 table2 figures figures-published report clean-figures
+.PHONY: selftest sync-armb table1 table2 figures figures-published report thesis clean-figures clean-thesis
 
 # The reporting chain, verified against a fixture with known answers. Needs no
 # GPU, so it runs on the dev machine as well as inside the Kaggle kernel.
@@ -36,6 +36,22 @@ OUT     ?= results/R0-report.md
 
 report:
 	python tools/report_rung.py $(SUMMARY) --md $(OUT)
+
+
+# The thesis. Regenerates every measured table and every inline number from
+# results/runs.csv first, so the document's claim that no number in it is typed
+# by hand is enforced by the build rather than asserted in the text.
+# Three passes: labels, then references, then the table of contents.
+thesis:
+	python tools/make_tex.py --runs $(RUNS) --out thesis/generated
+	python tools/make_figures.py --mode published --out thesis/figures
+	cd thesis && pdflatex -interaction=nonstopmode main.tex >/dev/null
+	cd thesis && pdflatex -interaction=nonstopmode main.tex >/dev/null
+	cd thesis && pdflatex -interaction=nonstopmode main.tex | grep -E "^!|Reference .* undefined" || true
+	@echo "--> thesis/main.pdf"
+
+clean-thesis:
+	rm -f thesis/*.aux thesis/*.log thesis/*.out thesis/*.toc thesis/main.pdf
 
 # Target-only reference figures (published numbers, never our measurements).
 # Kept separate so `make figures` can never be satisfied by them.

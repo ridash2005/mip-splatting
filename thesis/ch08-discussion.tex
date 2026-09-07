@@ -1,0 +1,81 @@
+\chapter{Discussion, limitations, and what would falsify this}
+\label{ch:discussion}
+
+\section{What would falsify the thesis}
+
+\begin{table}[htbp]
+  \centering
+  \caption{The gates, and the response to each. Written before the runs.}
+  \label{tab:gates}
+  \small
+  \begin{tabular}{lp{0.34\linewidth}p{0.44\linewidth}}
+    \toprule
+    gate & observation that would refute & response \\
+    \midrule
+    G3 & I-1 shows the Nyquist floor exceeds the estimation term on nearly every primitive in every scene & by Proposition~\ref{prop:reduction} the method is the baseline everywhere. Narrow the claim to mixed-focal and one-sided regimes, or pivot to B2, which this result does not touch. Cost of learning it in week 2: two weeks. In March: the project. \\
+    G4 & I-2 shows $\lambda_3/\lambda_1 \approx 1$ on every protocol, including the narrow cone & Equation~\eqref{eq:anisotropy} would be contradicted by measurement, which would indicate an error in the visibility weighting $w_{nk}$ rather than in the geometry. Diagnose before proceeding. \\
+    --- & Table~\ref{tab:stress}'s full-orbit row shows a loss against Mip-Splatting & a bug, not a result: Proposition~\ref{prop:reduction} forbids it. The filter never smooths less than the baseline in any direction. \\
+    --- & Table~\ref{tab:stress} shows uniform gains across all protocols & also suspicious. The derivation predicts a regime structure; uniform improvement would suggest the comparison is not controlled. \\
+    --- & prior work has already made the 3D filter anisotropic or per-direction & the only finding that invalidates the project outright, and the reason the literature due-diligence is scheduled in week 1--2, when it costs nothing, rather than in March. \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\section{Limitations, stated rather than discovered}
+
+\paragraph{First-order approximation.} $\Lambda_k$ is evaluated at the primitive
+centre using the affine approximation of the projective map --- the same
+linearisation 3DGS makes for the EWA transform. It is consistent with the
+renderer; a second-order correction is an ablation, not a fix.
+
+\paragraph{A point-feature likelihood for a volumetric primitive.}
+Equation~\eqref{eq:measurement} models the localisation of a point. Real
+primitives are extended and semi-transparent, so $\Lambda$ is a proxy for the
+photometric information rather than a derivation from it. This is expected to
+degrade in textureless regions, where the point-feature model is worst, and that
+is a named limitation with a figure.
+
+\paragraph{Pose noise.} $\Lambda$ inherits 3DGS's complete trust in SfM poses.
+Because it aggregates over many views, graceful degradation is expected; the
+pose-perturbation experiment tests it rather than assuming it.
+
+\paragraph{Compute.} 16\,GB against a stated requirement of 24\,GB removes the
+five Mip-NeRF 360 outdoor scenes from the L1 claim. Measured peak VRAM on the
+Blender scenes is $\rZeroPeakVram$\,MB, so the constraint does not bind there ---
+it binds on the real scenes, and the scene count shrinks accordingly. The three
+arguments that carry the thesis --- the exact reduction, the stress suite and the
+floor diagnostic --- are all resolution-independent, so the argument survives.
+
+\paragraph{$\beta$ is a prior, not an estimate.} Where the capture constrains a
+direction not at all, no amount of estimation theory supplies a scale; $\beta$
+imports one. If $\beta$ binds widely, the honest conclusion is that the
+estimation limit exceeds what is useful there, and the claim narrows accordingly.
+
+\section{Anticipated questions}
+
+\begin{table}[htbp]
+  \centering
+  \caption{Questions a viva will ask, and the answers.}
+  \small
+  \begin{tabular}{p{0.36\linewidth}p{0.56\linewidth}}
+    \toprule
+    question & answer \\
+    \midrule
+    Is this Mip-Splatting with more parameters? & It adds two and removes none, and it replaces a scalar chosen from one view with a matrix computed from all of them. By Proposition~\ref{prop:reduction} it reduces to Mip-Splatting exactly when the floor dominates --- a unit test in the repository, not a claim. \\
+    Why Fisher information rather than ``resolution''? & Per-view precisions add, and Fisher information is the object that adds. It also carries the right rank structure: one view contributes rank 2, so depth resolution appears only once there is baseline. \\
+    You are smoothing --- does that not lose detail? & Never below the floor, which is the baseline's own limit, so lateral detail is untouched by construction. Extra smoothing appears only along unconstrained directions. Training PSNR is expected to fall slightly and held-out PSNR to rise; both are reported. \\
+    More views make the filter smaller. Is the anti-aliasing limit not set by the sharpest view alone? & Two filters are in play. The render-side anti-alias filter is set by the sharpest sampling rate --- that is Mip-Splatting's 2D Mip filter, unchanged here. The representation-side limit is an estimation question and genuinely improves with parallax. Conflating them is the error in the scalar 3D filter; the floor keeps them separate. \\
+    Did you slow rendering down? & No. The filter changes covariance values, not the rasterisation algorithm, and $\Lambda$ is recomputed ${\sim}290$ times across training, never at render time. Measured fps is in Table~\ref{tab:cost}. \\
+    Where does it fail? & Captures so degenerate that $\beta$ binds everywhere, where the filter degenerates to a scene-scale prior; and textureless regions, where the point-feature likelihood poorly models the photometric one. Both are in the limitations section with figures. \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\section{Relationship to the prior course project}
+The EE60030 course project (April 2026) argued that 3DGS is sharper than NeRF
+because it escapes the MLP's spectral bias. That is correct and incomplete: 3DGS
+removed the filter and put nothing in its place. This thesis supplies what should
+have replaced it. One correction to that report carries forward --- its Table 3
+values are 3DGS Figure 1, a single scene, not Table 1 dataset averages; the
+``${\sim}30$\,s/frame'' NeRF figure in it is correct and verbatim from the NeRF
+paper.

@@ -1,0 +1,139 @@
+\chapter{Experimental design}
+\label{ch:design}
+
+The full protocol, verified against repository source, is the companion document
+\emph{Baseline Reproduction Protocol \& Report v3}
+(\texttt{docs/REPRODUCTION-PROMPT.md} in the code repository). This chapter
+states the design; that document states the commands.
+
+\section{Compute envelope and what it forbids}
+Free tier: Kaggle $2\times$T4, 16\,GB each, compute capability 7.5. 3DGS states
+that 24\,GB is required for paper-quality training, so numerical identity with
+the published tables is unavailable for the largest scenes. Three acceptance
+levels are declared in advance.
+
+\begin{table}[htbp]
+  \centering
+  \caption{Acceptance levels, declared before any run.}
+  \label{tab:levels}
+  \small
+  \begin{tabular}{llp{0.42\linewidth}l}
+    \toprule
+    level & claim & criterion & where attainable \\
+    \midrule
+    L1 & numerical reproduction & mean PSNR within $0.20$\,dB, SSIM $0.005$, LPIPS(VGG) $0.010$ of published, at the paper's resolution, iterations and split & Blender synthetic \\
+    L2 & phenomenon reproduction & the claimed effect reappears with correct sign, ordering and order of magnitude under a stated deviation & everywhere \\
+    L3 & harness parity & own re-run baselines are the control for all method comparisons; published numbers cited, never used as the control & everywhere; governs the thesis tables \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+L3 is standard practice: 3DGS itself marks its Mip-NeRF 360 row as copied and
+reports its own re-run separately ($27.58$ against the copied $27.69$). An
+independent prior on implementation identity is the ${\sim}0.6$\,dB spread
+between faithful splatting implementations on the same benchmark --- three times
+the L1 tolerance.
+
+\section{Reproduction, and the single-codebase decision}
+\label{sec:onecodebase}
+Both baselines run inside the Mip-Splatting codebase. The 3DGS arm is that
+codebase with the 3D filter zeroed and \texttt{kernel\_size}~$=0.3$, which by
+Proposition~\ref{prop:reduction} is 3DGS exactly.
+
+This is forced as well as desirable. The multi-scale benchmark data is written
+in mip-NeRF multiscale format (\texttt{metadata.json}), and only
+Mip-Splatting's \texttt{sceneLoadTypeCallbacks} carries a \texttt{Multi-scale}
+loader, so the original 3DGS repository cannot read it at all --- it falls
+through every branch of the dispatch and dies. It also could not work in
+principle: \texttt{readMultiScale} sets the field of view \emph{per frame},
+whereas the Blender reader takes one global \texttt{camera\_angle\_x}.
+
+The benefit is methodological: both arms share one dataloader, one metrics
+implementation and one LPIPS backbone (VGG), so any difference between them is
+the method rather than the plumbing. The diff that separates the arms is four
+files, seven insertions and one deletion, and the build asserts that on every
+run.
+
+\section{The ladder}
+\begin{table}[htbp]
+  \centering
+  \caption{The rungs, their budgets and their exit criteria. GPU-hours for R0
+  and R1 are this project's measurements; the remainder are the estimates they
+  replace.}
+  \label{tab:ladder}
+  \small
+  \begin{tabular}{llp{0.44\linewidth}}
+    \toprule
+    rung & run & exit criterion \\
+    \midrule
+    R0 & smoke --- one scene, 7\,K, both arms, plus the twelve pre-flight assertions & toolchain fixed; estimates replaced by measurement \\
+    R1 & Blender single-scale train $\rightarrow$ multi-scale test, 8 scenes $\times$ 2 arms & gate G2: $\tfrac18$-scale gap exceeds 9\,dB \\
+    R2 & Blender multi-scale train and test (\texttt{--load\_allres}) & Mip-Splatting ahead at every scale; L1 within $0.20$\,dB \\
+    R3 & real scenes that fit 16\,GB: 360 indoor $\times4$, T\&T $\times2$, DB $\times2$ & per-scene table; OOMs recorded, never worked around \\
+    R5 & seed spread --- 3 seeds $\times$ 2 scenes $\times$ 2 arms & $\sigma$, without which parity is not a testable claim \\
+    R4 & Mip-NeRF 360 outdoor at \texttt{images\_8} --- the only authorised deviation & L2 only, separate table, resolution in the caption \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\section{The stress suite}
+\label{sec:stress}
+Equation~\eqref{eq:anisotropy} predicts that the method's advantage is a
+function of parallax. Testing that requires captures of varying conditioning,
+which are constructed as camera subsets of images already downloaded --- no new
+data, no extra GPU time: full orbit (control, $O(1)$ conditioning, parity
+expected by Proposition~\ref{prop:reduction}); one-sided arc
+($\lambda_3/\lambda_1 \approx 0.03$); low-parallax cone ($\approx 0.003$, the
+largest predicted gain); mixed focal (a random half downsampled $2$--$4\times$,
+which tests the floor's mixed-camera defect of \S\ref{sec:defects}); and grazing
+(high-incidence views only).
+
+\section{Three instruments, attached to the baseline runs}
+\label{sec:instruments}
+All read-only with respect to the optimiser, so the reproduction remains a
+reproduction. Together they test the method's premise before the method exists.
+
+\begin{table}[htbp]
+  \centering
+  \caption{The instruments and what each decides.}
+  \label{tab:instruments}
+  \small
+  \begin{tabular}{lp{0.34\linewidth}p{0.42\linewidth}}
+    \toprule
+    & measurement & what it decides \\
+    \midrule
+    I-1 & distribution of \texttt{filter\_3D} at end of training, per scene, against scene scale and distance to nearest camera & whether $s^2/\lambda_i$ ever exceeds $f_k^2$. If the floor binds almost everywhere, Proposition~\ref{prop:reduction} applies universally, the method collapses to the baseline, and the project must pivot. The cheapest possible falsification, and a by-product of a run already scheduled. \\
+    I-2 & $\lambda_3/\lambda_1$ per primitive on trained, unmodified checkpoints, per capture protocol; pure PyTorch, no CUDA & whether Equation~\eqref{eq:anisotropy}'s regime table holds on real scenes. Turns \S\ref{sec:anisotropy} from prediction into evidence before any method code is written. \\
+    I-3 & per-scene mean and standard deviation across seeds, both baselines & the $\sigma$ that makes ``parity'' a quantity. Parity is then reported as within $k\sigma$ of the self-run baseline. \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+One implementation detail with a real failure mode:
+\texttt{compute\_3D\_filter} assigns primitives that no camera sees
+\texttt{distance[valid].max()}. These must be excluded or flagged in I-1's
+histogram, or they form a spurious right tail that would be misread as the floor
+binding --- the exact wrong answer at gate G3.
+
+\section{Metrics, baselines, statistics}
+Quality is PSNR, SSIM and LPIPS (VGG) per scene and averaged, at test scales
+$1\times$, $\tfrac12$, $\tfrac14$, $\tfrac18$. Cost is primitive count, model
+MB, peak training VRAM, wall-clock and render fps --- same GPU, same run.
+Diagnostics are the fraction of primitives where the estimation term exceeds the
+floor, and the mean anisotropy of $\Sigma_{\mathrm{filt}}$; this is what makes a
+parity result interpretable rather than mysterious. Statistics are three seeds
+minimum, mean $\pm$ standard deviation, paired per-scene deltas.
+
+\paragraph{One measurement the shipped pipeline cannot make.}
+\texttt{render.py} writes every test view into a single directory named by the
+\texttt{-r} flag, not by the per-image scale, and \texttt{metrics.py} averages
+that directory into one number. The shipped pipeline therefore produces one
+figure where the paper reports four, and the per-scale table of
+Chapter~\ref{ch:results} does not exist without recovering the mapping.
+\texttt{tools/split\_by\_scale.py} recovers it from
+\texttt{metadata.json} order, which \texttt{readMultiScale} preserves and
+\texttt{render\_set} indexes by enumeration. Re-rendering at
+\texttt{-r 1 2 4 8} would \emph{resample} the images and answer a different
+question; it is not done. The recovery is validated by requiring the
+count-weighted mean of the four groups to reproduce \texttt{metrics.py}'s single
+pooled number, which is asserted on every scene of every run.

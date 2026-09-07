@@ -1,0 +1,77 @@
+% ===========================================================================
+%  Sampling-Geometry Band-Limits for Radiance Fields
+%  B.Tech Project · Department of Electrical Engineering · IIT Kharagpur
+%
+%  Build:  make thesis      (from the repository root)
+%  which regenerates thesis/generated/*.tex from results/runs.csv first, so
+%  no measurement in this document is ever typed by hand.
+% ===========================================================================
+\documentclass[11pt,a4paper,oneside]{report}
+\input{preamble}
+
+% Every measured number in this document. Written by tools/make_tex.py from
+% results/runs.csv; an unmeasured quantity expands to a visible marker, never to
+% a plausible-looking number.
+\input{generated/measured}
+
+\begin{document}
+
+% --------------------------------------------------------------- title page
+\thispagestyle{empty}
+\begin{center}
+  \vspace*{12mm}
+  {\footnotesize\color{ink2}\MakeUppercase{B.Tech Project \textperiodcentered\ Autumn 2026 -- Spring 2027}}\\[2pt]
+  {\footnotesize\color{ink2}\MakeUppercase{Department of Electrical Engineering \textperiodcentered\ IIT Kharagpur}}
+
+  \vspace{22mm}
+  {\Huge\bfseries\color{ink} Sampling-Geometry\\[4pt] Band-Limits for\\[4pt] Radiance Fields\par}
+
+  \vspace{10mm}
+  \begin{minipage}{0.82\linewidth}\centering\itshape\color{ink2}
+    The size limit on a splatting primitive should be the inverse of the
+    accumulated sampling Fisher information, floored at the per-view Nyquist
+    limit --- a matrix, not a scalar.
+  \end{minipage}
+
+  \vspace{20mm}
+  \begin{tabular}{r@{\hspace{8pt}}l}
+    \color{ink2}\footnotesize Candidate & Rickarya Das \textperiodcentered\ 23EE30019\\
+    \color{ink2}\footnotesize Degree    & B.Tech EE + M.Tech spec.\ Signal Processing \& ML\\
+    \color{ink2}\footnotesize Baselines & 3D Gaussian Splatting (2023) \textperiodcentered\ Mip-Splatting (2024)\\
+    \color{ink2}\footnotesize Version   & v2 \textperiodcentered\ \today\\
+    \color{ink2}\footnotesize Status    & Theory complete \textperiodcentered\ baselines measured \textperiodcentered\ method scheduled\\
+  \end{tabular}
+  \vfill
+\end{center}
+\clearpage
+
+% ----------------------------------------------------------------- abstract
+\chapter*{Abstract}
+\addcontentsline{toc}{chapter}{Abstract}
+\input{ch00-abstract}
+\clearpage
+
+\tableofcontents
+\clearpage
+
+\part{Problem}
+\input{ch01-introduction}
+\input{ch02-background}
+\input{ch03-gap}
+
+\part{Method}
+\input{ch04-method1}
+\input{ch05-method2}
+
+\part{Evidence}
+\input{ch06-experimental-design}
+\input{ch07-results}
+
+\part{Assessment}
+\input{ch08-discussion}
+\input{ch09-plan}
+
+\appendix
+\input{ch10-appendix}
+
+\end{document}

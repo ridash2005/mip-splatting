@@ -1,0 +1,80 @@
+% ===========================================================================
+%  Preamble. No measurement appears in this file or in any chapter file —
+%  every measured number is \input from generated/measured.tex, which
+%  tools/make_tex.py writes from results/runs.csv.
+% ===========================================================================
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+
+\usepackage[a4paper,margin=27mm,bottom=30mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,bm}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{caption}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage[hidelinks,breaklinks]{hyperref}
+
+\definecolor{ink}{HTML}{1A1D21}
+\definecolor{ink2}{HTML}{52514E}
+\definecolor{accent}{HTML}{2A78D6}
+\definecolor{warn}{HTML}{EB6834}
+\definecolor{rule}{HTML}{D8DDE3}
+
+\hypersetup{colorlinks=true, linkcolor=ink, citecolor=accent, urlcolor=accent}
+
+\captionsetup{font=small, labelfont={bf,color=ink}, textfont={color=ink2},
+              width=0.94\linewidth, skip=6pt}
+\captionsetup[table]{position=top, skip=4pt}
+
+\setlength{\parskip}{0.45em}
+\setlength{\parindent}{0pt}
+\renewcommand{\arraystretch}{1.15}
+
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.4pt}
+\fancyhead[L]{\footnotesize\color{ink2} Sampling-Geometry Band-Limits for Radiance Fields}
+\fancyhead[R]{\footnotesize\color{ink2} Rickarya Das \textperiodcentered\ 23EE30019}
+\fancyfoot[C]{\thepage}
+
+\titleformat{\chapter}[display]
+  {\normalfont\Large\bfseries\color{ink}}
+  {\color{accent}\normalsize\MakeUppercase{\chaptertitlename}\ \thechapter}{6pt}{\LARGE}
+\titlespacing*{\chapter}{0pt}{0pt}{18pt}
+
+% --------------------------------------------------------------- semantics
+% A claim the project has measured, versus one it has only predicted. Keeping
+% these visually distinct is the whole point of §7's discipline.
+\newcommand{\pass}{\textcolor{accent}{\textbf{pass}}}
+\newcommand{\fail}{\textcolor{warn}{\textbf{FAIL}}}
+\newcommand{\skipped}{\textcolor{ink2}{skip}}
+
+\newenvironment{claimbox}[1]
+  {\par\vspace{4pt}\noindent\begin{minipage}{\linewidth}%
+   \setlength{\fboxsep}{9pt}%
+   \colorlet{shade}{accent!6}%
+   \begin{tcbnone}%
+   \noindent\textcolor{accent}{\footnotesize\textbf{\MakeUppercase{#1}}}\par\vspace{2pt}%
+   \itshape}
+  {\end{tcbnone}\end{minipage}\par\vspace{4pt}}
+\newenvironment{tcbnone}{}{}
+
+% A framed statement, used for the thesis claim and the two propositions.
+\newcommand{\keybox}[2]{%
+  \par\vspace{6pt}%
+  {\color{rule}\hrule height 0.8pt}%
+  \vspace{5pt}%
+  \noindent\textcolor{accent}{\footnotesize\textbf{\MakeUppercase{#1}}}\par\vspace{3pt}%
+  \noindent #2\par
+  \vspace{5pt}{\color{rule}\hrule height 0.8pt}\par\vspace{6pt}}
+
+\newcommand{\status}[1]{\textcolor{warn}{\textbf{#1}}}
+
+\newtheorem{proposition}{Proposition}

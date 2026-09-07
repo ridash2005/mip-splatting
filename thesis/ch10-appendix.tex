@@ -1,0 +1,137 @@
+\chapter{Notation}
+\label{app:notation}
+\begin{table}[htbp]
+  \centering
+  \small
+  \begin{tabular}{llp{0.32\linewidth}}
+    \toprule
+    symbol & meaning & from \\
+    \midrule
+    $\sigma, c, T, \alpha$ & density, colour, transmittance, opacity & NeRF / 3DGS \\
+    $\gamma(\cdot), L$ & positional encoding and its number of frequency bands & NeRF \\
+    $p_k, \Sigma_k$ & Gaussian mean and 3D covariance & 3DGS \\
+    $R, S$ & rotation and scale factors of $\Sigma_k = RSS^{\!\top}R^{\!\top}$ & 3DGS \\
+    $W_n, J_n, \Sigma'$ & viewing transform, projection Jacobian, screen-space covariance & EWA / 3DGS \\
+    $\tau_{\mathrm{pos}}=0.0002,\ \varphi=1.6$ & densification gradient threshold and split divisor & 3DGS \\
+    $f_k,\ s=0.2$ & inherited Nyquist floor and the 3D smoothing filter variance & Mip-Splatting \\
+    $\Lambda_k, \lambda_i, V$ & accumulated sampling Fisher information, its eigenvalues and eigenvectors & this work \\
+    $\sigma_{\mathrm{pix}}, w_{nk}, \beta$ & pixel localisation noise, visibility/contribution weight, scene-scale cap fraction & this work \\
+    $A_k, \ell_{\max}(k), \tau$ & angular Gram matrix, per-primitive SH degree, conditioning threshold & this work \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\chapter{Derivations}
+
+\section{Rank of a single view}
+\label{app:rank}
+For a pinhole camera of focal length $f$, a primitive at camera-frame
+coordinates $(0,0,z)$ projects with Jacobian
+\begin{equation}
+  \frac{\partial(u,v)}{\partial(x,y,z)} =
+  \begin{bmatrix} f/z & 0 & 0 \\ 0 & f/z & 0 \end{bmatrix},
+\end{equation}
+so $I_n = \mathrm{diag}\big((f/z)^2, (f/z)^2, 0\big)/\sigma_{\mathrm{pix}}^2$ in
+the camera frame. The third eigenvalue is exactly zero: a single view carries no
+depth information. The lateral scale $s\,\sigma_{\mathrm{pix}}z/f$ of
+\S\ref{sec:proposition1} follows immediately from the first two.
+
+\section{Two symmetric views}
+\label{app:twoview}
+Place two cameras at distance $z$, symmetric about the primitive, subtending
+parallax angle $\theta$. The direction perpendicular to the plane of the two rays
+is constrained fully by both views, giving
+$\lambda_1 = 2(f/z)^2/\sigma_{\mathrm{pix}}^2$. The direction along the mean
+viewing direction receives only the component each ray's transverse plane
+projects onto it, contributing $\sin^2(\theta/2)$ of the same quantity. Hence
+$\lambda_3/\lambda_1 = \sin^2(\theta/2)$, and
+Equation~\eqref{eq:anisotropy} follows.
+
+\begin{table}[htbp]
+  \centering
+  \caption{Numerical verification against full pinhole Jacobians, with $z=4$,
+  $f=1000$, $\sigma_{\mathrm{pix}}=1$. Agreement to six significant figures. The
+  relation is exact for two symmetric views, not a small-angle approximation ---
+  which matters, because the interesting regime ($\theta \approx 6^\circ$) is
+  precisely where a small-angle expansion would be least trustworthy.}
+  \label{tab:twoview}
+  \small
+  \begin{tabular}{ccccc}
+    \toprule
+    $\theta$ & $\lambda_3/\lambda_1$ measured & $\sin^2(\theta/2)$ & $\sigma_D/\sigma_L$ measured & $1/\sin(\theta/2)$ \\
+    \midrule
+    $2^\circ$  & 0.000305 & 0.000305 & 57.299 & 57.299 \\
+    $6^\circ$  & 0.002739 & 0.002739 & 19.107 & 19.107 \\
+    $15^\circ$ & 0.017037 & 0.017037 &  7.661 &  7.661 \\
+    $45^\circ$ & 0.146447 & 0.146447 &  2.613 &  2.613 \\
+    $90^\circ$ & 0.500000 & 0.500000 &  1.414 &  1.414 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\section{Proposition~\ref{prop:constant}, in full}
+\label{app:prop1}
+From \S\ref{app:rank}, the single-view lateral standard deviation at confidence
+$s$ is $s\,\sigma_{\mathrm{pix}}z/f$. Mip-Splatting sets
+$f_k = \sqrt{0.2}\,d_{\min}/f_{\max}$. Setting $z = d_{\min}$ and $f = f_{\max}$
+and equating,
+\begin{equation}
+  s\,\sigma_{\mathrm{pix}}\,\frac{d_{\min}}{f_{\max}}
+  = \sqrt{0.2}\,\frac{d_{\min}}{f_{\max}}
+  \;\Longrightarrow\;
+  s\,\sigma_{\mathrm{pix}} = \sqrt{0.2} = 0.4472\ \text{px}.
+\end{equation}
+The identification holds for every $d_{\min}$ and $f_{\max}$, so it is an
+identity between the two formulations rather than a coincidence at one operating
+point. Note that because Mip-Splatting takes $d_{\min}$ and $f_{\max}$ from
+different cameras, the substitution above is the most favourable reading of their
+formula; the proposed method uses each view's own $(d,f)$ pair and so is also
+correctly coupled.
+
+\chapter{Per-scene results}
+\label{app:perscene}
+Every cell below is one logged run, identified by \texttt{run\_id} in
+\texttt{results/runs.csv}.
+
+\input{generated/table-perscene-stmt}
+
+\chapter{Reading list and provenance}
+\label{app:reading}
+Entries marked \textsc{cited} have author, venue and year taken from the
+reference list of the NeRF or 3DGS paper, or from the Mip-Splatting repository,
+so those details are reliable. Entries marked \textsc{unchecked} are named to
+point at the work; bibliographic details are to be confirmed on retrieval.
+
+\begin{table}[htbp]
+  \centering
+  \small
+  \begin{tabular}{cp{0.36\linewidth}p{0.44\linewidth}}
+    \toprule
+    pri. & work & why it is on the list \\
+    \midrule
+    1 & \textsc{cited} Zwicker, Pfister, van Baar, Gross. EWA Volume Splatting. IEEE Visualization 2001. & Cited by 3DGS as the origin of $\Sigma' = JW\Sigma W^{\!\top}J^{\!\top}$. This, not 3DGS, is the paper Chapter~\ref{ch:method1} extends. \\
+    1 & \textsc{unchecked} Chai, Tong, Chan, Shum. Plenoptic Sampling. SIGGRAPH 2000. & The likely theoretical ancestor --- minimum sampling rate for light-field rendering. If it supports the framing it becomes the foundation of Chapter~\ref{ch:background}. \\
+    1 & \textsc{cited} Barron et al. Mip-NeRF 360. CVPR 2022. & The quality baseline in every table produced here. \\
+    2 & \textsc{cited} M\"uller, Evans, Schied, Keller. Instant Neural Graphics Primitives. ACM TOG 41(4), 2022. & Speed baseline in the 3DGS tables. \\
+    2 & \textsc{cited} Fridovich-Keil, Yu, Tancik, Chen, Recht, Kanazawa. Plenoxels. CVPR 2022. & Speed baseline; the ``no neural network needed'' result. \\
+    2 & \textsc{unchecked} Durand, Holzschuch, Soler, Chan, Sillion. A Frequency Analysis of Light Transport. SIGGRAPH 2005. & Frequency-domain treatment of light transport; likely relevant to the sampling argument. \\
+    2 & \textsc{unchecked} Kheradmand et al. 3D Gaussian Splatting as Markov Chain Monte Carlo. NeurIPS 2024. & Nearest principled density-control work. Required for due-diligence. \\
+    2 & \textsc{unchecked} Jiang et al. FisherRF. ECCV 2024 \textperiodcentered\ Hanson et al. PUP 3D-GS. CVPR 2025. & Fisher information already used in this area. Establishing precisely how their use differs from Chapter~\ref{ch:method1} is the single highest-priority due-diligence item. \\
+    3 & \textsc{cited} Gaussian Opacity Fields (arXiv 2404.10772). & Source of the improved densification metric later integrated into the Mip-Splatting repository --- a reproduction hazard if the commit is not pinned. \\
+    3 & \textsc{unchecked} 3DGS compression survey (CGF 2025) and the methods it covers. & Where a B2 memory result must be positioned. \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\paragraph{Scope of verification.} Published figures come from the 3DGS paper as
+recorded in the BTP Handbook \S02 and from the Mip-Splatting paper
+(arXiv:2311.16493). Implementation facts --- the form of
+\texttt{compute\_3D\_filter}, the loader dispatch, the metrics backbone, the
+benchmark scripts and defaults --- were read from
+\texttt{autonomousvision/mip-splatting} and
+\texttt{graphdeco-inria/gaussian-splatting} on \texttt{main}, 6--7 September
+2026. Propositions~\ref{prop:constant} and \ref{prop:reduction} and
+Equation~\eqref{eq:anisotropy} are derived above and verified numerically.
+Experimental results asserted in this document are confined to
+Chapter~\ref{ch:results} and Appendix~\ref{app:perscene}, and each is produced by
+a logged run recorded in \texttt{results/runs.csv}.

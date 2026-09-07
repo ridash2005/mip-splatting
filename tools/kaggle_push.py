@@ -26,6 +26,8 @@ import os
 import sys
 import time
 
+import requests
+
 sys.path.insert(0, os.path.dirname(__file__))
 from kaggle_client import get_client  # noqa: E402
 from kagglesdk.kernels.types.kernels_api_service import (  # noqa: E402
@@ -36,7 +38,39 @@ from kagglesdk.kernels.types.kernels_api_service import (  # noqa: E402
 from kagglesdk.kernels.types.kernels_enums import KernelWorkerStatus  # noqa: E402
 
 
-def push(client, script_path, username, slug, title, datasets, session_timeout=None):
+# `kaggle kernels push --accelerator <ID>` is documented by Kaggle/kaggle-cli,
+# so /api/v1/kernels/push accepts an accelerator on the wire -- but kagglesdk
+# 0.1.28's ApiSaveKernelRequest has no such field and rejects unknown attributes
+# client-side, and the pip `kaggle` 1.7.4.5 does not expose the flag either.
+# When an accelerator is asked for, the same JSON body is posted directly with
+# the field added. Every value below is compute capability 7.0+ except the P100.
+ACCELERATORS = ("NvidiaTeslaP100", "NvidiaTeslaT4", "NvidiaTeslaT4Highmem",
+                "NvidiaTeslaA100", "NvidiaL4", "NvidiaL4X1", "NvidiaH100",
+                "NvidiaRtxPro6000")
+PUSH_URL = "https://www.kaggle.com/api/v1/kernels/push"
+
+
+def push_with_accelerator(body, accelerator):
+    """POST the save-kernel body with an `accelerator` field kagglesdk cannot set.
+
+    Returns (ref, version, url). Raises on a non-2xx or an `error` in the reply,
+    so an accelerator the server rejects is loud rather than silently ignored.
+    """
+    body = dict(body, accelerator=accelerator)
+    token = os.environ["KAGGLE_API_TOKEN"]
+    r = requests.post(PUSH_URL, json=body,
+                      headers={"Authorization": f"Bearer {token}",
+                               "Content-Type": "application/json"}, timeout=120)
+    if r.status_code >= 300:
+        raise SystemExit(f"push failed ({r.status_code}): {r.text[:600]}")
+    d = r.json()
+    if d.get("error"):
+        raise SystemExit(f"push failed: {d['error']}")
+    return d.get("ref"), d.get("versionNumber"), d.get("url")
+
+
+def push(client, script_path, username, slug, title, datasets, session_timeout=None,
+         accelerator=None):
     with open(script_path, encoding="utf-8") as f:
         text = f.read()
     req = ApiSaveKernelRequest()
@@ -51,10 +85,19 @@ def push(client, script_path, username, slug, title, datasets, session_timeout=N
     req.dataset_data_sources = datasets or []
     if session_timeout:
         req.session_timeout_seconds = session_timeout
-    resp = client.kernels.kernels_api_client.save_kernel(req)
-    if resp.error:
-        raise SystemExit(f"push failed: {resp.error}")
-    print(f"pushed {resp.ref} (version {resp.version_number}) -> {resp.url}")
+    if accelerator:
+        from kagglesdk.kaggle_object import KaggleObject
+        ref, version, url = push_with_accelerator(KaggleObject.to_dict(req), accelerator)
+        print(f"pushed {ref} (version {version}, accelerator={accelerator}) -> {url}")
+
+        class _R:  # same shape the caller reads off save_kernel's reply
+            pass
+        resp = _R(); resp.ref = ref; resp.version_number = version; resp.url = url
+    else:
+        resp = client.kernels.kernels_api_client.save_kernel(req)
+        if resp.error:
+            raise SystemExit(f"push failed: {resp.error}")
+        print(f"pushed {resp.ref} (version {resp.version_number}) -> {resp.url}")
     # Kaggle derives the actual slug from new_title (must be "title, lowercased
     # with dashes") and silently ignores a mismatched requested slug — always
     # use what it actually assigned, from the tail of resp.ref, not our request.
@@ -142,6 +185,10 @@ def main():
     ap.add_argument("--out", default=None)
     ap.add_argument("--no-wait", action="store_true", help="push and exit without polling")
     ap.add_argument("--session-timeout", type=int, default=None)
+    ap.add_argument("--accelerator", choices=ACCELERATORS,
+                     help="GPU to request. kagglesdk has no field for this, so the "
+                          "push is posted directly with the field added. Everything "
+                          "but NvidiaTeslaP100 satisfies F15 (compute capability 7.0+).")
     ap.add_argument("--fetch-only", action="store_true",
                      help="do not push; poll the existing kernel session and pull its "
                           "log and summary down. Use after launching from the web UI, "
@@ -170,7 +217,7 @@ def main():
             sys.exit(1 if status == KernelWorkerStatus.ERROR else 0)
         for attempt in range(1, a.retry_wrong_gpu + 2):
             _, actual_slug = push(client, a.script, a.username, a.slug, a.title,
-                                  a.dataset, a.session_timeout)
+                                  a.dataset, a.session_timeout, a.accelerator)
             if a.no_wait:
                 return
             status = poll(client, a.username, actual_slug, timeout=a.poll_timeout)

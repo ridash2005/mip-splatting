@@ -1,110 +1,105 @@
-<p align="center">
+# BTP baseline reproduction — 3D Gaussian Splatting vs Mip-Splatting
 
-  <h1 align="center">Mip-Splatting: Alias-free 3D Gaussian Splatting</h1>
-  <p align="center">
-    <a href="https://niujinshuchong.github.io/">Zehao Yu</a>
-    ·
-    <a href="https://apchenstu.github.io/">Anpei Chen</a>
-    ·
-    <a href="https://github.com/hbb1">Binbin Huang</a>
-    ·
-    <a href="https://tsattler.github.io/">Torsten Sattler</a>
-    ·
-    <a href="http://www.cvlibs.net/">Andreas Geiger</a>
+B.Tech Project reproduction harness for sampling-geometry band-limits in radiance
+fields. Reproduces **3D Gaussian Splatting** (Kerbl et al., SIGGRAPH 2023) and
+**Mip-Splatting** (Yu et al., CVPR 2024) as two arms of one codebase, so the only
+difference between them is the method, not the plumbing. Governing spec:
+[`docs/REPRODUCTION-PROMPT.md`](docs/REPRODUCTION-PROMPT.md) — do not re-derive
+anything it states as settled; if reality disagrees with it, stop and report.
 
-  </p>
-  <h2 align="center">CVPR 2024 Best Student Paper</h2>
+## The one architectural decision
 
-  <h3 align="center"><a href="https://drive.google.com/file/d/1Q7KgGbynzcIEyFJV1I17HgrYz6xrOwRJ/view?usp=sharing">Paper</a> | <a href="https://arxiv.org/pdf/2311.16493.pdf">arXiv</a> | <a href="https://niujinshuchong.github.io/mip-splatting/">Project Page</a>  | <a href="https://niujinshuchong.github.io/mip-splatting-demo/">Online Viewer</a> </h3>
-  <div align="center"></div>
-</p>
+Both arms run inside this repository (a fork of `autonomousvision/mip-splatting`),
+not the original `graphdeco-inria/gaussian-splatting`:
 
+- **Arm A — Mip-Splatting**: the repository as shipped.
+- **Arm B — 3DGS**: the same repository with the 3D smoothing filter zeroed
+  (`--disable_3D_filter`) and `--kernel_size 0.3`. See §3 of the prompt for why
+  this is exactly 3DGS, not an approximation, and why the original repo cannot
+  read the multi-scale Blender format at all.
 
-<p align="center">
-  <a href="">
-    <img src="./media/bicycle_3dgs_vs_ours.gif" alt="Logo" width="95%">
-  </a>
-</p>
+## Repo layout
 
-<p align="center">
-We introduce a 3D smoothing filter and a 2D Mip filter for 3D Gaussian Splatting (3DGS), eliminating multiple artifacts and achieving alias-free renderings.  
-</p>
-<br>
-
-# Update
-We integrated an improved densification metric proposed in [Gaussian Opacity Fields](https://niujinshuchong.github.io/gaussian-opacity-fields/), which significantly improves the novel view synthesis results, please check the [paper](https://arxiv.org/pdf/2404.10772.pdf) for details. Please download the lastest code and reinstall `diff-gaussian-rasterization` to try it out. 
-
-# Installation
-Clone the repository and create an anaconda environment using
 ```
-git clone git@github.com:autonomousvision/mip-splatting.git
-cd mip-splatting
-
-conda create -y -n mip-splatting python=3.8
-conda activate mip-splatting
-
-pip install torch==1.12.1+cu113 torchvision==0.13.1+cu113 -f https://download.pytorch.org/whl/torch_stable.html
-conda install cudatoolkit-dev=11.3 -c conda-forge
-
-pip install -r requirements.txt
-
-pip install submodules/diff-gaussian-rasterization
-pip install submodules/simple-knn/
+arguments/ scene/ gaussian_renderer/ ...   mip-splatting, as forked (arm A)
+scripts/                                    benchmark drivers shipped upstream
+tools/split_by_scale.py                     recovers the per-scale table (§4) —
+                                             never re-render at -r 1 2 4 8, it resamples
+tools/make_table.py                         renders Table 1 / Table 2 from results/runs.csv
+tools/make_figures.py                       renders every report figure; --mode measured
+                                             refuses to draw without usable CSV rows
+results/runs.csv                            append-only, one row per (arm, scene, test-scale, seed)
+docs/REPRODUCTION-PROMPT.md                 the operating prompt this repo implements
 ```
 
-# Dataset
-## Blender Dataset
-Please download and unzip nerf_synthetic.zip from the [NeRF's official Google Drive](https://drive.google.com/drive/folders/128yBriW1IG_3NJ5Rp7APSTZsJqdJdfc1). Then generate multi-scale blender dataset with
+Branches:
+- `main` — arm A (repo as shipped) plus the tooling above.
+- `arm-b-3dgs-baseline` — main plus **only** the §3 diff (2 files, 2 edit sites
+  each: `arguments/__init__.py`, `scene/gaussian_model.py`, and the one-line
+  wiring in `train.py` / `render.py`). Nothing else. Diff printed in git history.
+
+Remotes: `origin` = https://github.com/ridash2005/mip-splatting (this fork),
+`upstream` = https://github.com/autonomousvision/mip-splatting (read-only reference).
+
+## Session constants
+
 ```
-python convert_blender_data.py --blender_dir nerf_synthetic/ --out_dir multi-scale
+KAGGLE_USERNAME = rickaryadas
+HF_USERNAME     = rickaryadas
 ```
 
-## Mip-NeRF 360 Dataset
-Please download the data from the [Mip-NeRF 360](https://jonbarron.info/mipnerf360/) and request the authors for the treehill and flowers scenes.
+## Environment
 
-# Training and Evaluation
-```
-# single-scale training and multi-scale testing on NeRF-synthetic dataset
-python scripts/run_nerf_synthetic_stmt.py 
+**Local dev machine**: NVIDIA GeForce MX350, 2 GB VRAM, driver reports compute
+capability below the repo's minimum. **Fails F15 (Compute Capability 7.0+
+required) — do not attempt training here.** This machine is used only for git
+operations, tooling, and orchestrating remote runs.
 
-# multi-scale training and multi-scale testing on NeRF-synthetic dataset
-python scripts/run_nerf_synthetic_mtmt.py 
+**Training target**: Kaggle, 2×T4 (CC 7.5), accelerator confirmed against
+`torch.cuda.get_device_capability()` in-session (§6 check 1) before any run.
+Kaggle quota (30 h/week, 12 h/session — secondary-source figures, to be read
+off the notebook sidebar and confirmed in session 1 per §8.1) is not yet
+verified from a live session.
 
-# single-scale training and single-scale testing on the mip-nerf 360 dataset
-python scripts/run_mipnerf360.py 
+## Status
 
-# single-scale training and multi-scale testing on the mip-nerf 360 dataset
-python scripts/run_mipnerf360_stmt.py 
+- [x] Forked upstream, cloned, remotes set up.
+- [x] F1/F3/F4/F5 spot-checked against source at the forked commit — match the
+      prompt exactly (see commit history on `main`).
+- [x] Arm B diff applied verbatim on `arm-b-3dgs-baseline`, diff printed in its
+      commit.
+- [x] Tooling scaffolded: `results/runs.csv` header, `tools/split_by_scale.py`,
+      `tools/make_table.py`, `tools/make_figures.py`, `Makefile`.
+- [ ] §6 pre-flight (12 checks) — blocked on a Kaggle GPU session; not runnable
+      on the local machine (fails check 1).
+- [ ] R0 smoke run.
+- [ ] R1 (primary target), R2, R3, R5, R4 (optional).
+
+## Running the ladder on Kaggle
+
+Training cannot happen on the local machine (see Environment). The plan is to
+push a Kaggle kernel that clones this repo's `main` (arm A) and
+`arm-b-3dgs-baseline` (arm B), runs §6 and the rung currently in scope, and
+writes checkpoints + `results/runs.csv` rows back out — pulled down here via
+the Kaggle API, and pushed to Hugging Face Hub before the session ends (§12).
+No credentials are stored in this repository; they are read from Kaggle
+Secrets / environment variables at run time.
+
+## Tables and figures
+
+Everything regenerates from `results/runs.csv` — no number is ever typed into
+a document by hand.
+
+```
+make table1     # R1 Blender STMT: 3DGS vs Mip-Splatting, 4 test scales
+make table2     # R2 Blender MTMT
+make figures    # figures/, redrawn from measured rows with the published curve
+                # kept as a faint reference line
 ```
 
-# Online viewer
-After training, you can fuse the 3D smoothing filter to the Gaussian parameters with
-```
-python create_fused_ply.py -m {model_dir}/{scene} --output_ply fused/{scene}_fused.ply"
-```
-Then use our [online viewer](https://niujinshuchong.github.io/mip-splatting-demo) to visualize the trained model.
+## Licence
 
-# Acknowledgements
-This project is built upon [3DGS](https://github.com/graphdeco-inria/gaussian-splatting). Please follow the license of 3DGS. We thank all the authors for their great work and repos. 
-
-# Citation
-If you find our code or paper useful, please cite
-```bibtex
-@InProceedings{Yu2024MipSplatting,
-    author    = {Yu, Zehao and Chen, Anpei and Huang, Binbin and Sattler, Torsten and Geiger, Andreas},
-    title     = {Mip-Splatting: Alias-free 3D Gaussian Splatting},
-    booktitle = {Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)},
-    month     = {June},
-    year      = {2024},
-    pages     = {19447-19456}
-}
-```
-If you find our improved densification metric useful, please kindly cite
-```
-@article{Yu2024GOF,
-  author    = {Yu, Zehao and Sattler, Torsten and Geiger, Andreas},
-  title     = {Gaussian Opacity Fields: Efficient High-quality Compact Surface Reconstruction in Unbounded Scenes},
-  journal   = {arXiv:2404.10772},
-  year      = {2024},
-}
-```
+3DGS and Mip-Splatting are under the Gaussian-Splatting License (Inria/MPII):
+research and evaluation only, redistribution must carry the licence and retain
+notices, no commercial use. See `LICENSE.md`. Nothing in this repository is
+published for redistribution beyond that licence.

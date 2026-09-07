@@ -1,0 +1,1 @@
+run_id,timestamp_utc,method,arm,impl_commit,rasteriser_commit,dataset,scene,resolution_flag,load_allres,kernel_size,disable_3D_filter,train_scale,test_scale,iterations,seed,psnr,ssim,lpips,lpips_backbone,n_gaussians,model_mb,peak_vram_mb,train_seconds,render_fps,gpu_model,platform,level_claimed,notes

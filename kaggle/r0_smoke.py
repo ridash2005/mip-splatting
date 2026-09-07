@@ -352,14 +352,21 @@ with open(f"{WORK}/armB/scene/gaussian_model.py") as f:
     armB_src = f.read()
 with open(f"{WORK}/armA/scene/gaussian_model.py") as f:
     armA_src = f.read()
-_, diff_out = sh(f"git -C {WORK}/armB diff origin/main..HEAD --stat",
+# Three dots, not two: `A...B` diffs from the merge base, so it reports what arm
+# B *introduced* and stays correct when main moves ahead. With `A..B`, any
+# commit on main that arm B has not merged yet — a README edit will do — appears
+# as a reversed change and fails a perfectly good branch.
+_, diff_out = sh(f"git -C {WORK}/armB diff origin/main...HEAD --stat",
                  check_rc=False, log_name="diff")
 touched = {ln.split("|")[0].strip() for ln in diff_out.splitlines() if "|" in ln}
 expected = {"arguments/__init__.py", "scene/gaussian_model.py", "render.py", "train.py"}
+_, behind = sh(f"git -C {WORK}/armB rev-list --count HEAD..origin/main",
+               check_rc=False, log_name="diff")
 check(4, "§3 diff present on arm B, absent from main, and confined to its four files",
       "_disable_3D_filter" in armB_src and "torch.zeros_like(filter_3D" in armB_src
       and "_disable_3D_filter" not in armA_src and touched <= expected,
-      f"files touched vs main: {sorted(touched)}")
+      f"files arm B introduces over the merge base: {sorted(touched)}; "
+      f"commits behind main: {behind.strip() or '?'}")
 
 # =============================================================== data + check 7
 timed("convert_blender_data", lambda: sh(

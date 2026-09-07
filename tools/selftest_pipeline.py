@@ -333,6 +333,23 @@ def check_kernel_helpers():
        isinstance(peak, int) and not probe.is_alive(), f"peak_mb={peak}")
     ok("VramProbe.stop() is safe to call twice", isinstance(probe.stop(), int))
 
+    # tools/seeded_train.py drives train.py under a chosen seed. Python puts the
+    # SCRIPT's directory (tools/) on sys.path, not the working directory, so it
+    # could not `import utils.general_utils` and every R5 job died with
+    # ModuleNotFoundError -- eight minutes into a metered session. Run it as a
+    # subprocess from an unrelated directory and require it to get past its
+    # imports.
+    r = subprocess.run(
+        [sys.executable, os.path.join(HERE, "seeded_train.py"), "-s", "/nonexistent"],
+        capture_output=True, text=True, cwd=tempfile.gettempdir(),
+        env={**os.environ, "BTP_SEED": "7"})
+    blob = r.stdout + r.stderr
+    ok("seeded_train.py resolves the repo's modules from any working directory",
+       "No module named 'utils'" not in blob and "No module named 'scene'" not in blob,
+       [l for l in blob.splitlines() if "ModuleNotFound" in l][:1])
+    ok("seeded_train.py reports the seed it applied",
+       "BTP_SEED" in open(os.path.join(HERE, "seeded_train.py"), encoding="utf-8").read())
+
     # The scale parser both the kernel and the splitter depend on.
     ok("scale_of maps convert_blender_data's naming to 0..3",
        [sbs.scale_of(f"test/{i:03d}_d{j}.png") for i, j in

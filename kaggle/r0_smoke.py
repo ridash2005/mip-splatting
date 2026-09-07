@@ -78,10 +78,16 @@ os.environ["TORCH_CUDA_ARCH_LIST"] = "7.5"
 install_ok = True
 try:
     sh("pip install -q ninja gputil lpips")
+    sh("nvcc --version", check_rc=False)
+    sh("gcc --version", check_rc=False)
+    sh("g++ --version", check_rc=False)
     # arm A and arm B share an identical, unmodified rasteriser and simple-knn
     # (the §3 diff never touches submodules/), so building once against arm A's
-    # copy is sufficient for both arms' training runs.
-    sh(f"pip install -q {WORK}/armA/submodules/diff-gaussian-rasterization {WORK}/armA/submodules/simple-knn")
+    # copy is sufficient for both arms' training runs. Built one at a time,
+    # without -q, so a real compile failure prints its actual error instead of
+    # only pip's final wheel-build summary.
+    sh(f"pip install {WORK}/armA/submodules/diff-gaussian-rasterization")
+    sh(f"pip install {WORK}/armA/submodules/simple-knn")
     import GPUtil  # noqa: F401
     import lpips as _lpips_mod  # noqa: F401
     import diff_gaussian_rasterization  # noqa: F401

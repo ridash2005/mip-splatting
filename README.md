@@ -102,21 +102,49 @@ edit outside §3; it has been reverted.
 - [x] Forked upstream, cloned, remotes set up.
 - [x] F1/F3/F4/F5 spot-checked against source at the forked commit.
 - [x] Arm B diff applied verbatim on `arm-b-3dgs-baseline`. `git diff
-      main..arm-b-3dgs-baseline` is exactly 4 files, 7 insertions, 1 deletion —
-      the §3 diff and nothing else, which the kernel's check 4 now enforces.
-- [x] Tooling scaffolded: `results/runs.csv` header, `tools/split_by_scale.py`,
-      `tools/make_table.py`, `tools/make_figures.py`, `Makefile`.
-- [x] **Reporting chain verified end to end** — `make selftest`
-      (`tools/selftest_pipeline.py`) runs splitter → CSV → tables → figures on a
-      fixture with planted answers and checks each stage recovers them. It found
-      two silent bugs: `make figures --mode measured` was drawing the *published*
-      curve under a measured filename because the CSV's `3dgs` slug never matched
-      the figures' `3DGS` key, and figures 5–6 were defined below `main()` and so
-      were never drawn at all.
-- [x] CUDA extensions build on the Kaggle image (2×T4, torch 2.10/cu128).
-- [ ] §6 pre-flight (12 checks) — running.
-- [ ] R0 smoke run.
+      main..arm-b-3dgs-baseline` is exactly **4 files, 7 insertions, 1 deletion**
+      — the §3 diff and nothing else, which the kernel's check 4 enforces on
+      every run.
+- [x] **Reporting chain verified end to end** — `make selftest`, 34 assertions,
+      no GPU needed. It runs splitter → CSV → tables → figures on a fixture with
+      planted answers, and execs the kernel's preamble to exercise its build
+      fixes. See "What the self-test caught" below.
+- [x] CUDA extensions build on the Kaggle image (2×T4, torch 2.10 / CUDA 12.8) —
+      `results/kaggle_runs/r0_smoke_v2/02_t4x2_open3d_failure.log`.
+- [x] Measured instrumentation wired in: train_seconds, iterations/second,
+      render_fps, n_gaussians, model_mb, peak_vram_mb, all written to the CSV.
+- [x] §13 report generator (`make report`), driven entirely by the kernel's
+      `summary.json`.
+- [ ] **R0 smoke run — blocked on GPU allocation, not on code.** Every check that
+      can run without a T4 is green; the run needs compute capability 7.0+ and
+      Kaggle has allocated a P100 to every API-pushed launch. See Environment.
+- [ ] §6 pre-flight, all twelve, in one green session.
 - [ ] R1 (primary target), R2, R3, R5, R4 (optional).
+
+### What the self-test caught
+
+Four defects, all silent — none of them would have raised an error where it
+happened:
+
+1. **`make figures --mode measured` drew the published curve.** `runs.csv` stores
+   `3dgs` / `mip-splatting`; the figures key off `3DGS` / `Mip-Splatting`. Every
+   measured lookup missed, the non-empty guard still passed, and fig 1 was
+   written to a "measured" filename containing published numbers — the one thing
+   §11 says must be impossible. Unknown slugs are now fatal.
+2. **Figures 5 and 6 were never drawn.** They are defined below the old
+   `if __name__ == "__main__"` block, so `main()` could not see them.
+3. **The splitter's assumed JSON nesting does not exist.** `metrics.py` does
+   `json.dump(full_dict[scene_dir], ...)` — the value, not the enclosing dict —
+   so `results.json` is keyed by method, with no scene_dir above it.
+   `split_by_scale.py` would have exited *after* both arms had trained.
+4. **The open3d guard proved itself.** Its "this import is provably unused"
+   check counted references across the whole file including comments, so once it
+   had inserted its own comment the guard was a tautology.
+
+Numbers 1 and 3 are the dangerous class: they produce a plausible table or a
+late crash rather than an early error. Number 3 was found only after the fixture
+was rebuilt from `metrics.py`'s actual dump line rather than from what the
+splitter expected — a fixture that encodes the bug cannot detect it.
 
 ## Running the ladder on Kaggle
 

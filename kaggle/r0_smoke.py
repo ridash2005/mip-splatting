@@ -253,10 +253,15 @@ print(f"torch {torch.__version__}  cuda {torch.version.cuda}  capability {cap}  
 check(1, "accelerator compute capability >= 7.0, abort on P100/6.0 (F15)",
       cap >= (7, 0), f"{gpu_name} x{n_gpu} {cap}")
 if cap < (7, 0):
+    # Machine-readable so tools/kaggle_push.py can tell "wrong GPU, retry" apart
+    # from a real failure. The kernels API exposes only a boolean enable_gpu —
+    # there is no accelerator field in kagglesdk 0.1.28 — and Kaggle hands out
+    # whichever GPU is free, so the same script gets a P100 on one launch and
+    # 2xT4 on the next. Retrying is the only lever, and it costs ~30s of quota.
+    print("R0_ABORT=WRONG_ACCELERATOR", flush=True)
     raise SystemExit(
-        "ABORT: compute capability below 7.0 — refusing to train (F15). "
-        "Set the notebook's accelerator to 'GPU T4 x2' and re-run; the Kaggle "
-        "kernels API exposes only a boolean enable_gpu and cannot choose it.")
+        f"ABORT: {gpu_name} has compute capability {cap}, below 7.0 — refusing "
+        "to train (F15). Re-launch until Kaggle allocates a T4.")
 
 blender_dir = resolve_blender_dir()
 

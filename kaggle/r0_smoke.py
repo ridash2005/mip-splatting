@@ -447,24 +447,17 @@ def run_arm(arm_dir, out_dir, extra_flags, label, tag):
 
 out_armA = f"{WORK}/out_armA/{SCENE}"
 out_armB = f"{WORK}/out_armB/{SCENE}"
-resA, statA = run_arm(f"{WORK}/armA", out_armA, "--kernel_size 0.1",
-                      "arm A / Mip-Splatting", "armA")
-resB, statB = run_arm(f"{WORK}/armB", out_armB, "--kernel_size 0.3 --disable_3D_filter",
-                      "arm B / 3DGS", "armB")
 
-# The F3 assertion that actually exercises the code path: with the default
-# load_allres=False, Scene must be built from the d0 files alone.
-check(7.1, "readMultiScale loaded the d0-only training split (F3, load_allres=False)",
-      statA["n_train_images"] == n_train_d0 == statB["n_train_images"],
-      f"armA loaded {statA['n_train_images']}, armB loaded {statB['n_train_images']}, "
-      f"d0 files in metadata = {n_train_d0} (of {len(train_paths)} total)")
+# =============================================================== check 9: splitter
+# Imported before the arms run so a broken splitter fails in seconds rather than
+# after both arms have trained.
+sys.path.insert(0, f"{WORK}/armA/tools")
+import split_by_scale as sbs  # noqa: E402
 
-# §3's correctness argument, checked against the artefact rather than the source:
-# arm B is 3DGS only if filter_3D is identically zero in the saved model.
-check(4.1, "arm B's saved model has filter_3D ≡ 0 and arm A's does not (F5) — "
-           "this, not the diff text, is what makes arm B exactly 3DGS",
-      statB["filter_3D_max"] == 0.0 and statA["filter_3D_max"] > 0.0,
-      f"max|filter_3D|: armA={statA['filter_3D_max']:.6g} armB={statB['filter_3D_max']:.6g}")
+now = datetime.now(timezone.utc).isoformat(timespec="seconds")
+os.makedirs(f"{WORK}/results", exist_ok=True)
+csv_path = f"{WORK}/results/runs.csv"
+run_id = f"r0-{now.replace(':', '').replace('-', '')}"
 
 
 def unpack(res):
@@ -480,27 +473,6 @@ def unpack(res):
                            f"found {methods} (top-level keys {list(res)})")
     d = res[methods[0]]
     return d["PSNR"], d["SSIM"], d["LPIPS"], methods[0]
-
-
-psnrA, ssimA, lpipsA, methodA = unpack(resA)
-psnrB, ssimB, lpipsB, methodB = unpack(resB)
-print(f"arm A pooled (all 4 test scales): PSNR {psnrA:.3f}  SSIM {ssimA:.4f}  LPIPS {lpipsA:.4f}")
-print(f"arm B pooled (all 4 test scales): PSNR {psnrB:.3f}  SSIM {ssimB:.4f}  LPIPS {lpipsB:.4f}")
-
-# §6 checks 5/6's 33.3/33.4 dB targets are calibrated to 30000 iterations (F11)
-# and to the FULL-RESOLUTION column, not this pooled four-scale average. At
-# ITERS=7000 they are recorded as measured, never scored against a target this
-# run was never going to meet (§14).
-check(5, "arm B (3DGS) unit test target 33.3±0.5 dB — informational at "
-         f"{ITERS} iters, the real check is R1 @ 30k full-res", None,
-      f"pooled {psnrB:.3f} dB; per-scale reported below")
-check(6, "arm A (Mip-Splatting) sanity target 33.4±0.5 dB — informational at "
-         f"{ITERS} iters, the real check is R1 @ 30k full-res", None,
-      f"pooled {psnrA:.3f} dB; per-scale reported below")
-
-# =============================================================== check 9: splitter
-sys.path.insert(0, f"{WORK}/armA/tools")
-import split_by_scale as sbs  # noqa: E402
 
 
 def verify_and_split(out_dir, method, pooled_psnr, label):
@@ -519,63 +491,21 @@ def verify_and_split(out_dir, method, pooled_psnr, label):
     return res
 
 
-splitA = verify_and_split(out_armA, methodA, psnrA, "arm A")
-splitB = verify_and_split(out_armB, methodB, psnrB, "arm B")
+def append_rows(arm_letter, split, commit, ks, disable, st):
+    """Append this arm's four rows to results/runs.csv as soon as they exist.
 
-# The whole reporting chain (splitter → CSV → tables → figures) on a synthetic
-# fixture with known answers, so a wrong number downstream cannot hide behind a
-# plausible-looking table.
-rc_self, _ = sh(f"python {WORK}/armA/tools/selftest_pipeline.py", check_rc=False,
-                log_name="selftest")
-check(9.1, "tools/selftest_pipeline.py: reporting chain verified against a fixture "
-           "with planted, known-in-advance answers", rc_self == 0, f"exit {rc_self}")
-
-# =============================================================== check 11: resume
-resume_dir = f"{WORK}/out_resume_test/{SCENE}"
-resume_ok, resume_detail = False, ""
-try:
-    sh(f"OMP_NUM_THREADS=4 python train.py -s {WORK}/multi-scale/{SCENE} -m {resume_dir} "
-       f"--eval --white_background --iterations {RESUME_AT} --test_iterations -1 "
-       f"--checkpoint_iterations {RESUME_AT} --kernel_size 0.1",
-       cwd=f"{WORK}/armA", log_name="resume")
-    ckpt = f"{resume_dir}/chkpnt{RESUME_AT}.pth"
-    ckpt_ok = os.path.exists(ckpt)
-    sh(f"OMP_NUM_THREADS=4 python train.py -s {WORK}/multi-scale/{SCENE} -m {resume_dir} "
-       f"--eval --white_background --iterations {ITERS} --test_iterations -1 "
-       f"--start_checkpoint {ckpt} --kernel_size 0.1",
-       cwd=f"{WORK}/armA", log_name="resume")
-    final_ply = f"{resume_dir}/point_cloud/iteration_{ITERS}/point_cloud.ply"
-    resume_ok = ckpt_ok and os.path.exists(final_ply)
-    resume_detail = f"checkpoint at {RESUME_AT} -> final model at {ITERS}: {final_ply}"
-except Exception as e:
-    resume_detail = f"{type(e).__name__}: {e}"[:400]
-    traceback.print_exc()
-check(11, f"kill at {RESUME_AT}, restart from checkpoint, reach {ITERS} "
-          "(scaled down from 30K for this rung)", resume_ok, resume_detail)
-
-# =============================================================== check 12
-check(12, "off-session persistence", None,
-      "Kaggle leg satisfied — results/, logs/ and both models persist as kernel "
-      "output and are pulled down by tools/kaggle_push.py. Hugging Face Hub leg "
-      "skipped: no HF token is available to this run; not faked.")
-
-# =============================================================== results/runs.csv
-now = datetime.now(timezone.utc).isoformat(timespec="seconds")
-os.makedirs(f"{WORK}/results", exist_ok=True)
-csv_path = f"{WORK}/results/runs.csv"
-run_id = f"r0-{now.replace(':', '').replace('-', '')}"
-note = (f"R0 smoke run, {ITERS} iters — plumbing check, not the R1 numeric target"
-        + ("; " + "; ".join(notes) if notes else ""))
-new = not os.path.exists(csv_path)
-with open(csv_path, "a", newline="") as f:
-    w = csv.DictWriter(f, fieldnames=sbs.RUNS_CSV_SCHEMA)
-    if new:
-        w.writeheader()
-    for arm_letter, res, commit, ks, disable, st in (
-        ("A", splitA, armA_commit, "0.1", "False", statA),
-        ("B", splitB, armB_commit, "0.3", "True", statB),
-    ):
-        for sc, v in res.items():
+    Written per arm rather than once at the end: getting a compute-capability
+    7.0+ session is the scarce resource here, and a session that dies during
+    arm B must not also throw away arm A.
+    """
+    note = (f"R0 smoke run, {ITERS} iters — plumbing check, not the R1 numeric target"
+            + ("; " + "; ".join(notes) if notes else ""))
+    new = not os.path.exists(csv_path)
+    with open(csv_path, "a", newline="") as f:
+        w = csv.DictWriter(f, fieldnames=sbs.RUNS_CSV_SCHEMA)
+        if new:
+            w.writeheader()
+        for sc, v in split.items():
             row = {c: "" for c in sbs.RUNS_CSV_SCHEMA}
             row.update({
                 "run_id": f"{run_id}-{arm_letter}-{sc.replace('/', '')}",
@@ -613,7 +543,133 @@ with open(csv_path, "a", newline="") as f:
                 "notes": note,
             })
             w.writerow(row)
-print(f"wrote {csv_path}")
+    print(f"appended arm {arm_letter}'s {len(split)} rows to {csv_path}", flush=True)
+
+
+def do_arm(arm_letter, arm_dir, out_dir, flags, label, tag, commit, ks, disable):
+    res, st = run_arm(arm_dir, out_dir, flags, label, tag)
+    psnr, ssim, lp, method = unpack(res)
+    print(f"{label} pooled (all 4 test scales): PSNR {psnr:.3f}  SSIM {ssim:.4f}  "
+          f"LPIPS {lp:.4f}", flush=True)
+    split = verify_and_split(out_dir, method, psnr, label)
+    append_rows(arm_letter, split, commit, ks, disable, st)
+    return {"pooled": {"psnr": psnr, "ssim": ssim, "lpips": lp},
+            "split": split, "stats": st, "method": method}
+
+
+A = do_arm("A", f"{WORK}/armA", out_armA, "--kernel_size 0.1",
+           "arm A / Mip-Splatting", "armA", armA_commit, "0.1", "False")
+B = do_arm("B", f"{WORK}/armB", out_armB, "--kernel_size 0.3 --disable_3D_filter",
+           "arm B / 3DGS", "armB", armB_commit, "0.3", "True")
+
+statA, statB = A["stats"], B["stats"]
+splitA, splitB = A["split"], B["split"]
+psnrA, ssimA, lpipsA = (A["pooled"][k] for k in ("psnr", "ssim", "lpips"))
+psnrB, ssimB, lpipsB = (B["pooled"][k] for k in ("psnr", "ssim", "lpips"))
+
+# The F3 assertion that actually exercises the code path: with the default
+# load_allres=False, Scene must be built from the d0 files alone.
+check(7.1, "readMultiScale loaded the d0-only training split (F3, load_allres=False)",
+      statA["n_train_images"] == n_train_d0 == statB["n_train_images"],
+      f"armA loaded {statA['n_train_images']}, armB loaded {statB['n_train_images']}, "
+      f"d0 files in metadata = {n_train_d0} (of {len(train_paths)} total)")
+
+# §3's correctness argument, checked against the artefact rather than the source:
+# arm B is 3DGS only if filter_3D is identically zero in the saved model.
+check(4.1, "arm B's saved model has filter_3D ≡ 0 and arm A's does not (F5) — "
+           "this, not the diff text, is what makes arm B exactly 3DGS",
+      statB["filter_3D_max"] == 0.0 and statA["filter_3D_max"] > 0.0,
+      f"max|filter_3D|: armA={statA['filter_3D_max']:.6g} armB={statB['filter_3D_max']:.6g}")
+
+
+# §6 checks 5/6's 33.3/33.4 dB targets are calibrated to 30000 iterations (F11)
+# and to the FULL-RESOLUTION column, not this pooled four-scale average. At
+# ITERS=7000 they are recorded as measured, never scored against a target this
+# run was never going to meet (§14).
+check(5, "arm B (3DGS) unit test target 33.3±0.5 dB — informational at "
+         f"{ITERS} iters, the real check is R1 @ 30k full-res", None,
+      f"pooled {psnrB:.3f} dB; per-scale reported below")
+check(6, "arm A (Mip-Splatting) sanity target 33.4±0.5 dB — informational at "
+         f"{ITERS} iters, the real check is R1 @ 30k full-res", None,
+      f"pooled {psnrA:.3f} dB; per-scale reported below")
+
+
+def build_summary():
+    return {
+        "rung": "R0",
+        "scene": SCENE,
+        "iterations": ITERS,
+        "gpu": gpu_name,
+        "n_gpu": n_gpu,
+        "torch": torch.__version__,
+        "cuda": torch.version.cuda,
+        "open3d": open3d_ok,
+        "armA_commit": armA_commit,
+        "armB_commit": armB_commit,
+        "pooled": {"A": A["pooled"], "B": B["pooled"]},
+        "per_scale_A": {k: v["PSNR"] for k, v in splitA.items()},
+        "per_scale_B": {k: v["PSNR"] for k, v in splitB.items()},
+        "per_scale_A_full": {k: {m: v[m] for m in ("PSNR", "SSIM", "LPIPS", "n")}
+                             for k, v in splitA.items()},
+        "per_scale_B_full": {k: {m: v[m] for m in ("PSNR", "SSIM", "LPIPS", "n")}
+                             for k, v in splitB.items()},
+        "stats_A": statA,
+        "stats_B": statB,
+        "timings_seconds": dict(timings),
+        "gpu_hours_used": sum(timings.values()) / 3600.0,
+        "notes": list(notes),
+        "checks": [dict(c) for c in checks],
+        "all_checks_pass_or_skip": all(c["passed"] is not False for c in checks),
+    }
+
+
+# Both arms are complete and their rows are already in results/runs.csv. Write
+# the summary now, before the two remaining stages — the resume test trains
+# another 9 000 iterations and the session could hit its cap inside it. A later
+# write overwrites this one with the fuller picture; a session that dies first
+# still leaves a report-ready summary behind.
+os.makedirs(f"{WORK}/results", exist_ok=True)
+with open(f"{WORK}/results/r0_summary.json", "w") as f:
+    json.dump(build_summary(), f, indent=2)
+print(f"wrote interim {WORK}/results/r0_summary.json (both arms complete)", flush=True)
+
+# =============================================================== check 9.1
+# The whole reporting chain (splitter → CSV → tables → figures) on a synthetic
+# fixture with known answers, so a wrong number downstream cannot hide behind a
+# plausible-looking table.
+rc_self, _ = sh(f"python {WORK}/armA/tools/selftest_pipeline.py", check_rc=False,
+                log_name="selftest")
+check(9.1, "tools/selftest_pipeline.py: reporting chain verified against a fixture "
+           "with planted, known-in-advance answers", rc_self == 0, f"exit {rc_self}")
+
+# =============================================================== check 11: resume
+resume_dir = f"{WORK}/out_resume_test/{SCENE}"
+resume_ok, resume_detail = False, ""
+try:
+    sh(f"OMP_NUM_THREADS=4 python train.py -s {WORK}/multi-scale/{SCENE} -m {resume_dir} "
+       f"--eval --white_background --iterations {RESUME_AT} --test_iterations -1 "
+       f"--checkpoint_iterations {RESUME_AT} --kernel_size 0.1",
+       cwd=f"{WORK}/armA", log_name="resume")
+    ckpt = f"{resume_dir}/chkpnt{RESUME_AT}.pth"
+    ckpt_ok = os.path.exists(ckpt)
+    sh(f"OMP_NUM_THREADS=4 python train.py -s {WORK}/multi-scale/{SCENE} -m {resume_dir} "
+       f"--eval --white_background --iterations {ITERS} --test_iterations -1 "
+       f"--start_checkpoint {ckpt} --kernel_size 0.1",
+       cwd=f"{WORK}/armA", log_name="resume")
+    final_ply = f"{resume_dir}/point_cloud/iteration_{ITERS}/point_cloud.ply"
+    resume_ok = ckpt_ok and os.path.exists(final_ply)
+    resume_detail = f"checkpoint at {RESUME_AT} -> final model at {ITERS}: {final_ply}"
+except Exception as e:
+    resume_detail = f"{type(e).__name__}: {e}"[:400]
+    traceback.print_exc()
+check(11, f"kill at {RESUME_AT}, restart from checkpoint, reach {ITERS} "
+          "(scaled down from 30K for this rung)", resume_ok, resume_detail)
+
+# =============================================================== check 12
+check(12, "off-session persistence", None,
+      "Kaggle leg satisfied — results/, logs/ and both models persist as kernel "
+      "output and are pulled down by tools/kaggle_push.py. Hugging Face Hub leg "
+      "skipped: no HF token is available to this run; not faked.")
 
 # =============================================================== disk hygiene (§8)
 # /kaggle/working is the kernel's output. Left alone it would ship both git
@@ -661,36 +717,9 @@ except Exception:
     traceback.print_exc()
 
 # =============================================================== summary
-all_pass = all(c["passed"] is not False for c in checks)
-summary = {
-    "rung": "R0",
-    "scene": SCENE,
-    "iterations": ITERS,
-    "gpu": gpu_name,
-    "n_gpu": n_gpu,
-    "torch": torch.__version__,
-    "cuda": torch.version.cuda,
-    "open3d": open3d_ok,
-    "armA_commit": armA_commit,
-    "armB_commit": armB_commit,
-    "pooled": {"A": {"psnr": psnrA, "ssim": ssimA, "lpips": lpipsA},
-               "B": {"psnr": psnrB, "ssim": ssimB, "lpips": lpipsB}},
-    "per_scale_A": {k: v["PSNR"] for k, v in splitA.items()},
-    "per_scale_B": {k: v["PSNR"] for k, v in splitB.items()},
-    "per_scale_A_full": {k: {m: v[m] for m in ("PSNR", "SSIM", "LPIPS", "n")}
-                         for k, v in splitA.items()},
-    "per_scale_B_full": {k: {m: v[m] for m in ("PSNR", "SSIM", "LPIPS", "n")}
-                         for k, v in splitB.items()},
-    "stats_A": statA,
-    "stats_B": statB,
-    "timings_seconds": timings,
-    "gpu_hours_used": sum(timings.values()) / 3600.0,
-    "notes": notes,
-    "checks": checks,
-    "all_checks_pass_or_skip": all_pass,
-}
+summary = build_summary()
 with open(f"{WORK}/results/r0_summary.json", "w") as f:
     json.dump(summary, f, indent=2)
 print("R0_SUMMARY_JSON=" + json.dumps(summary))
-if not all_pass:
+if not summary["all_checks_pass_or_skip"]:
     raise SystemExit("one or more §6 checks FAILED — see the table above.")

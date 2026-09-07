@@ -1,12 +1,20 @@
 RUNS   := results/runs.csv
 FIGDIR := figures
 
-.PHONY: selftest table1 table2 figures figures-published report clean-figures
+.PHONY: selftest sync-armb table1 table2 figures figures-published report clean-figures
 
 # The reporting chain, verified against a fixture with known answers. Needs no
 # GPU, so it runs on the dev machine as well as inside the Kaggle kernel.
 selftest:
 	python tools/selftest_pipeline.py
+
+# arm-b-3dgs-baseline must differ from main by the §3 diff and nothing else.
+# Run this after every push to main: the kernel clones both branches, and a
+# stale arm B silently runs old code.
+sync-armb:
+	git checkout arm-b-3dgs-baseline && git merge main && git push origin arm-b-3dgs-baseline && git checkout main
+	@echo "--- arm B introduces (must be 4 files, 7 insertions, 1 deletion) ---"
+	@git diff main...arm-b-3dgs-baseline --stat | tail -1
 
 # ITERS selects which runs to average: 30000 is the R1/R2 target, 7000 the R0
 # smoke rows. Mixing them would produce a number describing neither run.

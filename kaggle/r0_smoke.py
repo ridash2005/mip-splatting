@@ -138,10 +138,15 @@ class VramProbe(threading.Thread):
     def __init__(self):
         super().__init__(daemon=True)
         self.peak_mb = 0
-        self._stop = threading.Event()
+        # NOT self._stop: threading.Thread._stop is an internal METHOD that
+        # Thread._wait_for_tstate_lock calls from join(). Shadowing it with an
+        # Event makes join() raise "TypeError: 'Event' object is not callable"
+        # — which is exactly what killed this run once, immediately after arm A
+        # had finished training.
+        self._stop_evt = threading.Event()
 
     def run(self):
-        while not self._stop.wait(2.0):
+        while not self._stop_evt.wait(2.0):
             try:
                 out = subprocess.run(
                     ["nvidia-smi", "--query-gpu=memory.used",
@@ -153,8 +158,13 @@ class VramProbe(threading.Thread):
                 pass
 
     def stop(self):
-        self._stop.set()
-        self.join(timeout=6)
+        # Instrumentation must never be able to lose a run. Peak VRAM is a
+        # nice-to-have column; the training it measured is an hour of GPU time.
+        try:
+            self._stop_evt.set()
+            self.join(timeout=6)
+        except Exception:
+            traceback.print_exc()
         return self.peak_mb
 
 

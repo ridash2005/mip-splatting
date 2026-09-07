@@ -24,6 +24,7 @@ import os
 import shutil
 import subprocess
 import sys
+import threading
 import tempfile
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -316,6 +317,21 @@ def check_kernel_helpers():
         except RuntimeError as e:
             refused = "NOT unused" in str(e)
         ok("open3d fallback REFUSES when o3d is actually used in the file", refused)
+
+    # VramProbe is a threading.Thread subclass that runs alongside every
+    # training stage. It once shadowed Thread._stop -- an internal method join()
+    # calls -- with an Event, so stop() raised "TypeError: 'Event' object is not
+    # callable" the instant arm A finished training, throwing away the run.
+    # start()/stop() is exercised here, where it costs nothing.
+    probe = ns["VramProbe"]()
+    clash = [n for n in vars(probe) if hasattr(threading.Thread, n)
+             and callable(getattr(threading.Thread, n, None))]
+    ok("VramProbe shadows no threading.Thread method", not clash, str(clash))
+    probe.start()
+    peak = probe.stop()
+    ok("VramProbe.start()/stop() round-trips without raising",
+       isinstance(peak, int) and not probe.is_alive(), f"peak_mb={peak}")
+    ok("VramProbe.stop() is safe to call twice", isinstance(probe.stop(), int))
 
     # The scale parser both the kernel and the splitter depend on.
     ok("scale_of maps convert_blender_data's naming to 0..3",

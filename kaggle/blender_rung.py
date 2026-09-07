@@ -1,12 +1,18 @@
 #!/usr/bin/env python3
 """
-R1 — Blender STMT, the PRIMARY TARGET (§7 R1 of docs/REPRODUCTION-PROMPT.md).
+Blender rungs R1 / R2 / R5 (§7 of docs/REPRODUCTION-PROMPT.md).
 
-Eight Blender scenes, single-scale train -> multi-scale test, 30 000 iterations,
-both arms. This is what fills Table 1 of the thesis and what gate G2 is defined
-on. R0 established the toolchain and replaced §7's estimates with measurement:
-~21 it/s on a T4, so 30 000 iterations is ~24 min per scene per arm, and the two
-T4s halve the wall clock.
+One kernel, parameterised by the constants below, which tools/kaggle_push.py
+rewrites at push time with --set:
+
+  R1  STMT, the PRIMARY TARGET   RUNG=R1 LOAD_ALLRES=False
+  R2  MTMT                       RUNG=R2 LOAD_ALLRES=True   (F3: one flag)
+  R5  seed spread                RUNG=R5 SEED=1 SCENES=lego,chair
+
+Eight Blender scenes, 30 000 iterations, both arms. R1 fills Table 1 of the
+thesis and is what gate G2 is defined on. R0 established the toolchain and
+replaced §7's estimates with measurement: ~21 it/s on a T4, so 30 000 iterations
+is ~24 min per scene per arm, and the two T4s halve the wall clock.
 
 Structure follows R0's, with the parts R0 proved reused from tools/kernel_common
 rather than copied. Two things matter more here than at R0 because this run is
@@ -32,8 +38,13 @@ WORK = "/kaggle/working"
 REPO = "https://github.com/ridash2005/mip-splatting.git"
 LOGDIR = f"{WORK}/logs"
 RESULTS = f"{WORK}/results"
+# --- parameters, rewritten by `kaggle_push.py --set NAME=VALUE` ---------------
+RUNG = "R1"
+LOAD_ALLRES = False        # F3: STMT vs MTMT is this one flag
+SEED = 0                   # R5 varies this; see seeded_train.py
 SCENES = ["ship", "drums", "ficus", "hotdog", "lego", "materials", "mic", "chair"]
 ITERS = 30000
+# -----------------------------------------------------------------------------
 METHOD = f"ours_{ITERS}"
 KEEP_QUALITATIVE = 6
 
@@ -53,7 +64,7 @@ n_gpu = torch.cuda.device_count()
 print(f"torch {torch.__version__}  cuda {torch.version.cuda}  capability {cap}  "
       f"gpu {gpu_name} x{n_gpu}", flush=True)
 if cap < (7, 0):
-    print("R1_ABORT=WRONG_ACCELERATOR", flush=True)
+    print("R1_ABORT=WRONG_ACCELERATOR", flush=True)   # marker name kept for the pusher
     raise SystemExit(f"ABORT: {gpu_name} has compute capability {cap}, below 7.0 (F15).")
 
 # ============================================================ clone + build
@@ -129,20 +140,25 @@ def run_one(gpu, arm, scene):
     out = f"{WORK}/out_arm{arm}/{scene}"
     tag = f"{arm}_{scene}"
     env = f"OMP_NUM_THREADS=4 CUDA_VISIBLE_DEVICES={gpu}"
+    if SEED:
+        env += f" BTP_SEED={SEED}"
+    entry = "tools/seeded_train.py" if SEED else "train.py"
+    protocol_flags = "--load_allres" if LOAD_ALLRES else ""
     port = 6209 + int(gpu)
     st = {}
     probe = kc.VramProbe(gpu=gpu)
     probe.start()
     t = time.time()
-    kc.sh(f"{env} python train.py -s {WORK}/multi-scale/{scene} -m {out} --eval "
+    kc.sh(f"{env} python {entry} -s {WORK}/multi-scale/{scene} -m {out} --eval "
           f"--white_background --iterations {ITERS} --test_iterations -1 --port {port} "
-          f"{cfg['flags']}", cwd=cfg["dir"], logdir=LOGDIR, log_name=f"train_{tag}")
+          f"{protocol_flags} {cfg['flags']}", cwd=cfg["dir"], logdir=LOGDIR,
+          log_name=f"train_{tag}")
     st["train_seconds"] = time.time() - t
     st["peak_vram_mb"] = probe.stop()
     st["iters_per_second"] = ITERS / st["train_seconds"]
 
     t = time.time()
-    kc.sh(f"{env} python render.py -m {out} --skip_train", cwd=cfg["dir"],
+    kc.sh(f"{env} python render.py -m {out} --skip_train {protocol_flags}", cwd=cfg["dir"],
           logdir=LOGDIR, log_name=f"render_{tag}")
     st["render_seconds"] = time.time() - t
     mdir = os.path.join(out, "test", METHOD)
@@ -181,13 +197,15 @@ def run_one(gpu, arm, scene):
         "rasteriser_commit": cfg["commit"], "dataset": "blender", "scene": scene,
         "resolution_flag": "-1", "load_allres": "False",
         "kernel_size": cfg["kernel_size"], "disable_3D_filter": cfg["disable"],
-        "train_scale": "1x", "iterations": str(ITERS), "seed": "0",
+        "train_scale": "1x" if not LOAD_ALLRES else "multi",
+        "iterations": str(ITERS), "seed": str(SEED),
         "n_gaussians": str(st["n_gaussians"]), "model_mb": f"{st['model_mb']:.2f}",
         "peak_vram_mb": str(st["peak_vram_mb"]),
         "train_seconds": f"{st['train_seconds']:.1f}",
         "render_fps": f"{st['render_fps']:.3f}" if st["render_fps"] else "",
         "gpu_model": gpu_name, "platform": "kaggle", "level_claimed": "L1",
-        "notes": f"R1 Blender STMT, {ITERS} iters, 8-scene sweep",
+        "notes": f"{RUNG} Blender {'MTMT' if LOAD_ALLRES else 'STMT'}, {ITERS} iters, "
+                 f"{len(SCENES)}-scene sweep, seed {SEED}",
     })
     removed = kc.prune_renders(out, METHOD, keep=KEEP_QUALITATIVE)
     print(f"[{tag}] done: pooled {pooled:.3f} dB, {st['n_gaussians']} gaussians, "
@@ -204,7 +222,9 @@ def checkpoint_summary():
 
 def build_summary():
     return {
-        "rung": "R1", "protocol": "STMT", "scenes": SCENES, "iterations": ITERS,
+        "rung": RUNG, "protocol": "MTMT" if LOAD_ALLRES else "STMT",
+        "load_allres": LOAD_ALLRES, "seed": SEED,
+        "scenes": SCENES, "iterations": ITERS,
         "gpu": gpu_name, "n_gpu": n_gpu, "torch": torch.__version__,
         "cuda": torch.version.cuda, "open3d": open3d_ok,
         "armA_commit": armA_commit, "armB_commit": armB_commit,
@@ -269,6 +289,6 @@ for path in (f"{WORK}/multi-scale", f"{WORK}/armA/.git", f"{WORK}/armB/.git",
 print(f"working dir after prune: {kc.du(WORK)} MB", flush=True)
 
 print(f"completed {len(done)}/{2 * len(SCENES)} jobs; failed: {list(failed)}", flush=True)
-print("R1_SUMMARY_JSON=" + json.dumps(summary))
+print("R1_SUMMARY_JSON=" + json.dumps(summary))   # marker name kept for the pusher
 if failed:
     raise SystemExit(f"{len(failed)} job(s) failed — see the table above.")

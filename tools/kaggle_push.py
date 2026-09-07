@@ -22,6 +22,7 @@ exactly that marker, and on nothing else: a genuine failure is never retried.
 """
 import argparse
 import json
+import re
 import os
 import sys
 import time
@@ -81,10 +82,36 @@ def push_with_accelerator(body, accelerator):
     return d.get("ref"), d.get("versionNumber"), d.get("url")
 
 
+def apply_overrides(text, overrides):
+    """Rewrite top-level `NAME = ...` constants in the kernel source before upload.
+
+    Kaggle scripts take no arguments and no environment, so a rung kernel is
+    parameterised by editing its own constants. Only a line that already exists
+    at column 0 is rewritten -- an unknown name is an error, not a silently
+    ignored typo that would run the wrong protocol for four hours.
+    """
+    for item in overrides or []:
+        name, _, value = item.partition("=")
+        name = name.strip()
+        pattern = re.compile(rf"^{re.escape(name)} = .*$", re.M)
+        if not pattern.search(text):
+            raise SystemExit(f"--set {name}: no top-level `{name} = ...` in the kernel")
+        if value.startswith("[") or value in ("True", "False") or value.lstrip("-").isdigit():
+            literal = value
+        elif "," in value:                       # SCENES=lego,chair
+            literal = "[" + ", ".join(repr(v.strip()) for v in value.split(",")) + "]"
+        else:
+            literal = repr(value)
+        text = pattern.sub(f"{name} = {literal}", text, count=1)
+        print(f"  set {name} = {literal}")
+    return text
+
+
 def push(client, script_path, username, slug, title, datasets, session_timeout=None,
-         accelerator=None):
+         accelerator=None, overrides=None):
     with open(script_path, encoding="utf-8") as f:
         text = f.read()
+    text = apply_overrides(text, overrides)
     req = ApiSaveKernelRequest()
     req.slug = f"{username}/{slug}"
     req.new_title = title
@@ -197,6 +224,10 @@ def main():
     ap.add_argument("--out", default=None)
     ap.add_argument("--no-wait", action="store_true", help="push and exit without polling")
     ap.add_argument("--session-timeout", type=int, default=None)
+    ap.add_argument("--set", action="append", default=[], metavar="NAME=VALUE",
+                     help="override a top-level constant in the kernel source before "
+                          "upload, e.g. --set LOAD_ALLRES=True --set RUNG=R2. "
+                          "Repeatable. An unknown name is an error.")
     ap.add_argument("--accelerator", choices=ACCELERATORS,
                      help="machine shape to request. Without it Kaggle allocates a "
                           "P100 (CC 6.0), which fails F15. NvidiaTeslaT4 yields "
@@ -229,7 +260,8 @@ def main():
             sys.exit(1 if status == KernelWorkerStatus.ERROR else 0)
         for attempt in range(1, a.retry_wrong_gpu + 2):
             _, actual_slug = push(client, a.script, a.username, a.slug, a.title,
-                                  a.dataset, a.session_timeout, a.accelerator)
+                                  a.dataset, a.session_timeout, a.accelerator,
+                                  a.set)
             if a.no_wait:
                 return
             status = poll(client, a.username, actual_slug, timeout=a.poll_timeout)

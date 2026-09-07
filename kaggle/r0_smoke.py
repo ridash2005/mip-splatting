@@ -276,7 +276,9 @@ print("armA commit", armA_commit, "armB commit", armB_commit)
 os.environ["TORCH_CUDA_ARCH_LIST"] = "7.5"
 install_ok, open3d_ok = True, False
 try:
-    sh("pip install -q ninja gputil lpips", log_name="install")
+    # requirements.txt minus open3d, which is installed separately below so its
+    # failure can be handled rather than aborting the whole install step.
+    sh("pip install -q ninja gputil lpips plyfile opencv-python", log_name="install")
     # open3d before the extensions: if it perturbs the numpy/torch stack we want
     # to find out before spending ten minutes compiling against that stack.
     rc, _ = sh("pip install -q open3d", check_rc=False, log_name="install")
@@ -307,10 +309,21 @@ try:
     sh(f"pip install -v {WORK}/armA/submodules/diff-gaussian-rasterization",
        log_name="build")
     sh(f"pip install -v {WORK}/armA/submodules/simple-knn", log_name="build")
-    import GPUtil  # noqa: F401
-    import lpips as _lpips_mod  # noqa: F401
-    import diff_gaussian_rasterization  # noqa: F401
-    import simple_knn._C  # noqa: F401
+    # Import everything train.py / render.py / metrics.py pull in, before the
+    # data conversion rather than after it. `open3d` is checked separately above;
+    # the rest are requirements.txt plus what the modules import transitively.
+    # A missing one here costs five seconds; the same failure after
+    # convert_blender_data.py costs several minutes of a metered session.
+    missing = []
+    for mod in ("GPUtil", "lpips", "plyfile", "cv2", "torchvision", "tqdm",
+                "numpy", "PIL", "diff_gaussian_rasterization", "simple_knn._C"):
+        try:
+            __import__(mod)
+        except Exception as e:
+            missing.append(f"{mod} ({type(e).__name__})")
+    if missing:
+        raise RuntimeError("modules the training path needs are missing: "
+                           + ", ".join(missing))
 except Exception:
     install_ok = False
     traceback.print_exc()

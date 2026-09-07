@@ -181,7 +181,7 @@ def fetch_log(client, username, slug, out_dir):
     return resp
 
 
-WRONG_GPU_MARKER = "R0_ABORT=WRONG_ACCELERATOR"
+WRONG_GPU_MARKER = "_ABORT=WRONG_ACCELERATOR"   # any rung: R0_, R1_, ...
 
 
 def save_summary(log_resp, out_dir):
@@ -200,9 +200,13 @@ def save_summary(log_resp, out_dir):
     with open(decoded, "w", encoding="utf-8") as f:
         f.write(text)
     print(f"wrote {decoded} ({len(text)} chars)")
+    # Any rung's marker: R0_, R1_, R2_ ... Matching only R0_ silently dropped a
+    # completed R2 run's summary on the floor.
+    marker = re.compile(r"^R\d+_SUMMARY_JSON=")
     for line in text.splitlines():
-        if line.startswith("R0_SUMMARY_JSON="):
-            summary = json.loads(line[len("R0_SUMMARY_JSON="):])
+        m = marker.match(line)
+        if m:
+            summary = json.loads(line[m.end():])
             path = os.path.join(out_dir, "summary.json")
             with open(path, "w", encoding="utf-8") as f:
                 json.dump(summary, f, indent=2)

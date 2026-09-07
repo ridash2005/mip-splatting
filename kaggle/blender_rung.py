@@ -195,7 +195,7 @@ def run_one(gpu, arm, scene):
         "run_id": f"{run_id}-{arm}-{scene}", "timestamp_utc": now,
         "method": cfg["method"], "arm": arm, "impl_commit": cfg["commit"],
         "rasteriser_commit": cfg["commit"], "dataset": "blender", "scene": scene,
-        "resolution_flag": "-1", "load_allres": "False",
+        "resolution_flag": "-1", "load_allres": str(LOAD_ALLRES),
         "kernel_size": cfg["kernel_size"], "disable_3D_filter": cfg["disable"],
         "train_scale": "1x" if not LOAD_ALLRES else "multi",
         "iterations": str(ITERS), "seed": str(SEED),

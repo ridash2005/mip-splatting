@@ -48,7 +48,13 @@ def push(client, script_path, username, slug, title, datasets, session_timeout=N
     if resp.error:
         raise SystemExit(f"push failed: {resp.error}")
     print(f"pushed {resp.ref} (version {resp.version_number}) -> {resp.url}")
-    return resp
+    # Kaggle derives the actual slug from new_title (must be "title, lowercased
+    # with dashes") and silently ignores a mismatched requested slug — always
+    # use what it actually assigned, from the tail of resp.ref, not our request.
+    actual_slug = resp.ref.rsplit("/", 1)[-1]
+    if actual_slug != slug:
+        print(f"note: Kaggle assigned slug {actual_slug!r} (requested {slug!r})")
+    return resp, actual_slug
 
 
 def poll(client, username, slug, interval=30, timeout=3 * 3600):
@@ -100,12 +106,12 @@ def main():
     a = ap.parse_args()
 
     with get_client() as client:
-        push(client, a.script, a.username, a.slug, a.title, a.dataset, a.session_timeout)
+        _, actual_slug = push(client, a.script, a.username, a.slug, a.title, a.dataset, a.session_timeout)
         if a.no_wait:
             return
-        status = poll(client, a.username, a.slug)
-        out_dir = a.out or f"results/kaggle_runs/{a.slug}"
-        log_resp = fetch_log(client, a.username, a.slug, out_dir)
+        status = poll(client, a.username, actual_slug)
+        out_dir = a.out or f"results/kaggle_runs/{actual_slug}"
+        log_resp = fetch_log(client, a.username, actual_slug, out_dir)
         for line in log_resp.log.splitlines():
             if line.startswith("R0_SUMMARY_JSON="):
                 summary = json.loads(line[len("R0_SUMMARY_JSON="):])

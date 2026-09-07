@@ -12,6 +12,13 @@ Each `files` entry in a kernel's output has its own signed `url` for
 download; `list_kernel_session_output`'s `log` field carries the full
 stdout/stderr, which is what this tool saves and scans for a
 `R0_SUMMARY_JSON=` line.
+
+Accelerator note: `ApiSaveKernelRequest` carries only a boolean `enable_gpu`
+(kagglesdk 0.1.28 has no accelerator field at all), and Kaggle allocates
+whichever GPU is free — a P100 on one launch, 2xT4 on the next. 3DGS needs
+compute capability 7.0+ (F15), so the kernel aborts in ~30 seconds on a P100
+and prints `R0_ABORT=WRONG_ACCELERATOR`. `--retry-wrong-gpu N` relaunches on
+exactly that marker, and on nothing else: a genuine failure is never retried.
 """
 import argparse
 import json
@@ -57,7 +64,7 @@ def push(client, script_path, username, slug, title, datasets, session_timeout=N
     return resp, actual_slug
 
 
-def poll(client, username, slug, interval=30, timeout=3 * 3600):
+def poll(client, username, slug, interval=30, timeout=6 * 3600):
     req = ApiGetKernelSessionStatusRequest()
     req.user_name = username
     req.kernel_slug = slug
@@ -92,6 +99,9 @@ def fetch_log(client, username, slug, out_dir):
     return resp
 
 
+WRONG_GPU_MARKER = "R0_ABORT=WRONG_ACCELERATOR"
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("script")
@@ -103,23 +113,48 @@ def main():
     ap.add_argument("--out", default=None)
     ap.add_argument("--no-wait", action="store_true", help="push and exit without polling")
     ap.add_argument("--session-timeout", type=int, default=None)
+    ap.add_argument("--retry-wrong-gpu", type=int, default=0,
+                     help="relaunch this many times if Kaggle allocates a GPU below "
+                          "compute capability 7.0 (F15). Each such attempt aborts in "
+                          "~30s, so the quota cost is negligible.")
+    ap.add_argument("--retry-delay", type=int, default=60,
+                     help="seconds between relaunch attempts")
+    ap.add_argument("--poll-timeout", type=int, default=6 * 3600,
+                     help="seconds to wait for the kernel to finish before giving up")
     a = ap.parse_args()
 
     with get_client() as client:
-        _, actual_slug = push(client, a.script, a.username, a.slug, a.title, a.dataset, a.session_timeout)
-        if a.no_wait:
+        out_dir = a.out or f"results/kaggle_runs/{a.slug}"
+        for attempt in range(1, a.retry_wrong_gpu + 2):
+            _, actual_slug = push(client, a.script, a.username, a.slug, a.title,
+                                  a.dataset, a.session_timeout)
+            if a.no_wait:
+                return
+            status = poll(client, a.username, actual_slug, timeout=a.poll_timeout)
+            out_dir = a.out or f"results/kaggle_runs/{actual_slug}"
+            log_resp = fetch_log(client, a.username, actual_slug, out_dir)
+
+            if WRONG_GPU_MARKER in log_resp.log and attempt <= a.retry_wrong_gpu:
+                print(f"attempt {attempt}: Kaggle allocated a sub-7.0 GPU; the kernel "
+                      f"aborted per F15. Relaunching in {a.retry_delay}s "
+                      f"({a.retry_wrong_gpu - attempt + 1} attempt(s) left).", flush=True)
+                time.sleep(a.retry_delay)
+                continue
+
+            for line in log_resp.log.splitlines():
+                if line.startswith("R0_SUMMARY_JSON="):
+                    summary = json.loads(line[len("R0_SUMMARY_JSON="):])
+                    with open(os.path.join(out_dir, "summary.json"), "w") as f:
+                        json.dump(summary, f, indent=2)
+                    print(json.dumps(summary, indent=2))
+            if WRONG_GPU_MARKER in log_resp.log:
+                sys.exit(f"gave up after {attempt} attempts: Kaggle never allocated a "
+                         "compute-capability 7.0+ GPU. Raise --retry-wrong-gpu, or set "
+                         "the notebook's accelerator to 'GPU T4 x2' in the web UI and "
+                         "launch it there.")
+            if status == KernelWorkerStatus.ERROR:
+                sys.exit(1)
             return
-        status = poll(client, a.username, actual_slug)
-        out_dir = a.out or f"results/kaggle_runs/{actual_slug}"
-        log_resp = fetch_log(client, a.username, actual_slug, out_dir)
-        for line in log_resp.log.splitlines():
-            if line.startswith("R0_SUMMARY_JSON="):
-                summary = json.loads(line[len("R0_SUMMARY_JSON="):])
-                with open(os.path.join(out_dir, "summary.json"), "w") as f:
-                    json.dump(summary, f, indent=2)
-                print(json.dumps(summary, indent=2))
-        if status == KernelWorkerStatus.ERROR:
-            sys.exit(1)
 
 
 if __name__ == "__main__":

@@ -80,6 +80,30 @@ def scale_of(path):
     return int(tail) if tail.isdigit() else None
 
 
+def method_block(doc, method, path="<doc>"):
+    """Return the {PSNR, SSIM, LPIPS} block for `method`, whatever the nesting.
+
+    This repo's metrics.py writes `json.dump(full_dict[scene_dir], ...)` — it
+    dumps the value, not the whole dict — so results.json and per_view.json are
+    keyed by METHOD at the top level:
+
+        {"ours_30000": {"PSNR": {...}, "SSIM": {...}, "LPIPS": {...}}}
+
+    Other forks (and this tool's first revision) assume the outer scene_dir key
+    is still there. Both shapes are accepted, because guessing wrong here does
+    not fail loudly — it silently indexes into the wrong dictionary.
+    """
+    if isinstance(doc.get(method), dict) and "PSNR" in doc[method]:
+        return doc[method]
+    for outer, inner in doc.items():
+        if isinstance(inner, dict) and isinstance(inner.get(method), dict) \
+                and "PSNR" in inner[method]:
+            return inner[method]
+    sys.exit(f"method {method!r} not found in {path}; top-level keys are "
+             f"{list(doc)}. Pass --method to match the directory name under "
+             f"<model>/test/ (e.g. ours_30000).")
+
+
 def load_order(data_dir, split="test"):
     """The camera order readMultiScale produced, as a list of scale indices."""
     meta_path = os.path.join(data_dir, "metadata.json")
@@ -103,10 +127,7 @@ def split_scene(model_dir, data_dir, method):
     with open(pv_path) as f:
         per_view = json.load(f)
 
-    key = next(iter(per_view))                      # metrics.py nests under scene_dir
-    if method not in per_view[key]:
-        sys.exit(f"method {method!r} not in per_view.json; have {list(per_view[key])}")
-    block = per_view[key][method]
+    block = method_block(per_view, method, pv_path)
 
     scales = load_order(data_dir)
     acc = defaultdict(lambda: defaultdict(list))

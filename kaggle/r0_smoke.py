@@ -455,10 +455,18 @@ check(4.1, "arm B's saved model has filter_3D ≡ 0 and arm A's does not (F5) �
 
 
 def unpack(res):
-    scene_dir = next(iter(res))
-    method = next(iter(res[scene_dir]))
-    d = res[scene_dir][method]
-    return d["PSNR"], d["SSIM"], d["LPIPS"], method
+    """Pull the pooled metrics and the method name out of results.json.
+
+    metrics.py writes `json.dump(full_dict[scene_dir], ...)` — the value, not
+    the enclosing dict — so the top-level key is the method directory name
+    (`ours_7000`), not the scene path. Only one method directory exists per run.
+    """
+    methods = [k for k, v in res.items() if isinstance(v, dict) and "PSNR" in v]
+    if len(methods) != 1:
+        raise RuntimeError(f"expected exactly one method block in results.json, "
+                           f"found {methods} (top-level keys {list(res)})")
+    d = res[methods[0]]
+    return d["PSNR"], d["SSIM"], d["LPIPS"], methods[0]
 
 
 psnrA, ssimA, lpipsA, methodA = unpack(resA)

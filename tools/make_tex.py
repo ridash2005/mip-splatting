@@ -327,6 +327,58 @@ def instruments_table(inst, label, caption):
     return "\n".join(L)
 
 
+
+# Published references for the real scenes, from the 3DGS paper. Cited as
+# context, never as the control: these are 30K single-seed numbers on a 24 GB
+# card, and the subset here is not the set they average over.
+REAL_REF = {"tandt": ("Tanks & Temples (2-scene avg)", 23.14, 0.841, 0.183),
+            "db": ("Deep Blending (2-scene avg)", 29.41, 0.903, 0.243)}
+
+
+def real_scene_table(rows, label, caption):
+    """R3: one row per (scene, arm). No per-scale split -- one test resolution."""
+    sel = [r for r in rows if r.get("dataset") in ("mipnerf360", "tandt", "db")]
+    if not sel:
+        return placeholder(label, caption, "The rung has not been run.")
+    by = {}
+    for r in sel:
+        by[(r["dataset"], r["scene"], r["arm"])] = r
+    scenes = sorted({(d, s) for d, s, _ in by})
+    L = [r"\begin{table}[htbp]", r"  \centering",
+         r"  \caption{" + caption + "}", r"  \label{tab:" + label + "}",
+         r"  \small", r"  \begin{tabular}{llrrrrr}", r"    \toprule",
+         r"    scene & arm & PSNR & SSIM & LPIPS & primitives & peak VRAM \\",
+         r"    \midrule"]
+    last_ds = None
+    for ds, scene in scenes:
+        if ds != last_ds:
+            if last_ds is not None:
+                L.append(r"    \addlinespace[2pt]")
+            last_ds = ds
+        for arm in ("B", "A"):
+            r = by.get((ds, scene, arm))
+            if not r:
+                continue
+            L.append("    " + " & ".join([
+                scene.replace("_", r"\_") if arm == "B" else "",
+                ARM_NAME[arm],
+                f"{float(r['psnr']):.2f}",
+                f"{float(r['ssim']):.4f}",
+                f"{float(r['lpips']):.4f}",
+                f"{int(r['n_gaussians']):,}".replace(",", r"\,")
+                if r.get("n_gaussians") else NOT_MEASURED,
+                f"{int(r['peak_vram_mb']):,}".replace(",", r"\,") + r"\,MB"
+                if r.get("peak_vram_mb") else NOT_MEASURED,
+            ]) + r" \\")
+    L += [r"    \bottomrule", r"  \end{tabular}",
+          r"  \par\vspace{2pt}\footnotesize 30\,000 iterations, every-8th test "
+          r"split (F12), Mip-NeRF 360 indoor at \texttt{-i images\_2} and the rest "
+          r"at their defaults (F16). L2: a subset average is not comparable to a "
+          r"published all-scene average, and none is quoted against it.",
+          r"\end{table}", ""]
+    return "\n".join(L)
+
+
 # ------------------------------------------------------------------- macros
 def macros(rows, summaries, inst=None):
     """Inline numbers, as \\newcommand. Undefined data yields a visible marker."""
@@ -374,6 +426,14 @@ def macros(rows, summaries, inst=None):
     bad = [k for k in M if not k.isalpha()]
     if bad:
         raise SystemExit(f"macro name(s) LaTeX cannot accept (letters only): {bad}")
+    real = [r for r in rows if r.get("dataset") in ("mipnerf360", "tandt", "db")
+            and r.get("peak_vram_mb")]
+    put("realScenes", len({r["scene"] for r in real}) if real else None, "{:.0f}")
+    put("realPeakVram", max((float(r["peak_vram_mb"]) for r in real), default=None),
+        "{:,.0f}")
+    put("realMaxGauss", max((float(r["n_gaussians"]) for r in real
+                             if r.get("n_gaussians")), default=None), "{:,.0f}")
+
     bp = (inst or {}).get("by_protocol", {})
     for k, name in (("full", "Full"), ("arc", "Arc"), ("cone", "Cone"),
                     ("mixed", "Mixed"), ("grazing", "Grazing")):
@@ -456,6 +516,9 @@ def main():
         "table-preflight.tex": preflight_table(
             summaries.get("R0"), "preflight",
             r"The twelve \S6 pre-flight checks, as the R0 kernel reported them."),
+        "table-real.tex": real_scene_table(
+            [r for r in rows if r.get("iterations") == "30000"], "real",
+            r"R3 --- real scenes that fit 16\,GB, both arms."),
         "table-instruments.tex": instruments_table(
             inst, "instruments",
             r"I-1 (floor occupancy) and I-2 (conditioning) across the five "

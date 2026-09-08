@@ -219,6 +219,40 @@ scene and scale ($0.025$\,dB). The arm without a band-limit is the less stable
 one under reseeding, which is consistent with the mechanism this thesis
 proposes, though two scenes are far too few to claim it as a finding.
 
+\section{R3 --- real scenes}
+\label{sec:real}
+
+\input{generated/table-real}
+
+Two results here, neither of which is a PSNR.
+
+\paragraph{The compute envelope, resolved.} Section~\ref{ch:design} recorded 16\,GB
+against a stated requirement of 24\,GB, and \S8.1 of the protocol listed
+``whether \texttt{counter} and \texttt{drjohnson} fit 16\,GB'' as one of only two
+facts that could not be settled without running. They can be settled now:
+\texttt{counter} fits, at $14\,567$\,MB. Every scene measured peaks between
+$14.5$ and $\realPeakVram$\,MB against a $15\,360$\,MB card --- under a gigabyte
+of headroom, at up to $\realMaxGauss$ primitives. The envelope binds, but it has
+not yet been exceeded, and no scene was made to fit by reducing anything.
+
+\paragraph{The arms agree, which is the prediction.} On every one of these
+scenes the two arms land within $0.2$\,dB of each other, in both directions ---
+3DGS ahead on \texttt{bonsai}, \texttt{counter} and \texttt{kitchen},
+Mip-Splatting ahead on \texttt{room}. That is what Proposition~\ref{prop:reduction}
+plus the I-1 measurement of \S\ref{sec:instrumentresults} together require: these
+are well-conditioned full-orbit captures, the Nyquist floor binds, and where it
+binds the two filters are identical. It is a second confirmation of the
+instrument result, on real data, at the level of rendered quality rather than of
+geometry --- and it is the same reason no gain is available here for a method
+that improves the filter only where the floor does not bind.
+
+\paragraph{On comparison to published figures.} None is made. The published
+Mip-NeRF 360 average is over nine scenes including the five outdoor ones, which
+are excluded here by the memory envelope; a four-indoor subset average is a
+different quantity and setting the two side by side is precisely the error
+\S\ref{ch:discussion} records as having already occurred once in this project's
+earlier write-up. These rows are L2 and are the self-run control for later work.
+
 \section{Cost, measured}
 \label{sec:measuredcost}
 The estimates in the protocol's \S7 were replaced by measurement at R0, on the

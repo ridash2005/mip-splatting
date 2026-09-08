@@ -87,17 +87,21 @@ def build(c2w, focal, seed=0):
     d = d / np.linalg.norm(d, axis=1, keepdims=True)
     anchor_i = int(rng.integers(n))
 
-    def wedge(width_deg, min_n=3):
-        """Cameras within width_deg of the anchor, measured as a real 3D angle."""
-        cos = np.clip(d @ d[anchor_i], -1.0, 1.0)
-        ang = np.degrees(np.arccos(cos))
-        idx = np.where(ang <= width_deg / 2.0)[0]
-        if len(idx) < min_n:                       # never return a degenerate set
-            idx = np.argsort(ang)[:min_n]
-        return sorted(int(i) for i in idx)
+    def nearest(k):
+        """The k cameras closest in DIRECTION to the anchor.
 
-    out["arc"] = {"idx": wedge(90.0), "nominal_width_deg": 90.0}
-    out["cone"] = {"idx": wedge(20.0), "nominal_width_deg": 20.0}
+        Contiguous by construction, and sized by count rather than by a fixed
+        angular width. Width alone is not usable for a trainable subset: on the
+        Blender captures a 20-degree wedge catches three cameras, and three views
+        is a sparse-reconstruction experiment rather than a conditioning one. The
+        angular span that results is measured and reported, so the conditioning
+        is a measurement either way.
+        """
+        cos = np.clip(d @ d[anchor_i], -1.0, 1.0)
+        return sorted(int(i) for i in np.argsort(-cos)[:max(2, min(k, n))])
+
+    out["arc"] = {"idx": nearest(max(2, n // 4))}
+    out["cone"] = {"idx": nearest(max(2, n // 10))}
 
     # Mixed focal: same poses, a random half downsampled 2-4x.
     half = rng.permutation(n)[: n // 2]

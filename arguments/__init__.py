@@ -58,6 +58,7 @@ class ModelParams(ParamGroup):
         self.use_fisher_filter = False   # B1
         self.fisher_s = 1.0
         self.fisher_beta = 0.01
+        self.camera_subset = ""          # JSON index list restricting TRAIN cameras
         # self.use_spatial_gaussian_bias = False
         self.ray_jitter = False
         self.resample_gt_image = False

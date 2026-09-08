@@ -71,6 +71,22 @@ class Scene:
 
         self.cameras_extent = scene_info.nerf_normalization["radius"]
 
+        # The stress suite (§6.4) degrades the CAPTURE, not the scene: training
+        # cameras are restricted to a protocol's index list while the test set is
+        # left whole, so the only thing that varies between protocols is the
+        # geometry the reconstruction had available.
+        subset = getattr(args, "camera_subset", "")
+        if subset:
+            import json as _json
+            idx = _json.loads(subset) if subset.strip().startswith("[") \
+                else _json.load(open(subset))
+            if isinstance(idx, dict):
+                idx = idx["idx"]
+            before = len(scene_info.train_cameras)
+            scene_info = scene_info._replace(
+                train_cameras=[scene_info.train_cameras[i] for i in idx])
+            print(f"camera_subset: training on {len(idx)} of {before} cameras")
+
         for resolution_scale in resolution_scales:
             print("Loading Training Cameras")
             self.train_cameras[resolution_scale] = cameraList_from_camInfos(scene_info.train_cameras, resolution_scale, args)

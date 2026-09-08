@@ -1,0 +1,190 @@
+{
+  "rung": "R3",
+  "iterations": 30000,
+  "gpu": "Tesla T4",
+  "n_gpu": 2,
+  "torch": "2.10.0+cu128",
+  "cuda": "12.8",
+  "armA_commit": "3cdff3e8421b8af2f68964ca5923da619c4914d2",
+  "armB_commit": "eef05b292f4f9c12ebf22c91a45b42586f714402",
+  "jobs": [
+    [
+      "room",
+      "mipnerf360",
+      "images_2"
+    ],
+    [
+      "counter",
+      "mipnerf360",
+      "images_2"
+    ],
+    [
+      "kitchen",
+      "mipnerf360",
+      "images_2"
+    ],
+    [
+      "bonsai",
+      "mipnerf360",
+      "images_2"
+    ],
+    [
+      "truck",
+      "tandt",
+      ""
+    ],
+    [
+      "train",
+      "tandt",
+      ""
+    ],
+    [
+      "drjohnson",
+      "db",
+      ""
+    ],
+    [
+      "playroom",
+      "db",
+      ""
+    ]
+  ],
+  "sources": {
+    "room": "/kaggle/input/datasets/ngoctuyen610/mipnerf-360-dataset/mipnerf360/room",
+    "counter": "/kaggle/input/datasets/ngoctuyen610/mipnerf-360-dataset/mipnerf360/counter",
+    "kitchen": "/kaggle/input/datasets/ngoctuyen610/mipnerf-360-dataset/mipnerf360/kitchen",
+    "bonsai": "/kaggle/input/datasets/ngoctuyen610/mipnerf-360-dataset/mipnerf360/bonsai",
+    "truck": "/kaggle/input/datasets/thnhdg/tandt-db/tandt/truck",
+    "train": "/kaggle/input/datasets/thnhdg/tandt-db/tandt/train",
+    "drjohnson": "/kaggle/input/datasets/thnhdg/tandt-db/db/drjohnson",
+    "playroom": "/kaggle/input/datasets/thnhdg/tandt-db/db/playroom"
+  },
+  "done": {
+    "A/room": {
+      "train_seconds": 6643.1685354709625,
+      "peak_vram_mb": 14859,
+      "iters_per_second": 4.515917342728257,
+      "render_seconds": 81.33038902282715,
+      "n_rendered": 39,
+      "render_fps": 0.4795255558049009,
+      "n_gaussians": 2172432,
+      "filter_3D_max": 0.024517733603715897,
+      "model_mb": 547.454421,
+      "PSNR": 31.7028751373291,
+      "SSIM": 0.9254729151725769,
+      "LPIPS": 0.20104724168777466
+    },
+    "B/room": {
+      "train_seconds": 6683.293942689896,
+      "peak_vram_mb": 14907,
+      "iters_per_second": 4.4888045112565536,
+      "render_seconds": 79.42453193664551,
+      "n_rendered": 39,
+      "render_fps": 0.4910321666246531,
+      "n_gaussians": 2098116,
+      "filter_3D_max": 0.0,
+      "model_mb": 528.726789,
+      "PSNR": 31.482681274414062,
+      "SSIM": 0.924308180809021,
+      "LPIPS": 0.20210722088813782
+    },
+    "B/counter": {
+      "train_seconds": 6260.762474298477,
+      "peak_vram_mb": 14725,
+      "iters_per_second": 4.791748628566446,
+      "render_seconds": 62.80696654319763,
+      "n_rendered": 30,
+      "render_fps": 0.4776540191503514,
+      "n_gaussians": 1433761,
+      "filter_3D_max": 0.0,
+      "model_mb": 361.309329,
+      "PSNR": 29.35225486755371,
+      "SSIM": 0.9138072729110718,
+      "LPIPS": 0.18582774698734283
+    },
+    "A/counter": {
+      "train_seconds": 6343.041247367859,
+      "peak_vram_mb": 14567,
+      "iters_per_second": 4.729592451010618,
+      "render_seconds": 62.71464800834656,
+      "n_rendered": 30,
+      "render_fps": 0.47835714546316777,
+      "n_gaussians": 1537546,
+      "filter_3D_max": 0.007537933997809887,
+      "model_mb": 387.463149,
+      "PSNR": 29.186307907104492,
+      "SSIM": 0.9134721755981445,
+      "LPIPS": 0.18651066720485687
+    },
+    "B/kitchen": {
+      "train_seconds": 7419.303836345673,
+      "peak_vram_mb": 14889,
+      "iters_per_second": 4.04350605686696,
+      "render_seconds": 73.74019479751587,
+      "n_rendered": 35,
+      "render_fps": 0.4746393753923073,
+      "n_gaussians": 2078845,
+      "filter_3D_max": 0.0,
+      "model_mb": 523.870497,
+      "PSNR": 31.750593185424805,
+      "SSIM": 0.9299771785736084,
+      "LPIPS": 0.11975748836994171
+    },
+    "A/kitchen": {
+      "train_seconds": 7914.257073402405,
+      "peak_vram_mb": 14891,
+      "iters_per_second": 3.7906274362531858,
+      "render_seconds": 73.88805317878723,
+      "n_rendered": 35,
+      "render_fps": 0.47368956812693863,
+      "n_gaussians": 2204391,
+      "filter_3D_max": 0.015115350484848022,
+      "model_mb": 555.508089,
+      "PSNR": 31.717744827270508,
+      "SSIM": 0.930665910243988,
+      "LPIPS": 0.11917711049318314
+    },
+    "A/bonsai": {
+      "train_seconds": 5515.1584413051605,
+      "peak_vram_mb": 14783,
+      "iters_per_second": 5.439553608345748,
+      "render_seconds": 73.70417594909668,
+      "n_rendered": 37,
+      "render_fps": 0.5020068337179947,
+      "n_gaussians": 1633716,
+      "filter_3D_max": 0.030263355001807213,
+      "model_mb": 411.697989,
+      "PSNR": 32.56653594970703,
+      "SSIM": 0.9461895823478699,
+      "LPIPS": 0.18810836970806122
+    },
+    "B/bonsai": {
+      "train_seconds": 5429.5599629879,
+      "peak_vram_mb": 14663,
+      "iters_per_second": 5.525309639179476,
+      "render_seconds": 69.76728415489197,
+      "n_rendered": 37,
+      "render_fps": 0.530334532126196,
+      "n_gaussians": 1547202,
+      "filter_3D_max": 0.0,
+      "model_mb": 389.896461,
+      "PSNR": 32.63983917236328,
+      "SSIM": 0.9461058378219604,
+      "LPIPS": 0.18849919736385345
+    }
+  },
+  "failed": {
+    "A/truck": "RuntimeError: command failed (1): OMP_NUM_THREADS=4 CUDA_VISIBLE_DEVICES=0 python train.py -s /kaggle/input/datasets/thnhdg/tandt-db/tandt/truck -m /kaggle/working/out_armA/truck --eval  --iterations 30000 --test_iterations -1 --port 6209 --quiet --kernel_size 0.1\n--- tail ---\nOptimizing /kaggle/working/out_armA/truck\nTraceback (most recent call last):\n  File \"/kaggle/working/armA/train.py\", line 268, in <module>\n    training(lp.extract(args), op.extract(args), pp.extract(args), args.test_iterations, args.save_iterations, args.checkpoint_iterations, args.start_checkpoint, args.debug_from)\n  Fi",
+    "B/truck": "RuntimeError: command failed (1): OMP_NUM_THREADS=4 CUDA_VISIBLE_DEVICES=0 python train.py -s /kaggle/input/datasets/thnhdg/tandt-db/tandt/truck -m /kaggle/working/out_armB/truck --eval  --iterations 30000 --test_iterations -1 --port 6209 --quiet --kernel_size 0.3 --disable_3D_filter\n--- tail ---\nOptimizing /kaggle/working/out_armB/truck\nTraceback (most recent call last):\n  File \"/kaggle/working/armB/train.py\", line 269, in <module>\n    training(lp.extract(args), op.extract(args), pp.extract(args), args.test_iterations, args.save_iterations, args.checkpoint_iterations, args.start_checkpoint, a",
+    "A/train": "RuntimeError: command failed (1): OMP_NUM_THREADS=4 CUDA_VISIBLE_DEVICES=0 python train.py -s /kaggle/input/datasets/thnhdg/tandt-db/tandt/train -m /kaggle/working/out_armA/train --eval  --iterations 30000 --test_iterations -1 --port 6209 --quiet --kernel_size 0.1\n--- tail ---\nOptimizing /kaggle/working/out_armA/train\nTraceback (most recent call last):\n  File \"/kaggle/working/armA/train.py\", line 268, in <module>\n    training(lp.extract(args), op.extract(args), pp.extract(args), args.test_iterations, args.save_iterations, args.checkpoint_iterations, args.start_checkpoint, args.debug_from)\n  Fi",
+    "B/train": "RuntimeError: command failed (1): OMP_NUM_THREADS=4 CUDA_VISIBLE_DEVICES=0 python train.py -s /kaggle/input/datasets/thnhdg/tandt-db/tandt/train -m /kaggle/working/out_armB/train --eval  --iterations 30000 --test_iterations -1 --port 6209 --quiet --kernel_size 0.3 --disable_3D_filter\n--- tail ---\nOptimizing /kaggle/working/out_armB/train\nTraceback (most recent call last):\n  File \"/kaggle/working/armB/train.py\", line 269, in <module>\n    training(lp.extract(args), op.extract(args), pp.extract(args), args.test_iterations, args.save_iterations, args.checkpoint_iterations, args.start_checkpoint, a",
+    "A/drjohnson": "RuntimeError: command failed (1): OMP_NUM_THREADS=4 CUDA_VISIBLE_DEVICES=0 python train.py -s /kaggle/input/datasets/thnhdg/tandt-db/db/drjohnson -m /kaggle/working/out_armA/drjohnson --eval  --iterations 30000 --test_iterations -1 --port 6209 --quiet --kernel_size 0.1\n--- tail ---\nOptimizing /kaggle/working/out_armA/drjohnson\nTraceback (most recent call last):\n  File \"/kaggle/working/armA/train.py\", line 268, in <module>\n    training(lp.extract(args), op.extract(args), pp.extract(args), args.test_iterations, args.save_iterations, args.checkpoint_iterations, args.start_checkpoint, args.debug_f",
+    "B/drjohnson": "RuntimeError: command failed (1): OMP_NUM_THREADS=4 CUDA_VISIBLE_DEVICES=0 python train.py -s /kaggle/input/datasets/thnhdg/tandt-db/db/drjohnson -m /kaggle/working/out_armB/drjohnson --eval  --iterations 30000 --test_iterations -1 --port 6209 --quiet --kernel_size 0.3 --disable_3D_filter\n--- tail ---\nOptimizing /kaggle/working/out_armB/drjohnson\nTraceback (most recent call last):\n  File \"/kaggle/working/armB/train.py\", line 269, in <module>\n    training(lp.extract(args), op.extract(args), pp.extract(args), args.test_iterations, args.save_iterations, args.checkpoint_iterations, args.start_chec",
+    "A/playroom": "RuntimeError: command failed (1): OMP_NUM_THREADS=4 CUDA_VISIBLE_DEVICES=0 python train.py -s /kaggle/input/datasets/thnhdg/tandt-db/db/playroom -m /kaggle/working/out_armA/playroom --eval  --iterations 30000 --test_iterations -1 --port 6209 --quiet --kernel_size 0.1\n--- tail ---\nOptimizing /kaggle/working/out_armA/playroom\nTraceback (most recent call last):\n  File \"/kaggle/working/armA/train.py\", line 268, in <module>\n    training(lp.extract(args), op.extract(args), pp.extract(args), args.test_iterations, args.save_iterations, args.checkpoint_iterations, args.start_checkpoint, args.debug_from",
+    "B/playroom": "RuntimeError: command failed (1): OMP_NUM_THREADS=4 CUDA_VISIBLE_DEVICES=0 python train.py -s /kaggle/input/datasets/thnhdg/tandt-db/db/playroom -m /kaggle/working/out_armB/playroom --eval  --iterations 30000 --test_iterations -1 --port 6209 --quiet --kernel_size 0.3 --disable_3D_filter\n--- tail ---\nOptimizing /kaggle/working/out_armB/playroom\nTraceback (most recent call last):\n  File \"/kaggle/working/armB/train.py\", line 269, in <module>\n    training(lp.extract(args), op.extract(args), pp.extract(args), args.test_iterations, args.save_iterations, args.checkpoint_iterations, args.start_checkpo"
+  },
+  "session_seconds": 26932.008944749832,
+  "gpu_hours_used": 7.481113595896297,
+  "complete": false,
+  "oom": []
+}

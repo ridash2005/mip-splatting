@@ -89,21 +89,40 @@ def apply_overrides(text, overrides):
     parameterised by editing its own constants. Only a line that already exists
     at column 0 is rewritten -- an unknown name is an error, not a silently
     ignored typo that would run the wrong protocol for four hours.
+
+    The value is coerced to the TYPE the constant already has. That matters:
+    `--set PROTOCOLS=full` against `PROTOCOLS = ["full"]` must produce a
+    one-element list, not the string "full" -- which iterates as 'f','u','l','l'
+    and cost a session to discover.
     """
     for item in overrides or []:
         name, _, value = item.partition("=")
         name = name.strip()
-        pattern = re.compile(rf"^{re.escape(name)} = .*$", re.M)
-        if not pattern.search(text):
+        pattern = re.compile(rf"^{re.escape(name)} = (.*)$", re.M)
+        m = pattern.search(text)
+        if not m:
             raise SystemExit(f"--set {name}: no top-level `{name} = ...` in the kernel")
-        if value.startswith("[") or value in ("True", "False") or value.lstrip("-").isdigit():
+        current = m.group(1).strip()
+
+        if value.startswith("["):
             literal = value
-        elif "," in value:                       # SCENES=lego,chair
-            literal = "[" + ", ".join(repr(v.strip()) for v in value.split(",")) + "]"
+        elif current.startswith("["):
+            # list-typed target: always a list, even for one element
+            parts = [v.strip() for v in value.split(",") if v.strip()]
+            literal = "[" + ", ".join(
+                v if (v in ("True", "False") or v.lstrip("-").isdigit()) else repr(v)
+                for v in parts) + "]"
+        elif current[:1] in ("'", '"'):
+            # string-typed target stays a string, even when the value looks
+            # numeric: TABLE = "2" is used to build filenames, not arithmetic.
+            literal = repr(value)
+        elif value in ("True", "False") or value.lstrip("-").replace(".", "", 1).isdigit():
+            literal = value
         else:
             literal = repr(value)
+
         text = pattern.sub(f"{name} = {literal}", text, count=1)
-        print(f"  set {name} = {literal}")
+        print(f"  set {name} = {literal}   (was {current})")
     return text
 
 

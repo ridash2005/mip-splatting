@@ -379,6 +379,161 @@ def real_scene_table(rows, label, caption):
     return "\n".join(L)
 
 
+
+METHOD_LABEL_TEX = {"3dgs": "3DGS", "mip-splatting": "Mip-Splatting",
+                    "b1-fisher": "B1 --- Fisher band-limit"}
+
+
+def method_table(rows, inst, label, caption):
+    """Table 2: the method against both baselines on the standard benchmark."""
+    sel = [r for r in rows if r.get("dataset") == "blender"
+           and r.get("iterations") == "30000" and r.get("load_allres") == "False"
+           and r.get("seed") == "0"
+           and r.get("train_scale", "").split("/")[0] == "1x"
+           and (r.get("train_scale") == "1x" or r.get("train_scale").endswith("/full"))]
+    order = ["3dgs", "mip-splatting", "b1-fisher"]
+    acc = {}
+    for r in sel:
+        m = r.get("method")
+        if m not in order:
+            continue
+        acc.setdefault(m, {}).setdefault(r["test_scale"], []).append(r)
+    if not acc:
+        return placeholder(label, caption, "The method has not been evaluated.")
+
+    floor = (inst or {}).get("by_protocol", {}).get("full", {})
+    floor_pct = floor.get("median_frac_exceeding_floor_worst_dir")
+
+    L = [r"\begin{table}[htbp]", r"  \centering",
+         r"  \caption{" + caption + "}", r"  \label{tab:" + label + "}",
+         r"  \small", r"  \begin{tabular}{lrrrrrr}", r"    \toprule",
+         r"    method & full & $\tfrac12$ & $\tfrac14$ & $\tfrac18$ & MB"
+         r" & floor-dominated \\", r"    \midrule"]
+    for m in order:
+        d = acc.get(m)
+        if not d:
+            continue
+        cells = [METHOD_LABEL_TEX[m]]
+        for sc in SCALES:
+            v = [float(r["psnr"]) for r in d.get(sc, [])]
+            cells.append(f"{mean(v):.2f}" if v else NOT_MEASURED)
+        mb = [float(r["model_mb"]) for r in d.get("1x", []) if r.get("model_mb")]
+        cells.append(f"{mean(mb):.1f}" if mb else NOT_MEASURED)
+        if m == "b1-fisher" and floor_pct is not None:
+            cells.append(f"{(1 - floor_pct) * 100:.0f}\\%")
+        elif m == "mip-splatting":
+            cells.append(r"100\% by construction")
+        else:
+            cells.append(r"n/a")
+        L.append("    " + " & ".join(cells) + r" \\")
+    L += [r"    \bottomrule", r"  \end{tabular}",
+          r"  \par\vspace{2pt}\footnotesize Mean PSNR over the scenes measured, "
+          r"30\,000 iterations, single-scale train. \emph{floor-dominated} is the "
+          r"fraction of primitives where the Nyquist floor exceeds the estimation "
+          r"term in every direction, measured by I-1 on the same capture; where it "
+          r"is 100\,\% Proposition~\ref{prop:reduction} makes B1 and Mip-Splatting "
+          r"identical.",
+          r"\end{table}", ""]
+    return "\n".join(L)
+
+
+def stress_table(rows, inst, label, caption):
+    """Table 3: the stress suite, measured PSNR per protocol per method."""
+    sel = [r for r in rows if "/" in (r.get("train_scale") or "")]
+    if not sel:
+        return placeholder(label, caption,
+                           "The stress-suite training runs have not been performed.")
+    acc = {}
+    for r in sel:
+        proto = r["train_scale"].split("/")[1]
+        acc.setdefault(proto, {}).setdefault(r["method"], {}) \
+           .setdefault(r["test_scale"], []).append(float(r["psnr"]))
+    bp = (inst or {}).get("by_protocol", {})
+    L = [r"\begin{table}[htbp]", r"  \centering",
+         r"  \caption{" + caption + "}", r"  \label{tab:" + label + "}",
+         r"  \small", r"  \begin{tabular}{lrrrrr}", r"    \toprule",
+         r"    protocol & $\sigma_D/\sigma_L$ & Mip-Splatting & B1 & $\Delta$"
+         r" & predicted \\", r"    \midrule"]
+    pred = {"full": r"$\approx 0$", "arc": r"$>0$", "cone": r"$\gg 0$",
+            "mixed": r"$>0$", "grazing": r"$>0$"}
+    for proto in PROTO_ORDER:
+        d = acc.get(proto)
+        if not d:
+            continue
+        mip = [x for v in d.get("mip-splatting", {}).values() for x in v]
+        b1 = [x for v in d.get("b1-fisher", {}).values() for x in v]
+        aniso = (bp.get(proto) or {}).get("median_sigma_ratio_measured")
+        delta = (mean(b1) - mean(mip)) if (mip and b1) else None
+        L.append("    " + " & ".join([
+            PROTO_LABEL[proto],
+            f"{aniso:.2f}$\\times$" if aniso else NOT_MEASURED,
+            f"{mean(mip):.2f}" if mip else NOT_MEASURED,
+            f"{mean(b1):.2f}" if b1 else NOT_MEASURED,
+            (r"\textbf{" + f"{delta:+.2f}" + "}") if delta is not None else NOT_MEASURED,
+            pred.get(proto, ""),
+        ]) + r" \\")
+    L += [r"    \bottomrule", r"  \end{tabular}",
+          r"  \par\vspace{2pt}\footnotesize Mean PSNR over scenes and test "
+          r"scales. Training cameras are restricted to the protocol; the test set "
+          r"is left whole, so only the capture geometry varies. The predicted "
+          r"column was filled from Equation~\eqref{eq:anisotropy} before any of "
+          r"these runs.",
+          r"\end{table}", ""]
+    return "\n".join(L)
+
+
+def b2_table(b2, label, caption):
+    """Table 4: B2 against the unmasked control and magnitude pruning."""
+    if not b2 or not b2.get("results"):
+        return placeholder(label, caption, "B2 has not been evaluated.")
+    res = b2["results"]
+    rows_by_cfg = {"full": [], "b2": [], "magnitude": []}
+    for k, v in res.items():
+        if "_sweep" in k:
+            continue
+        cfg = k.split("/")[1]
+        if cfg in rows_by_cfg:
+            rows_by_cfg[cfg].append(v)
+    if not rows_by_cfg["b2"]:
+        return placeholder(label, caption, "B2 has not been evaluated.")
+
+    def agg(vs, key):
+        xs = [v[key] for v in vs if key in v and v[key] is not None]
+        return mean(xs) if xs else None
+
+    L = [r"\begin{table}[htbp]", r"  \centering",
+         r"  \caption{" + caption + "}", r"  \label{tab:" + label + "}",
+         r"  \small", r"  \begin{tabular}{lrrrr}", r"    \toprule",
+         r"    configuration & PSNR & model MB & non-DC SH retained"
+         r" & mean $\ell_{\max}$ \\", r"    \midrule"]
+    labels = [("full", "full degree 3 (control)"),
+              ("magnitude", "magnitude pruning, matched size"),
+              ("b2", "B2 --- identifiability masking")]
+    for cfg, name in labels:
+        vs = rows_by_cfg[cfg]
+        if not vs:
+            continue
+        psnr, mb = agg(vs, "PSNR"), agg(vs, "model_mb")
+        ret = agg(vs, "retained")
+        lmax = agg(vs, "mean_l_max")
+        L.append("    " + " & ".join([
+            name,
+            f"{psnr:.2f}" if psnr is not None else NOT_MEASURED,
+            f"{mb:.1f}" if mb is not None else NOT_MEASURED,
+            f"{ret * 100:.0f}\\%" if ret is not None else (r"100\%" if cfg == "full"
+                                                          else NOT_MEASURED),
+            f"{lmax:.2f}" if lmax is not None else (r"3.00" if cfg == "full"
+                                                    else NOT_MEASURED),
+        ]) + r" \\")
+    L += [r"    \bottomrule", r"  \end{tabular}",
+          r"  \par\vspace{2pt}\footnotesize Mean over the scenes measured, "
+          r"post-hoc on trained models. Magnitude pruning is matched to the exact "
+          r"fraction B2 retained, so the two rows are the same size and differ only "
+          r"in WHICH coefficients they keep.",
+          r"\end{table}", ""]
+    return "\n".join(L)
+
+
 # ------------------------------------------------------------------- macros
 def macros(rows, summaries, inst=None):
     """Inline numbers, as \\newcommand. Undefined data yields a visible marker."""
@@ -491,6 +646,18 @@ def main():
     # so including them would silently weight the 8-scene mean toward lego and
     # chair -- it moved arm A's full-res figure by nearly a decibel before this
     # filter was added. The seed table below deliberately takes all seeds.
+    b2 = {}
+    for d, _, files in os.walk(a.summaries):
+        for fn_ in files:
+            if fn_ in ("b2.json", "summary.json"):
+                try:
+                    cand = json.load(open(os.path.join(d, fn_)))
+                except Exception:
+                    continue
+                if cand.get("rung") == "R8" or (cand.get("results")
+                                                and "b2" in str(list(cand["results"])[:3])):
+                    b2 = cand
+
     stmt = select(rows, iterations=30000, load_allres="False", seed=0)
     mtmt = select(rows, iterations=30000, load_allres="True", seed=0)
     seeds = select(rows, iterations=30000, load_allres="False")
@@ -516,6 +683,13 @@ def main():
         "table-preflight.tex": preflight_table(
             summaries.get("R0"), "preflight",
             r"The twelve \S6 pre-flight checks, as the R0 kernel reported them."),
+        "table-method.tex": method_table(rows, inst, "method",
+            r"R7 Table 2 --- the method against both baselines on the standard "
+            r"Blender benchmark."),
+        "table-stress.tex": stress_table(rows, inst, "stressm",
+            r"R7 Table 3 --- the stress suite. Where the claim lives."),
+        "table-b2.tex": b2_table(b2, "btwo",
+            r"R8 Table 4 --- B2, angular identifiability of spherical harmonics."),
         "table-real.tex": real_scene_table(
             [r for r in rows if r.get("iterations") == "30000"], "real",
             r"R3 --- real scenes that fit 16\,GB, both arms."),

@@ -337,54 +337,41 @@ a wider focal spread than $2$--$4\times$, or the defect is real but small; the
 present measurement does not distinguish those, and it is not reported as though
 it did.
 
+\section{Table 2 --- the method on the standard benchmark}
+\label{sec:table2m}
+
+\input{generated/table-method}
+
+\keybox{the prediction here was parity, and it was recorded first}{%
+I-1 measured the Nyquist floor binding on $100\,\%$ of primitives on these
+captures (\S\ref{sec:instrumentresults}), and Proposition~\ref{prop:reduction}
+then makes B1 and Mip-Splatting \emph{identical} rather than merely similar. So
+this table is not where the method is meant to win --- it is where it must not
+lose. A gain here would indicate a bug, and the exact-reduction unit test is run
+inside the same session that produces these numbers, aborting the run if it
+fails.}
+
 \section{Table 3 --- the stress suite}
 \label{sec:table3}
 
-\begin{table}[htbp]
-  \centering
-  \caption{Where the claim lives. The conditioning column is now
-  \emph{measured} (\S\ref{sec:instrumentresults}); the PSNR columns await the
-  method. The predicted column was filled from Equation~\eqref{eq:anisotropy}
-  before any run. Agreement between prediction and measurement is the thesis's
-  central empirical result; disagreement in the full-orbit row would be a bug,
-  and in the low-parallax row a refutation.}
-  \label{tab:stress}
-  \small
-  \begin{tabular}{lccccc}
-    \toprule
-    protocol & span & $\sigma_D/\sigma_L$ measured & Mip-S. PSNR & B1 PSNR & $\Delta$ predicted \\
-    \midrule
-    full orbit    & $179^\circ$ & $1.14\times$ & \notmeasured & \notmeasured & $\approx 0$ \\
-    one-sided arc & $80^\circ$  & $2.28\times$ & \notmeasured & \notmeasured & $> 0$ \\
-    low-parallax  & $20^\circ$  & $9.45\times$ & \notmeasured & \notmeasured & $\gg 0$ \\
-    mixed focal   & $179^\circ$ & $1.16\times$ & \notmeasured & \notmeasured & $> 0$ \\
-    grazing       & $168^\circ$ & $1.45\times$ & \notmeasured & \notmeasured & $> 0$ \\
-    \bottomrule
-  \end{tabular}
-  \par\vspace{2pt}\footnotesize Median over the eight Blender scenes. Spans are
-  the maximum pairwise angle subtended at the capture centre by the selected
-  cameras, measured on the subset that was actually built rather than assumed.
-\end{table}
+Where the claim lives. Training cameras are restricted to each protocol's subset
+while the test set is left whole, so the only thing that varies between rows is
+the geometry the reconstruction had available. Both methods are trained inside
+one session on the same data with the same seed, so the delta is paired.
+
+\input{generated/table-stress}
 
 \section{Table 4 --- B2, angular identifiability}
 \label{sec:table4}
 
-\begin{table}[htbp]
-  \centering
-  \caption{B2 configurations. Every measured cell is empty; the method is not
-  implemented.}
-  \label{tab:b2}
-  \small
-  \begin{tabular}{lcccc}
-    \toprule
-    configuration & PSNR & model MB & non-DC SH retained & mean $\ell_{\max}$ \\
-    \midrule
-    full degree 3 (baseline)      & \notmeasured & \notmeasured & $100\,\%$ & $3.0$ \\
-    magnitude pruning, matched size & \notmeasured & \notmeasured & \notmeasured & \notmeasured \\
-    B2 --- identifiability masking  & \notmeasured & \notmeasured & \notmeasured & \notmeasured \\
-    \bottomrule
-  \end{tabular}
-\end{table}
+B2 is evaluated post-hoc on models already trained, so it costs a render and a
+metrics pass rather than an optimisation. The row that matters is the third
+against the second: magnitude pruning is matched to the exact fraction B2
+retained, so the two models are the same size and differ only in \emph{which}
+coefficients they keep. A criterion that cannot beat magnitude pruning at
+matched size is not worth the machinery.
+
+\input{generated/table-b2}
 
 \section{What these results do and do not establish}
 They establish a control. Both baselines now exist as this project's own

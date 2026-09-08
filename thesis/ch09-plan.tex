@@ -16,9 +16,11 @@
     W3 & R5 and R3. I-2 on trained checkpoints. & \textbf{done.} \textbf{Gates G3 and G4 pass} (\S\ref{sec:instrumentresults}); $\sigma$ measured at $0.139$\,dB worst case (\S\ref{sec:spread}); real scenes at \S\ref{sec:real}. \\
     W4 & Stress suite constructed from existing images. & \textbf{done.} Five protocols, versioned and seeded; conditioning measured on all of them. \\
     \midrule
-    W5--W6 & Implement $\Lambda$ accumulation; the exact-reduction unit test; wire $\Sigma_{\mathrm{filt}}$ into the covariance path. & reduction test passes to $10^{-6}$; trains to 30\,K without divergence. \\
-    W7--W9 & B1 evaluation across the stress suite; ablations. Mid-term seminar in W8, opening on the I-2 figure. & Table~\ref{tab:stress} populated with measured deltas. \\
-    W10--W13 & B2 implementation and ablation; efficiency curves; writing. R4 as optional overflow. & Autumn report; Table~\ref{tab:b2} populated. \\
+    W5--W6 & Implement $\Lambda$ accumulation; the exact-reduction unit test; wire $\Sigma_{\mathrm{filt}}$ into the covariance path. & \textbf{done, early.} Reduction verified to $1.4\times10^{-21}$ in the unit test and $0.136$\,dB in training. No CUDA change was needed: the rasteriser already accepts a precomputed covariance. \\
+    W9--W10 & Implement B2; sweep $\tau$. & \textbf{done, early.} Criterion measured on 8 scenes and 5 protocols; Equation~\eqref{eq:lmax} amended to a condition number on the evidence (\S\ref{sec:b2amend}). \\
+    \midrule
+    next & Table~\ref{tab:stress}'s PSNR columns --- the only untested claim in the thesis. Ablations. Mid-term seminar, opening on the I-2 figure. & blocked on the weekly GPU quota; exact commands in \texttt{docs/RESUME.md}. \\
+    W11--W13 & Efficiency curves; variable-length SH storage for the memory result; writing. R4 as optional overflow. & Autumn report. \\
     Spring & B3 sampling-aware densification (stretch); pose-noise sensitivity; variable-length SH storage; paper draft. & thesis and submission. \\
     \bottomrule
   \end{tabular}

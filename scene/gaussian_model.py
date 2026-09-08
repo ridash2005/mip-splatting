@@ -175,7 +175,20 @@ class GaussianModel:
     def compute_fisher_filter(self, cameras, s_conf=1.0, beta=0.01):
         """Sigma_filt from the capture geometry (Equations 4.3-4.5)."""
         from scene.fisher_filter import build_filter
+        # Proposition 2 is only testable if B1's floor IS Mip-Splatting's floor.
+        # Rather than argue that from the formulas, compute theirs and compare:
+        # a mismatch here would make every "parity" result meaningless, and it is
+        # the first thing to suspect if the full-orbit row ever shows a loss.
+        self.compute_3D_filter(cameras)
+        theirs = self.filter_3D.detach().clone().squeeze(-1)
+
         out = build_filter(self.get_xyz, cameras, s_conf=s_conf, beta=beta)
+        mine = out["f_k"]
+        d = (mine - theirs).abs()
+        rel = (d / theirs.clamp_min(1e-30)).max()
+        print(f"floor check: max|f_k(B1) - filter_3D(Mip)| = {float(d.max()):.3e} "
+              f"(rel {float(rel):.3e}); medians {float(mine.median()):.6e} vs "
+              f"{float(theirs.median()):.6e}", flush=True)
         self.sigma_filt = out["sigma_filt"]
         # Mip-Splatting's scalar floor is kept alongside the matrix: save_ply
         # writes it as a per-primitive column and load_ply expects it, so a B1

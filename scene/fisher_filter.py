@@ -129,7 +129,7 @@ def _batched_eigh(A):
 
 
 @torch.no_grad()
-def build_filter(xyz, cameras, s_conf=1.0, beta=0.01):
+def build_filter(xyz, cameras, s_conf=1.0, beta=0.01, floor=None):
     """Sigma_filt per primitive, plus the diagnostics §6.5 asks for.
 
     Returns a dict with:
@@ -150,6 +150,9 @@ def build_filter(xyz, cameras, s_conf=1.0, beta=0.01):
         d_min = torch.where(unseen, seen_max, d_min)
 
     f_k = (FILTER_CONST ** 0.5) * d_min / max(f_max, 1e-9)          # [N]
+    if floor is not None:
+        # Mip-Splatting's own floor, passed in verbatim (see §4.4).
+        f_k = floor.to(f_k.device).reshape(-1)
     fk2 = (f_k ** 2)[:, None]                                        # [N,1]
 
     # eigh on a symmetric [N,3,3], eigenvalues ascending. Chunked: at two million

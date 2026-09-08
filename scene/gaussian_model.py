@@ -200,7 +200,14 @@ class GaussianModel:
         self.compute_3D_filter(cameras)
         theirs = self.filter_3D.detach().clone().squeeze(-1)
 
-        out = build_filter(self.get_xyz, cameras, s_conf=s_conf, beta=beta)
+        # §4.4 floors the estimate at "Mip-Splatting's own value", so use THEIR
+        # value literally rather than a re-derivation of it. The two agree to
+        # 1e-7 once training is under way, but differed by 0.5% at the median on
+        # the very first call -- enough to seed a different densification
+        # trajectory. Taking theirs makes Proposition 2 exact by construction in
+        # the floor as well as in the covariance and the opacity.
+        out = build_filter(self.get_xyz, cameras, s_conf=s_conf, beta=beta,
+                           floor=theirs)
         mine = out["f_k"]
         d = (mine - theirs).abs()
         rel = (d / theirs.clamp_min(1e-30)).max()

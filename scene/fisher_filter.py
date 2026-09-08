@@ -89,6 +89,38 @@ def accumulate_fisher(xyz, cameras, chunk=200000):
     return M, d_min, n_seen, f_max
 
 
+
+def _batched_eigh(A):
+    """Symmetric eigendecomposition of a batch of 3x3 matrices.
+
+    torch.linalg.eigh on CUDA fails outright for batched float64 on this stack:
+
+        cusolver error: CUSOLVER_STATUS_INVALID_VALUE, when calling
+        cusolverDnXsyevBatched_bufferSize(... CUDA_R_64F ...)
+
+    so float32 is used on GPU and float64 on CPU (where the unit tests run and
+    accuracy is free). The precision loss does not touch Proposition 2: when the
+    three eigenvalues are equal the filter is V diag(c,c,c) V^T = c*V V^T = c*I
+    for ANY orthogonal V, so the reduction is exact regardless of how accurately
+    the eigenvectors are resolved.
+
+    NaNs are scrubbed first. A single non-finite entry makes cuSOLVER fail with
+    the message above rather than with anything naming the real cause, so it is
+    worth ruling out explicitly.
+    """
+    A = torch.nan_to_num(A, nan=0.0, posinf=0.0, neginf=0.0)
+    A = 0.5 * (A + A.transpose(-1, -2))          # enforce exact symmetry
+    if A.is_cuda:
+        try:
+            mu, V = torch.linalg.eigh(A.float())
+            return mu.double(), V.double()
+        except Exception:
+            mu, V = torch.linalg.eigh(A.double().cpu())
+            return mu.to(A.device), V.to(A.device)
+    mu, V = torch.linalg.eigh(A.double())
+    return mu, V
+
+
 @torch.no_grad()
 def build_filter(xyz, cameras, s_conf=1.0, beta=0.01):
     """Sigma_filt per primitive, plus the diagnostics §6.5 asks for.
@@ -121,9 +153,9 @@ def build_filter(xyz, cameras, s_conf=1.0, beta=0.01):
     sigma_filt = torch.empty((n_pts, 3, 3), dtype=torch.float32, device=xyz.device)
     est2_all = torch.empty((n_pts, 3), dtype=torch.float64, device=xyz.device)
 
-    for a in range(0, n_pts, 200000):
-        b = min(a + 200000, n_pts)
-        mu, V = torch.linalg.eigh(M[a:b].double())
+    for a in range(0, n_pts, 65536):
+        b = min(a + 65536, n_pts)
+        mu, V = _batched_eigh(M[a:b])
         mu = mu.clamp_min(0.0)
         # Equation 4.4. The estimation term is s^2/lambda_i = s^2 * 0.2 / mu_i by
         # the calibration above; mu_i = 0 is an unconstrained direction and gives

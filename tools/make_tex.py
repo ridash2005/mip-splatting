@@ -336,7 +336,7 @@ def macros(rows, summaries, inst=None):
         M[name] = spec.format(value) if isinstance(value, (int, float)) else NOT_MEASURED
 
     for proto, allres in (("STMT", "False"), ("MTMT", "True")):
-        sel = select(rows, iterations=30000, load_allres=allres)
+        sel = select(rows, iterations=30000, load_allres=allres, seed=0)
         acc = by_arm_scale(sel)
         # LaTeX control sequences cannot contain digits, so the arm is named
         # ArmB/ArmA rather than 3dgs/mips.
@@ -427,8 +427,12 @@ def main():
                 if cand.get("by_protocol"):
                     inst = cand
 
-    stmt = select(rows, iterations=30000, load_allres="False")
-    mtmt = select(rows, iterations=30000, load_allres="True")
+    # seed=0 for the headline tables. R5 adds seeds 1 and 2 for two scenes only,
+    # so including them would silently weight the 8-scene mean toward lego and
+    # chair -- it moved arm A's full-res figure by nearly a decibel before this
+    # filter was added. The seed table below deliberately takes all seeds.
+    stmt = select(rows, iterations=30000, load_allres="False", seed=0)
+    mtmt = select(rows, iterations=30000, load_allres="True", seed=0)
     seeds = select(rows, iterations=30000, load_allres="False")
 
     written = {

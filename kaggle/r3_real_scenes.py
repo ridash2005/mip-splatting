@@ -26,6 +26,7 @@ Ends with a single line prefixed R3_SUMMARY_JSON= for the pusher.
 """
 import json
 import os
+import shutil
 import subprocess
 import sys
 import threading
@@ -53,6 +54,9 @@ JOBS = [
     ("drjohnson", "db", ""),
     ("playroom", "db", ""),
 ]
+# Set by --set to re-run only what failed, without repeating hours of successful
+# training. Empty means every entry in JOBS.
+ONLY = []
 # ----------------------------------------------------------------------------
 
 METHOD = f"ours_{ITERS}"
@@ -103,6 +107,42 @@ for mod in ("GPUtil", "lpips", "plyfile", "cv2", "torchvision", "tqdm", "numpy",
 print(f"build OK (open3d={'yes' if open3d_ok else 'neutralised'})", flush=True)
 
 
+
+def writable_source(scene, src):
+    """A writable mirror of a COLMAP scene directory.
+
+    readColmapSceneInfo converts sparse/0/points3D.bin to points3D.ply and
+    writes it back into the SOURCE directory. /kaggle/input is read-only, so
+    any scene shipping only the .bin dies with
+
+        OSError: [Errno 30] Read-only file system: .../sparse/0/points3D.ply
+
+    The Mip-NeRF 360 dataset already carries the .ply and is unaffected; Tanks &
+    Temples and Deep Blending ship the .bin alone and are not. The mirror
+    symlinks the image directories, which are the bulk, and copies sparse/,
+    which is a few megabytes -- so this costs no meaningful disk and changes no
+    pixel. It is a filesystem workaround, not a change to the experiment.
+    """
+    if os.access(os.path.join(src, "sparse"), os.W_OK):
+        return src
+    dst = f"{WORK}/src/{scene}"
+    if os.path.exists(os.path.join(dst, "sparse")):
+        return dst
+    os.makedirs(dst, exist_ok=True)
+    for entry in os.listdir(src):
+        s_, d_ = os.path.join(src, entry), os.path.join(dst, entry)
+        if os.path.exists(d_):
+            continue
+        if entry == "sparse":
+            shutil.copytree(s_, d_)
+        elif os.path.isdir(s_):
+            os.symlink(s_, d_)
+        else:
+            shutil.copy(s_, d_)
+    print(f"  mirrored {scene} to a writable {dst}", flush=True)
+    return dst
+
+
 def find_scene(scene):
     """The COLMAP directory for `scene`, wherever Kaggle mounted it."""
     for root, dirs, files in os.walk("/kaggle/input"):
@@ -138,6 +178,8 @@ def run_one(gpu, arm, scene, tag, images):
     src = sources[scene]
     if not src:
         raise RuntimeError(f"scene directory for {scene} not found under /kaggle/input")
+    with lock:
+        src = writable_source(scene, src)
     out = f"{WORK}/out_arm{arm}/{scene}"
     t_ = f"{arm}_{scene}"
     env = f"OMP_NUM_THREADS=4 CUDA_VISIBLE_DEVICES={gpu}"
@@ -211,10 +253,13 @@ def build_summary():
             "done": done, "failed": failed,
             "session_seconds": time.time() - SESSION_START,
             "gpu_hours_used": (time.time() - SESSION_START) / 3600.0,
-            "complete": len(done) == 2 * len(JOBS)}
+            "only": ONLY,
+            "complete": len(done) == len(queue)}
 
 
-queue = [(arm, s, t, i) for (s, t, i) in JOBS for arm in ("A", "B")]
+queue = [(arm, s, t, i) for (s, t, i) in JOBS if not ONLY or s in ONLY
+         for arm in ("A", "B")]
+print(f"queue: {len(queue)} job(s)" + (f" restricted to {ONLY}" if ONLY else ""), flush=True)
 qi = [0]
 
 
@@ -255,7 +300,7 @@ for path in (f"{WORK}/armA/.git", f"{WORK}/armB/.git", f"{WORK}/armA/submodules"
              f"{WORK}/armB/submodules", f"{WORK}/armA/assets", f"{WORK}/armB/assets",
              f"{WORK}/armA/media", f"{WORK}/armB/media"):
     if os.path.exists(path):
-        __import__("shutil").rmtree(path, ignore_errors=True)
-print(f"completed {len(done)}/{2 * len(JOBS)}; failed {list(failed)}; "
+        shutil.rmtree(path, ignore_errors=True)
+print(f"completed {len(done)}/{len(queue)}; failed {list(failed)}; "
       f"OOM {summary['oom']}", flush=True)
 print("R3_SUMMARY_JSON=" + json.dumps(summary))

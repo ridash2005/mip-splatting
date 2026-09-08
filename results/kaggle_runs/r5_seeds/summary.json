@@ -16,24 +16,353 @@
   "torch": "2.10.0+cu128",
   "cuda": "12.8",
   "open3d": true,
-  "armA_commit": "967469e650fe3f50da562768a3fd092e11869047",
-  "armB_commit": "6eb4ce17e0f557c7c1c630e432a99ebc69b4f8eb",
-  "convert_seconds": 197.04775381088257,
-  "done": {},
-  "failed": {
-    "A/lego/s1": "RuntimeError: command failed (1): OMP_NUM_THREADS=4 CUDA_VISIBLE_DEVICES=0 BTP_SEED=1 BTP_KEEP_INIT=1 python tools/seeded_train.py -s /kaggle/working/multi-scale/lego__s1 -m /kaggle/working/out_armA/lego_s1 --eval --white_background --iterations 30000 --test_iterations -1 --port 6209  --kernel_size 0.1\n--- tail ---\nTraceback (most recent call last):\n  File \"/kaggle/working/armA/tools/seeded_train.py\", line 75, in <module>\n    main()\n  File \"/kaggle/working/armA/tools/seeded_train.py\", line 36, in main\n    import utils.general_utils as gu\nModuleNotFoundError: No module named 'utils'\n",
-    "B/lego/s1": "RuntimeError: command failed (1): OMP_NUM_THREADS=4 CUDA_VISIBLE_DEVICES=1 BTP_SEED=1 BTP_KEEP_INIT=1 python tools/seeded_train.py -s /kaggle/working/multi-scale/lego__s1 -m /kaggle/working/out_armB/lego_s1 --eval --white_background --iterations 30000 --test_iterations -1 --port 6210  --kernel_size 0.3 --disable_3D_filter\n--- tail ---\nTraceback (most recent call last):\n  File \"/kaggle/working/armB/tools/seeded_train.py\", line 75, in <module>\n    main()\n  File \"/kaggle/working/armB/tools/seeded_train.py\", line 36, in main\n    import utils.general_utils as gu\nModuleNotFoundError: No module named",
-    "A/chair/s1": "RuntimeError: command failed (1): OMP_NUM_THREADS=4 CUDA_VISIBLE_DEVICES=0 BTP_SEED=1 BTP_KEEP_INIT=1 python tools/seeded_train.py -s /kaggle/working/multi-scale/chair__s1 -m /kaggle/working/out_armA/chair_s1 --eval --white_background --iterations 30000 --test_iterations -1 --port 6209  --kernel_size 0.1\n--- tail ---\nTraceback (most recent call last):\n  File \"/kaggle/working/armA/tools/seeded_train.py\", line 75, in <module>\n    main()\n  File \"/kaggle/working/armA/tools/seeded_train.py\", line 36, in main\n    import utils.general_utils as gu\nModuleNotFoundError: No module named 'utils'\n",
-    "B/chair/s1": "RuntimeError: command failed (1): OMP_NUM_THREADS=4 CUDA_VISIBLE_DEVICES=1 BTP_SEED=1 BTP_KEEP_INIT=1 python tools/seeded_train.py -s /kaggle/working/multi-scale/chair__s1 -m /kaggle/working/out_armB/chair_s1 --eval --white_background --iterations 30000 --test_iterations -1 --port 6210  --kernel_size 0.3 --disable_3D_filter\n--- tail ---\nTraceback (most recent call last):\n  File \"/kaggle/working/armB/tools/seeded_train.py\", line 75, in <module>\n    main()\n  File \"/kaggle/working/armB/tools/seeded_train.py\", line 36, in main\n    import utils.general_utils as gu\nModuleNotFoundError: No module nam",
-    "A/lego/s2": "RuntimeError: command failed (1): OMP_NUM_THREADS=4 CUDA_VISIBLE_DEVICES=0 BTP_SEED=2 BTP_KEEP_INIT=1 python tools/seeded_train.py -s /kaggle/working/multi-scale/lego__s2 -m /kaggle/working/out_armA/lego_s2 --eval --white_background --iterations 30000 --test_iterations -1 --port 6209  --kernel_size 0.1\n--- tail ---\nTraceback (most recent call last):\n  File \"/kaggle/working/armA/tools/seeded_train.py\", line 75, in <module>\n    main()\n  File \"/kaggle/working/armA/tools/seeded_train.py\", line 36, in main\n    import utils.general_utils as gu\nModuleNotFoundError: No module named 'utils'\n",
-    "B/lego/s2": "RuntimeError: command failed (1): OMP_NUM_THREADS=4 CUDA_VISIBLE_DEVICES=1 BTP_SEED=2 BTP_KEEP_INIT=1 python tools/seeded_train.py -s /kaggle/working/multi-scale/lego__s2 -m /kaggle/working/out_armB/lego_s2 --eval --white_background --iterations 30000 --test_iterations -1 --port 6210  --kernel_size 0.3 --disable_3D_filter\n--- tail ---\nTraceback (most recent call last):\n  File \"/kaggle/working/armB/tools/seeded_train.py\", line 75, in <module>\n    main()\n  File \"/kaggle/working/armB/tools/seeded_train.py\", line 36, in main\n    import utils.general_utils as gu\nModuleNotFoundError: No module named",
-    "A/chair/s2": "RuntimeError: command failed (1): OMP_NUM_THREADS=4 CUDA_VISIBLE_DEVICES=0 BTP_SEED=2 BTP_KEEP_INIT=1 python tools/seeded_train.py -s /kaggle/working/multi-scale/chair__s2 -m /kaggle/working/out_armA/chair_s2 --eval --white_background --iterations 30000 --test_iterations -1 --port 6209  --kernel_size 0.1\n--- tail ---\nTraceback (most recent call last):\n  File \"/kaggle/working/armA/tools/seeded_train.py\", line 75, in <module>\n    main()\n  File \"/kaggle/working/armA/tools/seeded_train.py\", line 36, in main\n    import utils.general_utils as gu\nModuleNotFoundError: No module named 'utils'\n",
-    "B/chair/s2": "RuntimeError: command failed (1): OMP_NUM_THREADS=4 CUDA_VISIBLE_DEVICES=1 BTP_SEED=2 BTP_KEEP_INIT=1 python tools/seeded_train.py -s /kaggle/working/multi-scale/chair__s2 -m /kaggle/working/out_armB/chair_s2 --eval --white_background --iterations 30000 --test_iterations -1 --port 6210  --kernel_size 0.3 --disable_3D_filter\n--- tail ---\nTraceback (most recent call last):\n  File \"/kaggle/working/armB/tools/seeded_train.py\", line 75, in <module>\n    main()\n  File \"/kaggle/working/armB/tools/seeded_train.py\", line 36, in main\n    import utils.general_utils as gu\nModuleNotFoundError: No module nam"
+  "armA_commit": "f85def102a51556cdd65efe87098fc8aab9e52a7",
+  "armB_commit": "7d3806dcb20bb9b53ce5dc3c09aec9d7027e82bf",
+  "convert_seconds": 179.74963426589966,
+  "done": {
+    "B/lego/s1": {
+      "split": {
+        "1x": {
+          "PSNR": 36.00599641799927,
+          "SSIM": 0.9836554455757142,
+          "LPIPS": 0.015421073995530605,
+          "n": 200
+        },
+        "1/2": {
+          "PSNR": 31.845087203979492,
+          "SSIM": 0.9800351536273957,
+          "LPIPS": 0.016121003977023065,
+          "n": 200
+        },
+        "1/4": {
+          "PSNR": 27.235427446365357,
+          "SSIM": 0.9582223445177078,
+          "LPIPS": 0.03535073708742857,
+          "n": 200
+        },
+        "1/8": {
+          "PSNR": 24.14469162940979,
+          "SSIM": 0.9348301717638969,
+          "LPIPS": 0.06550328698009253,
+          "n": 200
+        }
+      },
+      "stats": {
+        "train_seconds": 1319.8058412075043,
+        "peak_vram_mb": 4545,
+        "iters_per_second": 22.73061617347646,
+        "render_seconds": 91.83330011367798,
+        "n_rendered": 800,
+        "render_fps": 8.711436908068222,
+        "n_gaussians": 220819,
+        "filter_3D_max": 0.0,
+        "model_mb": 55.647944,
+        "metrics_seconds": 77.26510834693909,
+        "pooled_psnr": 29.80780029296875
+      }
+    },
+    "A/lego/s1": {
+      "split": {
+        "1x": {
+          "PSNR": 35.79453619003296,
+          "SSIM": 0.9835560575127602,
+          "LPIPS": 0.015330519783310593,
+          "n": 200
+        },
+        "1/2": {
+          "PSNR": 35.34349022865295,
+          "SSIM": 0.9887960675358772,
+          "LPIPS": 0.008680006321519614,
+          "n": 200
+        },
+        "1/4": {
+          "PSNR": 31.809534235000612,
+          "SSIM": 0.9846071526408195,
+          "LPIPS": 0.01347502356627956,
+          "n": 200
+        },
+        "1/8": {
+          "PSNR": 28.24971773147583,
+          "SSIM": 0.9733676147460938,
+          "LPIPS": 0.0254755546618253,
+          "n": 200
+        }
+      },
+      "stats": {
+        "train_seconds": 1440.5837585926056,
+        "peak_vram_mb": 4561,
+        "iters_per_second": 20.824891174192352,
+        "render_seconds": 92.58116340637207,
+        "n_rendered": 800,
+        "render_fps": 8.641066611882072,
+        "n_gaussians": 285614,
+        "filter_3D_max": 0.00163840816821903,
+        "model_mb": 71.976284,
+        "metrics_seconds": 71.87777876853943,
+        "pooled_psnr": 32.799320220947266
+      }
+    },
+    "A/chair/s1": {
+      "split": {
+        "1x": {
+          "PSNR": 35.97817869186402,
+          "SSIM": 0.9873839190602303,
+          "LPIPS": 0.01306144507136196,
+          "n": 200
+        },
+        "1/2": {
+          "PSNR": 37.94301355361939,
+          "SSIM": 0.9924406296014786,
+          "LPIPS": 0.007405512316618115,
+          "n": 200
+        },
+        "1/4": {
+          "PSNR": 36.13416736602783,
+          "SSIM": 0.9895116803050041,
+          "LPIPS": 0.011815143539570272,
+          "n": 200
+        },
+        "1/8": {
+          "PSNR": 32.517395448684695,
+          "SSIM": 0.9808313912153244,
+          "LPIPS": 0.020912065817974508,
+          "n": 200
+        }
+      },
+      "stats": {
+        "train_seconds": 1294.3141326904297,
+        "peak_vram_mb": 4435,
+        "iters_per_second": 23.17829902516819,
+        "render_seconds": 90.85253620147705,
+        "n_rendered": 800,
+        "render_fps": 8.805477903510567,
+        "n_gaussians": 262301,
+        "filter_3D_max": 0.0016467524692416191,
+        "model_mb": 66.101408,
+        "metrics_seconds": 72.57363104820251,
+        "pooled_psnr": 35.6431884765625
+      }
+    },
+    "B/chair/s1": {
+      "split": {
+        "1x": {
+          "PSNR": 36.13838920593262,
+          "SSIM": 0.9875903046131134,
+          "LPIPS": 0.013376541077159345,
+          "n": 200
+        },
+        "1/2": {
+          "PSNR": 35.30470083236694,
+          "SSIM": 0.9861387386918068,
+          "LPIPS": 0.014456465330440552,
+          "n": 200
+        },
+        "1/4": {
+          "PSNR": 32.131289052963254,
+          "SSIM": 0.9774942508339882,
+          "LPIPS": 0.0236376789631322,
+          "n": 200
+        },
+        "1/8": {
+          "PSNR": 28.386534271240233,
+          "SSIM": 0.9569005617499351,
+          "LPIPS": 0.04354275369085372,
+          "n": 200
+        }
+      },
+      "stats": {
+        "train_seconds": 1278.6293845176697,
+        "peak_vram_mb": 4491,
+        "iters_per_second": 23.462623621243253,
+        "render_seconds": 85.01059007644653,
+        "n_rendered": 800,
+        "render_fps": 9.410592248337446,
+        "n_gaussians": 312191,
+        "filter_3D_max": 0.0,
+        "model_mb": 78.673688,
+        "metrics_seconds": 72.6190116405487,
+        "pooled_psnr": 32.99022674560547
+      }
+    },
+    "B/lego/s2": {
+      "split": {
+        "1x": {
+          "PSNR": 36.05752317428589,
+          "SSIM": 0.9836870896816253,
+          "LPIPS": 0.015405969475395978,
+          "n": 200
+        },
+        "1/2": {
+          "PSNR": 31.883464488983154,
+          "SSIM": 0.9801529675722123,
+          "LPIPS": 0.016082611037418246,
+          "n": 200
+        },
+        "1/4": {
+          "PSNR": 27.247842645645143,
+          "SSIM": 0.9584748145937919,
+          "LPIPS": 0.03512821677140891,
+          "n": 200
+        },
+        "1/8": {
+          "PSNR": 24.131364269256594,
+          "SSIM": 0.9348404577374458,
+          "LPIPS": 0.06572601348161697,
+          "n": 200
+        }
+      },
+      "stats": {
+        "train_seconds": 1298.4974036216736,
+        "peak_vram_mb": 4643,
+        "iters_per_second": 23.103627251256878,
+        "render_seconds": 100.53970050811768,
+        "n_rendered": 800,
+        "render_fps": 7.95705572979509,
+        "n_gaussians": 224725,
+        "filter_3D_max": 0.0,
+        "model_mb": 56.632256,
+        "metrics_seconds": 74.19773888587952,
+        "pooled_psnr": 29.830049514770508
+      }
+    },
+    "A/lego/s2": {
+      "split": {
+        "1x": {
+          "PSNR": 35.876840324401854,
+          "SSIM": 0.9837212684750557,
+          "LPIPS": 0.015208970387466252,
+          "n": 200
+        },
+        "1/2": {
+          "PSNR": 35.47840605735779,
+          "SSIM": 0.9890220081806183,
+          "LPIPS": 0.008579058817122131,
+          "n": 200
+        },
+        "1/4": {
+          "PSNR": 31.885644359588625,
+          "SSIM": 0.98481509745121,
+          "LPIPS": 0.013371861802879722,
+          "n": 200
+        },
+        "1/8": {
+          "PSNR": 28.275608654022218,
+          "SSIM": 0.9734501478075981,
+          "LPIPS": 0.025428207968361677,
+          "n": 200
+        }
+      },
+      "stats": {
+        "train_seconds": 1492.799570798874,
+        "peak_vram_mb": 4453,
+        "iters_per_second": 20.096468800527223,
+        "render_seconds": 98.68855166435242,
+        "n_rendered": 800,
+        "render_fps": 8.106310068475453,
+        "n_gaussians": 291077,
+        "filter_3D_max": 0.0016500446945428848,
+        "model_mb": 73.35296,
+        "metrics_seconds": 76.39268374443054,
+        "pooled_psnr": 32.87912368774414
+      }
+    },
+    "A/chair/s2": {
+      "split": {
+        "1x": {
+          "PSNR": 36.00224311828613,
+          "SSIM": 0.987561654150486,
+          "LPIPS": 0.01289991473313421,
+          "n": 200
+        },
+        "1/2": {
+          "PSNR": 37.943887882232666,
+          "SSIM": 0.9925185763835906,
+          "LPIPS": 0.007346810890594497,
+          "n": 200
+        },
+        "1/4": {
+          "PSNR": 36.10038080215454,
+          "SSIM": 0.9895306134223938,
+          "LPIPS": 0.011782753055449575,
+          "n": 200
+        },
+        "1/8": {
+          "PSNR": 32.467876796722415,
+          "SSIM": 0.980899007320404,
+          "LPIPS": 0.02118419629521668,
+          "n": 200
+        }
+      },
+      "stats": {
+        "train_seconds": 1273.3743052482605,
+        "peak_vram_mb": 4263,
+        "iters_per_second": 23.559451354055017,
+        "render_seconds": 79.92685151100159,
+        "n_rendered": 800,
+        "render_fps": 10.009151929247249,
+        "n_gaussians": 262256,
+        "filter_3D_max": 0.0016465542139485478,
+        "model_mb": 66.090068,
+        "metrics_seconds": 70.06092858314514,
+        "pooled_psnr": 35.628597259521484
+      }
+    },
+    "B/chair/s2": {
+      "split": {
+        "1x": {
+          "PSNR": 36.17879249572754,
+          "SSIM": 0.9876901987195015,
+          "LPIPS": 0.013229266153648495,
+          "n": 200
+        },
+        "1/2": {
+          "PSNR": 35.33197122573853,
+          "SSIM": 0.9861924642324448,
+          "LPIPS": 0.014282509642653167,
+          "n": 200
+        },
+        "1/4": {
+          "PSNR": 32.12013060569763,
+          "SSIM": 0.9776028168201446,
+          "LPIPS": 0.023424759740009904,
+          "n": 200
+        },
+        "1/8": {
+          "PSNR": 28.248935604095458,
+          "SSIM": 0.9559678539633751,
+          "LPIPS": 0.044504594281315805,
+          "n": 200
+        }
+      },
+      "stats": {
+        "train_seconds": 1314.9388053417206,
+        "peak_vram_mb": 4589,
+        "iters_per_second": 22.81474991697711,
+        "render_seconds": 74.58234071731567,
+        "n_rendered": 800,
+        "render_fps": 10.726399738943366,
+        "n_gaussians": 311977,
+        "filter_3D_max": 0.0,
+        "model_mb": 78.61976,
+        "metrics_seconds": 69.71315240859985,
+        "pooled_psnr": 32.9699592590332
+      }
+    }
   },
-  "session_seconds": 446.7642443180084,
-  "gpu_hours_used": 0.12410117917590671,
-  "complete": false,
-  "filter_3D_max": {},
+  "failed": {},
+  "session_seconds": 6471.761513471603,
+  "gpu_hours_used": 1.797711531718572,
+  "complete": true,
+  "filter_3D_max": {
+    "B/lego/s1": 0.0,
+    "A/lego/s1": 0.00163840816821903,
+    "A/chair/s1": 0.0016467524692416191,
+    "B/chair/s1": 0.0,
+    "B/lego/s2": 0.0,
+    "A/lego/s2": 0.0016500446945428848,
+    "A/chair/s2": 0.0016465542139485478,
+    "B/chair/s2": 0.0
+  },
   "armB_all_zero": true,
   "armA_all_nonzero": true
 }

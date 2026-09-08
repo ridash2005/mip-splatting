@@ -40,7 +40,78 @@ measurement.
 
 \input{generated/table1-stmt}
 
+\keybox{arm A is a full L1 reproduction}{%
+Mip-Splatting reproduces to within $\pm0.20$\,dB at \emph{all four} test scales:
+$+0.08$, $+0.01$, $-0.07$, $-0.09$. By the criterion of
+Table~\ref{tab:levels}, declared before any run, this is L1 --- numerical
+reproduction --- on the protocol the paper reports it on. Nothing about the
+harness, the dataloader, the LPIPS backbone or the per-scale recovery is in
+doubt.}
+
 \input{generated/table-cost}
+
+\subsection*{Gate G2, and why it does not pass}
+\label{sec:g2}
+
+G2 was declared in advance as: 3DGS falls $\gtrsim13$\,dB from full to
+$\tfrac18$; Mip-Splatting falls $\lesssim6$\,dB; the gap at $\tfrac18$ exceeds
+$9$\,dB. Measured on this run:
+
+\begin{table}[htbp]
+  \centering
+  \caption{Gate G2 on R1, against the thresholds set before the run.}
+  \label{tab:g2}
+  \small
+  \begin{tabular}{lrrl}
+    \toprule
+    criterion & threshold & measured & verdict \\
+    \midrule
+    3DGS falls, full $\rightarrow \tfrac18$        & $\gtrsim 13$\,dB & $9.09$\,dB & \fail \\
+    Mip-Splatting falls, full $\rightarrow \tfrac18$ & $\lesssim 6$\,dB & $4.86$\,dB & \pass \\
+    gap at $\tfrac18$                              & $> 9$\,dB        & $4.07$\,dB & \fail \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+The protocol's instruction on a G2 failure is to stop, and to diagnose in a
+stated order: (a) the splitter's index mapping; (b) whether arm B's
+\texttt{filter\_3D} is really zero at step 30\,000; (c) \texttt{--white\_background}.
+All three were checked, and none of them is the cause:
+
+\begin{enumerate}[leftmargin=1.4em,itemsep=2pt]
+  \item The splitter's count-weighted mean reproduces \texttt{metrics.py}'s
+        pooled PSNR to within $0.01$\,dB on every scene of every run --- the
+        mapping is right, and it is asserted per scene rather than spot-checked.
+  \item \texttt{filter\_3D} read back from all eight of arm B's saved point
+        clouds is identically zero, and non-zero on all eight of arm A's. The
+        reduction is exact.
+  \item \texttt{--white\_background} was passed to every job.
+\end{enumerate}
+
+The cause is the one identified in \S\ref{sec:densification}: arm B is not
+published 3DGS, because this repository's densification is GOF's. A better
+densification recovers most of what the missing band-limit costs, so the
+collapse that G2's thresholds were calibrated against does not occur here.
+Arm B's $\tfrac18$ figure is $6.82$\,dB above published --- almost exactly the
+$6.8$\,dB by which the measured gap falls short of the expected one.
+
+\keybox{what this means, stated precisely}{%
+G2 as written cannot be met in this codebase, and that is a property of the
+gate's premise rather than of the experiment. The gate assumed the 3DGS arm
+would carry published-3DGS densification; the single-codebase decision of
+\S\ref{sec:onecodebase} --- which is \emph{forced} by the multi-scale loader, not
+chosen for convenience --- brings GOF's densification with it, to both arms
+equally.
+
+What does reproduce, and is what the thesis actually relies on: 3DGS degrades
+$1.9\times$ faster than Mip-Splatting across the same range ($9.09$ against
+$4.86$\,dB), and Mip-Splatting leads at every reduced scale by a margin that
+grows monotonically with the scale gap. That is correct in sign, ordering and
+order of magnitude under a stated deviation, which is L2 by
+Table~\ref{tab:levels}. The gate should be restated against a self-run control
+rather than against a published number produced by a different densification,
+and \S\ref{sec:densification} records the alternative that was considered and
+not taken.}
 
 \section{Table 2 --- Blender MTMT}
 \label{sec:table2}
@@ -115,10 +186,38 @@ not give bit-identical outputs.
 
 \input{generated/table-seedspread}
 
-The largest spread observed between repeats of one configuration is
-$\repeatSpread$\,dB. Read against L1's $\pm0.20$\,dB tolerance, this says the
-harness's own noise floor cannot by itself decide an L1 claim either way, which
-is the precondition for using these baselines as a control.
+Two different quantities are at stake here, and separating them turns out to
+matter.
+
+\begin{enumerate}[leftmargin=1.4em,itemsep=3pt]
+  \item \textbf{Nondeterminism at a fixed seed} --- the same configuration run
+        twice. CUDA atomics in the rasteriser accumulate in a non-deterministic
+        order, so bit-identical inputs do not give bit-identical outputs. The
+        largest per-scale difference observed is $\repeatSpread$\,dB.
+  \item \textbf{Seed-to-seed variation} --- a different initial point cloud and a
+        different view order. Three seeds on two scenes, both arms, all four
+        scales, give a largest sample standard deviation of $\mathbf{0.139}$\,dB,
+        at 3DGS on \texttt{chair} at $\tfrac18$.
+\end{enumerate}
+
+The second is roughly three and a half times the first, so the initialisation
+draw matters considerably more than the atomics --- which is not obvious in
+advance, and is the reason R5 is marked not optional in the protocol.
+
+\keybox{the seed spread is not comfortably below the L1 tolerance}{%
+L1 allows $\pm0.20$\,dB. A worst-case seed standard deviation of $0.139$\,dB is
+only $1.4\times$ smaller than that, so a single-seed L1 claim at an unfavourable
+scale is marginal on its own terms. A three-seed mean has a standard error of
+$0.139/\sqrt{3} = 0.080$\,dB and is comfortable; a single run is not. Arm A's L1
+reproduction in \S\ref{sec:table1} is a single-seed result, and its margins
+($0.01$ to $0.09$\,dB) are of the same order as this $\sigma$. It should be read
+as L1 attained, not as L1 attained with room to spare.}
+
+The spread is also not uniform: it is largest for 3DGS at the most reduced test
+scale ($0.139$\,dB) and roughly five times smaller for Mip-Splatting on the same
+scene and scale ($0.025$\,dB). The arm without a band-limit is the less stable
+one under reseeding, which is consistent with the mechanism this thesis
+proposes, though two scenes are far too few to claim it as a finding.
 
 \section{Cost, measured}
 \label{sec:measuredcost}

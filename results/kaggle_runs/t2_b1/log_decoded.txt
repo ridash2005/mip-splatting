@@ -1,4 +1,4 @@
-Tue Sep  8 08:39:10 2026       
+Tue Sep  8 13:31:10 2026       
 +-----------------------------------------------------------------------------------------+
 | NVIDIA-SMI 580.159.04             Driver Version: 580.159.04     CUDA Version: 13.0     |
 +-----------------------------------------+------------------------+----------------------+
@@ -7,11 +7,11 @@ Tue Sep  8 08:39:10 2026
 |                                         |                        |               MIG M. |
 |=========================================+========================+======================|
 |   0  Tesla T4                       Off |   00000000:00:04.0 Off |                    0 |
-| N/A   43C    P8             10W /   70W |       0MiB /  15360MiB |      0%      Default |
+| N/A   55C    P8             12W /   70W |       0MiB /  15360MiB |      0%      Default |
 |                                         |                        |                  N/A |
 +-----------------------------------------+------------------------+----------------------+
 |   1  Tesla T4                       Off |   00000000:00:05.0 Off |                    0 |
-| N/A   48C    P8             11W /   70W |       0MiB /  15360MiB |      0%      Default |
+| N/A   56C    P8             10W /   70W |       0MiB /  15360MiB |      0%      Default |
 |                                         |                        |                  N/A |
 +-----------------------------------------+------------------------+----------------------+
 
@@ -25,11 +25,11 @@ Tue Sep  8 08:39:10 2026
 torch 2.10.0+cu128 cuda 12.8 cap (7, 5) Tesla T4 x2
 Cloning into '/kaggle/working/repo'...
 + pip install -q ninja gputil lpips plyfile opencv-python
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 43.3/43.3 kB 1.6 MB/s eta 0:00:00
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 53.8/53.8 kB 2.9 MB/s eta 0:00:00
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 43.3/43.3 kB 1.8 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 53.8/53.8 kB 4.3 MB/s eta 0:00:00
 + pip install -q open3d
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 447.7/447.7 MB 3.8 MB/s eta 0:00:00
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 8.9/8.9 MB 117.2 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 447.7/447.7 MB 4.2 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 8.9/8.9 MB 104.4 MB/s eta 0:00:00
 applied build fix: added #include <cfloat> to /kaggle/working/repo/submodules/simple-knn/simple_knn.cu
 + pip install -v /kaggle/working/repo/submodules/diff-gaussian-rasterization
 Using pip 24.1.2 from /usr/local/lib/python3.12/dist-packages/pip (python 3.12)
@@ -37,14 +37,14 @@ Processing ./repo/submodules/diff-gaussian-rasterization
   Preparing metadata (setup.py): started
   Running command python setup.py egg_info
   running egg_info
-  creating /tmp/pip-pip-egg-info-9dcg61fg/diff_gaussian_rasterization.egg-info
-  writing /tmp/pip-pip-egg-info-9dcg61fg/diff_gaussian_rasterization.egg-info/PKG-INFO
-  writing dependency_links to /tmp/pip-pip-egg-info-9dcg61fg/diff_gaussian_rasterization.egg-info/dependency_links.txt
-  writing top-level names to /tmp/pip-pip-egg-info-9dcg61fg/diff_gaussian_rasterization.egg-info/top_level.txt
-  writing manifest file '/tmp/pip-pip-egg-info-9dcg61fg/diff_gaussian_rasterization.egg-info/SOURCES.txt'
-  reading manifest file '/tmp/pip-pip-egg-info-9dcg61fg/diff_gaussian_rasterization.egg-info/SOURCES.txt'
+  creating /tmp/pip-pip-egg-info-cjk4om6x/diff_gaussian_rasterization.egg-info
+  writing /tmp/pip-pip-egg-info-cjk4om6x/diff_gaussian_rasterization.egg-info/PKG-INFO
+  writing dependency_links to /tmp/pip-pip-egg-info-cjk4om6x/diff_gaussian_rasterization.egg-info/dependency_links.txt
+  writing top-level names to /tmp/pip-pip-egg-info-cjk4om6x/diff_gaussian_rasterization.egg-info/top_level.txt
+  writing manifest file '/tmp/pip-pip-egg-info-cjk4om6x/diff_gaussian_rasterization.egg-info/SOURCES.txt'
+  reading manifest file '/tmp/pip-pip-egg-info-cjk4om6x/diff_gaussian_rasterization.egg-info/SOURCES.txt'
   adding license file 'LICENSE.md'
-  writing manifest file '/tmp/pip-pip-egg-info-9dcg61fg/diff_gaussian_rasterization.egg-info/SOURCES.txt'
+  writing manifest file '/tmp/pip-pip-egg-info-cjk4om6x/diff_gaussian_rasterization.egg-info/SOURCES.txt'
   Preparing metadata (setup.py): finished with status 'done'
 Building wheels for collected packages: diff_gaussian_rasterization
   Building wheel for diff_gaussian_rasterization (setup.py): started
@@ -55,7 +55,7 @@ Building wheels for collected packages: diff_gaussian_rasterization
   creating build/lib.linux-x86_64-cpython-312/diff_gaussian_rasterization
   copying diff_gaussian_rasterization/__init__.py -> build/lib.linux-x86_64-cpython-312/diff_gaussian_rasterization
   running build_ext
-  W0908 08:39:57.600000 107 torch/utils/cpp_extension.py:535] There are no x86_64-linux-gnu-g++ version bounds defined for CUDA version 12.8
+  W0908 13:31:56.006000 107 torch/utils/cpp_extension.py:535] There are no x86_64-linux-gnu-g++ version bounds defined for CUDA version 12.8
   building 'diff_gaussian_rasterization._C' extension
   creating /kaggle/working/repo/submodules/diff-gaussian-rasterization/build/temp.linux-x86_64-cpython-312/cuda_rasterizer
   [1/5] /usr/local/cuda/bin/nvcc --generate-dependencies-with-compile --dependency-output /kaggle/working/repo/submodules/diff-gaussian-rasterization/build/temp.linux-x86_64-cpython-312/cuda_rasterizer/backward.o.d -I/usr/local/lib/python3.12/dist-packages/torch/include -I/usr/local/lib/python3.12/dist-packages/torch/include/torch/csrc/api/include -I/usr/local/cuda/include -I/usr/include/python3.12 -c -c /kaggle/working/repo/submodules/diff-gaussian-rasterization/cuda_rasterizer/backward.cu -o /kaggle/working/repo/submodules/diff-gaussian-rasterization/build/temp.linux-x86_64-cpython-312/cuda_rasterizer/backward.o -D__CUDA_NO_HALF_OPERATORS__ -D__CUDA_NO_HALF_CONVERSIONS__ -D__CUDA_NO_BFLOAT16_CONVERSIONS__ -D__CUDA_NO_HALF2_OPERATORS__ --expt-relaxed-constexpr --compiler-options ''"'"'-fPIC'"'"'' -I/kaggle/working/repo/submodules/diff-gaussian-rasterization/third_party/glm/ -DTORCH_API_INCLUDE_EXTENSION_H -DTORCH_EXTENSION_NAME=_C -gencode=arch=compute_75,code=sm_75 -std=c++17
@@ -306,8 +306,8 @@ Building wheels for collected packages: diff_gaussian_rasterization
   running install_lib
   creating build/bdist.linux-x86_64/wheel
   creating build/bdist.linux-x86_64/wheel/diff_gaussian_rasterization
-  copying build/lib.linux-x86_64-cpython-312/diff_gaussian_rasterization/__init__.py -> build/bdist.linux-x86_64/wheel/./diff_gaussian_rasterization
   copying build/lib.linux-x86_64-cpython-312/diff_gaussian_rasterization/_C.cpython-312-x86_64-linux-gnu.so -> build/bdist.linux-x86_64/wheel/./diff_gaussian_rasterization
+  copying build/lib.linux-x86_64-cpython-312/diff_gaussian_rasterization/__init__.py -> build/bdist.linux-x86_64/wheel/./diff_gaussian_rasterization
   running install_egg_info
   running egg_info
   writing diff_gaussian_rasterization.egg-info/PKG-INFO
@@ -319,7 +319,7 @@ Building wheels for collected packages: diff_gaussian_rasterization
   Copying diff_gaussian_rasterization.egg-info to build/bdist.linux-x86_64/wheel/./diff_gaussian_rasterization-0.0.0-py3.12.egg-info
   running install_scripts
   creating build/bdist.linux-x86_64/wheel/diff_gaussian_rasterization-0.0.0.dist-info/WHEEL
-  creating '/tmp/pip-wheel-wk0xjc28/diff_gaussian_rasterization-0.0.0-cp312-cp312-linux_x86_64.whl' and adding 'build/bdist.linux-x86_64/wheel' to it
+  creating '/tmp/pip-wheel-t62bwbgn/diff_gaussian_rasterization-0.0.0-cp312-cp312-linux_x86_64.whl' and adding 'build/bdist.linux-x86_64/wheel' to it
   adding 'diff_gaussian_rasterization/_C.cpython-312-x86_64-linux-gnu.so'
   adding 'diff_gaussian_rasterization/__init__.py'
   adding 'diff_gaussian_rasterization-0.0.0.dist-info/licenses/LICENSE.md'
@@ -329,7 +329,7 @@ Building wheels for collected packages: diff_gaussian_rasterization
   adding 'diff_gaussian_rasterization-0.0.0.dist-info/RECORD'
   removing build/bdist.linux-x86_64/wheel
   Building wheel for diff_gaussian_rasterization (setup.py): finished with status 'done'
-  Created wheel for diff_gaussian_rasterization: filename=diff_gaussian_rasterization-0.0.0-cp312-cp312-linux_x86_64.whl size=3594744 sha256=4412a98018bd147bc8bad3b5c279acb3bcc4599cb65bdcbe7cb39babb9479ded
+  Created wheel for diff_gaussian_rasterization: filename=diff_gaussian_rasterization-0.0.0-cp312-cp312-linux_x86_64.whl size=3594744 sha256=744b6c29334d906d59a0e14b7c41c335b96483d872e24b2bf3ae574c00aa659d
   Stored in directory: /root/.cache/pip/wheels/ab/06/f2/7a6285c344bab1d62d8cbe8cafc04c596a579b9f9e5ddb562e
 Successfully built diff_gaussian_rasterization
 Installing collected packages: diff_gaussian_rasterization
@@ -340,13 +340,13 @@ Processing ./repo/submodules/simple-knn
   Preparing metadata (setup.py): started
   Running command python setup.py egg_info
   running egg_info
-  creating /tmp/pip-pip-egg-info-s0sb_hah/simple_knn.egg-info
-  writing /tmp/pip-pip-egg-info-s0sb_hah/simple_knn.egg-info/PKG-INFO
-  writing dependency_links to /tmp/pip-pip-egg-info-s0sb_hah/simple_knn.egg-info/dependency_links.txt
-  writing top-level names to /tmp/pip-pip-egg-info-s0sb_hah/simple_knn.egg-info/top_level.txt
-  writing manifest file '/tmp/pip-pip-egg-info-s0sb_hah/simple_knn.egg-info/SOURCES.txt'
-  reading manifest file '/tmp/pip-pip-egg-info-s0sb_hah/simple_knn.egg-info/SOURCES.txt'
-  writing manifest file '/tmp/pip-pip-egg-info-s0sb_hah/simple_knn.egg-info/SOURCES.txt'
+  creating /tmp/pip-pip-egg-info-drff7q40/simple_knn.egg-info
+  writing /tmp/pip-pip-egg-info-drff7q40/simple_knn.egg-info/PKG-INFO
+  writing dependency_links to /tmp/pip-pip-egg-info-drff7q40/simple_knn.egg-info/dependency_links.txt
+  writing top-level names to /tmp/pip-pip-egg-info-drff7q40/simple_knn.egg-info/top_level.txt
+  writing manifest file '/tmp/pip-pip-egg-info-drff7q40/simple_knn.egg-info/SOURCES.txt'
+  reading manifest file '/tmp/pip-pip-egg-info-drff7q40/simple_knn.egg-info/SOURCES.txt'
+  writing manifest file '/tmp/pip-pip-egg-info-drff7q40/simple_knn.egg-info/SOURCES.txt'
   Preparing metadata (setup.py): finished with status 'done'
 Building wheels for collected packages: simple_knn
   Building wheel for simple_knn (setup.py): started
@@ -354,7 +354,7 @@ Building wheels for collected packages: simple_knn
   running bdist_wheel
   running build
   running build_ext
-  W0908 08:41:17.280000 225 torch/utils/cpp_extension.py:535] There are no x86_64-linux-gnu-g++ version bounds defined for CUDA version 12.8
+  W0908 13:33:14.307000 225 torch/utils/cpp_extension.py:535] There are no x86_64-linux-gnu-g++ version bounds defined for CUDA version 12.8
   building 'simple_knn._C' extension
   creating /kaggle/working/repo/submodules/simple-knn/build/temp.linux-x86_64-cpython-312
   [1/3] /usr/local/cuda/bin/nvcc --generate-dependencies-with-compile --dependency-output /kaggle/working/repo/submodules/simple-knn/build/temp.linux-x86_64-cpython-312/simple_knn.o.d -I/usr/local/lib/python3.12/dist-packages/torch/include -I/usr/local/lib/python3.12/dist-packages/torch/include/torch/csrc/api/include -I/usr/local/cuda/include -I/usr/include/python3.12 -c -c /kaggle/working/repo/submodules/simple-knn/simple_knn.cu -o /kaggle/working/repo/submodules/simple-knn/build/temp.linux-x86_64-cpython-312/simple_knn.o -D__CUDA_NO_HALF_OPERATORS__ -D__CUDA_NO_HALF_CONVERSIONS__ -D__CUDA_NO_BFLOAT16_CONVERSIONS__ -D__CUDA_NO_HALF2_OPERATORS__ --expt-relaxed-constexpr --compiler-options ''"'"'-fPIC'"'"'' -DTORCH_API_INCLUDE_EXTENSION_H -DTORCH_EXTENSION_NAME=_C -gencode=arch=compute_75,code=sm_75 -std=c++17
@@ -413,7 +413,7 @@ Building wheels for collected packages: simple_knn
   Copying simple_knn.egg-info to build/bdist.linux-x86_64/wheel/./simple_knn-0.0.0-py3.12.egg-info
   running install_scripts
   creating build/bdist.linux-x86_64/wheel/simple_knn-0.0.0.dist-info/WHEEL
-  creating '/tmp/pip-wheel-pzkllzg2/simple_knn-0.0.0-cp312-cp312-linux_x86_64.whl' and adding 'build/bdist.linux-x86_64/wheel' to it
+  creating '/tmp/pip-wheel-r8p9v6ss/simple_knn-0.0.0-cp312-cp312-linux_x86_64.whl' and adding 'build/bdist.linux-x86_64/wheel' to it
   adding 'simple_knn/_C.cpython-312-x86_64-linux-gnu.so'
   adding 'simple_knn-0.0.0.dist-info/METADATA'
   adding 'simple_knn-0.0.0.dist-info/WHEEL'
@@ -421,7 +421,7 @@ Building wheels for collected packages: simple_knn
   adding 'simple_knn-0.0.0.dist-info/RECORD'
   removing build/bdist.linux-x86_64/wheel
   Building wheel for simple_knn (setup.py): finished with status 'done'
-  Created wheel for simple_knn: filename=simple_knn-0.0.0-cp312-cp312-linux_x86_64.whl size=3393879 sha256=01658022f2be3a188e93105daff47e304aaabd1485497312e0de89ed922f6765
+  Created wheel for simple_knn: filename=simple_knn-0.0.0-cp312-cp312-linux_x86_64.whl size=3393879 sha256=2f7702073764683ec2d3bfc1ee6c6cf75543fc24ab23ff6eb28f6130d932fd42
   Stored in directory: /root/.cache/pip/wheels/cb/b9/33/81960efda1471685833da4d25d613aa16a636d6e999b651d86
 Successfully built simple_knn
 Installing collected packages: simple_knn
@@ -434,286 +434,16 @@ Successfully installed simple_knn-0.0.0
 [PASS] Proposition 2: on a dense orbit Sigma_filt = f_k^2·I to 1e-6 — max abs deviation 1.117e-21
 [PASS] Proposition 2: the floor binds on every primitive there — 0.0000
 [PASS] Proposition 2: the filter is isotropic there — 1.000000000
-[PASS] Proposition 2: the opacity rule reduces to Mip-Splatting's to 1e-6 — max abs deviation 1.192e-07
+[PASS] Proposition 2: the opacity rule reduces to Mip-Splatting's to 1e-6 — max abs deviation 1.788e-07 over scales 1.0e-04-1.2e-01, det(Sigma) down to 1.4e-18
 [PASS] narrow cone: the estimation term beats the floor — 1.00
 [PASS] narrow cone: the filter is anisotropic — 13.51x
 [PASS] Proposition 2 holds at s=0.5 (s scales the estimate, not the floor) — max dev 1.150e-21, frac above floor 0.000
 [PASS] Proposition 2 holds at s=2.0 (s scales the estimate, not the floor) — max dev 1.384e-21, frac above floor 0.000
 Propositions 1 and 2 verified against the implementation.
 Propositions 1 and 2 unit test: PASS
-+ python /kaggle/working/repo/convert_blender_data.py --blender_dir /kaggle/input/datasets/nguyenhung1903/nerf-synthetic-dataset/nerf_synthetic --object_name ship --out_dir /kaggle/working/multi-scale
-['/kaggle/input/datasets/nguyenhung1903/nerf-synthetic-dataset/nerf_synthetic/ship']
-Converting from /kaggle/input/datasets/nguyenhung1903/nerf-synthetic-dataset/nerf_synthetic/ship to /kaggle/working/multi-scale/ship
-Split train
-Loading imgs
-Loaded all images, shape is (100, 800, 800, 4)
-Saving images
-Split val
-Loading imgs
-Loaded all images, shape is (100, 800, 800, 4)
-Saving images
-Split test
-Loading imgs
-Loaded all images, shape is (200, 800, 800, 4)
-Saving images
-train file_path <class 'list'> (400,)
-train cam2world <class 'list'> (400, 4, 4)
-train width <class 'list'> (400,)
-train height <class 'list'> (400,)
-train focal <class 'list'> (400,)
-train label <class 'list'> (400,)
-train near <class 'list'> (400,)
-train far <class 'list'> (400,)
-train lossmult <class 'list'> (400,)
-train pix2cam <class 'list'> (400, 3, 3)
-val file_path <class 'list'> (400,)
-val cam2world <class 'list'> (400, 4, 4)
-val width <class 'list'> (400,)
-val height <class 'list'> (400,)
-val focal <class 'list'> (400,)
-val label <class 'list'> (400,)
-val near <class 'list'> (400,)
-val far <class 'list'> (400,)
-val lossmult <class 'list'> (400,)
-val pix2cam <class 'list'> (400, 3, 3)
-test file_path <class 'list'> (800,)
-test cam2world <class 'list'> (800, 4, 4)
-test width <class 'list'> (800,)
-test height <class 'list'> (800,)
-test focal <class 'list'> (800,)
-test label <class 'list'> (800,)
-test near <class 'list'> (800,)
-test far <class 'list'> (800,)
-test lossmult <class 'list'> (800,)
-test pix2cam <class 'list'> (800, 3, 3)
-+ python /kaggle/working/repo/convert_blender_data.py --blender_dir /kaggle/input/datasets/nguyenhung1903/nerf-synthetic-dataset/nerf_synthetic --object_name drums --out_dir /kaggle/working/multi-scale
-['/kaggle/input/datasets/nguyenhung1903/nerf-synthetic-dataset/nerf_synthetic/drums']
-Converting from /kaggle/input/datasets/nguyenhung1903/nerf-synthetic-dataset/nerf_synthetic/drums to /kaggle/working/multi-scale/drums
-Split train
-Loading imgs
-Loaded all images, shape is (100, 800, 800, 4)
-Saving images
-Split val
-Loading imgs
-Loaded all images, shape is (100, 800, 800, 4)
-Saving images
-Split test
-Loading imgs
-Loaded all images, shape is (200, 800, 800, 4)
-Saving images
-train file_path <class 'list'> (400,)
-train cam2world <class 'list'> (400, 4, 4)
-train width <class 'list'> (400,)
-train height <class 'list'> (400,)
-train focal <class 'list'> (400,)
-train label <class 'list'> (400,)
-train near <class 'list'> (400,)
-train far <class 'list'> (400,)
-train lossmult <class 'list'> (400,)
-train pix2cam <class 'list'> (400, 3, 3)
-val file_path <class 'list'> (400,)
-val cam2world <class 'list'> (400, 4, 4)
-val width <class 'list'> (400,)
-val height <class 'list'> (400,)
-val focal <class 'list'> (400,)
-val label <class 'list'> (400,)
-val near <class 'list'> (400,)
-val far <class 'list'> (400,)
-val lossmult <class 'list'> (400,)
-val pix2cam <class 'list'> (400, 3, 3)
-test file_path <class 'list'> (800,)
-test cam2world <class 'list'> (800, 4, 4)
-test width <class 'list'> (800,)
-test height <class 'list'> (800,)
-test focal <class 'list'> (800,)
-test label <class 'list'> (800,)
-test near <class 'list'> (800,)
-test far <class 'list'> (800,)
-test lossmult <class 'list'> (800,)
-test pix2cam <class 'list'> (800, 3, 3)
-+ python /kaggle/working/repo/convert_blender_data.py --blender_dir /kaggle/input/datasets/nguyenhung1903/nerf-synthetic-dataset/nerf_synthetic --object_name ficus --out_dir /kaggle/working/multi-scale
-['/kaggle/input/datasets/nguyenhung1903/nerf-synthetic-dataset/nerf_synthetic/ficus']
-Converting from /kaggle/input/datasets/nguyenhung1903/nerf-synthetic-dataset/nerf_synthetic/ficus to /kaggle/working/multi-scale/ficus
-Split train
-Loading imgs
-Loaded all images, shape is (100, 800, 800, 4)
-Saving images
-Split val
-Loading imgs
-Loaded all images, shape is (100, 800, 800, 4)
-Saving images
-Split test
-Loading imgs
-Loaded all images, shape is (200, 800, 800, 4)
-Saving images
-train file_path <class 'list'> (400,)
-train cam2world <class 'list'> (400, 4, 4)
-train width <class 'list'> (400,)
-train height <class 'list'> (400,)
-train focal <class 'list'> (400,)
-train label <class 'list'> (400,)
-train near <class 'list'> (400,)
-train far <class 'list'> (400,)
-train lossmult <class 'list'> (400,)
-train pix2cam <class 'list'> (400, 3, 3)
-val file_path <class 'list'> (400,)
-val cam2world <class 'list'> (400, 4, 4)
-val width <class 'list'> (400,)
-val height <class 'list'> (400,)
-val focal <class 'list'> (400,)
-val label <class 'list'> (400,)
-val near <class 'list'> (400,)
-val far <class 'list'> (400,)
-val lossmult <class 'list'> (400,)
-val pix2cam <class 'list'> (400, 3, 3)
-test file_path <class 'list'> (800,)
-test cam2world <class 'list'> (800, 4, 4)
-test width <class 'list'> (800,)
-test height <class 'list'> (800,)
-test focal <class 'list'> (800,)
-test label <class 'list'> (800,)
-test near <class 'list'> (800,)
-test far <class 'list'> (800,)
-test lossmult <class 'list'> (800,)
-test pix2cam <class 'list'> (800, 3, 3)
-+ python /kaggle/working/repo/convert_blender_data.py --blender_dir /kaggle/input/datasets/nguyenhung1903/nerf-synthetic-dataset/nerf_synthetic --object_name hotdog --out_dir /kaggle/working/multi-scale
-['/kaggle/input/datasets/nguyenhung1903/nerf-synthetic-dataset/nerf_synthetic/hotdog']
-Converting from /kaggle/input/datasets/nguyenhung1903/nerf-synthetic-dataset/nerf_synthetic/hotdog to /kaggle/working/multi-scale/hotdog
-Split train
-Loading imgs
-Loaded all images, shape is (100, 800, 800, 4)
-Saving images
-Split val
-Loading imgs
-Loaded all images, shape is (100, 800, 800, 4)
-Saving images
-Split test
-Loading imgs
-Loaded all images, shape is (200, 800, 800, 4)
-Saving images
-train file_path <class 'list'> (400,)
-train cam2world <class 'list'> (400, 4, 4)
-train width <class 'list'> (400,)
-train height <class 'list'> (400,)
-train focal <class 'list'> (400,)
-train label <class 'list'> (400,)
-train near <class 'list'> (400,)
-train far <class 'list'> (400,)
-train lossmult <class 'list'> (400,)
-train pix2cam <class 'list'> (400, 3, 3)
-val file_path <class 'list'> (400,)
-val cam2world <class 'list'> (400, 4, 4)
-val width <class 'list'> (400,)
-val height <class 'list'> (400,)
-val focal <class 'list'> (400,)
-val label <class 'list'> (400,)
-val near <class 'list'> (400,)
-val far <class 'list'> (400,)
-val lossmult <class 'list'> (400,)
-val pix2cam <class 'list'> (400, 3, 3)
-test file_path <class 'list'> (800,)
-test cam2world <class 'list'> (800, 4, 4)
-test width <class 'list'> (800,)
-test height <class 'list'> (800,)
-test focal <class 'list'> (800,)
-test label <class 'list'> (800,)
-test near <class 'list'> (800,)
-test far <class 'list'> (800,)
-test lossmult <class 'list'> (800,)
-test pix2cam <class 'list'> (800, 3, 3)
 + python /kaggle/working/repo/convert_blender_data.py --blender_dir /kaggle/input/datasets/nguyenhung1903/nerf-synthetic-dataset/nerf_synthetic --object_name lego --out_dir /kaggle/working/multi-scale
 ['/kaggle/input/datasets/nguyenhung1903/nerf-synthetic-dataset/nerf_synthetic/lego']
 Converting from /kaggle/input/datasets/nguyenhung1903/nerf-synthetic-dataset/nerf_synthetic/lego to /kaggle/working/multi-scale/lego
-Split train
-Loading imgs
-Loaded all images, shape is (100, 800, 800, 4)
-Saving images
-Split val
-Loading imgs
-Loaded all images, shape is (100, 800, 800, 4)
-Saving images
-Split test
-Loading imgs
-Loaded all images, shape is (200, 800, 800, 4)
-Saving images
-train file_path <class 'list'> (400,)
-train cam2world <class 'list'> (400, 4, 4)
-train width <class 'list'> (400,)
-train height <class 'list'> (400,)
-train focal <class 'list'> (400,)
-train label <class 'list'> (400,)
-train near <class 'list'> (400,)
-train far <class 'list'> (400,)
-train lossmult <class 'list'> (400,)
-train pix2cam <class 'list'> (400, 3, 3)
-val file_path <class 'list'> (400,)
-val cam2world <class 'list'> (400, 4, 4)
-val width <class 'list'> (400,)
-val height <class 'list'> (400,)
-val focal <class 'list'> (400,)
-val label <class 'list'> (400,)
-val near <class 'list'> (400,)
-val far <class 'list'> (400,)
-val lossmult <class 'list'> (400,)
-val pix2cam <class 'list'> (400, 3, 3)
-test file_path <class 'list'> (800,)
-test cam2world <class 'list'> (800, 4, 4)
-test width <class 'list'> (800,)
-test height <class 'list'> (800,)
-test focal <class 'list'> (800,)
-test label <class 'list'> (800,)
-test near <class 'list'> (800,)
-test far <class 'list'> (800,)
-test lossmult <class 'list'> (800,)
-test pix2cam <class 'list'> (800, 3, 3)
-+ python /kaggle/working/repo/convert_blender_data.py --blender_dir /kaggle/input/datasets/nguyenhung1903/nerf-synthetic-dataset/nerf_synthetic --object_name materials --out_dir /kaggle/working/multi-scale
-['/kaggle/input/datasets/nguyenhung1903/nerf-synthetic-dataset/nerf_synthetic/materials']
-Converting from /kaggle/input/datasets/nguyenhung1903/nerf-synthetic-dataset/nerf_synthetic/materials to /kaggle/working/multi-scale/materials
-Split train
-Loading imgs
-Loaded all images, shape is (100, 800, 800, 4)
-Saving images
-Split val
-Loading imgs
-Loaded all images, shape is (100, 800, 800, 4)
-Saving images
-Split test
-Loading imgs
-Loaded all images, shape is (200, 800, 800, 4)
-Saving images
-train file_path <class 'list'> (400,)
-train cam2world <class 'list'> (400, 4, 4)
-train width <class 'list'> (400,)
-train height <class 'list'> (400,)
-train focal <class 'list'> (400,)
-train label <class 'list'> (400,)
-train near <class 'list'> (400,)
-train far <class 'list'> (400,)
-train lossmult <class 'list'> (400,)
-train pix2cam <class 'list'> (400, 3, 3)
-val file_path <class 'list'> (400,)
-val cam2world <class 'list'> (400, 4, 4)
-val width <class 'list'> (400,)
-val height <class 'list'> (400,)
-val focal <class 'list'> (400,)
-val label <class 'list'> (400,)
-val near <class 'list'> (400,)
-val far <class 'list'> (400,)
-val lossmult <class 'list'> (400,)
-val pix2cam <class 'list'> (400, 3, 3)
-test file_path <class 'list'> (800,)
-test cam2world <class 'list'> (800, 4, 4)
-test width <class 'list'> (800,)
-test height <class 'list'> (800,)
-test focal <class 'list'> (800,)
-test label <class 'list'> (800,)
-test near <class 'list'> (800,)
-test far <class 'list'> (800,)
-test lossmult <class 'list'> (800,)
-test pix2cam <class 'list'> (800, 3, 3)
-+ python /kaggle/working/repo/convert_blender_data.py --blender_dir /kaggle/input/datasets/nguyenhung1903/nerf-synthetic-dataset/nerf_synthetic --object_name mic --out_dir /kaggle/working/multi-scale
-['/kaggle/input/datasets/nguyenhung1903/nerf-synthetic-dataset/nerf_synthetic/mic']
-Converting from /kaggle/input/datasets/nguyenhung1903/nerf-synthetic-dataset/nerf_synthetic/mic to /kaggle/working/multi-scale/mic
 Split train
 Loading imgs
 Loaded all images, shape is (100, 800, 800, 4)
@@ -801,17 +531,1318 @@ test near <class 'list'> (800,)
 test far <class 'list'> (800,)
 test lossmult <class 'list'> (800,)
 test pix2cam <class 'list'> (800, 3, 3)
-Traceback (most recent call last):
-  File "/kaggle/src/script.py", line 128, in <module>
-    print(f"  {scene}: " + ", ".join(
-                           ^^^^^^^^^^
-  File "/kaggle/src/script.py", line 129, in <genexpr>
-    f"{k} n={spec[k]['n']} span={spec[k]['span_deg']:.0f}deg" for k in PROTOCOLS),
-             ~~~~^^^
-KeyError: 'f'
+  lego: full n=100 span=179deg
+  chair: full n=100 span=179deg
++ OMP_NUM_THREADS=4 CUDA_VISIBLE_DEVICES=0 python train.py -s /kaggle/working/multi-scale/lego -m /kaggle/working/out/b1_lego_full --eval --white_background --iterations 30000 --test_iterations -1 --port 6209  --kernel_size 0.1 --use_fisher_filter   (cwd=/kaggle/working/repo)
++ OMP_NUM_THREADS=4 CUDA_VISIBLE_DEVICES=1 python train.py -s /kaggle/working/multi-scale/chair -m /kaggle/working/out/b1_chair_full --eval --white_background --iterations 30000 --test_iterations -1 --port 6210  --kernel_size 0.1 --use_fisher_filter   (cwd=/kaggle/working/repo)
+Optimizing /kaggle/working/out/b1_chair_full
+Output folder: /kaggle/working/out/b1_chair_full [08/09 13:38:13]
+Found metadata.json file, assuming multi scale Blender data set! [08/09 13:38:13]
+Reading train from metadata.json [08/09 13:38:13]
+read split: train [08/09 13:38:13]
+number of training images: 100 [08/09 13:38:18]
+Reading test from metadata.json [08/09 13:38:18]
+read split: test [08/09 13:38:18]
+number of testing images: 800 [08/09 13:38:32]
+Generating random point cloud (100000)... [08/09 13:38:32]
+Loading Training Cameras [08/09 13:38:32]
+Loading Test Cameras [08/09 13:38:34]
+Number of points at initialisation :  100000 [08/09 13:38:39]
+Computing 3D filter [08/09 13:38:41]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.330e-07); medians 1.202092e-03 vs 1.202092e-03 [08/09 13:38:42]
+Fisher filter: 0.0% of primitives above the floor, mean anisotropy 1.00x, 0.00% capped [08/09 13:38:42]
+Training progress:   0%|          | 0/30000 [00:00<?, ?it/s]
+Optimizing /kaggle/working/out/b1_lego_full
+Output folder: /kaggle/working/out/b1_lego_full [08/09 13:38:13]
+Found metadata.json file, assuming multi scale Blender data set! [08/09 13:38:13]
+Reading train from metadata.json [08/09 13:38:13]
+read split: train [08/09 13:38:13]
+number of training images: 100 [08/09 13:38:18]
+Reading test from metadata.json [08/09 13:38:18]
+read split: test [08/09 13:38:18]
+number of testing images: 800 [08/09 13:38:34]
+Generating random point cloud (100000)... [08/09 13:38:34]
+Loading Training Cameras [08/09 13:38:34]
+Loading Test Cameras [08/09 13:38:36]
+Number of points at initialisation :  100000 [08/09 13:38:41]
+Computing 3D filter [08/09 13:38:42]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.332e-07); medians 1.200477e-03 vs 1.200477e-03 [08/09 13:38:43]
+Fisher filter: 0.0% of primitives above the floor, mean anisotropy 1.00x, 0.00% capped [08/09 13:38:43]
+Training progress:   0%|          | 0/30000 [00:00<?, ?it/s]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.021e-07); medians 1.414631e-03 vs 1.414631e-03 [08/09 13:39:07]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.029e-07); medians 1.367778e-03 vs 1.367778e-03 [08/09 13:39:08]
+Computing 3D filter [08/09 13:39:10]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.029e-07); medians 1.407607e-03 vs 1.407607e-03 [08/09 13:39:10]
+Computing 3D filter [08/09 13:39:12]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.028e-07); medians 1.402362e-03 vs 1.402362e-03 [08/09 13:39:13]
+Computing 3D filter [08/09 13:39:11]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.026e-07); medians 1.357020e-03 vs 1.357020e-03 [08/09 13:39:11]
+Computing 3D filter [08/09 13:39:13]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.021e-07); medians 1.344905e-03 vs 1.344905e-03 [08/09 13:39:13]
+Computing 3D filter [08/09 13:39:15]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.398660e-03 vs 1.398660e-03 [08/09 13:39:15]
+Computing 3D filter [08/09 13:39:17]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.034e-07); medians 1.396017e-03 vs 1.396018e-03 [08/09 13:39:18]
+Computing 3D filter [08/09 13:39:16]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.028e-07); medians 1.335938e-03 vs 1.335938e-03 [08/09 13:39:16]
+Computing 3D filter [08/09 13:39:19]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.022e-07); medians 1.331115e-03 vs 1.331115e-03 [08/09 13:39:19]
+Computing 3D filter [08/09 13:39:20]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.033e-07); medians 1.394284e-03 vs 1.394283e-03 [08/09 13:39:20]
+Computing 3D filter [08/09 13:39:22]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.031e-07); medians 1.393399e-03 vs 1.393399e-03 [08/09 13:39:23]
+Computing 3D filter [08/09 13:39:21]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.029e-07); medians 1.326113e-03 vs 1.326113e-03 [08/09 13:39:22]
+Computing 3D filter [08/09 13:39:24]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.024e-07); medians 1.321474e-03 vs 1.321474e-03 [08/09 13:39:25]
+Computing 3D filter [08/09 13:39:25]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.035e-07); medians 1.392556e-03 vs 1.392556e-03 [08/09 13:39:26]
+Computing 3D filter [08/09 13:39:28]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.392070e-03 vs 1.392070e-03 [08/09 13:39:28]
+Computing 3D filter [08/09 13:39:27]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.030e-07); medians 1.318487e-03 vs 1.318487e-03 [08/09 13:39:28]
+Computing 3D filter [08/09 13:39:30]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.029e-07); medians 1.316197e-03 vs 1.316197e-03 [08/09 13:39:31]
+Computing 3D filter [08/09 13:39:31]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.036e-07); medians 1.391883e-03 vs 1.391883e-03 [08/09 13:39:31]
+Computing 3D filter [08/09 13:39:33]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.036e-07); medians 1.391963e-03 vs 1.391963e-03 [08/09 13:39:34]
+Computing 3D filter [08/09 13:39:33]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.025e-07); medians 1.314780e-03 vs 1.314780e-03 [08/09 13:39:34]
+Computing 3D filter [08/09 13:39:37]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.029e-07); medians 1.313647e-03 vs 1.313647e-03 [08/09 13:39:37]
+Computing 3D filter [08/09 13:39:36]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.036e-07); medians 1.392047e-03 vs 1.392047e-03 [08/09 13:39:37]
+Computing 3D filter [08/09 13:39:39]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.035e-07); medians 1.392007e-03 vs 1.392007e-03 [08/09 13:39:40]
+Computing 3D filter [08/09 13:39:40]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.029e-07); medians 1.312844e-03 vs 1.312844e-03 [08/09 13:39:41]
+Computing 3D filter [08/09 13:39:44]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.029e-07); medians 1.312110e-03 vs 1.312110e-03 [08/09 13:39:44]
+Computing 3D filter [08/09 13:39:42]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.036e-07); medians 1.392053e-03 vs 1.392053e-03 [08/09 13:39:43]
+Computing 3D filter [08/09 13:39:45]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.036e-07); medians 1.392129e-03 vs 1.392129e-03 [08/09 13:39:46]
+Computing 3D filter [08/09 13:39:47]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.029e-07); medians 1.311630e-03 vs 1.311630e-03 [08/09 13:39:48]
+Computing 3D filter [08/09 13:39:51]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.026e-07); medians 1.311462e-03 vs 1.311461e-03 [08/09 13:39:52]
+Computing 3D filter [08/09 13:39:49]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.036e-07); medians 1.392222e-03 vs 1.392222e-03 [08/09 13:39:49]
+Computing 3D filter [08/09 13:39:52]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.036e-07); medians 1.392219e-03 vs 1.392219e-03 [08/09 13:39:53]
+Computing 3D filter [08/09 13:39:55]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.036e-07); medians 1.392240e-03 vs 1.392240e-03 [08/09 13:39:56]
+Computing 3D filter [08/09 13:39:59]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.038e-07); medians 1.392387e-03 vs 1.392387e-03 [08/09 13:40:00]
+Computing 3D filter [08/09 13:39:55]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.029e-07); medians 1.311217e-03 vs 1.311217e-03 [08/09 13:39:56]
+Computing 3D filter [08/09 13:39:59]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.030e-07); medians 1.311127e-03 vs 1.311127e-03 [08/09 13:40:00]
+Computing 3D filter [08/09 13:40:03]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.041e-07); medians 1.392304e-03 vs 1.392304e-03 [08/09 13:40:03]
+Computing 3D filter [08/09 13:40:06]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.043e-07); medians 1.392444e-03 vs 1.392444e-03 [08/09 13:40:07]
+Computing 3D filter [08/09 13:40:03]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.029e-07); medians 1.310986e-03 vs 1.310986e-03 [08/09 13:40:04]
+Computing 3D filter [08/09 13:40:07]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.030e-07); medians 1.311045e-03 vs 1.311045e-03 [08/09 13:40:08]
+Computing 3D filter [08/09 13:40:10]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.036e-07); medians 1.392449e-03 vs 1.392449e-03 [08/09 13:40:11]
+Computing 3D filter [08/09 13:40:14]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.039e-07); medians 1.392397e-03 vs 1.392397e-03 [08/09 13:40:15]
+Computing 3D filter [08/09 13:40:12]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.028e-07); medians 1.311127e-03 vs 1.311127e-03 [08/09 13:40:13]
+Computing 3D filter [08/09 13:40:16]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.028e-07); medians 1.311209e-03 vs 1.311209e-03 [08/09 13:40:17]
+Computing 3D filter [08/09 13:40:18]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.038e-07); medians 1.392335e-03 vs 1.392335e-03 [08/09 13:40:19]
+Computing 3D filter [08/09 13:40:23]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.039e-07); medians 1.392266e-03 vs 1.392266e-03 [08/09 13:40:23]
+Computing 3D filter [08/09 13:40:21]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.030e-07); medians 1.311255e-03 vs 1.311255e-03 [08/09 13:40:22]
+Computing 3D filter [08/09 13:40:26]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.029e-07); medians 1.311213e-03 vs 1.311213e-03 [08/09 13:40:27]
+Computing 3D filter [08/09 13:40:27]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.036e-07); medians 1.388740e-03 vs 1.388740e-03 [08/09 13:40:28]
+Computing 3D filter [08/09 13:40:31]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.036e-07); medians 1.389058e-03 vs 1.389058e-03 [08/09 13:40:32]
+Computing 3D filter [08/09 13:40:31]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.029e-07); medians 1.311319e-03 vs 1.311319e-03 [08/09 13:40:32]
+Computing 3D filter [08/09 13:40:35]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.028e-07); medians 1.311492e-03 vs 1.311492e-03 [08/09 13:40:37]
+Computing 3D filter [08/09 13:40:35]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.036e-07); medians 1.389289e-03 vs 1.389289e-03 [08/09 13:40:36]
+Computing 3D filter [08/09 13:40:40]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.036e-07); medians 1.389514e-03 vs 1.389514e-03 [08/09 13:40:41]
+Computing 3D filter [08/09 13:40:41]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.029e-07); medians 1.314402e-03 vs 1.314402e-03 [08/09 13:40:42]
+Computing 3D filter [08/09 13:40:46]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.314108e-03 vs 1.314108e-03 [08/09 13:40:47]
+Computing 3D filter [08/09 13:40:44]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.036e-07); medians 1.389774e-03 vs 1.389774e-03 [08/09 13:40:45]
+Computing 3D filter [08/09 13:40:48]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.036e-07); medians 1.389901e-03 vs 1.389901e-03 [08/09 13:40:49]
+Training progress:  11%|█         | 3280/30000 [02:06<18:36, 23.94it/s, Loss=0.0125880]
+Computing 3D filter [08/09 13:40:51]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.313709e-03 vs 1.313709e-03 [08/09 13:40:52]
+Computing 3D filter [08/09 13:40:56]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.313317e-03 vs 1.313317e-03 [08/09 13:40:57]
+Training progress:  12%|█▏        | 3680/30000 [02:10<16:45, 26.16it/s, Loss=0.0136960]
+Computing 3D filter [08/09 13:40:53]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.036e-07); medians 1.389945e-03 vs 1.389945e-03 [08/09 13:40:54]
+Computing 3D filter [08/09 13:40:58]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.389999e-03 vs 1.389999e-03 [08/09 13:40:59]
+Computing 3D filter [08/09 13:41:01]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.313208e-03 vs 1.313208e-03 [08/09 13:41:02]
+Computing 3D filter [08/09 13:41:06]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.313132e-03 vs 1.313132e-03 [08/09 13:41:07]
+Computing 3D filter [08/09 13:41:02]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.036e-07); medians 1.390027e-03 vs 1.390027e-03 [08/09 13:41:03]
+Computing 3D filter [08/09 13:41:07]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.036e-07); medians 1.390015e-03 vs 1.390015e-03 [08/09 13:41:08]
+Computing 3D filter [08/09 13:41:12]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.036e-07); medians 1.390010e-03 vs 1.390010e-03 [08/09 13:41:13]
+Computing 3D filter [08/09 13:41:17]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.038e-07); medians 1.389981e-03 vs 1.389981e-03 [08/09 13:41:18]
+Computing 3D filter [08/09 13:41:12]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.313034e-03 vs 1.313035e-03 [08/09 13:41:13]
+Computing 3D filter [08/09 13:41:17]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.312884e-03 vs 1.312884e-03 [08/09 13:41:18]
+Computing 3D filter [08/09 13:41:22]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.036e-07); medians 1.389893e-03 vs 1.389893e-03 [08/09 13:41:23]
+Computing 3D filter [08/09 13:41:27]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.389754e-03 vs 1.389754e-03 [08/09 13:41:28]
+Computing 3D filter [08/09 13:41:22]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.312870e-03 vs 1.312870e-03 [08/09 13:41:24]
+Computing 3D filter [08/09 13:41:28]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.312724e-03 vs 1.312724e-03 [08/09 13:41:29]
+Computing 3D filter [08/09 13:41:32]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.389699e-03 vs 1.389699e-03 [08/09 13:41:33]
+Computing 3D filter [08/09 13:41:37]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.038e-07); medians 1.389565e-03 vs 1.389565e-03 [08/09 13:41:39]
+Computing 3D filter [08/09 13:41:33]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.312661e-03 vs 1.312661e-03 [08/09 13:41:35]
+Computing 3D filter [08/09 13:41:39]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.312512e-03 vs 1.312512e-03 [08/09 13:41:41]
+Computing 3D filter [08/09 13:41:43]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.038e-07); medians 1.389441e-03 vs 1.389441e-03 [08/09 13:41:44]
+Computing 3D filter [08/09 13:41:48]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.389370e-03 vs 1.389370e-03 [08/09 13:41:50]
+Computing 3D filter [08/09 13:41:45]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.312469e-03 vs 1.312469e-03 [08/09 13:41:46]
+Computing 3D filter [08/09 13:41:51]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.312290e-03 vs 1.312290e-03 [08/09 13:41:52]
+Computing 3D filter [08/09 13:41:54]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.039e-07); medians 1.389243e-03 vs 1.389243e-03 [08/09 13:41:55]
+Computing 3D filter [08/09 13:41:59]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.039e-07); medians 1.389078e-03 vs 1.389078e-03 [08/09 13:42:01]
+Computing 3D filter [08/09 13:41:56]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.312237e-03 vs 1.312237e-03 [08/09 13:41:58]
+Computing 3D filter [08/09 13:42:02]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.312144e-03 vs 1.312144e-03 [08/09 13:42:04]
+Computing 3D filter [08/09 13:42:05]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.040e-07); medians 1.388944e-03 vs 1.388944e-03 [08/09 13:42:07]
+Computing 3D filter [08/09 13:42:11]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.040e-07); medians 1.388835e-03 vs 1.388835e-03 [08/09 13:42:12]
+Computing 3D filter [08/09 13:42:08]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.312101e-03 vs 1.312101e-03 [08/09 13:42:10]
+Computing 3D filter [08/09 13:42:14]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.312083e-03 vs 1.312083e-03 [08/09 13:42:16]
+Computing 3D filter [08/09 13:42:16]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.038e-07); medians 1.388678e-03 vs 1.388678e-03 [08/09 13:42:18]
+Computing 3D filter [08/09 13:42:22]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.038e-07); medians 1.388524e-03 vs 1.388524e-03 [08/09 13:42:24]
+Computing 3D filter [08/09 13:42:21]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.311956e-03 vs 1.311956e-03 [08/09 13:42:22]
+Computing 3D filter [08/09 13:42:27]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.311863e-03 vs 1.311863e-03 [08/09 13:42:28]
+Computing 3D filter [08/09 13:42:28]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.388367e-03 vs 1.388367e-03 [08/09 13:42:30]
+Computing 3D filter [08/09 13:42:34]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.039e-07); medians 1.388184e-03 vs 1.388184e-03 [08/09 13:42:36]
+Computing 3D filter [08/09 13:42:33]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.311852e-03 vs 1.311852e-03 [08/09 13:42:35]
+Computing 3D filter [08/09 13:42:39]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.311885e-03 vs 1.311885e-03 [08/09 13:42:41]
+Computing 3D filter [08/09 13:42:40]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.388116e-03 vs 1.388116e-03 [08/09 13:42:41]
+Computing 3D filter [08/09 13:42:46]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.040e-07); medians 1.387967e-03 vs 1.387967e-03 [08/09 13:42:47]
+Computing 3D filter [08/09 13:42:45]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.311796e-03 vs 1.311796e-03 [08/09 13:42:47]
+Computing 3D filter [08/09 13:42:52]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.311785e-03 vs 1.311785e-03 [08/09 13:42:53]
+Computing 3D filter [08/09 13:42:52]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.039e-07); medians 1.387843e-03 vs 1.387843e-03 [08/09 13:42:54]
+Training progress:  20%|█▉        | 5900/30000 [04:12<18:23, 21.84it/s, Loss=0.0076486]
+Computing 3D filter [08/09 13:42:58]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387680e-03 vs 1.387680e-03 [08/09 13:43:00]
+Computing 3D filter [08/09 13:43:04]
+Training progress:  18%|█▊        | 5500/30000 [04:14<19:48, 20.62it/s, Loss=0.0079570]Fisher filter: 0.0% of primitives above the floor, mean anisotropy 1.00x, 0.00% capped [08/09 13:42:53]
+Computing 3D filter [08/09 13:42:58]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.311761e-03 vs 1.311761e-03 [08/09 13:43:00]
+Computing 3D filter [08/09 13:43:04]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.311728e-03 vs 1.311728e-03 [08/09 13:43:06]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.388032e-03 vs 1.388032e-03 [08/09 13:43:06]
+Computing 3D filter [08/09 13:43:10]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.038e-07); medians 1.387967e-03 vs 1.387966e-03 [08/09 13:43:12]
+Computing 3D filter [08/09 13:43:16]
+Computing 3D filter [08/09 13:43:11]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.311683e-03 vs 1.311683e-03 [08/09 13:43:12]
+Computing 3D filter [08/09 13:43:17]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.311642e-03 vs 1.311642e-03 [08/09 13:43:19]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.040e-07); medians 1.387866e-03 vs 1.387866e-03 [08/09 13:43:17]
+Computing 3D filter [08/09 13:43:22]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387731e-03 vs 1.387731e-03 [08/09 13:43:24]
+Computing 3D filter [08/09 13:43:28]
+Computing 3D filter [08/09 13:43:24]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.311625e-03 vs 1.311624e-03 [08/09 13:43:26]
+Computing 3D filter [08/09 13:43:30]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.311587e-03 vs 1.311588e-03 [08/09 13:43:32]
+Computing 3D filter [08/09 13:43:37]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387681e-03 vs 1.387681e-03 [08/09 13:43:30]
+Computing 3D filter [08/09 13:43:34]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.039e-07); medians 1.387568e-03 vs 1.387568e-03 [08/09 13:43:36]
+Computing 3D filter [08/09 13:43:40]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387468e-03 vs 1.387468e-03 [08/09 13:43:42]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.312908e-03 vs 1.312908e-03 [08/09 13:43:39]
+Computing 3D filter [08/09 13:43:44]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.312731e-03 vs 1.312731e-03 [08/09 13:43:45]
+Computing 3D filter [08/09 13:43:50]
+Computing 3D filter [08/09 13:43:46]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387366e-03 vs 1.387365e-03 [08/09 13:43:48]
+Computing 3D filter [08/09 13:43:52]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.040e-07); medians 1.387285e-03 vs 1.387285e-03 [08/09 13:43:54]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.312528e-03 vs 1.312528e-03 [08/09 13:43:52]
+Computing 3D filter [08/09 13:43:57]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.312371e-03 vs 1.312371e-03 [08/09 13:43:59]
+Computing 3D filter [08/09 13:44:03]
+[ITER 7000] Saving Gaussians [08/09 13:43:59]
+Computing 3D filter [08/09 13:44:01]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.040e-07); medians 1.387168e-03 vs 1.387168e-03 [08/09 13:44:03]
+Computing 3D filter [08/09 13:44:08]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387103e-03 vs 1.387103e-03 [08/09 13:44:09]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.312235e-03 vs 1.312235e-03 [08/09 13:44:05]
+Computing 3D filter [08/09 13:44:10]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.312094e-03 vs 1.312094e-03 [08/09 13:44:12]
+Computing 3D filter [08/09 13:44:17]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.312019e-03 vs 1.312020e-03 [08/09 13:44:18]
+Computing 3D filter [08/09 13:44:14]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387008e-03 vs 1.387008e-03 [08/09 13:44:16]
+Computing 3D filter [08/09 13:44:20]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.386955e-03 vs 1.386955e-03 [08/09 13:44:22]
+Computing 3D filter [08/09 13:44:23]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.311935e-03 vs 1.311935e-03 [08/09 13:44:25]
+Computing 3D filter [08/09 13:44:30]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.311846e-03 vs 1.311846e-03 [08/09 13:44:32]
+Computing 3D filter [08/09 13:44:27]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.386847e-03 vs 1.386846e-03 [08/09 13:44:28]
+Computing 3D filter [08/09 13:44:33]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.040e-07); medians 1.386745e-03 vs 1.386745e-03 [08/09 13:44:35]
+Computing 3D filter [08/09 13:44:39]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.038e-07); medians 1.386651e-03 vs 1.386651e-03 [08/09 13:44:41]
+Computing 3D filter [08/09 13:44:46]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.386562e-03 vs 1.386562e-03 [08/09 13:44:48]
+[ITER 7000] Saving Gaussians [08/09 13:44:37]
+Computing 3D filter [08/09 13:44:39]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.311755e-03 vs 1.311755e-03 [08/09 13:44:41]
+Computing 3D filter [08/09 13:44:46]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.311656e-03 vs 1.311656e-03 [08/09 13:44:48]
+Computing 3D filter [08/09 13:44:52]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.386493e-03 vs 1.386493e-03 [08/09 13:44:54]
+Computing 3D filter [08/09 13:44:59]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.386400e-03 vs 1.386400e-03 [08/09 13:45:00]
+Computing 3D filter [08/09 13:44:53]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.311569e-03 vs 1.311569e-03 [08/09 13:44:55]
+Computing 3D filter [08/09 13:45:00]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.311430e-03 vs 1.311430e-03 [08/09 13:45:02]
+Training progress:  26%|██▋       | 7910/30000 [06:19<37:53,  9.72it/s, Loss=0.0074897]
+Computing 3D filter [08/09 13:45:05]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.040e-07); medians 1.386337e-03 vs 1.386337e-03 [08/09 13:45:07]
+Computing 3D filter [08/09 13:45:12]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.041e-07); medians 1.386214e-03 vs 1.386214e-03 [08/09 13:45:14]
+Training progress:  24%|██▍       | 7310/30000 [06:19<41:07,  9.19it/s, Loss=0.0067855]
+Computing 3D filter [08/09 13:45:07]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.311356e-03 vs 1.311356e-03 [08/09 13:45:09]
+Computing 3D filter [08/09 13:45:13]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.311277e-03 vs 1.311277e-03 [08/09 13:45:15]
+Computing 3D filter [08/09 13:45:18]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.386130e-03 vs 1.386130e-03 [08/09 13:45:20]
+Computing 3D filter [08/09 13:45:25]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.040e-07); medians 1.386058e-03 vs 1.386058e-03 [08/09 13:45:27]
+Computing 3D filter [08/09 13:45:20]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.311172e-03 vs 1.311172e-03 [08/09 13:45:22]
+Computing 3D filter [08/09 13:45:27]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.311142e-03 vs 1.311142e-03 [08/09 13:45:29]
+Computing 3D filter [08/09 13:45:31]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.385987e-03 vs 1.385987e-03 [08/09 13:45:33]
+Computing 3D filter [08/09 13:45:38]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.038e-07); medians 1.385924e-03 vs 1.385924e-03 [08/09 13:45:40]
+Computing 3D filter [08/09 13:45:34]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.311047e-03 vs 1.311047e-03 [08/09 13:45:36]
+Computing 3D filter [08/09 13:45:41]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.310982e-03 vs 1.310982e-03 [08/09 13:45:43]
+Computing 3D filter [08/09 13:45:45]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.385834e-03 vs 1.385834e-03 [08/09 13:45:46]
+Computing 3D filter [08/09 13:45:51]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.385783e-03 vs 1.385783e-03 [08/09 13:45:53]
+Computing 3D filter [08/09 13:45:48]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.310926e-03 vs 1.310926e-03 [08/09 13:45:50]
+Computing 3D filter [08/09 13:45:55]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.310846e-03 vs 1.310846e-03 [08/09 13:45:56]
+Computing 3D filter [08/09 13:45:58]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.385711e-03 vs 1.385711e-03 [08/09 13:46:00]
+Computing 3D filter [08/09 13:46:04]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.038e-07); medians 1.385658e-03 vs 1.385658e-03 [08/09 13:46:06]
+Computing 3D filter [08/09 13:46:01]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.310772e-03 vs 1.310772e-03 [08/09 13:46:03]
+Computing 3D filter [08/09 13:46:08]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.310708e-03 vs 1.310707e-03 [08/09 13:46:10]
+Computing 3D filter [08/09 13:46:11]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.041e-07); medians 1.385606e-03 vs 1.385606e-03 [08/09 13:46:13]
+Computing 3D filter [08/09 13:46:18]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.386955e-03 vs 1.386955e-03 [08/09 13:46:20]
+Computing 3D filter [08/09 13:46:15]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.310655e-03 vs 1.310655e-03 [08/09 13:46:17]
+Computing 3D filter [08/09 13:46:22]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.310587e-03 vs 1.310587e-03 [08/09 13:46:24]
+Computing 3D filter [08/09 13:46:24]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.386990e-03 vs 1.386990e-03 [08/09 13:46:26]
+Computing 3D filter [08/09 13:46:30]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.386981e-03 vs 1.386981e-03 [08/09 13:46:32]
+Computing 3D filter [08/09 13:46:29]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.310565e-03 vs 1.310565e-03 [08/09 13:46:31]
+Computing 3D filter [08/09 13:46:36]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.310495e-03 vs 1.310495e-03 [08/09 13:46:38]
+Computing 3D filter [08/09 13:46:37]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387005e-03 vs 1.387005e-03 [08/09 13:46:39]
+Computing 3D filter [08/09 13:46:43]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.386991e-03 vs 1.386991e-03 [08/09 13:46:45]
+Computing 3D filter [08/09 13:46:43]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.310416e-03 vs 1.310416e-03 [08/09 13:46:45]
+Computing 3D filter [08/09 13:46:50]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.310377e-03 vs 1.310377e-03 [08/09 13:46:52]
+Computing 3D filter [08/09 13:46:50]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.386968e-03 vs 1.386968e-03 [08/09 13:46:52]
+Computing 3D filter [08/09 13:46:56]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.386950e-03 vs 1.386950e-03 [08/09 13:46:58]
+Computing 3D filter [08/09 13:46:57]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.310309e-03 vs 1.310309e-03 [08/09 13:46:59]
+Computing 3D filter [08/09 13:47:04]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.310701e-03 vs 1.310701e-03 [08/09 13:47:06]
+Computing 3D filter [08/09 13:47:02]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.386938e-03 vs 1.386938e-03 [08/09 13:47:04]
+Computing 3D filter [08/09 13:47:09]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.386899e-03 vs 1.386899e-03 [08/09 13:47:11]
+Training progress:  30%|███       | 9130/30000 [08:24<27:47, 12.52it/s, Loss=0.0075907]
+Computing 3D filter [08/09 13:47:11]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.310604e-03 vs 1.310604e-03 [08/09 13:47:13]
+Computing 3D filter [08/09 13:47:18]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.310517e-03 vs 1.310517e-03 [08/09 13:47:20]
+Training progress:  33%|███▎      | 9940/30000 [08:30<21:59, 15.21it/s, Loss=0.0074709]
+Computing 3D filter [08/09 13:47:15]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.386881e-03 vs 1.386881e-03 [08/09 13:47:17]
+Computing 3D filter [08/09 13:47:22]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.386869e-03 vs 1.386869e-03 [08/09 13:47:24]
+Computing 3D filter [08/09 13:47:25]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.310431e-03 vs 1.310431e-03 [08/09 13:47:27]
+Computing 3D filter [08/09 13:47:32]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.310350e-03 vs 1.310350e-03 [08/09 13:47:34]
+Computing 3D filter [08/09 13:47:29]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.386846e-03 vs 1.386846e-03 [08/09 13:47:30]
+Computing 3D filter [08/09 13:47:35]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.386828e-03 vs 1.386828e-03 [08/09 13:47:37]
+Computing 3D filter [08/09 13:47:39]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.310269e-03 vs 1.310269e-03 [08/09 13:47:41]
+Computing 3D filter [08/09 13:47:46]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.310235e-03 vs 1.310235e-03 [08/09 13:47:48]
+Computing 3D filter [08/09 13:47:42]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.386804e-03 vs 1.386804e-03 [08/09 13:47:44]
+Computing 3D filter [08/09 13:47:48]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.386785e-03 vs 1.386785e-03 [08/09 13:47:50]
+Computing 3D filter [08/09 13:47:53]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.310128e-03 vs 1.310128e-03 [08/09 13:47:55]
+Computing 3D filter [08/09 13:48:00]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.310059e-03 vs 1.310059e-03 [08/09 13:48:02]
+Computing 3D filter [08/09 13:47:55]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.386776e-03 vs 1.386776e-03 [08/09 13:47:56]
+Computing 3D filter [08/09 13:48:01]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.386760e-03 vs 1.386760e-03 [08/09 13:48:03]
+Computing 3D filter [08/09 13:48:08]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.386717e-03 vs 1.386717e-03 [08/09 13:48:09]
+Computing 3D filter [08/09 13:48:14]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.386703e-03 vs 1.386703e-03 [08/09 13:48:16]
+Computing 3D filter [08/09 13:48:07]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.310014e-03 vs 1.310014e-03 [08/09 13:48:09]
+Computing 3D filter [08/09 13:48:14]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309988e-03 vs 1.309988e-03 [08/09 13:48:16]
+Computing 3D filter [08/09 13:48:21]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.386687e-03 vs 1.386687e-03 [08/09 13:48:22]
+Computing 3D filter [08/09 13:48:27]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.386660e-03 vs 1.386660e-03 [08/09 13:48:29]
+Computing 3D filter [08/09 13:48:21]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309918e-03 vs 1.309918e-03 [08/09 13:48:23]
+Computing 3D filter [08/09 13:48:29]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309866e-03 vs 1.309866e-03 [08/09 13:48:31]
+Computing 3D filter [08/09 13:48:34]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.386620e-03 vs 1.386620e-03 [08/09 13:48:35]
+Computing 3D filter [08/09 13:48:40]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.386613e-03 vs 1.386614e-03 [08/09 13:48:42]
+Computing 3D filter [08/09 13:48:36]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309809e-03 vs 1.309809e-03 [08/09 13:48:38]
+Computing 3D filter [08/09 13:48:43]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309752e-03 vs 1.309752e-03 [08/09 13:48:45]
+Computing 3D filter [08/09 13:48:47]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.386613e-03 vs 1.386613e-03 [08/09 13:48:48]
+Computing 3D filter [08/09 13:48:53]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.386607e-03 vs 1.386607e-03 [08/09 13:48:55]
+Computing 3D filter [08/09 13:48:50]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309707e-03 vs 1.309707e-03 [08/09 13:48:52]
+Computing 3D filter [08/09 13:48:57]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309626e-03 vs 1.309626e-03 [08/09 13:48:59]
+Computing 3D filter [08/09 13:49:00]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.386583e-03 vs 1.386583e-03 [08/09 13:49:01]
+Computing 3D filter [08/09 13:49:06]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.386572e-03 vs 1.386572e-03 [08/09 13:49:08]
+Computing 3D filter [08/09 13:49:04]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309607e-03 vs 1.309607e-03 [08/09 13:49:06]
+Computing 3D filter [08/09 13:49:11]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309568e-03 vs 1.309568e-03 [08/09 13:49:13]
+Computing 3D filter [08/09 13:49:13]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.386546e-03 vs 1.386546e-03 [08/09 13:49:15]
+Computing 3D filter [08/09 13:49:19]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.386542e-03 vs 1.386542e-03 [08/09 13:49:21]
+Training progress:  36%|███▋      | 10940/30000 [10:32<23:07, 13.74it/s, Loss=0.0054857]
+Computing 3D filter [08/09 13:49:18]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309541e-03 vs 1.309541e-03 [08/09 13:49:20]
+Computing 3D filter [08/09 13:49:25]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309487e-03 vs 1.309487e-03 [08/09 13:49:27]
+Training progress:  40%|███▉      | 11940/30000 [10:40<20:11, 14.91it/s, Loss=0.0061008]
+Computing 3D filter [08/09 13:49:26]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.386539e-03 vs 1.386539e-03 [08/09 13:49:28]
+Computing 3D filter [08/09 13:49:32]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387244e-03 vs 1.387244e-03 [08/09 13:49:34]
+Computing 3D filter [08/09 13:49:33]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309466e-03 vs 1.309466e-03 [08/09 13:49:35]
+Computing 3D filter [08/09 13:49:40]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309399e-03 vs 1.309399e-03 [08/09 13:49:42]
+Computing 3D filter [08/09 13:49:39]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387241e-03 vs 1.387241e-03 [08/09 13:49:41]
+Computing 3D filter [08/09 13:49:45]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387238e-03 vs 1.387238e-03 [08/09 13:49:47]
+Computing 3D filter [08/09 13:49:47]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309364e-03 vs 1.309364e-03 [08/09 13:49:49]
+Computing 3D filter [08/09 13:49:54]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309344e-03 vs 1.309344e-03 [08/09 13:49:56]
+Computing 3D filter [08/09 13:49:52]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387217e-03 vs 1.387217e-03 [08/09 13:49:54]
+Computing 3D filter [08/09 13:49:58]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387221e-03 vs 1.387221e-03 [08/09 13:50:00]
+Computing 3D filter [08/09 13:50:01]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309293e-03 vs 1.309293e-03 [08/09 13:50:03]
+Computing 3D filter [08/09 13:50:09]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309270e-03 vs 1.309270e-03 [08/09 13:50:11]
+Computing 3D filter [08/09 13:50:05]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387183e-03 vs 1.387183e-03 [08/09 13:50:07]
+Computing 3D filter [08/09 13:50:12]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387171e-03 vs 1.387171e-03 [08/09 13:50:13]
+Computing 3D filter [08/09 13:50:16]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309236e-03 vs 1.309236e-03 [08/09 13:50:18]
+Computing 3D filter [08/09 13:50:23]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309196e-03 vs 1.309196e-03 [08/09 13:50:25]
+Computing 3D filter [08/09 13:50:18]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387182e-03 vs 1.387182e-03 [08/09 13:50:20]
+Computing 3D filter [08/09 13:50:24]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387177e-03 vs 1.387177e-03 [08/09 13:50:26]
+Computing 3D filter [08/09 13:50:31]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387144e-03 vs 1.387144e-03 [08/09 13:50:33]
+Computing 3D filter [08/09 13:50:37]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387154e-03 vs 1.387154e-03 [08/09 13:50:39]
+Computing 3D filter [08/09 13:50:30]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309159e-03 vs 1.309159e-03 [08/09 13:50:32]
+Computing 3D filter [08/09 13:50:38]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309628e-03 vs 1.309628e-03 [08/09 13:50:40]
+Computing 3D filter [08/09 13:50:44]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387134e-03 vs 1.387134e-03 [08/09 13:50:45]
+Computing 3D filter [08/09 13:50:50]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387128e-03 vs 1.387128e-03 [08/09 13:50:52]
+Computing 3D filter [08/09 13:50:45]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309578e-03 vs 1.309578e-03 [08/09 13:50:47]
+Computing 3D filter [08/09 13:50:52]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309545e-03 vs 1.309545e-03 [08/09 13:50:54]
+Computing 3D filter [08/09 13:50:57]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387122e-03 vs 1.387122e-03 [08/09 13:50:58]
+Computing 3D filter [08/09 13:51:03]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387111e-03 vs 1.387111e-03 [08/09 13:51:05]
+Computing 3D filter [08/09 13:50:59]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309480e-03 vs 1.309480e-03 [08/09 13:51:01]
+Computing 3D filter [08/09 13:51:06]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309457e-03 vs 1.309457e-03 [08/09 13:51:08]
+Computing 3D filter [08/09 13:51:10]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387116e-03 vs 1.387116e-03 [08/09 13:51:12]
+Computing 3D filter [08/09 13:51:16]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387106e-03 vs 1.387106e-03 [08/09 13:51:18]
+Computing 3D filter [08/09 13:51:14]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309413e-03 vs 1.309413e-03 [08/09 13:51:16]
+Computing 3D filter [08/09 13:51:21]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309370e-03 vs 1.309370e-03 [08/09 13:51:23]
+Computing 3D filter [08/09 13:51:23]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387085e-03 vs 1.387085e-03 [08/09 13:51:25]
+Computing 3D filter [08/09 13:51:29]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387109e-03 vs 1.387109e-03 [08/09 13:51:31]
+Training progress:  42%|████▏     | 12740/30000 [12:41<21:08, 13.61it/s, Loss=0.0055830]
+Computing 3D filter [08/09 13:51:28]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309343e-03 vs 1.309343e-03 [08/09 13:51:30]
+Computing 3D filter [08/09 13:51:35]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309335e-03 vs 1.309335e-03 [08/09 13:51:37]
+Training progress:  46%|████▋     | 13940/30000 [12:50<17:46, 15.05it/s, Loss=0.0065605]
+Computing 3D filter [08/09 13:51:36]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387102e-03 vs 1.387102e-03 [08/09 13:51:37]
+Computing 3D filter [08/09 13:51:42]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387102e-03 vs 1.387102e-03 [08/09 13:51:44]
+Computing 3D filter [08/09 13:51:43]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309307e-03 vs 1.309307e-03 [08/09 13:51:45]
+Computing 3D filter [08/09 13:51:50]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309277e-03 vs 1.309277e-03 [08/09 13:51:52]
+Computing 3D filter [08/09 13:51:48]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387089e-03 vs 1.387089e-03 [08/09 13:51:50]
+Computing 3D filter [08/09 13:51:55]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387087e-03 vs 1.387087e-03 [08/09 13:51:57]
+Computing 3D filter [08/09 13:51:57]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309246e-03 vs 1.309246e-03 [08/09 13:51:59]
+Computing 3D filter [08/09 13:52:04]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309225e-03 vs 1.309225e-03 [08/09 13:52:06]
+Computing 3D filter [08/09 13:52:01]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387082e-03 vs 1.387082e-03 [08/09 13:52:03]
+Computing 3D filter [08/09 13:52:08]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387100e-03 vs 1.387100e-03 [08/09 13:52:10]
+Computing 3D filter [08/09 13:52:11]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309214e-03 vs 1.309214e-03 [08/09 13:52:13]
+Computing 3D filter [08/09 13:52:18]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309192e-03 vs 1.309192e-03 [08/09 13:52:21]
+Computing 3D filter [08/09 13:52:14]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387087e-03 vs 1.387087e-03 [08/09 13:52:16]
+Computing 3D filter [08/09 13:52:21]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387094e-03 vs 1.387094e-03 [08/09 13:52:22]
+Computing 3D filter [08/09 13:52:27]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387087e-03 vs 1.387087e-03 [08/09 13:52:29]
+Computing 3D filter [08/09 13:52:33]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387086e-03 vs 1.387086e-03 [08/09 13:52:35]
+Computing 3D filter [08/09 13:52:26]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309174e-03 vs 1.309174e-03 [08/09 13:52:28]
+Computing 3D filter [08/09 13:52:33]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309133e-03 vs 1.309133e-03 [08/09 13:52:35]
+Computing 3D filter [08/09 13:52:44]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387080e-03 vs 1.387080e-03 [08/09 13:52:46]
+Computing 3D filter [08/09 13:52:40]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309133e-03 vs 1.309133e-03 [08/09 13:52:42]
+Computing 3D filter [08/09 13:52:48]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309120e-03 vs 1.309120e-03 [08/09 13:52:50]
+Computing 3D filter [08/09 13:52:51]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387088e-03 vs 1.387088e-03 [08/09 13:52:52]
+Computing 3D filter [08/09 13:52:57]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387080e-03 vs 1.387080e-03 [08/09 13:52:59]
+Computing 3D filter [08/09 13:52:55]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309092e-03 vs 1.309092e-03 [08/09 13:52:57]
+Computing 3D filter [08/09 13:53:02]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309078e-03 vs 1.309078e-03 [08/09 13:53:04]
+Computing 3D filter [08/09 13:53:03]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387090e-03 vs 1.387090e-03 [08/09 13:53:05]
+Computing 3D filter [08/09 13:53:10]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387079e-03 vs 1.387079e-03 [08/09 13:53:12]
+Computing 3D filter [08/09 13:53:09]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309053e-03 vs 1.309053e-03 [08/09 13:53:11]
+Computing 3D filter [08/09 13:53:16]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309027e-03 vs 1.309027e-03 [08/09 13:53:18]
+Computing 3D filter [08/09 13:53:16]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387084e-03 vs 1.387084e-03 [08/09 13:53:18]
+Computing 3D filter [08/09 13:53:22]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387089e-03 vs 1.387089e-03 [08/09 13:53:24]
+Computing 3D filter [08/09 13:53:24]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309022e-03 vs 1.309022e-03 [08/09 13:53:26]
+Computing 3D filter [08/09 13:53:31]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.308985e-03 vs 1.308985e-03 [08/09 13:53:33]
+Computing 3D filter [08/09 13:53:28]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387079e-03 vs 1.387079e-03 [08/09 13:53:30]
+Computing 3D filter [08/09 13:53:35]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387074e-03 vs 1.387074e-03 [08/09 13:53:37]
+Training progress:  48%|████▊     | 14540/30000 [14:52<19:09, 13.45it/s, Loss=0.0054987]
+Computing 3D filter [08/09 13:53:38]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.308989e-03 vs 1.308989e-03 [08/09 13:53:40]
+Computing 3D filter [08/09 13:53:45]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.308958e-03 vs 1.308958e-03 [08/09 13:53:47]
+Training progress:  53%|█████▎    | 15960/30000 [14:57<12:32, 18.67it/s, Loss=0.0065328]
+Computing 3D filter [08/09 13:53:41]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387082e-03 vs 1.387082e-03 [08/09 13:53:43]
+Computing 3D filter [08/09 13:53:47]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387074e-03 vs 1.387074e-03 [08/09 13:53:49]
+Computing 3D filter [08/09 13:53:53]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387079e-03 vs 1.387079e-03 [08/09 13:53:55]
+Computing 3D filter [08/09 13:54:00]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387079e-03 vs 1.387079e-03 [08/09 13:54:02]
+Computing 3D filter [08/09 13:53:53]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.308923e-03 vs 1.308923e-03 [08/09 13:53:55]
+Computing 3D filter [08/09 13:54:00]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.308916e-03 vs 1.308916e-03 [08/09 13:54:02]
+Computing 3D filter [08/09 13:54:06]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387077e-03 vs 1.387077e-03 [08/09 13:54:08]
+Computing 3D filter [08/09 13:54:12]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387075e-03 vs 1.387075e-03 [08/09 13:54:14]
+Computing 3D filter [08/09 13:54:12]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.308922e-03 vs 1.308922e-03 [08/09 13:54:14]
+Computing 3D filter [08/09 13:54:18]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387081e-03 vs 1.387081e-03 [08/09 13:54:20]
+Computing 3D filter [08/09 13:54:25]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387085e-03 vs 1.387085e-03 [08/09 13:54:26]
+Computing 3D filter [08/09 13:54:19]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.308917e-03 vs 1.308917e-03 [08/09 13:54:21]
+Computing 3D filter [08/09 13:54:26]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.308915e-03 vs 1.308915e-03 [08/09 13:54:28]
+Computing 3D filter [08/09 13:54:31]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387076e-03 vs 1.387076e-03 [08/09 13:54:33]
+Computing 3D filter [08/09 13:54:37]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387074e-03 vs 1.387074e-03 [08/09 13:54:39]
+Computing 3D filter [08/09 13:54:34]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.308933e-03 vs 1.308933e-03 [08/09 13:54:36]
+Computing 3D filter [08/09 13:54:41]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.308923e-03 vs 1.308923e-03 [08/09 13:54:43]
+Computing 3D filter [08/09 13:54:43]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387073e-03 vs 1.387073e-03 [08/09 13:54:45]
+Computing 3D filter [08/09 13:54:49]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387087e-03 vs 1.387087e-03 [08/09 13:54:51]
+Computing 3D filter [08/09 13:54:48]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.308933e-03 vs 1.308933e-03 [08/09 13:54:50]
+Computing 3D filter [08/09 13:54:55]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.308930e-03 vs 1.308930e-03 [08/09 13:54:57]
+Computing 3D filter [08/09 13:54:56]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387077e-03 vs 1.387077e-03 [08/09 13:54:58]
+Computing 3D filter [08/09 13:55:02]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387076e-03 vs 1.387076e-03 [08/09 13:55:04]
+Computing 3D filter [08/09 13:55:02]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.308930e-03 vs 1.308930e-03 [08/09 13:55:04]
+Computing 3D filter [08/09 13:55:09]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.308918e-03 vs 1.308918e-03 [08/09 13:55:11]
+Computing 3D filter [08/09 13:55:08]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387079e-03 vs 1.387079e-03 [08/09 13:55:10]
+Computing 3D filter [08/09 13:55:14]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387077e-03 vs 1.387077e-03 [08/09 13:55:16]
+Computing 3D filter [08/09 13:55:16]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.308937e-03 vs 1.308937e-03 [08/09 13:55:18]
+Computing 3D filter [08/09 13:55:23]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.308934e-03 vs 1.308934e-03 [08/09 13:55:25]
+Computing 3D filter [08/09 13:55:20]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387079e-03 vs 1.387079e-03 [08/09 13:55:22]
+Computing 3D filter [08/09 13:55:27]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387075e-03 vs 1.387075e-03 [08/09 13:55:29]
+Computing 3D filter [08/09 13:55:30]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.308938e-03 vs 1.308938e-03 [08/09 13:55:32]
+Computing 3D filter [08/09 13:55:37]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.308934e-03 vs 1.308934e-03 [08/09 13:55:39]
+Computing 3D filter [08/09 13:55:33]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387079e-03 vs 1.387079e-03 [08/09 13:55:35]
+Computing 3D filter [08/09 13:55:39]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387071e-03 vs 1.387071e-03 [08/09 13:55:41]
+Training progress:  60%|█████▉    | 17960/30000 [17:01<10:38, 18.87it/s, Loss=0.0047759]
+Computing 3D filter [08/09 13:55:45]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387077e-03 vs 1.387077e-03 [08/09 13:55:47]
+Computing 3D filter [08/09 13:55:51]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387076e-03 vs 1.387076e-03 [08/09 13:55:53]
+Training progress:  55%|█████▍    | 16360/30000 [16:59<13:54, 16.34it/s, Loss=0.0048191]
+Computing 3D filter [08/09 13:55:45]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.308942e-03 vs 1.308942e-03 [08/09 13:55:47]
+Computing 3D filter [08/09 13:55:52]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.308938e-03 vs 1.308938e-03 [08/09 13:55:54]
+Computing 3D filter [08/09 13:55:58]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387081e-03 vs 1.387081e-03 [08/09 13:55:59]
+Computing 3D filter [08/09 13:56:04]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387079e-03 vs 1.387079e-03 [08/09 13:56:06]
+Computing 3D filter [08/09 13:55:59]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.308934e-03 vs 1.308934e-03 [08/09 13:56:01]
+Computing 3D filter [08/09 13:56:06]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.308935e-03 vs 1.308935e-03 [08/09 13:56:08]
+Computing 3D filter [08/09 13:56:10]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387079e-03 vs 1.387079e-03 [08/09 13:56:12]
+Computing 3D filter [08/09 13:56:16]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387077e-03 vs 1.387077e-03 [08/09 13:56:18]
+Computing 3D filter [08/09 13:56:13]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.308945e-03 vs 1.308945e-03 [08/09 13:56:15]
+Computing 3D filter [08/09 13:56:20]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.308947e-03 vs 1.308947e-03 [08/09 13:56:22]
+Computing 3D filter [08/09 13:56:22]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387080e-03 vs 1.387080e-03 [08/09 13:56:24]
+Computing 3D filter [08/09 13:56:28]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387079e-03 vs 1.387079e-03 [08/09 13:56:30]
+Computing 3D filter [08/09 13:56:27]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.308931e-03 vs 1.308931e-03 [08/09 13:56:29]
+Computing 3D filter [08/09 13:56:34]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.308933e-03 vs 1.308933e-03 [08/09 13:56:36]
+Computing 3D filter [08/09 13:56:35]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387078e-03 vs 1.387078e-03 [08/09 13:56:36]
+Computing 3D filter [08/09 13:56:41]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387077e-03 vs 1.387077e-03 [08/09 13:56:43]
+Computing 3D filter [08/09 13:56:41]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.308933e-03 vs 1.308934e-03 [08/09 13:56:43]
+Computing 3D filter [08/09 13:56:48]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.308935e-03 vs 1.308935e-03 [08/09 13:56:50]
+Computing 3D filter [08/09 13:56:47]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387078e-03 vs 1.387078e-03 [08/09 13:56:49]
+Computing 3D filter [08/09 13:56:53]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387085e-03 vs 1.387085e-03 [08/09 13:56:55]
+Computing 3D filter [08/09 13:56:55]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.308950e-03 vs 1.308949e-03 [08/09 13:56:57]
+Computing 3D filter [08/09 13:57:02]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.308942e-03 vs 1.308942e-03 [08/09 13:57:04]
+Computing 3D filter [08/09 13:56:59]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387080e-03 vs 1.387080e-03 [08/09 13:57:01]
+Computing 3D filter [08/09 13:57:05]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387082e-03 vs 1.387082e-03 [08/09 13:57:07]
+Computing 3D filter [08/09 13:57:09]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.308938e-03 vs 1.308938e-03 [08/09 13:57:11]
+Computing 3D filter [08/09 13:57:16]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.308935e-03 vs 1.308935e-03 [08/09 13:57:18]
+Computing 3D filter [08/09 13:57:11]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387083e-03 vs 1.387083e-03 [08/09 13:57:13]
+Computing 3D filter [08/09 13:57:18]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387087e-03 vs 1.387087e-03 [08/09 13:57:19]
+Computing 3D filter [08/09 13:57:24]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387087e-03 vs 1.387087e-03 [08/09 13:57:26]
+Computing 3D filter [08/09 13:57:30]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.038e-07); medians 1.387091e-03 vs 1.387091e-03 [08/09 13:57:32]
+Computing 3D filter [08/09 13:57:23]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.308939e-03 vs 1.308939e-03 [08/09 13:57:25]
+Computing 3D filter [08/09 13:57:30]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.308938e-03 vs 1.308938e-03 [08/09 13:57:32]
+Computing 3D filter [08/09 13:57:36]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387091e-03 vs 1.387091e-03 [08/09 13:57:38]
+Computing 3D filter [08/09 13:57:42]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387101e-03 vs 1.387101e-03 [08/09 13:57:44]
+Computing 3D filter [08/09 13:57:37]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.308935e-03 vs 1.308935e-03 [08/09 13:57:39]
+Computing 3D filter [08/09 13:57:44]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.308935e-03 vs 1.308935e-03 [08/09 13:57:46]
+Training progress:  67%|██████▋   | 19960/30000 [19:04<08:47, 19.03it/s, Loss=0.0044257]
+Computing 3D filter [08/09 13:57:48]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387088e-03 vs 1.387088e-03 [08/09 13:57:50]
+Computing 3D filter [08/09 13:57:54]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387085e-03 vs 1.387085e-03 [08/09 13:57:56]
+Training progress:  61%|██████    | 18160/30000 [19:06<11:56, 16.53it/s, Loss=0.0045114]
+Computing 3D filter [08/09 13:57:51]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.308939e-03 vs 1.308939e-03 [08/09 13:57:53]
+Computing 3D filter [08/09 13:57:58]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.308949e-03 vs 1.308949e-03 [08/09 13:58:01]
+Computing 3D filter [08/09 13:58:00]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387088e-03 vs 1.387088e-03 [08/09 13:58:02]
+Computing 3D filter [08/09 13:58:07]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387088e-03 vs 1.387088e-03 [08/09 13:58:08]
+Computing 3D filter [08/09 13:58:05]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.308952e-03 vs 1.308952e-03 [08/09 13:58:08]
+Computing 3D filter [08/09 13:58:12]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.308939e-03 vs 1.308939e-03 [08/09 13:58:15]
+Computing 3D filter [08/09 13:58:13]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.038e-07); medians 1.387092e-03 vs 1.387092e-03 [08/09 13:58:14]
+Computing 3D filter [08/09 13:58:19]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387082e-03 vs 1.387082e-03 [08/09 13:58:21]
+Computing 3D filter [08/09 13:58:19]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.308949e-03 vs 1.308949e-03 [08/09 13:58:22]
+Computing 3D filter [08/09 13:58:27]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.308947e-03 vs 1.308947e-03 [08/09 13:58:29]
+Computing 3D filter [08/09 13:58:25]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387087e-03 vs 1.387087e-03 [08/09 13:58:27]
+Computing 3D filter [08/09 13:58:31]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.038e-07); medians 1.387086e-03 vs 1.387086e-03 [08/09 13:58:33]
+Computing 3D filter [08/09 13:58:33]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.308950e-03 vs 1.308950e-03 [08/09 13:58:36]
+Computing 3D filter [08/09 13:58:41]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.308961e-03 vs 1.308961e-03 [08/09 13:58:43]
+Computing 3D filter [08/09 13:58:37]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.038e-07); medians 1.387085e-03 vs 1.387085e-03 [08/09 13:58:39]
+Computing 3D filter [08/09 13:58:43]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387085e-03 vs 1.387085e-03 [08/09 13:58:45]
+Computing 3D filter [08/09 13:58:47]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.308942e-03 vs 1.308942e-03 [08/09 13:58:49]
+Computing 3D filter [08/09 13:58:54]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.308945e-03 vs 1.308945e-03 [08/09 13:58:56]
+Computing 3D filter [08/09 13:58:49]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387088e-03 vs 1.387088e-03 [08/09 13:58:51]
+Computing 3D filter [08/09 13:58:55]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387097e-03 vs 1.387097e-03 [08/09 13:58:57]
+Computing 3D filter [08/09 13:59:01]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387092e-03 vs 1.387092e-03 [08/09 13:59:03]
+Computing 3D filter [08/09 13:59:07]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387099e-03 vs 1.387099e-03 [08/09 13:59:09]
+Computing 3D filter [08/09 13:59:01]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.308953e-03 vs 1.308953e-03 [08/09 13:59:03]
+Computing 3D filter [08/09 13:59:08]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.308955e-03 vs 1.308955e-03 [08/09 13:59:10]
+Computing 3D filter [08/09 13:59:13]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387097e-03 vs 1.387097e-03 [08/09 13:59:15]
+Computing 3D filter [08/09 13:59:19]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.038e-07); medians 1.387100e-03 vs 1.387100e-03 [08/09 13:59:21]
+Computing 3D filter [08/09 13:59:15]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.308943e-03 vs 1.308943e-03 [08/09 13:59:17]
+Computing 3D filter [08/09 13:59:22]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.308960e-03 vs 1.308960e-03 [08/09 13:59:24]
+Computing 3D filter [08/09 13:59:26]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387099e-03 vs 1.387099e-03 [08/09 13:59:27]
+Computing 3D filter [08/09 13:59:32]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387101e-03 vs 1.387101e-03 [08/09 13:59:34]
+Computing 3D filter [08/09 13:59:29]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.308957e-03 vs 1.308957e-03 [08/09 13:59:31]
+Computing 3D filter [08/09 13:59:36]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.308958e-03 vs 1.308958e-03 [08/09 13:59:38]
+Computing 3D filter [08/09 13:59:38]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387101e-03 vs 1.387101e-03 [08/09 13:59:40]
+Computing 3D filter [08/09 13:59:44]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387106e-03 vs 1.387106e-03 [08/09 13:59:46]
+Computing 3D filter [08/09 13:59:43]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.308959e-03 vs 1.308959e-03 [08/09 13:59:45]
+Computing 3D filter [08/09 13:59:50]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.308960e-03 vs 1.308960e-03 [08/09 13:59:52]
+Training progress:  73%|███████▎  | 21960/30000 [21:06<06:56, 19.30it/s, Loss=0.0039695]
+Computing 3D filter [08/09 13:59:50]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.038e-07); medians 1.387098e-03 vs 1.387098e-03 [08/09 13:59:52]
+Computing 3D filter [08/09 13:59:56]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.038e-07); medians 1.387100e-03 vs 1.387100e-03 [08/09 13:59:58]
+Training progress:  67%|██████▋   | 19960/30000 [21:12<10:02, 16.66it/s, Loss=0.0042211]
+Computing 3D filter [08/09 13:59:57]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.308963e-03 vs 1.308963e-03 [08/09 13:59:59]
+Computing 3D filter [08/09 14:00:04]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.308969e-03 vs 1.308969e-03 [08/09 14:00:06]
+Computing 3D filter [08/09 14:00:02]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387105e-03 vs 1.387105e-03 [08/09 14:00:04]
+Computing 3D filter [08/09 14:00:08]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387103e-03 vs 1.387103e-03 [08/09 14:00:10]
+Computing 3D filter [08/09 14:00:11]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.308975e-03 vs 1.308975e-03 [08/09 14:00:13]
+Computing 3D filter [08/09 14:00:18]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.308977e-03 vs 1.308977e-03 [08/09 14:00:20]
+Computing 3D filter [08/09 14:00:14]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.038e-07); medians 1.387103e-03 vs 1.387103e-03 [08/09 14:00:16]
+Computing 3D filter [08/09 14:00:20]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387098e-03 vs 1.387098e-03 [08/09 14:00:22]
+Computing 3D filter [08/09 14:00:26]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387098e-03 vs 1.387098e-03 [08/09 14:00:28]
+Computing 3D filter [08/09 14:00:32]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387097e-03 vs 1.387097e-03 [08/09 14:00:34]
+Computing 3D filter [08/09 14:00:25]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.308987e-03 vs 1.308987e-03 [08/09 14:00:27]
+Computing 3D filter [08/09 14:00:32]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.308982e-03 vs 1.308982e-03 [08/09 14:00:34]
+Computing 3D filter [08/09 14:00:39]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387097e-03 vs 1.387097e-03 [08/09 14:00:40]
+Computing 3D filter [08/09 14:00:45]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.038e-07); medians 1.387096e-03 vs 1.387096e-03 [08/09 14:00:46]
+Computing 3D filter [08/09 14:00:39]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.308990e-03 vs 1.308990e-03 [08/09 14:00:41]
+Computing 3D filter [08/09 14:00:46]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.308981e-03 vs 1.308981e-03 [08/09 14:00:48]
+Computing 3D filter [08/09 14:00:51]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387100e-03 vs 1.387100e-03 [08/09 14:00:53]
+Computing 3D filter [08/09 14:00:57]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.038e-07); medians 1.387103e-03 vs 1.387103e-03 [08/09 14:00:59]
+Computing 3D filter [08/09 14:00:53]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.308987e-03 vs 1.308987e-03 [08/09 14:00:55]
+Computing 3D filter [08/09 14:01:00]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.308990e-03 vs 1.308990e-03 [08/09 14:01:02]
+Computing 3D filter [08/09 14:01:03]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.038e-07); medians 1.387104e-03 vs 1.387104e-03 [08/09 14:01:05]
+Computing 3D filter [08/09 14:01:09]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387100e-03 vs 1.387100e-03 [08/09 14:01:11]
+Computing 3D filter [08/09 14:01:07]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.308989e-03 vs 1.308989e-03 [08/09 14:01:09]
+Computing 3D filter [08/09 14:01:14]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.308985e-03 vs 1.308985e-03 [08/09 14:01:16]
+Computing 3D filter [08/09 14:01:15]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387098e-03 vs 1.387098e-03 [08/09 14:01:17]
+Computing 3D filter [08/09 14:01:21]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387097e-03 vs 1.387097e-03 [08/09 14:01:23]
+Computing 3D filter [08/09 14:01:21]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.308993e-03 vs 1.308993e-03 [08/09 14:01:23]
+Computing 3D filter [08/09 14:01:28]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.308987e-03 vs 1.308987e-03 [08/09 14:01:30]
+Computing 3D filter [08/09 14:01:27]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387097e-03 vs 1.387097e-03 [08/09 14:01:29]
+Computing 3D filter [08/09 14:01:33]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387097e-03 vs 1.387097e-03 [08/09 14:01:35]
+Computing 3D filter [08/09 14:01:35]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.308988e-03 vs 1.308988e-03 [08/09 14:01:37]
+Computing 3D filter [08/09 14:01:42]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.308984e-03 vs 1.308984e-03 [08/09 14:01:44]
+Computing 3D filter [08/09 14:01:39]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387097e-03 vs 1.387097e-03 [08/09 14:01:41]
+Computing 3D filter [08/09 14:01:45]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387100e-03 vs 1.387100e-03 [08/09 14:01:47]
+Computing 3D filter [08/09 14:01:49]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.308984e-03 vs 1.308984e-03 [08/09 14:01:51]
+Computing 3D filter [08/09 14:01:56]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.308995e-03 vs 1.308995e-03 [08/09 14:01:58]
+Training progress:  80%|███████▉  | 23960/30000 [23:07<05:13, 19.29it/s, Loss=0.0038922]
+Computing 3D filter [08/09 14:01:52]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.038e-07); medians 1.387098e-03 vs 1.387098e-03 [08/09 14:01:54]
+Computing 3D filter [08/09 14:01:58]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.038e-07); medians 1.387099e-03 vs 1.387099e-03 [08/09 14:02:00]
+Training progress:  73%|███████▎  | 21760/30000 [23:17<08:07, 16.89it/s, Loss=0.0046298]
+Computing 3D filter [08/09 14:02:02]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309003e-03 vs 1.309003e-03 [08/09 14:02:05]
+Computing 3D filter [08/09 14:02:09]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309010e-03 vs 1.309010e-03 [08/09 14:02:12]
+Computing 3D filter [08/09 14:02:04]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387098e-03 vs 1.387098e-03 [08/09 14:02:06]
+Computing 3D filter [08/09 14:02:10]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387098e-03 vs 1.387098e-03 [08/09 14:02:12]
+Computing 3D filter [08/09 14:02:16]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387100e-03 vs 1.387100e-03 [08/09 14:02:18]
+Computing 3D filter [08/09 14:02:22]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387098e-03 vs 1.387098e-03 [08/09 14:02:24]
+Computing 3D filter [08/09 14:02:16]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309007e-03 vs 1.309007e-03 [08/09 14:02:19]
+Computing 3D filter [08/09 14:02:23]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309004e-03 vs 1.309004e-03 [08/09 14:02:26]
+Computing 3D filter [08/09 14:02:28]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387097e-03 vs 1.387097e-03 [08/09 14:02:30]
+Computing 3D filter [08/09 14:02:34]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387094e-03 vs 1.387094e-03 [08/09 14:02:36]
+Computing 3D filter [08/09 14:02:30]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309008e-03 vs 1.309008e-03 [08/09 14:02:32]
+Computing 3D filter [08/09 14:02:37]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309013e-03 vs 1.309013e-03 [08/09 14:02:39]
+Computing 3D filter [08/09 14:02:40]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387098e-03 vs 1.387098e-03 [08/09 14:02:42]
+Computing 3D filter [08/09 14:02:46]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387097e-03 vs 1.387097e-03 [08/09 14:02:48]
+Computing 3D filter [08/09 14:02:44]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309007e-03 vs 1.309007e-03 [08/09 14:02:46]
+Computing 3D filter [08/09 14:02:51]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309009e-03 vs 1.309009e-03 [08/09 14:02:53]
+Computing 3D filter [08/09 14:02:52]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387098e-03 vs 1.387098e-03 [08/09 14:02:54]
+Computing 3D filter [08/09 14:02:58]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387096e-03 vs 1.387096e-03 [08/09 14:03:00]
+Computing 3D filter [08/09 14:02:58]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309011e-03 vs 1.309011e-03 [08/09 14:03:00]
+Computing 3D filter [08/09 14:03:05]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309009e-03 vs 1.309009e-03 [08/09 14:03:07]
+Computing 3D filter [08/09 14:03:04]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387098e-03 vs 1.387098e-03 [08/09 14:03:06]
+Computing 3D filter [08/09 14:03:10]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387096e-03 vs 1.387096e-03 [08/09 14:03:12]
+Computing 3D filter [08/09 14:03:12]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309018e-03 vs 1.309018e-03 [08/09 14:03:14]
+Computing 3D filter [08/09 14:03:19]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309014e-03 vs 1.309014e-03 [08/09 14:03:21]
+Computing 3D filter [08/09 14:03:16]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.038e-07); medians 1.387098e-03 vs 1.387099e-03 [08/09 14:03:18]
+Computing 3D filter [08/09 14:03:22]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387095e-03 vs 1.387095e-03 [08/09 14:03:24]
+Computing 3D filter [08/09 14:03:26]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309019e-03 vs 1.309019e-03 [08/09 14:03:28]
+Computing 3D filter [08/09 14:03:32]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309015e-03 vs 1.309015e-03 [08/09 14:03:34]
+Computing 3D filter [08/09 14:03:28]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.038e-07); medians 1.387098e-03 vs 1.387098e-03 [08/09 14:03:30]
+Computing 3D filter [08/09 14:03:34]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.038e-07); medians 1.387099e-03 vs 1.387099e-03 [08/09 14:03:36]
+Computing 3D filter [08/09 14:03:39]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309013e-03 vs 1.309013e-03 [08/09 14:03:41]
+Computing 3D filter [08/09 14:03:46]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309022e-03 vs 1.309022e-03 [08/09 14:03:48]
+Computing 3D filter [08/09 14:03:40]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387095e-03 vs 1.387095e-03 [08/09 14:03:42]
+Computing 3D filter [08/09 14:03:46]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.038e-07); medians 1.387095e-03 vs 1.387095e-03 [08/09 14:03:48]
+Training progress:  87%|████████▋ | 25960/30000 [25:09<03:26, 19.60it/s, Loss=0.0042148]
+Computing 3D filter [08/09 14:03:52]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387094e-03 vs 1.387094e-03 [08/09 14:03:54]
+Computing 3D filter [08/09 14:03:58]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387097e-03 vs 1.387097e-03 [08/09 14:04:00]
+Computing 3D filter [08/09 14:03:53]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309017e-03 vs 1.309017e-03 [08/09 14:03:55]
+Computing 3D filter [08/09 14:04:00]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309017e-03 vs 1.309017e-03 [08/09 14:04:02]
+Computing 3D filter [08/09 14:04:04]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.038e-07); medians 1.387092e-03 vs 1.387093e-03 [08/09 14:04:06]
+Computing 3D filter [08/09 14:04:10]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.038e-07); medians 1.387093e-03 vs 1.387093e-03 [08/09 14:04:12]
+Training progress:  79%|███████▊  | 23560/30000 [25:22<06:19, 16.97it/s, Loss=0.0043769]
+Computing 3D filter [08/09 14:04:07]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309025e-03 vs 1.309025e-03 [08/09 14:04:09]
+Computing 3D filter [08/09 14:04:14]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309028e-03 vs 1.309027e-03 [08/09 14:04:16]
+Computing 3D filter [08/09 14:04:16]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387095e-03 vs 1.387095e-03 [08/09 14:04:18]
+Computing 3D filter [08/09 14:04:22]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.038e-07); medians 1.387094e-03 vs 1.387094e-03 [08/09 14:04:24]
+Computing 3D filter [08/09 14:04:21]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309025e-03 vs 1.309024e-03 [08/09 14:04:23]
+Computing 3D filter [08/09 14:04:28]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309022e-03 vs 1.309022e-03 [08/09 14:04:30]
+Computing 3D filter [08/09 14:04:28]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.038e-07); medians 1.387093e-03 vs 1.387093e-03 [08/09 14:04:30]
+Computing 3D filter [08/09 14:04:34]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.038e-07); medians 1.387096e-03 vs 1.387096e-03 [08/09 14:04:36]
+Computing 3D filter [08/09 14:04:34]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309024e-03 vs 1.309024e-03 [08/09 14:04:36]
+Computing 3D filter [08/09 14:04:41]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309025e-03 vs 1.309025e-03 [08/09 14:04:43]
+Computing 3D filter [08/09 14:04:40]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.038e-07); medians 1.387098e-03 vs 1.387098e-03 [08/09 14:04:42]
+Computing 3D filter [08/09 14:04:46]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387088e-03 vs 1.387088e-03 [08/09 14:04:48]
+Computing 3D filter [08/09 14:04:48]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309033e-03 vs 1.309033e-03 [08/09 14:04:50]
+Computing 3D filter [08/09 14:04:55]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309030e-03 vs 1.309030e-03 [08/09 14:04:57]
+Computing 3D filter [08/09 14:04:52]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387092e-03 vs 1.387092e-03 [08/09 14:04:54]
+Computing 3D filter [08/09 14:04:58]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387097e-03 vs 1.387097e-03 [08/09 14:05:00]
+Computing 3D filter [08/09 14:05:02]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309031e-03 vs 1.309031e-03 [08/09 14:05:04]
+Computing 3D filter [08/09 14:05:09]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309031e-03 vs 1.309031e-03 [08/09 14:05:11]
+Computing 3D filter [08/09 14:05:04]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387097e-03 vs 1.387097e-03 [08/09 14:05:06]
+Computing 3D filter [08/09 14:05:10]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387094e-03 vs 1.387094e-03 [08/09 14:05:12]
+Computing 3D filter [08/09 14:05:16]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.038e-07); medians 1.387092e-03 vs 1.387092e-03 [08/09 14:05:18]
+Computing 3D filter [08/09 14:05:22]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387093e-03 vs 1.387093e-03 [08/09 14:05:24]
+Computing 3D filter [08/09 14:05:16]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309037e-03 vs 1.309037e-03 [08/09 14:05:18]
+Computing 3D filter [08/09 14:05:23]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309032e-03 vs 1.309032e-03 [08/09 14:05:25]
+Computing 3D filter [08/09 14:05:28]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.038e-07); medians 1.387088e-03 vs 1.387088e-03 [08/09 14:05:30]
+Computing 3D filter [08/09 14:05:34]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387093e-03 vs 1.387093e-03 [08/09 14:05:36]
+Computing 3D filter [08/09 14:05:30]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309040e-03 vs 1.309040e-03 [08/09 14:05:32]
+Computing 3D filter [08/09 14:05:36]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309032e-03 vs 1.309032e-03 [08/09 14:05:39]
+Computing 3D filter [08/09 14:05:40]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.038e-07); medians 1.387095e-03 vs 1.387095e-03 [08/09 14:05:42]
+Computing 3D filter [08/09 14:05:46]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.038e-07); medians 1.387093e-03 vs 1.387093e-03 [08/09 14:05:48]
+Computing 3D filter [08/09 14:05:43]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309033e-03 vs 1.309033e-03 [08/09 14:05:46]
+Computing 3D filter [08/09 14:05:50]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309036e-03 vs 1.309036e-03 [08/09 14:05:52]
+Computing 3D filter [08/09 14:05:52]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387091e-03 vs 1.387091e-03 [08/09 14:05:54]
+Computing 3D filter [08/09 14:05:58]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387090e-03 vs 1.387090e-03 [08/09 14:06:00]
+Computing 3D filter [08/09 14:05:57]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309036e-03 vs 1.309036e-03 [08/09 14:05:59]
+Computing 3D filter [08/09 14:06:04]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309038e-03 vs 1.309038e-03 [08/09 14:06:06]
+Training progress:  94%|█████████▍| 28160/30000 [27:20<01:33, 19.69it/s, Loss=0.0040453]
+Computing 3D filter [08/09 14:06:04]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387089e-03 vs 1.387089e-03 [08/09 14:06:06]
+Computing 3D filter [08/09 14:06:10]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387090e-03 vs 1.387090e-03 [08/09 14:06:12]
+Training progress:  85%|████████▍ | 25360/30000 [27:26<04:33, 17.00it/s, Loss=0.0041227]
+Computing 3D filter [08/09 14:06:11]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309039e-03 vs 1.309039e-03 [08/09 14:06:13]
+Computing 3D filter [08/09 14:06:18]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309038e-03 vs 1.309038e-03 [08/09 14:06:20]
+Computing 3D filter [08/09 14:06:16]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.038e-07); medians 1.387094e-03 vs 1.387094e-03 [08/09 14:06:18]
+Computing 3D filter [08/09 14:06:22]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387093e-03 vs 1.387093e-03 [08/09 14:06:24]
+Computing 3D filter [08/09 14:06:25]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309038e-03 vs 1.309038e-03 [08/09 14:06:27]
+Computing 3D filter [08/09 14:06:32]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309036e-03 vs 1.309036e-03 [08/09 14:06:34]
+Computing 3D filter [08/09 14:06:28]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.038e-07); medians 1.387091e-03 vs 1.387091e-03 [08/09 14:06:30]
+Computing 3D filter [08/09 14:06:34]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.038e-07); medians 1.387091e-03 vs 1.387091e-03 [08/09 14:06:36]
+Computing 3D filter [08/09 14:06:39]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309036e-03 vs 1.309036e-03 [08/09 14:06:41]
+Computing 3D filter [08/09 14:06:45]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309042e-03 vs 1.309042e-03 [08/09 14:06:47]
+Computing 3D filter [08/09 14:06:40]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387097e-03 vs 1.387097e-03 [08/09 14:06:42]
+Computing 3D filter [08/09 14:06:46]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.038e-07); medians 1.387096e-03 vs 1.387096e-03 [08/09 14:06:48]
+Computing 3D filter [08/09 14:06:52]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387094e-03 vs 1.387094e-03 [08/09 14:06:54]
+Computing 3D filter [08/09 14:06:58]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387093e-03 vs 1.387093e-03 [08/09 14:07:00]
+Computing 3D filter [08/09 14:06:52]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309036e-03 vs 1.309036e-03 [08/09 14:06:54]
+Computing 3D filter [08/09 14:06:59]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309040e-03 vs 1.309039e-03 [08/09 14:07:01]
+Computing 3D filter [08/09 14:07:04]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387095e-03 vs 1.387095e-03 [08/09 14:07:06]
+Computing 3D filter [08/09 14:07:10]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387091e-03 vs 1.387091e-03 [08/09 14:07:12]
+Computing 3D filter [08/09 14:07:06]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309041e-03 vs 1.309041e-03 [08/09 14:07:08]
+Computing 3D filter [08/09 14:07:13]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309038e-03 vs 1.309038e-03 [08/09 14:07:15]
+Computing 3D filter [08/09 14:07:16]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387090e-03 vs 1.387090e-03 [08/09 14:07:18]
+Computing 3D filter [08/09 14:07:22]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387090e-03 vs 1.387090e-03 [08/09 14:07:24]
+Computing 3D filter [08/09 14:07:20]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309039e-03 vs 1.309039e-03 [08/09 14:07:22]
+Computing 3D filter [08/09 14:07:27]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309037e-03 vs 1.309037e-03 [08/09 14:07:29]
+Computing 3D filter [08/09 14:07:28]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387097e-03 vs 1.387097e-03 [08/09 14:07:30]
+Computing 3D filter [08/09 14:07:34]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387095e-03 vs 1.387095e-03 [08/09 14:07:36]
+Computing 3D filter [08/09 14:07:34]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309044e-03 vs 1.309044e-03 [08/09 14:07:36]
+Computing 3D filter [08/09 14:07:41]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309036e-03 vs 1.309035e-03 [08/09 14:07:43]
+Computing 3D filter [08/09 14:07:40]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387095e-03 vs 1.387095e-03 [08/09 14:07:42]
+Fisher filter: 0.0% of primitives above the floor, mean anisotropy 1.00x, 0.00% capped [08/09 14:07:42]
+[ITER 30000] Saving Gaussians [08/09 14:07:50]
+Training complete. [08/09 14:07:54]
++ OMP_NUM_THREADS=4 CUDA_VISIBLE_DEVICES=1 python render.py -m /kaggle/working/out/b1_chair_full --skip_train    (cwd=/kaggle/working/repo)
+Computing 3D filter [08/09 14:07:48]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309042e-03 vs 1.309042e-03 [08/09 14:07:50]
+Computing 3D filter [08/09 14:07:54]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309044e-03 vs 1.309044e-03 [08/09 14:07:56]
+Computing 3D filter [08/09 14:08:01]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309043e-03 vs 1.309043e-03 [08/09 14:08:03]
+Computing 3D filter [08/09 14:08:08]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309041e-03 vs 1.309041e-03 [08/09 14:08:10]
+Training progress:  91%|█████████ | 27160/30000 [29:30<02:49, 16.75it/s, Loss=0.0045147]
+Computing 3D filter [08/09 14:08:15]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309041e-03 vs 1.309042e-03 [08/09 14:08:17]
+Computing 3D filter [08/09 14:08:22]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309044e-03 vs 1.309044e-03 [08/09 14:08:25]
+Looking for config file in /kaggle/working/out/b1_chair_full/cfg_args
+Config file found: /kaggle/working/out/b1_chair_full/cfg_args
+Rendering /kaggle/working/out/b1_chair_full
+Loading trained model at iteration 30000 [08/09 14:07:59]
+Found metadata.json file, assuming multi scale Blender data set! [08/09 14:07:59]
+Reading train from metadata.json [08/09 14:07:59]
+read split: train [08/09 14:07:59]
+number of training images: 100 [08/09 14:08:04]
+Reading test from metadata.json [08/09 14:08:04]
+read split: test [08/09 14:08:04]
+number of testing images: 800 [08/09 14:08:19]
+Loading Training Cameras [08/09 14:08:19]
+Loading Test Cameras [08/09 14:08:20]
+Computing 3D filter [08/09 14:08:25]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.037e-07); medians 1.387097e-03 vs 1.387097e-03 [08/09 14:08:27]
+Fisher filter: 0.0% of primitives above the floor, mean anisotropy 1.00x, 0.00% capped [08/09 14:08:27]
+Rendering progress:   0%|          | 0/800 [00:00<?, ?it/s]
+Computing 3D filter [08/09 14:08:29]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309050e-03 vs 1.309050e-03 [08/09 14:08:32]
+Computing 3D filter [08/09 14:08:36]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309050e-03 vs 1.309050e-03 [08/09 14:08:38]
+Computing 3D filter [08/09 14:08:43]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309044e-03 vs 1.309044e-03 [08/09 14:08:45]
+Computing 3D filter [08/09 14:08:50]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309045e-03 vs 1.309045e-03 [08/09 14:08:52]
+Computing 3D filter [08/09 14:08:57]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309043e-03 vs 1.309043e-03 [08/09 14:08:59]
+Computing 3D filter [08/09 14:09:04]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309043e-03 vs 1.309043e-03 [08/09 14:09:06]
++ OMP_NUM_THREADS=4 CUDA_VISIBLE_DEVICES=1 python metrics.py -m /kaggle/working/out/b1_chair_full   (cwd=/kaggle/working/repo)
+Computing 3D filter [08/09 14:09:11]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309042e-03 vs 1.309042e-03 [08/09 14:09:13]
+Computing 3D filter [08/09 14:09:18]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309044e-03 vs 1.309044e-03 [08/09 14:09:20]
+Computing 3D filter [08/09 14:09:25]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309041e-03 vs 1.309042e-03 [08/09 14:09:27]
+Computing 3D filter [08/09 14:09:32]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309044e-03 vs 1.309044e-03 [08/09 14:09:34]
+/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:208: UserWarning: The parameter 'pretrained' is deprecated since 0.13 and may be removed in the future, please use 'weights' instead.
+  warnings.warn(
+/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:223: UserWarning: Arguments other than a weight enum or `None` for 'weights' are deprecated since 0.13 and may be removed in the future. The current behavior is equivalent to passing `weights=VGG16_Weights.IMAGENET1K_V1`. You can also use `weights=VGG16_Weights.DEFAULT` to get the most up-to-date weights.
+  warnings.warn(msg)
+Setting up [LPIPS] perceptual loss: trunk [vgg], v[0.1], spatial [off]
+Downloading: "https://download.pytorch.org/models/vgg16-397923af.pth" to /root/.cache/torch/hub/checkpoints/vgg16-397923af.pth
+  0%|          | 0.00/528M [00:00<?, ?B/s]
+Loading model from: /usr/local/lib/python3.12/dist-packages/lpips/weights/v0.1/vgg.pth
+Scene: /kaggle/working/out/b1_chair_full
+Method: ours_30000
+Computing 3D filter [08/09 14:09:39]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309045e-03 vs 1.309045e-03 [08/09 14:09:41]
+Computing 3D filter [08/09 14:09:46]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309043e-03 vs 1.309043e-03 [08/09 14:09:48]
+Computing 3D filter [08/09 14:09:53]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309042e-03 vs 1.309042e-03 [08/09 14:09:55]
+Computing 3D filter [08/09 14:10:00]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309040e-03 vs 1.309039e-03 [08/09 14:10:02]
+Computing 3D filter [08/09 14:10:07]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309045e-03 vs 1.309045e-03 [08/09 14:10:09]
+Computing 3D filter [08/09 14:10:13]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309039e-03 vs 1.309039e-03 [08/09 14:10:16]
+  SSIM :    0.9876854
+  PSNR :   35.5232506
+  LPIPS:    0.0131600
+appended 4 rows to /kaggle/working/results/runs.csv
+[b1_chair_full] pooled 35.523 dB | 266510 gaussians | above floor 0.0% | aniso 1.00x | 1802s | wd 745 MB
+Training progress:  97%|█████████▋| 28960/30000 [31:35<01:00, 17.06it/s, Loss=0.0040495]
+Computing 3D filter [08/09 14:10:20]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309042e-03 vs 1.309042e-03 [08/09 14:10:22]
+Computing 3D filter [08/09 14:10:27]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309045e-03 vs 1.309045e-03 [08/09 14:10:29]
+Computing 3D filter [08/09 14:10:34]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309043e-03 vs 1.309043e-03 [08/09 14:10:36]
+Computing 3D filter [08/09 14:10:41]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309047e-03 vs 1.309047e-03 [08/09 14:10:43]
+Computing 3D filter [08/09 14:10:48]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309045e-03 vs 1.309045e-03 [08/09 14:10:50]
+Computing 3D filter [08/09 14:10:55]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309039e-03 vs 1.309039e-03 [08/09 14:10:57]
+Computing 3D filter [08/09 14:11:02]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309045e-03 vs 1.309045e-03 [08/09 14:11:04]
+Computing 3D filter [08/09 14:11:08]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309041e-03 vs 1.309041e-03 [08/09 14:11:10]
+Computing 3D filter [08/09 14:11:15]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309045e-03 vs 1.309045e-03 [08/09 14:11:17]
+Fisher filter: 0.0% of primitives above the floor, mean anisotropy 1.00x, 0.00% capped [08/09 14:11:17]
+[ITER 30000] Saving Gaussians [08/09 14:11:27]
+Training complete. [08/09 14:11:30]
++ OMP_NUM_THREADS=4 CUDA_VISIBLE_DEVICES=0 python render.py -m /kaggle/working/out/b1_lego_full --skip_train    (cwd=/kaggle/working/repo)
+Looking for config file in /kaggle/working/out/b1_lego_full/cfg_args
+Config file found: /kaggle/working/out/b1_lego_full/cfg_args
+Rendering /kaggle/working/out/b1_lego_full
+Loading trained model at iteration 30000 [08/09 14:11:35]
+Found metadata.json file, assuming multi scale Blender data set! [08/09 14:11:35]
+Reading train from metadata.json [08/09 14:11:35]
+read split: train [08/09 14:11:35]
+number of training images: 100 [08/09 14:11:40]
+Reading test from metadata.json [08/09 14:11:40]
+read split: test [08/09 14:11:40]
+number of testing images: 800 [08/09 14:11:55]
+Loading Training Cameras [08/09 14:11:55]
+Loading Test Cameras [08/09 14:11:56]
+Computing 3D filter [08/09 14:12:00]
+floor check: max|f_k(B1) - filter_3D(Mip)| = 1.164e-10 (rel 1.032e-07); medians 1.309044e-03 vs 1.309044e-03 [08/09 14:12:02]
+Fisher filter: 0.0% of primitives above the floor, mean anisotropy 1.00x, 0.00% capped [08/09 14:12:02]
+Rendering progress:   0%|          | 0/800 [00:00<?, ?it/s]
++ OMP_NUM_THREADS=4 CUDA_VISIBLE_DEVICES=0 python metrics.py -m /kaggle/working/out/b1_lego_full   (cwd=/kaggle/working/repo)
+/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:208: UserWarning: The parameter 'pretrained' is deprecated since 0.13 and may be removed in the future, please use 'weights' instead.
+  warnings.warn(
+/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:223: UserWarning: Arguments other than a weight enum or `None` for 'weights' are deprecated since 0.13 and may be removed in the future. The current behavior is equivalent to passing `weights=VGG16_Weights.IMAGENET1K_V1`. You can also use `weights=VGG16_Weights.DEFAULT` to get the most up-to-date weights.
+  warnings.warn(msg)
+Setting up [LPIPS] perceptual loss: trunk [vgg], v[0.1], spatial [off]
+Loading model from: /usr/local/lib/python3.12/dist-packages/lpips/weights/v0.1/vgg.pth
+Scene: /kaggle/working/out/b1_lego_full
+Method: ours_30000
+Metric evaluation progress:   0%|          | 0/800 [00:00<?, ?it/s]
+  SSIM :    0.9827718
+  PSNR :   32.8734398
+  LPIPS:    0.0156106
+appended 4 rows to /kaggle/working/results/runs.csv
+[b1_lego_full] pooled 32.873 dB | 293818 gaussians | above floor 0.0% | aniso 1.00x | 2018s | wd 817 MB
+completed 2/2; failed []
+R7_SUMMARY_JSON={"rung": "R7", "table": "2", "iterations": 30000, "scenes": ["lego", "chair"], "protocols": ["full"], "methods": ["b1"], "commit": "6693604d6bd9194b7f2095de76fdc0997c2d15ff", "gpu": "Tesla T4", "n_gpu": 2, "propositions_pass": true, "convert_seconds": 181.97382521629333, "protocol_spec": {"lego": {"full": {"n": 100, "span_deg": 178.97687028487118}}, "chair": {"full": {"n": 100, "span_deg": 178.6578806541832}}}, "done": {"b1/chair/full": {"protocol": "full", "n_train_cameras": 100, "span_deg": 178.6578806541832, "train_seconds": 1802.100798368454, "peak_vram_mb": 13607, "frac_above_floor": 0.0, "mean_anisotropy": 1.0, "render_seconds": 80.80653381347656, "render_fps": 9.900189529804821, "n_gaussians": 266510, "model_mb": 67.162076, "pooled_psnr": 35.523250579833984, "split": {"1x": {"PSNR": 35.828969974517825, "SSIM": 0.9874979582428932, "LPIPS": 0.01285480169346556, "n": 200}, "1/2": {"PSNR": 37.76102317810059, "SSIM": 0.9923719251155854, "LPIPS": 0.007476184046827257, "n": 200}, "1/4": {"PSNR": 36.024740829467774, "SSIM": 0.9894273295998574, "LPIPS": 0.011799340075813234, "n": 200}, "1/8": {"PSNR": 32.47826175689697, "SSIM": 0.9814444673061371, "LPIPS": 0.020509781343862415, "n": 200}}}, "b1/lego/full": {"protocol": "full", "n_train_cameras": 100, "span_deg": 178.97687028487118, "train_seconds": 2018.342868089676, "peak_vram_mb": 14055, "frac_above_floor": 0.0, "mean_anisotropy": 1.0, "render_seconds": 89.23156332969666, "render_fps": 8.96543745450391, "n_gaussians": 293818, "model_mb": 74.043692, "pooled_psnr": 32.87343978881836, "split": {"1x": {"PSNR": 35.89774847984314, "SSIM": 0.9837771096825599, "LPIPS": 0.015076441797427833, "n": 200}, "1/2": {"PSNR": 35.45638499259949, "SSIM": 0.9890324103832245, "LPIPS": 0.008535857512615621, "n": 200}, "1/4": {"PSNR": 31.861637535095216, "SSIM": 0.9847930863499641, "LPIPS": 0.013361855736002326, "n": 200}, "1/8": {"PSNR": 28.27799012184143, "SSIM": 0.9734843000769615, "LPIPS": 0.02546830290928483, "n": 200}}}}, "failed": {}, "session_seconds": 2583.6337547302246, "gpu_hours_used": 0.7176760432455275, "complete": true}
 /usr/local/lib/python3.12/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\|'
   cells[i][c] = re.sub('\\\\\|', '|', cell)
 /usr/local/lib/python3.12/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\_'
   text = re.sub(r'_', '\_', text) # Escape underscores in display text
 [NbConvertApp] Converting notebook __script__.ipynb to html
-[NbConvertApp] Writing 344621 bytes to __results__.html
+[NbConvertApp] Writing 344325 bytes to __results__.html

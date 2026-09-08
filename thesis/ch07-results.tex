@@ -186,10 +186,38 @@ not give bit-identical outputs.
 
 \input{generated/table-seedspread}
 
-The largest spread observed between repeats of one configuration is
-$\repeatSpread$\,dB. Read against L1's $\pm0.20$\,dB tolerance, this says the
-harness's own noise floor cannot by itself decide an L1 claim either way, which
-is the precondition for using these baselines as a control.
+Two different quantities are at stake here, and separating them turns out to
+matter.
+
+\begin{enumerate}[leftmargin=1.4em,itemsep=3pt]
+  \item \textbf{Nondeterminism at a fixed seed} --- the same configuration run
+        twice. CUDA atomics in the rasteriser accumulate in a non-deterministic
+        order, so bit-identical inputs do not give bit-identical outputs. The
+        largest per-scale difference observed is $\repeatSpread$\,dB.
+  \item \textbf{Seed-to-seed variation} --- a different initial point cloud and a
+        different view order. Three seeds on two scenes, both arms, all four
+        scales, give a largest sample standard deviation of $\mathbf{0.139}$\,dB,
+        at 3DGS on \texttt{chair} at $\tfrac18$.
+\end{enumerate}
+
+The second is roughly three and a half times the first, so the initialisation
+draw matters considerably more than the atomics --- which is not obvious in
+advance, and is the reason R5 is marked not optional in the protocol.
+
+\keybox{the seed spread is not comfortably below the L1 tolerance}{%
+L1 allows $\pm0.20$\,dB. A worst-case seed standard deviation of $0.139$\,dB is
+only $1.4\times$ smaller than that, so a single-seed L1 claim at an unfavourable
+scale is marginal on its own terms. A three-seed mean has a standard error of
+$0.139/\sqrt{3} = 0.080$\,dB and is comfortable; a single run is not. Arm A's L1
+reproduction in \S\ref{sec:table1} is a single-seed result, and its margins
+($0.01$ to $0.09$\,dB) are of the same order as this $\sigma$. It should be read
+as L1 attained, not as L1 attained with room to spare.}
+
+The spread is also not uniform: it is largest for 3DGS at the most reduced test
+scale ($0.139$\,dB) and roughly five times smaller for Mip-Splatting on the same
+scene and scale ($0.025$\,dB). The arm without a band-limit is the less stable
+one under reseeding, which is consistent with the mechanism this thesis
+proposes, though two scenes are far too few to claim it as a finding.
 
 \section{Cost, measured}
 \label{sec:measuredcost}

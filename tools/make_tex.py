@@ -686,9 +686,9 @@ def main():
         "table-method.tex": method_table(rows, inst, "method",
             r"R7 Table 2 --- the method against both baselines on the standard "
             r"Blender benchmark."),
-        "table-stress.tex": stress_table(rows, inst, "stressm",
+        "table-stress.tex": stress_table(rows, inst, "stress",
             r"R7 Table 3 --- the stress suite. Where the claim lives."),
-        "table-b2.tex": b2_table(b2, "btwo",
+        "table-b2.tex": b2_table(b2, "b2",
             r"R8 Table 4 --- B2, angular identifiability of spherical harmonics."),
         "table-real.tex": real_scene_table(
             [r for r in rows if r.get("iterations") == "30000"], "real",

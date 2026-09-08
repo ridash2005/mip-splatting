@@ -39,6 +39,15 @@ diagnosed rather than guessed (\S\ref{sec:g2}), and the seed-to-seed spread is
 close enough to the L1 tolerance to qualify a single-seed claim
 (\S\ref{sec:spread}).
 
-The proposed method (B1, B2) is derived and specified but \status{not yet
-implemented}; every cell that would report it is deliberately empty, and the
-predictions recorded against those cells were frozen before any run.}
+Both proposed methods are now implemented. B1 reduces to its baseline exactly
+where the theory requires --- to $1.4\times10^{-21}$ in the unit test, and to
+$0.136$\,dB in a full training run, below the measured seed spread --- and B2
+masks nothing on well-conditioned captures, the same result in the angular
+domain. Measurement also amended the angular criterion: an absolute
+$\lambda_{\min}$ threshold has no value that responds gradually across capture
+regimes, and the scale-free condition number does (\S\ref{sec:b2amend}).
+
+What remains untested is whether either translates into rendered quality on a
+degraded capture. That is Table~\ref{tab:stress}, it needs GPU time the weekly
+free-tier quota no longer has (\S\ref{sec:budget}), and its cells stay empty
+rather than estimated.}

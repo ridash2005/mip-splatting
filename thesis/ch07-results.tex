@@ -352,6 +352,63 @@ lose. A gain here would indicate a bug, and the exact-reduction unit test is run
 inside the same session that produces these numbers, aborting the run if it
 fails.}
 
+\subsection*{Getting there: three bugs the parity requirement caught}
+\label{sec:b1bugs}
+
+The first implementation of B1 reported exactly what
+\S\ref{sec:instrumentresults} predicts internally --- the floor binding on
+$100\,\%$ of primitives, the filter isotropic to two decimals --- and still
+differed from Mip-Splatting by up to $1.22$\,dB, thirty times the seed spread of
+\S\ref{sec:spread}. Section~\ref{ch:discussion} names that case in advance: a
+loss on the full-orbit row is a bug, not a result, because
+Proposition~\ref{prop:reduction} forbids it. Diagnosing it took three passes,
+and the sequence is worth recording because each step ruled something out.
+
+\begin{enumerate}[leftmargin=1.4em,itemsep=3pt]
+  \item \textbf{The floor.} B1 re-derives $f_k$ from the camera geometry, so the
+        first suspect was that its floor was not Mip-Splatting's. A cross-check
+        was added --- \texttt{compute\_3D\_filter} runs alongside and the two are
+        compared on every call --- and they agree to $1.16\times10^{-10}$
+        absolute, $10^{-7}$ relative, for the whole run. Not the cause. B1 now
+        takes their floor verbatim anyway, since \S\ref{sec:proposition2} floors
+        at ``Mip-Splatting's own value'' and a re-derivation is a needless
+        opportunity to differ.
+  \item \textbf{The covariance path.} B1 passed $\Sigma + \Sigma_{\mathrm{filt}}$
+        through the rasteriser's precomputed-covariance input while
+        Mip-Splatting passes scales and rotations. The two are algebraically the
+        same, but they are different code. Where the filter is isotropic on
+        every primitive, B1 now takes Mip-Splatting's own path ---
+        Proposition~\ref{prop:reduction} used as a computational identity rather
+        than only as an argument. The gap did not move: $1.245$\,dB. Not the
+        cause either.
+  \item \textbf{The opacity.} What both paths share is
+        Equation~\eqref{eq:filter}'s compensation, and it contained
+        \texttt{clamp\_min(1e-12)} on both determinants. $|\Sigma|$ is
+        $\prod s_i^2$: a primitive with $s = 0.005$ has $|\Sigma| = 1.6\times
+        10^{-14}$, and one with $s=0.001$ has $10^{-18}$. Both determinants
+        clamped to the same floor, their ratio became exactly $1$, and the
+        compensation switched itself off for most of the model. B1 was rendering
+        with uncompensated opacity while every baseline number in this thesis
+        was produced with it --- which is precisely the observed signature:
+        denser and sharper at full resolution, worse at every reduced scale.
+\end{enumerate}
+
+With the clamp reduced to a division guard, $|\Sigma|$ taken from the scale
+vector where $\prod s_i^2$ is exact, and the isotropic regime using
+Mip-Splatting's own scalar expression, the largest difference over two scenes
+and four scales fell from $1.245$\,dB to $\mathbf{0.136}$\,dB --- below the
+$0.139$\,dB seed spread of \S\ref{sec:spread}, and on \texttt{lego} within the
+$0.039$\,dB run-to-run noise.
+
+\keybox{what made this findable}{%
+The unit test of \S\ref{sec:proposition2} passed throughout, because its scales
+were $0.01$--$0.06$, where $\prod s_i^2$ sits at the clamp and the fault is
+nearly invisible. A test whose inputs do not span the real range will certify a
+broken component. It now covers $|\Sigma|$ down to $1.4\times10^{-18}$ and prints
+that range in its own output. The bug itself was silent --- no error, plausible
+numbers, the wrong shape --- and what exposed it was requiring parity to hold
+\emph{exactly} rather than approximately.}
+
 \section{Table 3 --- the stress suite}
 \label{sec:table3}
 
@@ -365,14 +422,73 @@ one session on the same data with the same seed, so the delta is paired.
 \section{Table 4 --- B2, angular identifiability}
 \label{sec:table4}
 
-B2 is evaluated post-hoc on models already trained, so it costs a render and a
-metrics pass rather than an optimisation. The row that matters is the third
-against the second: magnitude pruning is matched to the exact fraction B2
-retained, so the two models are the same size and differ only in \emph{which}
-coefficients they keep. A criterion that cannot beat magnitude pruning at
-matched size is not worth the machinery.
+Equation~\eqref{eq:gram} depends on primitive positions and training view
+directions alone, so the criterion is measurable from a trained model with no
+retraining and no GPU. It was evaluated on all eight Blender scenes and then, for
+the same reason B1 had to be, across the five capture protocols.
+
+\keybox{on the standard benchmark B2 masks nothing at all}{%
+Every primitive in all eight scenes is seen from $100$ well-spread directions,
+and the criterion keeps degree 3 everywhere: mean $\ell_{\max} = 3.00$,
+$100\,\%$ of non-DC coefficients retained. That is the correct answer, and it is
+the same shape as I-1's result for B1 --- on a well-conditioned capture the
+proposed criterion reduces to the baseline. Neither contribution can be
+demonstrated on a full orbit, and this is now measured for both rather than
+argued for one.}
+
+\input{generated/table-b2-protocols}
+
+Under degraded capture the criterion does what \S\ref{ch:method2} claims: a
+primitive seen from a narrow cone cannot support degree 3, and is not given it.
+The retained fraction falls monotonically with the conditioning, from $100\,\%$
+on the full orbit to $16.6\,\%$ in the cone.
+
+\subsection*{An amendment to Equation~\eqref{eq:lmax}, from measurement}
+\label{sec:b2amend}
+
+As \S\ref{ch:method2} writes it, the criterion thresholds
+$\lambda_{\min}(A_k(\ell))$ against an absolute $\tau$. Measured, that does not
+work across regimes. $\lambda_{\min}$ carries units and scales with the angular
+spread of the views, so one $\tau$ cannot mean the same thing on a 100-camera
+orbit and a 10-camera cone. On \texttt{lego}:
+
+\begin{table}[htbp]
+  \centering
+  \caption{The absolute criterion has no $\tau$ that responds gradually. Fraction
+  of non-DC coefficients retained.}
+  \label{tab:b2abs}
+  \small
+  \begin{tabular}{lrrr}
+    \toprule
+    protocol & $\lambda_{\min} > 0.01$ & $\lambda_{\min} > 0.001$ & $\lambda_{\min}/\lambda_{\max} > 0.01$ \\
+    \midrule
+    full orbit        & $100.0\,\%$ & $100.0\,\%$ & $100.0\,\%$ \\
+    grazing           & $94.3\,\%$  & $100.0\,\%$ & $100.0\,\%$ \\
+    one-sided arc     & $0.0\,\%$   & $82.4\,\%$  & $44.6\,\%$ \\
+    low-parallax cone & $0.0\,\%$   & $20.0\,\%$  & $13.3\,\%$ \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+At $\tau = 0.01$ the absolute form keeps everything on a full orbit and
+\emph{nothing} on either degraded protocol; at $\tau = 0.001$ it keeps $82\,\%$
+on the arc, which is nearly everything. It is a cliff, not a graded response.
+The condition number $\lambda_{\min}/\lambda_{\max}$ is scale-free and behaves as
+the criterion should at a single threshold, which is why it is the default in the
+implementation and why Equation~\eqref{eq:lmax} should be restated in that form.
+This is a change to the method that only measurement could have produced, and it
+is recorded as such rather than folded silently into the derivation.
+
+\paragraph{What is not measured here.}
 
 \input{generated/table-b2}
+
+The PSNR and model-size columns Table~\ref{tab:b2} calls for need a render and a
+metrics pass over the masked models. The weekly GPU quota was exhausted before those could run
+(\S\ref{sec:budget}), and they are left empty. The memory result additionally
+needs variable-length SH storage, which \S\ref{ch:plan} schedules for Spring:
+masking coefficients to zero does not shrink a fixed-width PLY, so no
+model-size saving is claimed from these numbers.
 
 \section{What these results do and do not establish}
 They establish a control. Both baselines now exist as this project's own
@@ -381,7 +497,62 @@ verified on the saved models rather than argued from source. Every later
 comparison is against these numbers and not against the published ones, which is
 the L3 discipline of Table~\ref{tab:levels}.
 
-They establish nothing about the proposed method, because it has not been run.
-The predictions in Tables~\ref{tab:stress} and \ref{tab:b2} were recorded before
-any measurement and are left standing, unmarked and unhedged, so that the
-comparison when it comes is not retrospective.
+About the proposed method they establish three things and leave one open. B1 is
+implemented and reduces to its baseline exactly where the theory says it must,
+verified to $1.4\times10^{-21}$ in the unit test and to $0.136$\,dB --- below the
+seed spread --- in a full training run. B2 is implemented and masks nothing on
+well-conditioned captures, which is the same result in the angular domain. And
+the conditioning that both methods depend on varies across capture protocols
+exactly as Equation~\eqref{eq:anisotropy} predicts.
+
+What remains open is whether that translates into rendered quality. Table~
+\ref{tab:stress}'s PSNR columns are the test, they need GPU time the weekly
+quota no longer has (\S\ref{sec:budget}), and the prediction recorded against
+them stands unmarked and unhedged so that the comparison, when it comes, is not
+retrospective.
+
+\section{Compute budget, and what it stopped}
+\label{sec:budget}
+
+The free-tier weekly allowance is 30 GPU-hours. It was exhausted, and the
+following is what that bought and what it left.
+
+\begin{table}[htbp]
+  \centering
+  \caption{Where the 30 GPU-hours went, and what remains.}
+  \label{tab:budget}
+  \small
+  \begin{tabular}{llr}
+    \toprule
+    run & outcome & GPU-h \\
+    \midrule
+    R0 smoke, 12 pre-flight checks         & all pass or honestly skipped & 0.5 \\
+    R1 Blender STMT, 8 scenes $\times$ 2 arms & arm A at L1 on all four scales & 4.0 \\
+    R2 Blender MTMT, 8 scenes $\times$ 2 arms & arm A within 0.54\,dB everywhere & 3.0 \\
+    R3 real scenes, 8 scenes $\times$ 2 arms  & no OOM; both open questions answered & 11.5 \\
+    R5 seed spread, 3 seeds                & $\sigma = 0.139$\,dB & 1.8 \\
+    I-1 / I-2 instruments                  & gates G3 and G4 pass & 0.1 \\
+    B1 parity, 2 scenes                    & 0.136\,dB, below the seed spread & 3.5 \\
+    B1 failed attempts (3)                 & three real bugs found & 2.0 \\
+    \midrule
+    \multicolumn{2}{l}{\emph{outstanding}} & \\
+    Table 2, remaining 6 scenes            & \status{not run} & ${\sim}3$ \\
+    Table 3, stress-suite PSNR columns     & \status{not run} & ${\sim}8$ \\
+    Table 4, B2 render and metrics         & \status{not run} & ${\sim}1$ \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+Three cells therefore stand empty that the method chapters would otherwise
+fill. They are empty rather than estimated, and \texttt{docs/RESUME.md} carries
+the exact command for each; every table in this document fills itself from
+\texttt{results/runs.csv} when they land.
+
+Two things are worth separating in that list. Table 2's remaining scenes are a
+formality --- parity is already established on two scenes, and
+Proposition~\ref{prop:reduction} plus the I-1 measurement say the other six
+cannot behave differently. Table 3 is not a formality: it is the only place the
+central claim of this thesis can be tested, and it has not been tested. The
+conditioning that drives it \emph{is} measured (\S\ref{sec:instrumentresults},
+Table~\ref{tab:instruments}), and the prediction is on record; the rendered
+quality difference is not.

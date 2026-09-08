@@ -37,9 +37,9 @@ if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
 
-def evaluate(xyz, c2w, tau):
+def evaluate(xyz, c2w, tau, criterion="cond"):
     blocks, n_seen = shid.angular_gram(xyz, c2w)
-    lm = shid.l_max(blocks, n_seen, tau)
+    lm = shid.l_max(blocks, n_seen, tau, criterion)
     kept = sum((shid.DEG_SLICES[l].stop - shid.DEG_SLICES[l].start)
                * int((lm >= l).sum()) for l in (1, 2, 3))
     return {
@@ -59,6 +59,7 @@ def main():
     ap.add_argument("--taus", default="0.001,0.003,0.01,0.03,0.1",
                     help="tau sweep, run on the first scene only")
     ap.add_argument("--scenes", default="")
+    ap.add_argument("--criterion", choices=("cond", "abs"), default="cond")
     a = ap.parse_args()
     os.makedirs(a.out, exist_ok=True)
 
@@ -78,8 +79,8 @@ def main():
         print(f"\n{scene}: {len(xyz)} primitives, {len(c2w_all)} cameras")
         for proto in cp.PROTOCOLS:
             idx = np.array(spec[proto]["idx"], dtype=int)
-            r = evaluate(xyz, c2w_all[idx], a.tau)
-            r.update({"protocol": proto, "n_cameras": len(idx),
+            r = evaluate(xyz, c2w_all[idx], a.tau, a.criterion)
+            r.update({"protocol": proto, "criterion": a.criterion, "n_cameras": len(idx),
                       "span_deg": spec[proto]["span_deg"], "scene": scene})
             results[f"{scene}/{proto}"] = r
             print(f"  {proto:8} n_cam={len(idx):4d} span={r['span_deg']:5.0f}deg "
@@ -93,7 +94,7 @@ def main():
             print(f"  tau sweep on {scene} (cone protocol):")
             idx = np.array(spec["cone"]["idx"], dtype=int)
             for t in [float(x) for x in a.taus.split(",")]:
-                r = evaluate(xyz, c2w_all[idx], t)
+                r = evaluate(xyz, c2w_all[idx], t, a.criterion)
                 sweep[str(t)] = r
                 print(f"    tau={t:<7} mean l_max={r['mean_l_max']:.2f}  "
                       f"non-DC retained={r['non_dc_retained']:6.1%}")

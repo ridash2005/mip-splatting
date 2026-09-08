@@ -1,0 +1,15 @@
+{
+  "scene": "chair",
+  "tau": 0.01,
+  "n_primitives": 267188,
+  "n_cameras": 100,
+  "mean_l_max": 3.0,
+  "l_max_histogram": {
+    "0": 0,
+    "1": 0,
+    "2": 0,
+    "3": 267188
+  },
+  "non_dc_retained": 1.0,
+  "mean_views_per_primitive": 100.0
+}

@@ -10,36 +10,39 @@
     },
     "mean_views": 100.0,
     "protocol": "full",
+    "criterion": "cond",
     "n_cameras": 100,
     "span_deg": 178.97687028487118,
     "scene": "lego"
   },
   "lego/arc": {
-    "mean_l_max": 0.0,
-    "non_dc_retained": 0.0,
+    "mean_l_max": 1.7303448534449553,
+    "non_dc_retained": 0.4459738692645149,
     "l_max_hist": {
-      "0": 293371,
-      "1": 0,
-      "2": 0,
-      "3": 0
+      "0": 0,
+      "1": 84666,
+      "2": 203148,
+      "3": 5557
     },
     "mean_views": 25.0,
     "protocol": "arc",
+    "criterion": "cond",
     "n_cameras": 25,
     "span_deg": 92.86431085102389,
     "scene": "lego"
   },
   "lego/cone": {
-    "mean_l_max": 0.0,
-    "non_dc_retained": 0.0,
+    "mean_l_max": 0.6649600676276797,
+    "non_dc_retained": 0.1329920135255359,
     "l_max_hist": {
-      "0": 293371,
-      "1": 0,
+      "0": 98291,
+      "1": 195080,
       "2": 0,
       "3": 0
     },
     "mean_views": 10.0,
     "protocol": "cone",
+    "criterion": "cond",
     "n_cameras": 10,
     "span_deg": 41.061415694657235,
     "scene": "lego"
@@ -55,8 +58,105 @@
     },
     "mean_views": 100.0,
     "protocol": "mixed",
+    "criterion": "cond",
     "n_cameras": 100,
     "span_deg": 178.97687028487118,
     "scene": "lego"
+  },
+  "lego/grazing": {
+    "mean_l_max": 3.0,
+    "non_dc_retained": 1.0,
+    "l_max_hist": {
+      "0": 0,
+      "1": 0,
+      "2": 0,
+      "3": 293371
+    },
+    "mean_views": 50.0,
+    "protocol": "grazing",
+    "criterion": "cond",
+    "n_cameras": 50,
+    "span_deg": 156.79402241963555,
+    "scene": "lego"
+  },
+  "chair/full": {
+    "mean_l_max": 3.0,
+    "non_dc_retained": 1.0,
+    "l_max_hist": {
+      "0": 0,
+      "1": 0,
+      "2": 0,
+      "3": 267188
+    },
+    "mean_views": 100.0,
+    "protocol": "full",
+    "criterion": "cond",
+    "n_cameras": 100,
+    "span_deg": 178.6578806541832,
+    "scene": "chair"
+  },
+  "chair/arc": {
+    "mean_l_max": 2.0,
+    "non_dc_retained": 0.5333333333333333,
+    "l_max_hist": {
+      "0": 0,
+      "1": 0,
+      "2": 267188,
+      "3": 0
+    },
+    "mean_views": 25.0,
+    "protocol": "arc",
+    "criterion": "cond",
+    "n_cameras": 25,
+    "span_deg": 95.22338371305824,
+    "scene": "chair"
+  },
+  "chair/cone": {
+    "mean_l_max": 1.0,
+    "non_dc_retained": 0.2,
+    "l_max_hist": {
+      "0": 0,
+      "1": 267188,
+      "2": 0,
+      "3": 0
+    },
+    "mean_views": 10.0,
+    "protocol": "cone",
+    "criterion": "cond",
+    "n_cameras": 10,
+    "span_deg": 53.662493548881926,
+    "scene": "chair"
+  },
+  "chair/mixed": {
+    "mean_l_max": 3.0,
+    "non_dc_retained": 1.0,
+    "l_max_hist": {
+      "0": 0,
+      "1": 0,
+      "2": 0,
+      "3": 267188
+    },
+    "mean_views": 100.0,
+    "protocol": "mixed",
+    "criterion": "cond",
+    "n_cameras": 100,
+    "span_deg": 178.6578806541832,
+    "scene": "chair"
+  },
+  "chair/grazing": {
+    "mean_l_max": 3.0,
+    "non_dc_retained": 1.0,
+    "l_max_hist": {
+      "0": 0,
+      "1": 0,
+      "2": 0,
+      "3": 267188
+    },
+    "mean_views": 50.0,
+    "protocol": "grazing",
+    "criterion": "cond",
+    "n_cameras": 50,
+    "span_deg": 163.73725371633498,
+    "scene": "chair"
   }
 }

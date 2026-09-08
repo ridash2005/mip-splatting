@@ -1,0 +1,187 @@
+{
+  "rung": "R3",
+  "iterations": 30000,
+  "gpu": "Tesla T4",
+  "n_gpu": 2,
+  "torch": "2.10.0+cu128",
+  "cuda": "12.8",
+  "armA_commit": "28b145620855666b12569bb4a2a86c242f5a6d03",
+  "armB_commit": "bcfd63fbe4ee8f1e0641544460c15fac13ebe1c4",
+  "jobs": [
+    [
+      "room",
+      "mipnerf360",
+      "images_2"
+    ],
+    [
+      "counter",
+      "mipnerf360",
+      "images_2"
+    ],
+    [
+      "kitchen",
+      "mipnerf360",
+      "images_2"
+    ],
+    [
+      "bonsai",
+      "mipnerf360",
+      "images_2"
+    ],
+    [
+      "truck",
+      "tandt",
+      ""
+    ],
+    [
+      "train",
+      "tandt",
+      ""
+    ],
+    [
+      "drjohnson",
+      "db",
+      ""
+    ],
+    [
+      "playroom",
+      "db",
+      ""
+    ]
+  ],
+  "sources": {
+    "room": null,
+    "counter": null,
+    "kitchen": null,
+    "bonsai": null,
+    "truck": "/kaggle/input/datasets/thnhdg/tandt-db/tandt/truck",
+    "train": "/kaggle/input/datasets/thnhdg/tandt-db/tandt/train",
+    "drjohnson": "/kaggle/input/datasets/thnhdg/tandt-db/db/drjohnson",
+    "playroom": "/kaggle/input/datasets/thnhdg/tandt-db/db/playroom"
+  },
+  "done": {
+    "A/truck": {
+      "train_seconds": 5314.699706315994,
+      "peak_vram_mb": 14897,
+      "iters_per_second": 5.644721556769797,
+      "render_seconds": 34.59174919128418,
+      "n_rendered": 32,
+      "render_fps": 0.9250760874521718,
+      "n_gaussians": 3239345,
+      "filter_3D_max": 0.12472232431173325,
+      "model_mb": 816.316497,
+      "PSNR": 25.787899017333984,
+      "SSIM": 0.8932836651802063,
+      "LPIPS": 0.12335357815027237
+    },
+    "B/truck": {
+      "train_seconds": 6084.093850851059,
+      "peak_vram_mb": 14907,
+      "iters_per_second": 4.93089040626872,
+      "render_seconds": 37.77609419822693,
+      "n_rendered": 32,
+      "render_fps": 0.8470965746771661,
+      "n_gaussians": 4056414,
+      "filter_3D_max": 0.0,
+      "model_mb": 1022.217885,
+      "PSNR": 25.616222381591797,
+      "SSIM": 0.8904223442077637,
+      "LPIPS": 0.127303346991539
+    },
+    "A/train": {
+      "train_seconds": 3303.7102649211884,
+      "peak_vram_mb": 14823,
+      "iters_per_second": 9.080699454349901,
+      "render_seconds": 32.436609983444214,
+      "n_rendered": 38,
+      "render_fps": 1.1715157662713633,
+      "n_gaussians": 1485087,
+      "filter_3D_max": 0.12411309033632278,
+      "model_mb": 374.243481,
+      "PSNR": 21.832468032836914,
+      "SSIM": 0.8276296257972717,
+      "LPIPS": 0.1884881556034088
+    },
+    "B/train": {
+      "train_seconds": 3137.553854942322,
+      "peak_vram_mb": 14589,
+      "iters_per_second": 9.561588864122141,
+      "render_seconds": 31.794663906097412,
+      "n_rendered": 38,
+      "render_fps": 1.1951691048607864,
+      "n_gaussians": 1356504,
+      "filter_3D_max": 0.0,
+      "model_mb": 341.840565,
+      "PSNR": 21.615116119384766,
+      "SSIM": 0.8216055035591125,
+      "LPIPS": 0.19481144845485687
+    },
+    "A/drjohnson": {
+      "train_seconds": 7862.386297702789,
+      "peak_vram_mb": 14843,
+      "iters_per_second": 3.815635465375864,
+      "render_seconds": 57.55309772491455,
+      "n_rendered": 33,
+      "render_fps": 0.5733835589133616,
+      "n_gaussians": 4150877,
+      "filter_3D_max": 0.012489303015172482,
+      "model_mb": 1046.022561,
+      "PSNR": 28.668561935424805,
+      "SSIM": 0.8986368179321289,
+      "LPIPS": 0.24360263347625732
+    },
+    "B/drjohnson": {
+      "train_seconds": 7974.361797571182,
+      "peak_vram_mb": 14811,
+      "iters_per_second": 3.7620565459090844,
+      "render_seconds": 57.16007113456726,
+      "n_rendered": 33,
+      "render_fps": 0.5773260834877342,
+      "n_gaussians": 4083683,
+      "filter_3D_max": 0.0,
+      "model_mb": 1029.089673,
+      "PSNR": 28.766401290893555,
+      "SSIM": 0.8991831541061401,
+      "LPIPS": 0.2414208948612213
+    },
+    "A/playroom": {
+      "train_seconds": 5943.169931650162,
+      "peak_vram_mb": 14871,
+      "iters_per_second": 5.047811242992727,
+      "render_seconds": 46.593307971954346,
+      "n_rendered": 29,
+      "render_fps": 0.6224069777886517,
+      "n_gaussians": 2845657,
+      "filter_3D_max": 0.027729660272598267,
+      "model_mb": 717.107121,
+      "PSNR": 30.093961715698242,
+      "SSIM": 0.9079945683479309,
+      "LPIPS": 0.23390577733516693
+    },
+    "B/playroom": {
+      "train_seconds": 5908.362461566925,
+      "peak_vram_mb": 14751,
+      "iters_per_second": 5.077549015509089,
+      "render_seconds": 44.38966727256775,
+      "n_rendered": 29,
+      "render_fps": 0.6533051897399923,
+      "n_gaussians": 2759648,
+      "filter_3D_max": 0.0,
+      "model_mb": 695.432853,
+      "PSNR": 29.93307113647461,
+      "SSIM": 0.9068630933761597,
+      "LPIPS": 0.23350869119167328
+    }
+  },
+  "failed": {},
+  "session_seconds": 23557.046466112137,
+  "gpu_hours_used": 6.543624018563165,
+  "only": [
+    "truck",
+    "train",
+    "drjohnson",
+    "playroom"
+  ],
+  "complete": true,
+  "oom": []
+}

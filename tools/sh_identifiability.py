@@ -120,17 +120,33 @@ def angular_gram(xyz, c2w, chunk=50000):
     return blocks, n_seen
 
 
-def l_max(blocks, n_seen, tau):
-    """Equation 5.2, with degrees required to be contiguous from 0 upward."""
+def l_max(blocks, n_seen, tau, criterion="cond"):
+    """Equation 5.2, with degrees required to be contiguous from 0 upward.
+
+    criterion="abs"   lambda_min(A(l)) > tau, as §5 writes it.
+    criterion="cond"  lambda_min/lambda_max > tau, the amendment §7 argues for.
+
+    The absolute form has units and scales with the angular spread of the views,
+    so one tau cannot mean the same thing on a 100-camera orbit and a 10-camera
+    cone. Measured on lego: at tau=0.01 the absolute form keeps 100% of the
+    coefficients on a full orbit and 0% on both the arc and the cone; lowering
+    tau to 0.001 keeps 82% on the arc, which is nearly everything. There is no
+    absolute tau that responds gradually across the range. The condition number
+    is scale-free and does: 100% / 100% / 44.6% / 13.3% across full, grazing,
+    arc and cone at a single tau.
+    """
     n = n_seen.shape[0]
     out = np.zeros(n, dtype=np.int8)
     for l in (1, 2, 3):
         b = blocks[l]
-        # normalise by the view count so tau is a conditioning threshold rather
-        # than a function of how many cameras happen to see the primitive
-        norm = np.maximum(n_seen, 1)[:, None, None]
-        lmin = np.linalg.eigvalsh(b / norm)[:, 0]
-        ok = (lmin > tau) & (out == l - 1)
+        if criterion == "cond":
+            ev = np.linalg.eigvalsh(b)
+            score = ev[:, 0] / np.maximum(ev[:, -1], 1e-30)
+        else:
+            # normalise by the view count so tau at least does not drift with
+            # how many cameras happen to see the primitive
+            score = np.linalg.eigvalsh(b / np.maximum(n_seen, 1)[:, None, None])[:, 0]
+        ok = (score > tau) & (out == l - 1)
         out[ok] = l
     return out
 
@@ -142,6 +158,7 @@ def main():
     ap.add_argument("--out", default="results/b2")
     ap.add_argument("--tau", type=float, default=0.01)
     ap.add_argument("--scene", default="scene")
+    ap.add_argument("--criterion", choices=("cond", "abs"), default="cond")
     a = ap.parse_args()
     os.makedirs(a.out, exist_ok=True)
 
@@ -151,13 +168,13 @@ def main():
     c2w, _ = load_cameras(a.cameras)
     xyz = data["xyz"]
     blocks, n_seen = angular_gram(xyz, c2w)
-    lm = l_max(blocks, n_seen, a.tau)
+    lm = l_max(blocks, n_seen, a.tau, a.criterion)
 
     kept = sum((DEG_SLICES[l].stop - DEG_SLICES[l].start) * int((lm >= l).sum())
                for l in (1, 2, 3))
     total = 15 * len(xyz)                      # non-DC coefficients per channel
     res = {
-        "scene": a.scene, "tau": a.tau, "n_primitives": int(len(xyz)),
+        "scene": a.scene, "tau": a.tau, "criterion": a.criterion, "n_primitives": int(len(xyz)),
         "n_cameras": int(len(c2w)),
         "mean_l_max": float(lm.mean()),
         "l_max_histogram": {int(l): int((lm == l).sum()) for l in range(4)},

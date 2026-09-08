@@ -534,6 +534,65 @@ def b2_table(b2, label, caption):
     return "\n".join(L)
 
 
+
+def b2_protocol_table(proto, sweep, label, caption):
+    """B2's criterion across capture protocols, measured without a GPU.
+
+    Equation 5.1 depends on primitive positions and training view directions
+    only, so the retained fraction and mean l_max are measurable from a trained
+    point cloud alone. PSNR is not -- that needs a render pass -- and its column
+    stays empty rather than estimated.
+    """
+    if not proto:
+        return placeholder(label, caption, "B2 has not been evaluated.")
+    by = {}
+    for k, v in proto.items():
+        by.setdefault(v["protocol"], []).append(v)
+    L = [r"\begin{table}[htbp]", r"  \centering",
+         r"  \caption{" + caption + "}", r"  \label{tab:" + label + "}",
+         r"  \small", r"  \begin{tabular}{lrrrrr}", r"    \toprule",
+         r"    protocol & cameras & span & views/prim & mean $\ell_{\max}$"
+         r" & non-DC retained \\", r"    \midrule"]
+    for k in PROTO_ORDER:
+        vs = by.get(k)
+        if not vs:
+            continue
+        L.append("    " + " & ".join([
+            PROTO_LABEL[k],
+            f"{mean([v['n_cameras'] for v in vs]):.0f}",
+            f"${mean([v['span_deg'] for v in vs]):.0f}^\\circ$",
+            f"{mean([v['mean_views'] for v in vs]):.0f}",
+            f"{mean([v['mean_l_max'] for v in vs]):.2f}",
+            f"{mean([v['non_dc_retained'] for v in vs]) * 100:.1f}\\%",
+        ]) + r" \\")
+    n = len({v["scene"] for v in proto.values()})
+    L += [r"    \bottomrule", r"  \end{tabular}",
+          r"  \par\vspace{2pt}\footnotesize Mean over " + str(n) +
+          r" scene(s), $\tau = 0.01$, post-hoc on trained models. Training "
+          r"cameras are restricted to the protocol; the criterion is a function "
+          r"of geometry, so no retraining is involved and no GPU was used.",
+          r"\end{table}", ""]
+    body = "\n".join(L)
+
+    if sweep:
+        S = [r"\begin{table}[htbp]", r"  \centering",
+             r"  \caption{Sensitivity of Equation~\eqref{eq:lmax} to $\tau$, on the "
+             r"low-parallax cone. The criterion is a cliff rather than a graded "
+             r"response: a tenfold change in $\tau$ moves the retained fraction "
+             r"from a fifth of the coefficients to none of them.}",
+             r"  \label{tab:btwosweep}", r"  \small",
+             r"  \begin{tabular}{rrr}", r"    \toprule",
+             r"    $\tau$ & mean $\ell_{\max}$ & non-DC retained \\",
+             r"    \midrule"]
+        for t in sorted(sweep, key=float):
+            v = sweep[t]
+            S.append(f"    {t} & {v['mean_l_max']:.2f} & "
+                     f"{v['non_dc_retained'] * 100:.1f}\\% " + r"\\")
+        S += [r"    \bottomrule", r"  \end{tabular}", r"\end{table}", ""]
+        body += "\n" + "\n".join(S)
+    return body
+
+
 # ------------------------------------------------------------------- macros
 def macros(rows, summaries, inst=None):
     """Inline numbers, as \\newcommand. Undefined data yields a visible marker."""
@@ -646,6 +705,19 @@ def main():
     # so including them would silently weight the 8-scene mean toward lego and
     # chair -- it moved arm A's full-res figure by nearly a decibel before this
     # filter was added. The seed table below deliberately takes all seeds.
+    b2proto, b2sweep = {}, {}
+    for path, tgt in (("results/b2_protocols/protocols.json", "proto"),
+                      ("results/b2_protocols/tau_sweep.json", "sweep")):
+        if os.path.exists(path):
+            try:
+                loaded = json.load(open(path))
+            except Exception:
+                continue
+            if tgt == "proto":
+                b2proto = loaded
+            else:
+                b2sweep = loaded
+
     b2 = {}
     for d, _, files in os.walk(a.summaries):
         for fn_ in files:
@@ -688,6 +760,9 @@ def main():
             r"Blender benchmark."),
         "table-stress.tex": stress_table(rows, inst, "stress",
             r"R7 Table 3 --- the stress suite. Where the claim lives."),
+        "table-b2-protocols.tex": b2_protocol_table(
+            b2proto, b2sweep, "btwoproto",
+            r"B2 --- the identifiability criterion across capture protocols."),
         "table-b2.tex": b2_table(b2, "b2",
             r"R8 Table 4 --- B2, angular identifiability of spherical harmonics."),
         "table-real.tex": real_scene_table(

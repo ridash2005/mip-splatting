@@ -147,19 +147,33 @@ def main():
 
     # The opacity half of Proposition 2: with Sigma_filt = f^2 I the matrix rule
     # must reproduce Mip-Splatting's scalar coefficient sqrt(det1/det2).
-    scal = torch.rand(200, 3) * 0.05 + 0.01
-    rot = torch.eye(3).expand(200, 3, 3).contiguous()
-    fk2 = (fk[:200] ** 2)[:, None, None] * torch.eye(3)
+    # Scales spanning what these scenes actually contain, INCLUDING the small
+    # and highly anisotropic primitives whose det(Sigma) is ~1e-18. The first
+    # version of this test used 0.01-0.06, where prod(s^2) stays near 1e-12 and
+    # an eps=1e-12 clamp is nearly invisible -- so it passed while the
+    # compensation was being switched off in real training.
+    scal = torch.cat([
+        torch.rand(120, 3) * 0.05 + 0.01,                  # ordinary
+        torch.rand(40, 3) * 0.004 + 0.0005,                # small: det ~ 1e-18
+        torch.stack([torch.rand(40) * 0.1 + 0.02,          # anisotropic
+                     torch.rand(40) * 0.002 + 0.0005,
+                     torch.rand(40) * 0.0005 + 0.0001], dim=1),
+    ], dim=0)
+    rot = torch.eye(3).expand(scal.shape[0], 3, 3).contiguous()
+    n_t = scal.shape[0]
+    fk2 = (fk[:n_t] ** 2)[:, None, None] * torch.eye(3)
     S = torch.diag_embed(scal)
     cov = (rot @ S) @ (rot @ S).transpose(1, 2)
-    coef_matrix = opacity_compensation(cov, fk2).squeeze(-1)
+    coef_matrix = opacity_compensation(cov, fk2, scaling=scal).squeeze(-1)
     sq = scal ** 2
     det1 = sq.prod(dim=1)
-    det2 = (sq + (fk[:200] ** 2)[:, None]).prod(dim=1)
+    det2 = (sq + (fk[:n_t] ** 2)[:, None]).prod(dim=1)
     coef_scalar = torch.sqrt(det1 / det2)
     ok("Proposition 2: the opacity rule reduces to Mip-Splatting's to 1e-6",
        float((coef_matrix - coef_scalar).abs().max()) < 1e-6,
-       f"max abs deviation {float((coef_matrix - coef_scalar).abs().max()):.3e}")
+       f"max abs deviation {float((coef_matrix - coef_scalar).abs().max()):.3e} "
+       f"over scales {float(scal.min()):.1e}-{float(scal.max()):.1e}, "
+       f"det(Sigma) down to {float((scal.double()**2).prod(dim=1).min()):.1e}")
 
     # ------------------------------------------------------- the anisotropic case
     # A narrow cone must do the opposite: the estimate beats the floor, and the

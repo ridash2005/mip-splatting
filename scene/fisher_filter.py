@@ -208,13 +208,26 @@ def covariance_with_filter(scaling, rotation_matrix, sigma_filt, scaling_modifie
     return strip_symmetric(cov + sigma_filt), cov
 
 
-def opacity_compensation(cov, sigma_filt, eps=1e-12):
+def opacity_compensation(cov, sigma_filt, scaling=None, eps=1e-300):
     """alpha <- alpha * sqrt(|Sigma| / |Sigma + Sigma_filt|).
 
     Mip-Splatting's rule, written for a matrix filter instead of a scalar one.
     With Sigma_filt = f^2 I it reduces to their expression exactly, which is the
     opacity half of Proposition 2.
+
+    eps is a guard against dividing by zero and NOTHING ELSE. The first version
+    used 1e-12, which is a physically meaningful magnitude here: det(Sigma) is
+    prod(s^2), and a primitive with s = 0.005 has det = 1.6e-14. Both
+    determinants clamped to the same floor, their ratio became exactly 1, and
+    the compensation silently switched itself off for most of the model --
+    B1 rendered with uncompensated opacity while every baseline did not.
+
+    det(Sigma) is taken from the scale vector when it is available, because
+    prod(s^2) is exact whereas the determinant of a float32 3x3 loses accuracy
+    badly for the anisotropic primitives this method exists to handle.
     """
-    det1 = torch.linalg.det(cov.double()).clamp_min(eps)
-    det2 = torch.linalg.det((cov + sigma_filt).double()).clamp_min(eps)
-    return torch.sqrt(det1 / det2).float()[..., None]
+    covd = cov.double()
+    det1 = ((scaling.double() ** 2).prod(dim=1) if scaling is not None
+            else torch.linalg.det(covd))
+    det2 = torch.linalg.det(covd + sigma_filt.double())
+    return torch.sqrt(det1.clamp_min(eps) / det2.clamp_min(eps)).float()[..., None]

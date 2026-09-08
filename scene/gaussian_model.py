@@ -133,12 +133,21 @@ class GaussianModel:
         the optimiser reset it. With B1 off this is the original expression.
         """
         if getattr(self, "use_fisher_filter", False):
+            if getattr(self, "filter_isotropic", False):
+                # Proposition 2 again: with Sigma_filt = sigma^2 I this IS
+                # Mip-Splatting's own expression, evaluated the same way, so the
+                # opacity matches bit for bit rather than to within a determinant.
+                scales_square = torch.square(self.get_scaling)
+                det1 = scales_square.prod(dim=1)
+                det2 = (scales_square + torch.square(self.sigma_iso)).prod(dim=1)
+                return torch.sqrt(det1 / det2)
             from scene.fisher_filter import covariance_with_filter, opacity_compensation
             from utils.general_utils import build_rotation
             _, cov = covariance_with_filter(self.get_scaling,
                                             build_rotation(self._rotation),
                                             self.sigma_filt)
-            return opacity_compensation(cov, self.sigma_filt).squeeze(-1)
+            return opacity_compensation(cov, self.sigma_filt,
+                                        scaling=self.get_scaling).squeeze(-1)
         scales_square = torch.square(self.get_scaling)
         det1 = scales_square.prod(dim=1)
         det2 = (scales_square + torch.square(self.filter_3D)).prod(dim=1)

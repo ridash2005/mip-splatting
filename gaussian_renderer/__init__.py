@@ -67,7 +67,9 @@ def render(viewpoint_camera, pc : GaussianModel, pipe, bg_color : torch.Tensor, 
         # B1. The filter is a matrix, so it cannot be folded into the scale
         # vector the way a scalar can -- it goes through cov3D_precomp, which
         # the rasteriser already accepts. No CUDA change.
-        opacity = pc.get_opacity_with_fisher_filter
+        # get_opacity_with_3D_filter dispatches on use_fisher_filter, so this is
+        # the matrix-filtered opacity without a second property.
+        opacity = pc.get_opacity_with_3D_filter
         cov3D_precomp = pc.get_covariance_with_fisher_filter
     elif pipe.compute_cov3D_python:
         opacity = pc.get_opacity_with_3D_filter

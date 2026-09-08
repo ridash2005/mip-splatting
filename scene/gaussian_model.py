@@ -124,19 +124,29 @@ class GaussianModel:
     def get_opacity(self):
         return self.opacity_activation(self._opacity)
     
+    def filter_opacity_coef(self):
+        """sqrt(|Sigma| / |Sigma + Sigma_filt|), for whichever filter is active.
+
+        Centralised because reset_opacity multiplies this in and then divides it
+        back out, and save_ply bakes it in: if the render path used the matrix
+        filter while those used the scalar one, opacity would drift every time
+        the optimiser reset it. With B1 off this is the original expression.
+        """
+        if getattr(self, "use_fisher_filter", False):
+            from scene.fisher_filter import covariance_with_filter, opacity_compensation
+            from utils.general_utils import build_rotation
+            _, cov = covariance_with_filter(self.get_scaling,
+                                            build_rotation(self._rotation),
+                                            self.sigma_filt)
+            return opacity_compensation(cov, self.sigma_filt).squeeze(-1)
+        scales_square = torch.square(self.get_scaling)
+        det1 = scales_square.prod(dim=1)
+        det2 = (scales_square + torch.square(self.filter_3D)).prod(dim=1)
+        return torch.sqrt(det1 / det2)
+
     @property
     def get_opacity_with_3D_filter(self):
-        opacity = self.opacity_activation(self._opacity)
-        # apply 3D filter
-        scales = self.get_scaling
-        
-        scales_square = torch.square(scales)
-        det1 = scales_square.prod(dim=1)
-        
-        scales_after_square = scales_square + torch.square(self.filter_3D) 
-        det2 = scales_after_square.prod(dim=1) 
-        coef = torch.sqrt(det1 / det2)
-        return opacity * coef[..., None]
+        return self.opacity_activation(self._opacity) * self.filter_opacity_coef()[..., None]
 
     # ---------------------------------------------------------------- B1
     # The Fisher band-limit. Off by default: with use_fisher_filter False every
@@ -167,6 +177,11 @@ class GaussianModel:
         from scene.fisher_filter import build_filter
         out = build_filter(self.get_xyz, cameras, s_conf=s_conf, beta=beta)
         self.sigma_filt = out["sigma_filt"]
+        # Mip-Splatting's scalar floor is kept alongside the matrix: save_ply
+        # writes it as a per-primitive column and load_ply expects it, so a B1
+        # model stays readable by the unmodified pipeline. It is the FLOOR, not
+        # the filter B1 renders with.
+        self.filter_3D = out["f_k"][..., None]
         self.fisher_diag = {k: v for k, v in out.items() if k != "sigma_filt"}
         print(f"Fisher filter: {self.fisher_diag['frac_above_floor']:.1%} of primitives "
               f"above the floor, mean anisotropy "
@@ -355,9 +370,7 @@ class GaussianModel:
         scales_square = torch.square(scales)
         det1 = scales_square.prod(dim=1)
         
-        scales_after_square = scales_square + torch.square(self.filter_3D) 
-        det2 = scales_after_square.prod(dim=1) 
-        coef = torch.sqrt(det1 / det2)
+        coef = self.filter_opacity_coef()
         opacities_new = opacities_new / coef[..., None]
         opacities_new = inverse_sigmoid(opacities_new)
 

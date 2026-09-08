@@ -38,6 +38,12 @@ def render_sets(dataset : ModelParams, iteration : int, pipeline : PipelineParam
     with torch.no_grad():
         gaussians = GaussianModel(dataset.sh_degree)
         scene = Scene(dataset, gaussians, load_iteration=iteration, shuffle=False)
+        gaussians.use_fisher_filter = getattr(dataset, "use_fisher_filter", False)
+        if gaussians.use_fisher_filter:
+            # Sigma_filt is geometry, not a learned parameter, so it is rebuilt
+            # from the training cameras rather than stored in the PLY.
+            gaussians.compute_fisher_filter(scene.getTrainCameras(),
+                                            dataset.fisher_s, dataset.fisher_beta)
         scale_factor = dataset.resolution
         bg_color = [1,1,1] if dataset.white_background else [0, 0, 0]
         background = torch.tensor(bg_color, dtype=torch.float32, device="cuda")

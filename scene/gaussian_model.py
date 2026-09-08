@@ -53,6 +53,8 @@ class GaussianModel:
         self.max_radii2D = torch.empty(0)
         self.xyz_gradient_accum = torch.empty(0)
         self.denom = torch.empty(0)
+        self.sigma_filt = torch.empty(0)   # B1: per-primitive filter covariance
+        self.fisher_diag = {}
         self.optimizer = None
         self.percent_dense = 0
         self.spatial_lr_scale = 0
@@ -135,6 +137,41 @@ class GaussianModel:
         det2 = scales_after_square.prod(dim=1) 
         coef = torch.sqrt(det1 / det2)
         return opacity * coef[..., None]
+
+    # ---------------------------------------------------------------- B1
+    # The Fisher band-limit. Off by default: with use_fisher_filter False every
+    # property below is untouched and the model is exactly as shipped.
+    @property
+    def get_covariance_with_fisher_filter(self):
+        from scene.fisher_filter import covariance_with_filter
+        from utils.general_utils import build_rotation
+        symm, cov = covariance_with_filter(self.get_scaling,
+                                           build_rotation(self._rotation),
+                                           self.sigma_filt)
+        self._last_cov = cov
+        return symm
+
+    @property
+    def get_opacity_with_fisher_filter(self):
+        from scene.fisher_filter import covariance_with_filter, opacity_compensation
+        from utils.general_utils import build_rotation
+        _, cov = covariance_with_filter(self.get_scaling,
+                                        build_rotation(self._rotation),
+                                        self.sigma_filt)
+        return self.opacity_activation(self._opacity) * opacity_compensation(
+            cov, self.sigma_filt)
+
+    @torch.no_grad()
+    def compute_fisher_filter(self, cameras, s_conf=1.0, beta=0.01):
+        """Sigma_filt from the capture geometry (Equations 4.3-4.5)."""
+        from scene.fisher_filter import build_filter
+        out = build_filter(self.get_xyz, cameras, s_conf=s_conf, beta=beta)
+        self.sigma_filt = out["sigma_filt"]
+        self.fisher_diag = {k: v for k, v in out.items() if k != "sigma_filt"}
+        print(f"Fisher filter: {self.fisher_diag['frac_above_floor']:.1%} of primitives "
+              f"above the floor, mean anisotropy "
+              f"{self.fisher_diag['mean_anisotropy']:.2f}x, "
+              f"{self.fisher_diag['frac_capped']:.2%} capped")
 
     def get_covariance(self, scaling_modifier = 1):
         return self.covariance_activation(self.get_scaling, scaling_modifier, self._rotation)

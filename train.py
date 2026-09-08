@@ -73,7 +73,12 @@ def training(dataset, opt, pipe, testing_iterations, saving_iterations, checkpoi
         if camera.image_width >= 800:
             highresolution_index.append(index)
 
-    gaussians.compute_3D_filter(cameras=trainCameras)
+    gaussians.use_fisher_filter = getattr(dataset, "use_fisher_filter", False)
+    if gaussians.use_fisher_filter:
+        # B1 replaces the scalar filter, so the scalar one is not computed.
+        gaussians.compute_fisher_filter(trainCameras, dataset.fisher_s, dataset.fisher_beta)
+    else:
+        gaussians.compute_3D_filter(cameras=trainCameras)
 
     viewpoint_stack = None
     ema_loss_for_log = 0.0
@@ -161,7 +166,10 @@ def training(dataset, opt, pipe, testing_iterations, saving_iterations, checkpoi
                 if iteration > opt.densify_from_iter and iteration % opt.densification_interval == 0:
                     size_threshold = 20 if iteration > opt.opacity_reset_interval else None
                     gaussians.densify_and_prune(opt.densify_grad_threshold, 0.005, scene.cameras_extent, size_threshold)
-                    gaussians.compute_3D_filter(cameras=trainCameras)
+                    if gaussians.use_fisher_filter:
+                        gaussians.compute_fisher_filter(trainCameras, dataset.fisher_s, dataset.fisher_beta)
+                    else:
+                        gaussians.compute_3D_filter(cameras=trainCameras)
 
                 if iteration % opt.opacity_reset_interval == 0 or (dataset.white_background and iteration == opt.densify_from_iter):
                     gaussians.reset_opacity()
@@ -169,7 +177,10 @@ def training(dataset, opt, pipe, testing_iterations, saving_iterations, checkpoi
             if iteration % 100 == 0 and iteration > opt.densify_until_iter:
                 if iteration < opt.iterations - 100:
                     # don't update in the end of training
-                    gaussians.compute_3D_filter(cameras=trainCameras)
+                    if gaussians.use_fisher_filter:
+                        gaussians.compute_fisher_filter(trainCameras, dataset.fisher_s, dataset.fisher_beta)
+                    else:
+                        gaussians.compute_3D_filter(cameras=trainCameras)
         
             # Optimizer step
             if iteration < opt.iterations:

@@ -55,6 +55,9 @@ class ModelParams(ParamGroup):
         self.data_device = "cuda"
         self.eval = False
         self._kernel_size = 0.1
+        self.use_fisher_filter = False   # B1
+        self.fisher_s = 1.0
+        self.fisher_beta = 0.01
         # self.use_spatial_gaussian_bias = False
         self.ray_jitter = False
         self.resample_gt_image = False

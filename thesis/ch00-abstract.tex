@@ -27,10 +27,18 @@ coefficients the capture cannot determine --- 76\,\% of the model's parameters.
 
 \medskip
 \keybox{status of this version}{%
-Both baselines have been reproduced end to end on free compute, and the
-reproduction is the subject of Chapter~\ref{ch:results}: the twelve pre-flight
-assertions, Table~\ref{tab:stmt}, the cost measurements and the run-to-run
-spread are measured results of this project. The proposed method (B1, B2) is
-derived and specified but \status{not yet implemented}; every cell that would
-report it is deliberately empty, and the predictions recorded against those
-cells were frozen before any run.}
+Both baselines are reproduced end to end on free compute across four rungs, and
+the reproduction is the subject of Chapter~\ref{ch:results}. Mip-Splatting
+reproduces to \textbf{L1 at all four test scales} (Table~\ref{tab:stmt}), and the
+two falsification gates the method's premise rests on --- does the Nyquist floor
+bind everywhere, and is the capture conditioning really anisotropic --- are
+\textbf{both passed on measurement} (\S\ref{sec:instrumentresults}), before any
+method code exists. Two results run against expectation and are reported as
+such: gate G2's thresholds cannot be met in this codebase, for a reason that is
+diagnosed rather than guessed (\S\ref{sec:g2}), and the seed-to-seed spread is
+close enough to the L1 tolerance to qualify a single-seed claim
+(\S\ref{sec:spread}).
+
+The proposed method (B1, B2) is derived and specified but \status{not yet
+implemented}; every cell that would report it is deliberately empty, and the
+predictions recorded against those cells were frozen before any run.}

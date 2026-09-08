@@ -11,11 +11,11 @@
     \toprule
     week & work & exit \\
     \midrule
-    W1 & Accounts and quotas; data republished as private datasets; the twelve pre-flight assertions; R0. Literature due-diligence begun. & \textbf{done.} Gates G0, G1. Measured throughput replaced the estimates. \\
-    W2 & R1 and R2, both arms. I-1 attached. Due-diligence continues while runs are queued. & Gate G2. Figure~\ref{fig:degradation} redrawn from our own data; floor histograms. \\
+    W1 & Accounts and quotas; the twelve pre-flight assertions; R0. Literature due-diligence begun. & \textbf{done.} Gates G0, G1. Measured throughput replaced the estimates. \\
+    W2 & R1 and R2, both arms. I-1 attached. & \textbf{done.} Arm A is L1 at all four scales; \textbf{G2 fails and is diagnosed} (\S\ref{sec:g2}). \\
+    W3 & R5 and R3. I-2 on trained checkpoints. & \textbf{done.} \textbf{Gates G3 and G4 pass} (\S\ref{sec:instrumentresults}); $\sigma$ measured at $0.139$\,dB worst case (\S\ref{sec:spread}); real scenes at \S\ref{sec:real}. \\
+    W4 & Stress suite constructed from existing images. & \textbf{done.} Five protocols, versioned and seeded; conditioning measured on all of them. \\
     \midrule
-    W3 & R5 and R3. I-2 on trained checkpoints --- pure PyTorch. Derivation work in parallel; needs no GPU. & Gates G3, G4. $\sigma$ table; $\Lambda$ conditioning plots. \\
-    W4 & Stress suite constructed from existing images. & Four protocols versioned. \\
     W5--W6 & Implement $\Lambda$ accumulation; the exact-reduction unit test; wire $\Sigma_{\mathrm{filt}}$ into the covariance path. & reduction test passes to $10^{-6}$; trains to 30\,K without divergence. \\
     W7--W9 & B1 evaluation across the stress suite; ablations. Mid-term seminar in W8, opening on the I-2 figure. & Table~\ref{tab:stress} populated with measured deltas. \\
     W10--W13 & B2 implementation and ablation; efficiency curves; writing. R4 as optional overflow. & Autumn report; Table~\ref{tab:b2} populated. \\

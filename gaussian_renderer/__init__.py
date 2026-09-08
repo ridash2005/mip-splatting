@@ -70,7 +70,16 @@ def render(viewpoint_camera, pc : GaussianModel, pipe, bg_color : torch.Tensor, 
         # get_opacity_with_3D_filter dispatches on use_fisher_filter, so this is
         # the matrix-filtered opacity without a second property.
         opacity = pc.get_opacity_with_3D_filter
-        cov3D_precomp = pc.get_covariance_with_fisher_filter
+        if getattr(pc, "filter_isotropic", False):
+            # Proposition 2's regime. The filter is sigma^2 I on every primitive,
+            # so Sigma + Sigma_filt = R diag(s^2 + sigma^2) R^T and the scale /
+            # rotation path expresses it exactly -- the SAME path Mip-Splatting
+            # takes. Taking it here makes parity exact by construction rather
+            # than relying on cov3D_precomp being numerically equivalent.
+            scales = pc.get_scaling_with_fisher_isotropic
+            rotations = pc.get_rotation
+        else:
+            cov3D_precomp = pc.get_covariance_with_fisher_filter
     elif pipe.compute_cov3D_python:
         opacity = pc.get_opacity_with_3D_filter
         cov3D_precomp = pc.get_covariance(scaling_modifier)

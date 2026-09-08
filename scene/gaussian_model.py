@@ -152,6 +152,15 @@ class GaussianModel:
     # The Fisher band-limit. Off by default: with use_fisher_filter False every
     # property below is untouched and the model is exactly as shipped.
     @property
+    def get_scaling_with_fisher_isotropic(self):
+        """sqrt(s^2 + sigma^2), valid only while the filter is isotropic.
+
+        Identical in form to get_scaling_with_3D_filter, because in this regime
+        the two filters ARE identical: Sigma + sigma^2 I = R diag(s^2+sigma^2)R^T.
+        """
+        return torch.sqrt(torch.square(self.get_scaling) + torch.square(self.sigma_iso))
+
+    @property
     def get_covariance_with_fisher_filter(self):
         from scene.fisher_filter import covariance_with_filter
         from utils.general_utils import build_rotation
@@ -195,6 +204,13 @@ class GaussianModel:
         # model stays readable by the unmodified pipeline. It is the FLOOR, not
         # the filter B1 renders with.
         self.filter_3D = out["f_k"][..., None]
+        # Where the floor binds in every direction the filter is isotropic,
+        # and Proposition 2 says B1 IS Mip-Splatting there. Recording that
+        # lets the renderer take Mip-Splatting's own code path instead of a
+        # numerically equivalent one, so parity is exact by construction
+        # rather than by luck.
+        self.filter_isotropic = out["isotropic"]
+        self.sigma_iso = out["sigma_iso"][..., None]
         self.fisher_diag = {k: v for k, v in out.items() if k != "sigma_filt"}
         print(f"Fisher filter: {self.fisher_diag['frac_above_floor']:.1%} of primitives "
               f"above the floor, mean anisotropy "

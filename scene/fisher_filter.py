@@ -62,10 +62,17 @@ def accumulate_fisher(xyz, cameras, chunk=200000):
                 continue
             # The same 1.15x margin compute_3D_filter uses, so both filters are
             # built from the same views.
-            zc = torch.clamp(z, min=1e-6)
-            x_ndc = cam_p[:, 0] / zc / (cam.image_width / (2.0 * focal_x))
-            y_ndc = cam_p[:, 1] / zc / (cam.image_height / (2.0 * focal_y))
-            valid = valid & (x_ndc.abs() < 1.15) & (y_ndc.abs() < 1.15)
+            zc = torch.clamp(z, min=0.001)
+            # compute_3D_filter's own test, in pixels: x = x/z*f + W/2 must lie in
+            # [-0.15W, 1.15W], i.e. |x/z*f| <= 0.65W. Written the same way here so
+            # the two filters see exactly the same view set.
+            px = cam_p[:, 0] / zc * focal_x + cam.image_width / 2.0
+            py = cam_p[:, 1] / zc * focal_y + cam.image_height / 2.0
+            valid = (valid
+                     & (px >= -0.15 * cam.image_width)
+                     & (px <= 1.15 * cam.image_width)
+                     & (py >= -0.15 * cam.image_height)
+                     & (py <= 1.15 * cam.image_height))
             if not bool(valid.any()):
                 continue
 
@@ -175,8 +182,16 @@ def build_filter(xyz, cameras, s_conf=1.0, beta=0.01):
     frac_above = float((above.any(dim=1) & ~unseen).float().mean())
     smax = s2.max(dim=1).values.sqrt()
     smin = s2.min(dim=1).values.sqrt().clamp_min(1e-30)
+    # Proposition 2's hypothesis, evaluated: is the filter isotropic on EVERY
+    # primitive? Where it is, B1 and Mip-Splatting are the same filter and can
+    # take the same code path.
+    spread = (s2.max(dim=1).values - s2.min(dim=1).values).abs()
+    isotropic = bool((spread <= 1e-12 * s2.max(dim=1).values.clamp_min(1e-30)).all())
+
     return {
         "sigma_filt": sigma_filt,
+        "sigma_iso": s2.max(dim=1).values.sqrt().float(),   # the common sigma
+        "isotropic": isotropic,
         "f_k": f_k,
         "frac_above_floor": frac_above,
         "mean_anisotropy": float((smax / smin).mean()),

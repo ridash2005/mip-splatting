@@ -36,7 +36,7 @@ within $0.01$\,dB on every scene of every run. Without this the four-column
 table would be an assumption about directory ordering rather than a
 measurement.
 
-\section{Table 1 --- baseline reproduction, Blender STMT}
+\section{Baseline reproduction --- Blender, single-scale train}
 \label{sec:table1}
 
 \input{generated/table1-stmt}
@@ -165,7 +165,7 @@ comparison rests on is the method and not a residual anti-aliasing term. The
 between-arm comparison was the one thing the earlier diagnosis insisted was
 safe, and it was the thing that was wrong.}
 
-\section{Table 2 --- Blender MTMT}
+\section{Baseline reproduction --- Blender, multi-scale train and test}
 \label{sec:table2}
 
 \input{generated/table2-mtmt}
@@ -450,7 +450,7 @@ a wider focal spread than $2$--$4\times$, or the defect is real but small; the
 present measurement does not distinguish those, and it is not reported as though
 it did.
 
-\section{Table 2 --- the method on the standard benchmark}
+\section{The method on the standard benchmark}
 \label{sec:table2m}
 
 \input{generated/table-method}
@@ -535,7 +535,7 @@ that range in its own output. The bug itself was silent --- no error, plausible
 numbers, the wrong shape --- and what exposed it was requiring parity to hold
 \emph{exactly} rather than approximately.}
 
-\section{Table 3 --- the stress suite}
+\section{The stress suite --- the decisive experiment}
 \label{sec:table3}
 
 Where the claim lives. Training cameras are restricted to each protocol's subset
@@ -558,7 +558,7 @@ one session on the same data with the same seed, so the delta is paired.
   \label{fig:stress}
 \end{figure}
 
-\section{Table 4 --- B2, angular identifiability}
+\section{B2 --- angular identifiability of spherical harmonics}
 \label{sec:table4}
 
 Equation~\eqref{eq:gram} depends on primitive positions and training view

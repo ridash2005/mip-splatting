@@ -6,6 +6,27 @@ below is built, tested and committed; each is one command once the quota resets.
 The quota is per rolling week, so these become available again automatically.
 Check it in the notebook sidebar, or by pushing anything and reading the error.
 
+## One command for all of it
+
+```bash
+python tools/finish.py            # add --dry-run first to see the plan
+```
+
+Runs every stage below in dependency order, ~18.8 GPU-h of a 30 h week, so the
+whole programme fits inside one reset. It waits out the quota rather than
+failing on it, merges each result into `results/runs.csv`, and rebuilds the
+thesis at the end.
+
+**It halts on a red gate.** The 8 September audit found that G2 failed and the
+ladder continued anyway; every stage now carries its exit criterion as code, and
+nothing downstream of a failed gate is allowed to run and be read as though the
+gate had passed. `--only <stage>` and `--from <stage>` drive it by hand.
+
+Stage order is `c1_verify → t3_stress → c2_armb → t2_full → b2_eval`.
+`c1_verify` is first because it is 0.8 h and decides whether the 6 h arm-B
+re-run is worth any quota at all; `t3_stress` does not depend on it, since B1
+versus Mip-Splatting never involves the 3DGS arm.
+
 ## What is outstanding
 
 | run | command | cost |

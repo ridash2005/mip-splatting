@@ -259,22 +259,29 @@ against a measured span in this thesis therefore uses Equation~\eqref{eq:cap}.}
   \includegraphics[width=\linewidth]{figures/fig5-fisher-geometry.pdf}
   \caption{The mechanism. Cross-sections of the two filters in the plane of the
   cameras, normalised to the same lateral extent because the floor makes them
-  agree there by construction. The whole difference is along depth. On a
-  one-sided arc the correct filter is $5.8\times$ longer along depth than
-  Mip-Splatting's isotropic ball; on a full orbit the two nearly coincide.
-  Geometry computed from real pinhole Jacobians, not drawn by hand.}
+  agree there by construction, so the whole visible difference is along depth.
+  The two panels are the spans the \texttt{cone} and \texttt{arc} protocols
+  actually realise ($20^\circ$ and $80^\circ$), and the elongation is
+  Equation~\eqref{eq:cap} at those spans --- $8.1\times$ and $2.0\times$. On a
+  full orbit the two ellipses coincide to within the line width, which is
+  Proposition~\ref{prop:reduction} drawn rather than stated. Geometry computed
+  from real pinhole Jacobians, not sketched.}
   \label{fig:fisher}
 \end{figure}
 
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=0.62\linewidth]{figures/fig6-anisotropy.pdf}
-  \caption{Where the method has room. Equation~\eqref{eq:anisotropy} plotted.
-  Mip-Splatting assumes the ratio is $1$ everywhere. At a $6^\circ$ cone it is
-  $19\times$; at $20^\circ$, $5.8\times$; even on a generous $75^\circ$ orbit it
-  is $1.6\times$. The gap between the curve and the line is the quantity this
-  thesis exploits, and it predicts the regime structure of the results before
-  any run.}
+  \includegraphics[width=0.86\linewidth]{figures/fig6-anisotropy.pdf}
+  \caption{Where the method has room, and which prediction to use. Mip-Splatting
+  assumes the ratio is $1$ at every span; the gap between that line and the
+  curve is the quantity this thesis exploits. Both forms are drawn because the
+  difference between them is a correction this project had to make: the dashed
+  curve is Equation~\eqref{eq:anisotropy}, exact for two cameras, and the solid
+  one is Equation~\eqref{eq:cap} for cameras distributed over the span, which is
+  what a protocol is. The points are I-2 measured on eight scenes
+  (\S\ref{sec:instrumentresults}), and they sit above the two-view curve at
+  every protocol --- plotted against that curve alone, a confirmation would read
+  as a discrepancy.}
   \label{fig:anisotropy}
 \end{figure}
 

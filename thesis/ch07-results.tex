@@ -56,127 +56,173 @@ doubt.}
 
 G2 was declared in advance as: 3DGS falls $\gtrsim13$\,dB from full to
 $\tfrac18$; Mip-Splatting falls $\lesssim6$\,dB; the gap at $\tfrac18$ exceeds
-$9$\,dB. Measured on this run:
+$9$\,dB. On R1 it failed, on two of its three criteria: arm B fell $9.09$\,dB
+where $13$ was required, and the gap at $\tfrac18$ was $4.07$\,dB against a
+published $10.98$. The protocol's instruction on a G2 failure is to stop and
+diagnose in a stated order, and that is what follows. It took two attempts,
+and the first was wrong.
 
-\begin{table}[htbp]
-  \centering
-  \caption{Gate G2 on R1, against the thresholds set before the run.}
-  \label{tab:g2}
-  \small
-  \begin{tabular}{lrrl}
-    \toprule
-    criterion & threshold & measured & verdict \\
-    \midrule
-    3DGS falls, full $\rightarrow \tfrac18$        & $\gtrsim 13$\,dB & $9.09$\,dB & \fail \\
-    Mip-Splatting falls, full $\rightarrow \tfrac18$ & $\lesssim 6$\,dB & $4.86$\,dB & \pass \\
-    gap at $\tfrac18$                              & $> 9$\,dB        & $4.07$\,dB & \fail \\
-    \bottomrule
-  \end{tabular}
-\end{table}
-
-The protocol's instruction on a G2 failure is to stop, and to diagnose in a
-stated order: (a) the splitter's index mapping; (b) whether arm B's
-\texttt{filter\_3D} is really zero at step 30\,000; (c) \texttt{--white\_background}.
-All three were checked, and none of them is the cause:
+\subsection*{The three checks the protocol names, and a fourth it does not}
 
 \begin{enumerate}[leftmargin=1.4em,itemsep=2pt]
-  \item The splitter's count-weighted mean reproduces \texttt{metrics.py}'s
-        pooled PSNR to within $0.01$\,dB on every scene of every run --- the
-        mapping is right, and it is asserted per scene rather than spot-checked.
-  \item \texttt{filter\_3D} read back from all eight of arm B's saved point
-        clouds is identically zero, and non-zero on all eight of arm A's. The
-        reduction is exact.
-  \item \texttt{--white\_background} was passed to every job.
+  \item \textbf{The splitter's index mapping.} Its count-weighted mean reproduces
+        \texttt{metrics.py}'s pooled PSNR to within $0.01$\,dB on every scene of
+        every run --- asserted per scene, not spot-checked. Not the cause.
+  \item \textbf{Arm B's \texttt{filter\_3D} at step 30\,000.} Read back from all
+        eight saved point clouds it is identically zero, and non-zero on all
+        eight of arm A's. The reduction is exact. Not the cause.
+  \item \textbf{\texttt{--white\_background}.} Passed to every job. Not the cause.
 \end{enumerate}
 
-The cause is the one identified in \S\ref{sec:densification}: arm B is not
-published 3DGS, because this repository's densification is GOF's. A better
-densification recovers most of what the missing band-limit costs, so the
-collapse that G2's thresholds were calibrated against does not occur here.
-Arm B's $\tfrac18$ figure is $6.82$\,dB above published --- almost exactly the
-$6.8$\,dB by which the measured gap falls short of the expected one.
+\paragraph{The first diagnosis, and why it was wrong.} With those three
+eliminated, the explanation offered was densification: this repository's
+\texttt{densify\_and\_prune} splits on a quantile over accumulated
+\emph{absolute} gradients, which is the Gaussian Opacity Fields criterion added
+to \texttt{mip-splatting} in commit \texttt{24af724} (April 2024), after the
+Mip-Splatting paper's numbers were produced. Original 3DGS splits on
+$\lVert\nabla\rVert \ge \tau_{\mathrm{pos}}$ alone. The argument was that a
+better densification recovers most of what the missing band-limit costs, so the
+collapse G2's thresholds were calibrated against could not occur in this
+codebase --- and that G2 was therefore unmeetable here as a property of the
+gate's premise rather than of the experiment.
 
-\keybox{what this means, stated precisely}{%
-G2 as written cannot be met in this codebase, and that is a property of the
-gate's premise rather than of the experiment. The gate assumed the 3DGS arm
-would carry published-3DGS densification; the single-codebase decision of
-\S\ref{sec:onecodebase} --- which is \emph{forced} by the multi-scale loader, not
-chosen for convenience --- brings GOF's densification with it, to both arms
-equally.
+It was a plausible story, it was consistent with every number then available,
+and it was \emph{wrong}. It also had the shape a wrong diagnosis usually has:
+it explained the failure as unfixable, and it did so without a test that could
+have refuted it.
 
-What does reproduce, and is what the thesis actually relies on: 3DGS degrades
-$1.9\times$ faster than Mip-Splatting across the same range ($9.09$ against
-$4.86$\,dB), and Mip-Splatting leads at every reduced scale by a margin that
-grows monotonically with the scale gap. That is correct in sign, ordering and
-order of magnitude under a stated deviation, which is L2 by
-Table~\ref{tab:levels}. The gate should be restated against a self-run control
-rather than against a published number produced by a different densification,
-and \S\ref{sec:densification} records the alternative that was considered and
-not taken.}
+\subsection*{The fourth check: arm B was not running 3DGS's rasteriser}
+
+The single-codebase construction of \S\ref{sec:onecodebase} gives both arms
+Mip-Splatting's rasteriser, and sets arm B apart by zeroing \texttt{filter\_3D}
+and taking \texttt{kernel\_size}~$=0.3$. That reproduces 3DGS's \emph{3D}
+band-limit exactly --- which is what check~2 verifies --- and says nothing about
+the \emph{2D} one. Mip-Splatting's screen-space filter dilates the projected
+covariance by $k$ and then compensates the opacity by
+\begin{equation}
+  \rho \;=\; \sqrt{\frac{\lvert\Sigma'\rvert}{\lvert\Sigma' + kI\rvert}} ,
+\end{equation}
+so that dilation does not brighten the primitive. Vanilla 3DGS applies the same
+fixed $0.3$ dilation and \textbf{no compensation at all}. Setting
+\texttt{kernel\_size}~$=0.3$ reproduces the dilation magnitude and leaves $\rho$
+in place, so arm B kept an anti-aliasing term that 3DGS does not have --- and
+the term it kept is precisely the one that protects a dilated primitive from
+losing energy as the test sampling rate falls. An arm that anti-aliases better
+than 3DGS degrades less than 3DGS, which is exactly what G2 measured.
+
+\paragraph{C1 --- the test that separates the two explanations.} $\rho$ is
+computed in CUDA, so the switch is a rasteriser change: a
+\texttt{mip\_compensation} flag threaded through
+\texttt{GaussianRasterizationSettings} into \texttt{computeCov2D}, which skips
+the $\rho$ term while keeping the dilation. Everything else in that function is
+identical to \texttt{graphdeco-inria/diff-gaussian-rasterization} line for line.
+The build asserts the compiled binary carries the field before any training
+starts, because checking the source would prove nothing about the binary.
+
+One scene, \texttt{lego}, 30\,000 iterations, everything else held fixed:
+
+\input{generated/table-c1}
+
+Full resolution barely moves: $\cOneBaseFull$ against $\cOneFull$, which is
+what must happen, because at the training sampling rate the dilation is
+negligible against the primitive's own extent and $\rho \approx 1$. Every
+reduced scale collapses, and lands on the shape of the published 3DGS row:
+$\cOneHalf$ against $26.95$, $\cOneQuarter$ against $21.38$, $\cOneEighth$
+against $17.69$. The compensation was the whole of the defect.
+
+\keybox{the densification hypothesis is refuted, not merely superseded}{%
+Both columns of Table~\ref{tab:c1} ran GOF's densification. If densification were
+the cause of the shortfall, the right-hand column could not have collapsed --- and
+it collapses by $\cOneCollapse$\,dB at $\tfrac18$, which is almost exactly the
+$6.82$\,dB by which arm B previously sat above published 3DGS. The earlier diagnosis is
+therefore wrong, and it is left in this chapter rather than deleted because how a
+wrong diagnosis survived matters: it was never given an experiment that could
+refute it. It explained the anomaly as a property of the codebase, which is the
+most comfortable kind of explanation and the one that most deserves a test.}
+
+\subsection*{G2, re-scored}
+
+Every arm-B row produced with the compensation active is superseded. They are
+marked \texttt{SUPERSEDED\_BY\_C2} in \texttt{results/runs.csv} and retained ---
+every table in this document excludes them, and none of them has been deleted.
+Arm A is untouched and was not re-run: nothing about this defect involves it.
+
+\input{generated/table-g2}
+
+\keybox{what this cost, and what it bought}{%
+It cost the R1 arm-B column, the R2 arm-B column and the arm-B half of the seed
+spread --- three rungs of measurement, re-run. It bought a 3DGS arm that is
+actually 3DGS in both band-limits rather than one, so the control every later
+comparison rests on is the method and not a residual anti-aliasing term. The
+between-arm comparison was the one thing the earlier diagnosis insisted was
+safe, and it was the thing that was wrong.}
 
 \section{Table 2 --- Blender MTMT}
 \label{sec:table2}
 
 \input{generated/table2-mtmt}
 
-\section{Why arm B sits above published 3DGS}
+\section{What remains of the densification difference}
 \label{sec:densification}
 
-Arm A lands within half a decibel of the published Mip-Splatting numbers at
-every scale of both protocols. Arm B does not: it is several decibels
-\emph{above} published 3DGS, and by the largest margin at $\tfrac18$, where the
-published method collapses hardest. A reproduction that overshoots its target by
-five decibels is not a success, and it is not noise --- the run-to-run spread of
-\S\ref{sec:spread} is smaller by two orders of magnitude. It has a cause, and
-the cause matters for how both tables are read.
+Section~\ref{sec:g2} settles the cause of the $\tfrac18$-scale shortfall: it was
+the 2D opacity compensation, and removing it recovers the published shape on the
+scene it was tested on. That does not make the densification observation false,
+only insufficient, and it is worth keeping straight what it does and does not
+imply.
 
-\keybox{the repository's densification is not 3DGS's}{%
+\keybox{the repository's densification is still not 3DGS's}{%
 \texttt{densify\_and\_prune} in this codebase splits on a quantile over
 accumulated \emph{absolute} gradients:
 \texttt{grads\_abs} is taken from \texttt{viewspace\_point\_tensor.grad[:,\,2:]}
-and thresholded at $Q = \mathrm{quantile}(\texttt{grads\_abs},\,1-\rho)$, where
-$\rho$ is the fraction of primitives passing the ordinary gradient test. That is
-the Gaussian Opacity Fields criterion, added to \texttt{mip-splatting} in commit
-\texttt{24af724} (April 2024) --- \emph{after} the Mip-Splatting paper's numbers
-were produced. Original 3DGS splits on $\lVert\nabla\rVert \geq \tau_{\mathrm{pos}}$
-alone.}
+and thresholded at $Q = \mathrm{quantile}(\texttt{grads\_abs},\,1-\varrho)$,
+where $\varrho$ is the fraction of primitives passing the ordinary gradient
+test. That is the Gaussian Opacity Fields criterion, added to
+\texttt{mip-splatting} in commit \texttt{24af724} (April 2024) --- \emph{after}
+the Mip-Splatting paper's numbers were produced. Original 3DGS splits on
+$\lVert\nabla\rVert \geq \tau_{\mathrm{pos}}$ alone. This is a real difference
+from published 3DGS and it is shared by both arms.}
 
-Arm B is therefore 3DGS's \emph{band-limit} semantics --- \texttt{filter\_3D}
-identically zero and \texttt{kernel\_size}~$=0.3$, exact by
-Proposition~\ref{prop:reduction} and verified on the saved models --- running on
-GOF's \emph{densification}. It is exactly 3DGS in the sense this thesis needs,
-and it is not the 3DGS whose numbers Mip-Splatting published.
+What it explains is the level at full resolution, not the slope across scales.
+Arm B reaches $\cOneBaseFull$\,dB on \texttt{lego} at full scale both with and
+without the compensation (Table~\ref{tab:c1}), against a published eight-scene
+mean of $33.33$; a better densification plausibly accounts for standing above the
+published level, and nothing about it changes when a screen-space opacity term is
+switched off. What it cannot explain is the $\tfrac18$-scale behaviour, because
+both columns of Table~\ref{tab:c1} carry the identical densification and differ
+by $\cOneCollapse$\,dB there. Level and slope are separate quantities, and the
+earlier reading of this section conflated them.
 
-This was anticipated. The reading list of Appendix~\ref{app:reading} carries the
-GOF entry with the note ``a reproduction hazard if the commit is not pinned''.
-It is now observed rather than predicted, and three consequences follow.
+Three consequences, revised:
 
 \begin{enumerate}[leftmargin=1.4em,itemsep=3pt]
-  \item \textbf{Arm B carries no L1 claim against published 3DGS.} The published
-        column in Tables~\ref{tab:stmt} and \ref{tab:mtmt} is a target for arm A
-        and a \emph{reference point of a different configuration} for arm B. Its
-        deltas are reported, and they are not reproduction error.
-  \item \textbf{The between-arm comparison is unaffected.} Both arms share the
-        densification, the dataloader, the metrics implementation and the LPIPS
-        backbone; the four-file diff of \S\ref{sec:onecodebase} is the only
-        difference between them. So the gap column remains exactly what
-        \S\ref{sec:onecodebase} claims it is --- the method, not the plumbing ---
-        and it is the control for all later work, which is the L3 discipline of
-        Table~\ref{tab:levels}.
-  \item \textbf{The published $\tfrac18$ gap is not reproducible in this
-        codebase, and should not be quoted as if it were.} A better
-        densification recovers much of what the missing band-limit costs. That
-        is itself informative: it says the $15.64$\,dB figure of
-        \S\ref{sec:cost} is a property of 3DGS-as-published, not a bound on
-        what a filter-free method can do.
+  \item \textbf{Arm B still carries no L1 claim against published 3DGS.} The
+        densification differs, so the published column in Tables~\ref{tab:stmt}
+        and~\ref{tab:mtmt} remains a reference point of a different
+        configuration for arm B and a target only for arm A. Its deltas are
+        reported and are not reproduction error.
+  \item \textbf{The between-arm comparison is now what it was claimed to be.}
+        Before C1 it was not: the arms differed by the 2D compensation as well as
+        by the 3D filter, so the gap column mixed the method with a residual
+        anti-aliasing term. Both arms now share the densification, the
+        dataloader, the metrics, the LPIPS backbone \emph{and} the screen-space
+        filter semantics appropriate to each, and the difference between them is
+        the band-limit.
+  \item \textbf{The published $\tfrac18$ gap is reproducible after all.}
+        Section~\ref{sec:g2} scores it. The earlier claim that it could not be
+        reproduced in this codebase was a consequence of the defect, not of the
+        codebase, and it is the clearest illustration in this project of why an
+        explanation that makes a failure unfixable should be distrusted until it
+        has been given a chance to fail.
 \end{enumerate}
 
-Pinning the pre-GOF commit and re-running arm B would restore the published
-comparison, at the cost of a densification that no longer matches arm A --- which
-would move the difference between the arms out of the filter and back into the
-plumbing. Given that Table~\ref{tab:levels} makes the self-run baseline the
-control, the shared-densification choice is the correct one and the overshoot is
-the price of it. The alternative is recorded here so the choice is visible.
+Pinning the pre-GOF commit and re-running both arms would remove the remaining
+difference from published 3DGS, at the cost of a densification that no longer
+matches the Mip-Splatting arm --- which would move the difference between the
+arms out of the filter and back into the plumbing. Given that
+Table~\ref{tab:levels} makes the self-run baseline the control, the
+shared-densification choice is still the right one, and the residual is stated
+rather than removed.
 
 \section{Run-to-run spread (I-3)}
 \label{sec:spread}

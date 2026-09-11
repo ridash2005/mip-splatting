@@ -58,10 +58,18 @@ def cap_sigma_ratio(span_deg):
 
 
 def load(runs_path):
+    """Every measured row, minus the ones a later stage has replaced.
+
+    results/runs.csv is append-only, so a re-measured configuration leaves its
+    predecessor in the file with SUPERSEDED in `notes` (tools/supersede.py).
+    Dropping those here is what keeps a superseded run on the record without
+    letting it into an average.
+    """
     if not os.path.exists(runs_path):
         return []
     with open(runs_path, newline="") as f:
-        return [r for r in csv.DictReader(f) if r.get("psnr")]
+        return [r for r in csv.DictReader(f)
+                if r.get("psnr") and "SUPERSEDED" not in (r.get("notes") or "")]
 
 
 def select(rows, *, iterations, load_allres, dataset="blender", seed=None):
@@ -601,6 +609,130 @@ def stress_table(rows, inst, label, caption, sigma=SIGMA_FALLBACK):
     return "\n".join(L)
 
 
+def load_all(runs_path):
+    """Every measured row, superseded ones included. Only C1 wants this."""
+    if not os.path.exists(runs_path):
+        return []
+    with open(runs_path, newline="") as f:
+        return [r for r in csv.DictReader(f) if r.get("psnr")]
+
+
+def c1_table(all_rows, c1, label, caption):
+    """C1: the same arm and scene with and without the 2D opacity compensation.
+
+    The left column is deliberately read from the SUPERSEDED rows -- it is the
+    measurement the compensation produced, which is the thing being compared
+    against, so it has to come from the file rather than from memory.
+    """
+    scene = (c1.get("scenes") or ["lego"])[0]
+    new = {}
+    for job in (c1.get("done") or {}).values():
+        for k, v in (job.get("split") or {}).items():
+            new[k] = v.get("PSNR")
+    if not new:
+        return placeholder(label, caption, "C1 has not been run.")
+    cand = [r for r in all_rows
+            if r.get("scene") == scene and r.get("arm") == "B"
+            and r.get("dataset") == "blender" and r.get("seed") == "0"
+            and r.get("iterations") == str(c1.get("iterations", 30000))
+            and r.get("load_allres") == "False"
+            and r.get("train_scale") == "1x"]
+    # Once C2 has landed the compensated rows are the marked ones; before that
+    # they are the only ones. Both cases select the same measurement.
+    marked = [r for r in cand if "SUPERSEDED" in (r.get("notes") or "")]
+    old = {r["test_scale"]: float(r["psnr"]) for r in (marked or cand)}
+
+    pub = PUBLISHED["STMT"]["B"]
+    L = [r"\begin{table}[htbp]", r"  \centering",
+         r"  \caption{" + caption + "}", r"  \label{tab:" + label + "}",
+         r"  \small", r"  \begin{tabular}{lrrr}", r"    \toprule",
+         r"    test scale & arm B, with $\rho$ & arm B, without $\rho$"
+         r" & published 3DGS \\", r"    \midrule"]
+    for i, sc in enumerate(SCALES):
+        a, b = old.get(sc), new.get(sc)
+        cell_b = (r"$\mathbf{" + f"{b:.2f}" + "}$") if (b and sc == "1/8") \
+            else (f"${b:.2f}$" if b else NOT_MEASURED)
+        L.append("    " + " & ".join([
+            SCALE_TEX[sc],
+            f"${a:.2f}$" if a else NOT_MEASURED,
+            cell_b,
+            f"${pub[i]:.2f}$",
+        ]) + r" \\")
+    drop = ((old.get("1x", 0) - old.get("1/8", 0)) if old else None,
+            (new.get("1x", 0) - new.get("1/8", 0)) if new else None)
+    L += [r"    \midrule",
+          "    full $\\rightarrow \\tfrac18$ & "
+          + (f"${drop[0]:.2f}$" if drop[0] else NOT_MEASURED) + " & "
+          + (f"${drop[1]:.2f}$" if drop[1] else NOT_MEASURED)
+          + f" & ${pub[0] - pub[3]:.2f}$ \\\\",
+          r"    \bottomrule", r"  \end{tabular}",
+          r"  \par\vspace{2pt}\footnotesize \texttt{" + scene + r"}, seed 0, "
+          + str(c1.get("iterations", 30000)) + r" iterations, identical in every "
+          r"other respect --- same branch but for the rasteriser flag, same "
+          r"densification, same data, same seed. The published column is an "
+          r"eight-scene mean and \texttt{" + scene + r"} is not the mean, so it "
+          r"is a shape to compare against rather than a target; this is why the "
+          r"gate was written scene-relative. The left column is read from the "
+          r"rows this run supersedes, which are retained in "
+          r"\texttt{results/runs.csv}.",
+          r"\end{table}", ""]
+    return "\n".join(L)
+
+
+def g2_table(rows, label, caption):
+    """Gate G2, scored from the CSV against thresholds set before the run.
+
+    Superseded rows are excluded by `load`, so this scores whichever arm B is
+    current: before C2 that is the arm carrying Mip-Splatting's opacity
+    compensation, after it the vanilla one. The thresholds never move.
+    """
+    sel = [r for r in rows if r.get("dataset") == "blender"
+           and r.get("iterations") == "30000"
+           and r.get("load_allres") == "False" and r.get("seed") == "0"
+           and (r.get("train_scale") == "1x")]
+    acc = {}
+    for r in sel:
+        if r.get("arm") in ("A", "B"):
+            acc.setdefault(r["arm"], {}).setdefault(r["test_scale"], []) \
+               .append(float(r["psnr"]))
+
+    def g(arm, sc):
+        v = acc.get(arm, {}).get(sc)
+        return mean(v) if v else None
+
+    a1, a8 = g("A", "1x"), g("A", "1/8")
+    b1, b8 = g("B", "1x"), g("B", "1/8")
+    if not all(v is not None for v in (a1, a8, b1, b8)):
+        return placeholder(label, caption,
+                           "Arm A or arm B has no current rows at both full and "
+                           "$\\tfrac18$ scale.")
+    bdrop, adrop, gap = b1 - b8, a1 - a8, a8 - b8
+    crit = [
+        (r"3DGS falls, full $\rightarrow \tfrac18$", r"$\gtrsim 13$\,dB",
+         f"{bdrop:.2f}\\,dB", bdrop >= 13.0),
+        (r"Mip-Splatting falls, full $\rightarrow \tfrac18$", r"$\lesssim 6$\,dB",
+         f"{adrop:.2f}\\,dB", adrop <= 6.0),
+        (r"gap at $\tfrac18$", r"$> 9$\,dB", f"{gap:.2f}\\,dB", gap > 9.0),
+    ]
+    L = [r"\begin{table}[htbp]", r"  \centering",
+         r"  \caption{" + caption + "}", r"  \label{tab:" + label + "}",
+         r"  \small", r"  \begin{tabular}{lrrl}", r"    \toprule",
+         r"    criterion & threshold & measured & verdict \\", r"    \midrule"]
+    for name, thr, got, ok in crit:
+        L.append(f"    {name} & {thr} & {got} & "
+                 + (r"\pass" if ok else r"\fail") + r" \\")
+    n_scene = len({r["scene"] for r in sel if r.get("arm") == "B"})
+    L += [r"    \bottomrule", r"  \end{tabular}",
+          r"  \par\vspace{2pt}\footnotesize Mean over " + str(n_scene) +
+          r" scene(s), 30\,000 iterations, seed 0. Published 3DGS falls "
+          r"$15.64$\,dB and the published gap at $\tfrac18$ is $10.98$\,dB. "
+          r"Thresholds were set before any run and have not been moved. Rows "
+          r"marked superseded in \texttt{results/runs.csv} are excluded here and "
+          r"everywhere else, and are retained in the file.",
+          r"\end{table}", ""]
+    return "\n".join(L)
+
+
 def fps_table(fps, label, caption):
     """C9: render-call fps for the three arms, and the ratio that is the claim."""
     if not fps or not fps.get("results"):
@@ -921,6 +1053,34 @@ def macros(rows, summaries, inst=None):
     put("realMaxGauss", max((float(r["n_gaussians"]) for r in real
                              if r.get("n_gaussians")), default=None), "{:,.0f}")
 
+    # C1: the compensation switch, on one scene. Quoted in §7.2's prose, so the
+    # prose cannot drift from the run that produced it.
+    c1 = summaries.get("C1") or {}
+    c1new = {}
+    for job in (c1.get("done") or {}).values():
+        for k, v in (job.get("split") or {}).items():
+            c1new[k] = v.get("PSNR")
+    c1scene = (c1.get("scenes") or [None])[0]
+    c1old = {}
+    if c1scene:
+        for r in rows:
+            if (r.get("scene") == c1scene and r.get("arm") == "B"
+                    and r.get("dataset") == "blender" and r.get("seed") == "0"
+                    and r.get("iterations") == "30000"
+                    and r.get("load_allres") == "False"
+                    and r.get("train_scale") == "1x"):
+                c1old[r["test_scale"]] = float(r["psnr"])
+    for sc, nm in zip(SCALES, ("Full", "Half", "Quarter", "Eighth")):
+        put("cOne" + nm, c1new.get(sc))
+        put("cOneBase" + nm, c1old.get(sc))
+    put("cOneCollapse",
+        (c1old["1/8"] - c1new["1/8"])
+        if c1old.get("1/8") and c1new.get("1/8") else None)
+    put("cOneDrop",
+        (c1new["1x"] - c1new["1/8"])
+        if c1new.get("1x") and c1new.get("1/8") else None)
+    M["cOneScene"] = (c1scene or NOT_MEASURED).replace("_", "")
+
     bp = (inst or {}).get("by_protocol", {})
     for k, name in (("full", "Full"), ("arc", "Arc"), ("cone", "Cone"),
                     ("mixed", "Mixed"), ("grazing", "Grazing")):
@@ -1078,6 +1238,14 @@ def main():
             r"R7 Table 3 --- the stress suite. Where the claim lives.",
             sigma=seed_sigma),
         "table-geometry.tex": geometry_tables(geo, inst),
+        "table-g2.tex": g2_table(rows, "g2",
+            r"Gate G2, scored against the thresholds set before any run."),
+        "table-c1.tex": c1_table(
+            load_all(a.runs), summaries.get("C1") or {}, "c1",
+            r"C1 --- the same arm, scene and seed, with and without "
+            r"Mip-Splatting's 2D opacity compensation. The densification is "
+            r"identical in both columns, so whatever the difference is, it is "
+            r"not densification."),
         "table-fps.tex": fps_table(fps, "fps",
             r"C9 --- matched render speed. The render call alone, all three arms "
             r"in one session on one GPU."),

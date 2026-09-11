@@ -102,7 +102,19 @@ except Exception:
         kc.neutralise_unused_open3d_import(d)
 for d in (f"{WORK}/armA", f"{WORK}/armB"):
     kc.patch_simple_knn_flt_max(d)
-kc.sh(f"pip install -v {WORK}/armA/submodules/diff-gaussian-rasterization",
+# Which arm's rasteriser gets installed. Normally they are byte-identical, so
+# armA's is built once and both arms import it. C1 breaks that: the 2D Mip
+# opacity compensation lives in CUDA, so the vanilla arm needs *its own* build.
+# Only one `diff_gaussian_rasterization` can be installed per session, so the
+# two cannot run together under that branch.
+RASTERISER_ARM = "armB" if ARM_B_EXTRA else "armA"
+if ARM_B_EXTRA and ARMS_ENABLED != ["B"]:
+    raise SystemExit(
+        "ABORT: a vanilla arm B needs its own rasteriser build, and only one "
+        "can be installed per session. Run it with ARMS_ENABLED=B; arm A's "
+        "numbers are already measured and are not re-run.")
+print(f"installing the rasteriser from {RASTERISER_ARM}", flush=True)
+kc.sh(f"pip install -v {WORK}/{RASTERISER_ARM}/submodules/diff-gaussian-rasterization",
       logdir=LOGDIR, log_name="build")
 kc.sh(f"pip install -v {WORK}/armA/submodules/simple-knn", logdir=LOGDIR, log_name="build")
 for mod in ("GPUtil", "lpips", "plyfile", "cv2", "torchvision", "tqdm", "numpy", "PIL",
@@ -115,9 +127,35 @@ _, diff_out = kc.sh(f"git -C {WORK}/armB diff origin/main...HEAD --stat",
                     check_rc=False, logdir=LOGDIR, log_name="diff")
 touched = {ln.split("|")[0].strip() for ln in diff_out.splitlines() if "|" in ln}
 expected = {"arguments/__init__.py", "scene/gaussian_model.py", "render.py", "train.py"}
+if ARM_B_EXTRA:
+    # C1 removes the 2D Mip opacity compensation. That term is computed in CUDA,
+    # so the diff necessarily reaches the rasteriser. Enumerated rather than
+    # waved through by prefix, so the check still catches anything else.
+    expected |= {
+        "gaussian_renderer/__init__.py",
+        "submodules/diff-gaussian-rasterization/cuda_rasterizer/backward.cu",
+        "submodules/diff-gaussian-rasterization/cuda_rasterizer/backward.h",
+        "submodules/diff-gaussian-rasterization/cuda_rasterizer/forward.cu",
+        "submodules/diff-gaussian-rasterization/cuda_rasterizer/forward.h",
+        "submodules/diff-gaussian-rasterization/cuda_rasterizer/rasterizer.h",
+        "submodules/diff-gaussian-rasterization/cuda_rasterizer/rasterizer_impl.cu",
+        "submodules/diff-gaussian-rasterization/diff_gaussian_rasterization/__init__.py",
+        "submodules/diff-gaussian-rasterization/rasterize_points.cu",
+        "submodules/diff-gaussian-rasterization/rasterize_points.h",
+    }
 if not touched <= expected:
     raise SystemExit(f"ABORT: arm B introduces changes beyond §3: {sorted(touched)}")
 print(f"§3 diff confined to {sorted(touched)}", flush=True)
+
+# The switch is only real if the build actually carries it. Checking the source
+# would prove nothing about the binary that just got compiled.
+if ARM_B_EXTRA:
+    import diff_gaussian_rasterization as _dgr
+    if "mip_compensation" not in _dgr.GaussianRasterizationSettings._fields:
+        raise SystemExit(
+            "ABORT: the installed rasteriser has no mip_compensation field, so "
+            f"the build came from the wrong tree (expected {RASTERISER_ARM}).")
+    print("rasteriser carries mip_compensation: the C1 switch is live", flush=True)
 
 # ============================================================ data
 blender_dir = kc.resolve_blender_dir(SCENES[0])

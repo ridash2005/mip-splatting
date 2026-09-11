@@ -11,7 +11,15 @@ Protocols, each a seeded, reproducible index list:
 
   full        every camera. The control. Proposition 2 predicts parity here.
   arc         half the orbit -- a contiguous azimuth wedge.
-  cone        a narrow angular cone, the largest predicted gain.
+  cone        a narrow angular cone sized by camera COUNT (a tenth of them).
+  pencil      a narrow angular cone sized by WIDTH (20 degrees). The two are
+              both kept because they land in different regimes: on the Blender
+              captures `cone` comes out at 36-54 degrees, where the Nyquist
+              floor still binds on every primitive and B1 reduces to
+              Mip-Splatting exactly, while `pencil` reaches ~15 degrees on four
+              cameras, which is the regime Equation 4.10 is about. Reporting
+              both is what turns "where does the estimation term overtake the
+              floor" from an assertion into a measurement.
   mixed       every camera, a random half at reduced focal length. This is the
               only protocol that changes intrinsics rather than pose, and it
               targets the mixed-camera defect of §3.3: f_k takes d_min and
@@ -36,7 +44,7 @@ import numpy as np
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
-PROTOCOLS = ("full", "arc", "cone", "mixed", "grazing")
+PROTOCOLS = ("full", "arc", "cone", "pencil", "mixed", "grazing")
 
 
 def camera_centres(c2w):
@@ -100,8 +108,31 @@ def build(c2w, focal, seed=0):
         cos = np.clip(d @ d[anchor_i], -1.0, 1.0)
         return sorted(int(i) for i in np.argsort(-cos)[:max(2, min(k, n))])
 
+    def wedge(width_deg, min_n=3):
+        """Every camera within `width_deg` of the anchor, as a real 3D angle.
+
+        Sized by ANGULAR WIDTH, which is the variable Equation 4.10 is written
+        in. `nearest` was introduced to avoid a three-camera training set, and
+        that objection is sound as far as it goes -- but the count-based cone
+        lands at 36-54 degrees on the Blender captures, and there the Nyquist
+        floor still binds on every primitive, so B1 reduces to Mip-Splatting
+        exactly and the protocol cannot test the claim it was built for. Both
+        are kept: `cone` for a trainable subset, this for the regime.
+        """
+        cos = np.clip(d @ d[anchor_i], -1.0, 1.0)
+        ang = np.degrees(np.arccos(cos))
+        idx = np.where(ang <= width_deg / 2.0)[0]
+        if len(idx) < min_n:                       # widen until it is trainable
+            idx = np.argsort(ang)[:min_n]
+        return sorted(int(i) for i in idx)
+
     out["arc"] = {"idx": nearest(max(2, n // 4))}
     out["cone"] = {"idx": nearest(max(2, n // 10))}
+    # The narrow regime. Named separately so the count-based cone keeps its
+    # meaning and the two can be reported side by side: the crossover between
+    # them is where the estimation term overtakes the floor, and that crossover
+    # is a measurement this suite can make rather than assert.
+    out["pencil"] = {"idx": wedge(20.0)}
 
     # Mixed focal: same poses, a random half downsampled 2-4x.
     half = rng.permutation(n)[: n // 2]

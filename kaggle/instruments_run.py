@@ -35,7 +35,7 @@ RUNG_KERNEL = "btp-r2-blender-mtmt"
 ITER = 30000
 SCENES = ["ship", "drums", "ficus", "hotdog", "lego", "materials", "mic", "chair"]
 ARMS = ["A"]               # I-1/I-2 are geometry; one arm per scene suffices
-PROTOCOLS = ["full", "arc", "cone", "mixed", "grazing"]
+PROTOCOLS = ["full", "arc", "cone", "pencil", "mixed", "grazing"]
 # ----------------------------------------------------------------------------
 
 SESSION_START = time.time()

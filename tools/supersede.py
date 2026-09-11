@@ -35,6 +35,17 @@ def main():
     ap.add_argument("--unless-run-id-prefix", default=None,
                     help="never mark a row whose run_id starts with this -- the "
                          "replacement rows themselves")
+    ap.add_argument("--unless-notes-contains", default=None,
+                    help="never mark a row whose notes contain this. The kernels "
+                         "put the rung name at the front of `notes`, and every "
+                         "blender_rung run_id starts 'r1-' whatever the rung, so "
+                         "this is what distinguishes a replacement from the row "
+                         "it replaces")
+    ap.add_argument("--require", type=int, default=0, metavar="N",
+                    help="refuse unless at least N rows are exempt -- i.e. unless "
+                         "the replacement actually landed. Without it, marking "
+                         "before the re-run completes empties the table instead "
+                         "of updating it")
     ap.add_argument("--dry-run", action="store_true")
     a = ap.parse_args()
 
@@ -46,14 +57,24 @@ def main():
         fields = reader.fieldnames
         rows = list(reader)
 
+    # Split first, so the replacement can be counted before anything is marked.
+    matching = [r for r in rows
+                if MARK not in (r.get("notes") or "")
+                and all(r.get(k) == v for k, v in where.items())]
+    exempt = [r for r in matching
+              if (a.unless_run_id_prefix
+                  and r["run_id"].startswith(a.unless_run_id_prefix))
+              or (a.unless_notes_contains
+                  and a.unless_notes_contains in (r.get("notes") or ""))]
+    target = [r for r in matching if r not in exempt]
+
+    if a.require and len(exempt) < a.require:
+        sys.exit(f"refusing: {len(exempt)} replacement row(s) present, need at "
+                 f"least {a.require}. Marking now would empty the table rather "
+                 f"than update it -- run the replacement first.")
+
     n = 0
-    for r in rows:
-        if MARK in (r.get("notes") or ""):
-            continue
-        if a.unless_run_id_prefix and r["run_id"].startswith(a.unless_run_id_prefix):
-            continue
-        if not all(r.get(k) == v for k, v in where.items()):
-            continue
+    for r in target:
         r["notes"] = ((r.get("notes") or "") + f" {MARK}{a.by}").strip()
         n += 1
         if a.dry_run and n <= 5:
@@ -61,7 +82,8 @@ def main():
                   f"{r['test_scale']})")
 
     if a.dry_run:
-        print(f"{n} row(s) would be marked {MARK}{a.by}; nothing written")
+        print(f"{n} row(s) would be marked {MARK}{a.by}, "
+              f"{len(exempt)} kept as the replacement; nothing written")
         return
     with open(a.runs, "w", newline="") as f:
         w = csv.DictWriter(f, fieldnames=fields)

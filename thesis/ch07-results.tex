@@ -392,7 +392,7 @@ The refutation condition at gate G3 is that the floor exceeds the estimation
 term on nearly every primitive in \emph{every} scene --- which would make
 Proposition~\ref{prop:reduction} apply universally and collapse the method to
 its baseline everywhere. It does not. Degrading the capture moves the balance
-exactly as Equation~\eqref{eq:anisotropy} requires:
+exactly as Equation~\eqref{eq:cap} requires:
 
 \begin{itemize}[leftmargin=1.4em,itemsep=2pt]
   \item \textbf{One-sided arc} ($80^\circ$ span): the estimation term exceeds
@@ -654,7 +654,7 @@ verified to $1.4\times10^{-21}$ in the unit test and to $0.136$\,dB --- below th
 seed spread --- in a full training run. B2 is implemented and masks nothing on
 well-conditioned captures, which is the same result in the angular domain. And
 the conditioning that both methods depend on varies across capture protocols
-exactly as Equation~\eqref{eq:anisotropy} predicts.
+exactly as Equation~\eqref{eq:cap} predicts.
 
 What remains open is whether that translates into rendered quality. Table~
 \ref{tab:stress}'s PSNR columns are the test, they need GPU time the weekly

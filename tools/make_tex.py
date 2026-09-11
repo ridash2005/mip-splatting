@@ -733,6 +733,71 @@ def g2_table(rows, label, caption):
     return "\n".join(L)
 
 
+PROTO_SELECTION = {
+    "full": ("all training views",
+             "the control. Parity is required by "
+             "Proposition~\\ref{prop:reduction}, not hoped for."),
+    "grazing": ("high-incidence views only",
+                "obliquity at near-full parallax; isolates the off-axis term of "
+                "\\S\\ref{sec:offaxis}."),
+    "mixed": ("all views, a seeded random half downsampled $2$--$4\\times$",
+              "the mixed-camera defect of \\S\\ref{sec:defects}, not parallax."),
+    "arc": ("contiguous azimuthal wedge",
+            "the anisotropic regime: the floor binds in some directions and not "
+            "in others."),
+    "cone": ("tightest angular cluster",
+             "the largest predicted gain, and the only protocol where the floor "
+             "is exceeded in every direction."),
+}
+
+
+def protocol_table(inst, label, caption):
+    """The five capture protocols at the spans and camera counts they realise.
+
+    Generated because they were not what they were asked for: `arc` and `cone`
+    select by angular EXTENT, so the camera count is an outcome and varies by
+    scene. A hand-written count is a claim about a protocol that was never built.
+    """
+    res = (inst or {}).get("results") or {}
+    bp = (inst or {}).get("by_protocol") or {}
+    if not bp:
+        return placeholder(label, caption, "The protocols have not been built.")
+    counts = {}
+    for key, v in res.items():
+        proto = key.rsplit("/", 1)[-1]
+        if v.get("n_cameras"):
+            counts.setdefault(proto, []).append(int(v["n_cameras"]))
+    L = [r"\begin{table}[htbp]", r"  \centering",
+         r"  \caption{" + caption + "}", r"  \label{tab:" + label + "}",
+         r"  \small", r"  \begin{tabular}{llrrp{0.29\linewidth}}", r"    \toprule",
+         r"    protocol & selection & cameras & span & what it tests \\",
+         r"    \midrule"]
+    for k in PROTO_ORDER:
+        v = bp.get(k)
+        if not v or k not in PROTO_SELECTION:
+            continue
+        sel, tests = PROTO_SELECTION[k]
+        c = counts.get(k) or []
+        cam = (f"{min(c)}" if c and min(c) == max(c)
+               else (f"{min(c)}--{max(c)}" if c else NOT_MEASURED))
+        L.append("    " + " & ".join([
+            PROTO_LABEL[k], sel, cam,
+            f"${v['median_span_deg']:.0f}^\\circ$", tests,
+        ]) + r" \\")
+    L += [r"    \bottomrule", r"  \end{tabular}",
+          r"  \par\vspace{2pt}\footnotesize Span is the median over the "
+          r"8 Blender scenes of the maximum pairwise angle the selected cameras "
+          r"subtend at the capture centre --- measured from the subset that was "
+          r"built, not specified. \emph{arc} and \emph{cone} select by angular "
+          r"extent rather than by a camera count, so the count is an outcome and "
+          r"differs between scenes; the range is given. A subset asked for at "
+          r"$6^\circ$ that comes out at $20^\circ$ is not the capture the "
+          r"prediction was made for, which is why the prediction is re-evaluated "
+          r"at the span actually realised.",
+          r"\end{table}", ""]
+    return "\n".join(L)
+
+
 def budget_table(summaries_dir, label, caption):
     """Every GPU session this project ran, and what it cost.
 
@@ -1327,6 +1392,8 @@ def main():
             r"R7 Table 3 --- the stress suite. Where the claim lives.",
             sigma=seed_sigma),
         "table-geometry.tex": geometry_tables(geo, inst),
+        "table-protocols.tex": protocol_table(inst, "protocols",
+            r"The five capture protocols, as built."),
         "table-budget.tex": budget_table(a.summaries, "budget",
             r"Every GPU session this project ran, and what it cost."),
         "table-g2.tex": g2_table(rows, "g2",

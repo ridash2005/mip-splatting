@@ -105,25 +105,7 @@ with a nominal target of $6^\circ$ that comes out at $20^\circ$ is not the
 capture the prediction was made for, and the prediction must then be re-evaluated
 at the span that was actually built rather than the one that was asked for.
 
-\begin{table}[htbp]
-  \centering
-  \caption{The five capture protocols, as built. \emph{Span} is measured from the
-  selected cameras, not specified; the prediction is Equation~\eqref{eq:cap}
-  evaluated at that span.}
-  \label{tab:protocols}
-  \small
-  \begin{tabular}{llrrp{0.3\linewidth}}
-    \toprule
-    protocol & selection & cameras & span & what it tests \\
-    \midrule
-    full orbit & all training views & 100 & $179^\circ$ & the control. Parity is required by Proposition~\ref{prop:reduction}, not hoped for. \\
-    grazing & high-incidence views only & --- & $168^\circ$ & obliquity at near-full parallax; isolates the off-axis term of \S\ref{sec:offaxis}. \\
-    mixed focal & all views, a seeded random half downsampled $2$--$4\times$ & 100 & $179^\circ$ & the mixed-camera defect of \S\ref{sec:defects}, not parallax. \\
-    one-sided arc & contiguous azimuthal wedge & 25 & $80^\circ$ & the anisotropic regime: the floor binds in some directions and not others. \\
-    low-parallax cone & tightest angular cluster & 10 & $20^\circ$ & the largest predicted gain, and the only protocol where the floor is exceeded in every direction. \\
-    \bottomrule
-  \end{tabular}
-\end{table}
+\input{generated/table-protocols}
 
 \section{Three instruments, attached to the baseline runs}
 \label{sec:instruments}
@@ -140,7 +122,7 @@ reproduction. Together they test the method's premise before the method exists.
     & measurement & what it decides \\
     \midrule
     I-1 & distribution of \texttt{filter\_3D} at end of training, per scene, against scene scale and distance to nearest camera & whether $s^2/\lambda_i$ ever exceeds $f_k^2$. If the floor binds almost everywhere, Proposition~\ref{prop:reduction} applies universally, the method collapses to the baseline, and the project must pivot. The cheapest possible falsification, and a by-product of a run already scheduled. \\
-    I-2 & $\lambda_3/\lambda_1$ per primitive on trained, unmodified checkpoints, per capture protocol; pure PyTorch, no CUDA & whether Equation~\eqref{eq:anisotropy}'s regime table holds on real scenes. Turns \S\ref{sec:anisotropy} from prediction into evidence before any method code is written. \\
+    I-2 & $\lambda_3/\lambda_1$ per primitive on trained, unmodified checkpoints, per capture protocol; pure PyTorch, no CUDA & whether the regime table of Equation~\eqref{eq:cap} holds on real scenes. Turns \S\ref{sec:anisotropy} from prediction into evidence before any method code is written. \\
     I-3 & per-scene mean and standard deviation across seeds, both baselines & the $\sigma$ that makes ``parity'' a quantity. Parity is then reported as within $k\sigma$ of the self-run baseline. \\
     \bottomrule
   \end{tabular}

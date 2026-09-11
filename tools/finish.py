@@ -35,8 +35,24 @@ ROOT = os.path.dirname(HERE)
 RUNS = os.path.join(ROOT, "results", "runs.csv")
 KRUNS = os.path.join(ROOT, "results", "kaggle_runs")
 
-QUOTA_MSG = "Maximum weekly GPU quota"
 DATASET = "nguyenhung1903/nerf-synthetic-dataset"
+
+sys.path.insert(0, HERE)
+try:
+    from kaggle_client import accounts, describe_accounts, is_quota_error
+except ImportError:
+    # `--backend local` is meant to run on a cluster node that need not have
+    # kagglesdk installed (see docs/RESUME.md, "Off Kaggle"), so the account
+    # helpers are optional here rather than a hard import. The fallback matches
+    # the one string this repo actually observed Kaggle return, on 8 Sep 2026.
+    def is_quota_error(text):
+        return "maximum weekly gpu quota" in (text or "").lower()
+
+    def describe_accounts():
+        return "  (kagglesdk not installed; --backend local needs no accounts)"
+
+    def accounts():
+        return []
 
 
 # ----------------------------------------------------------------- CSV helpers
@@ -300,6 +316,21 @@ def push(stage, wait_minutes, dry_run, backend="kaggle", data=None,
     for k in stage.get("kernel_sources", []):
         cmd += ["--kernel-source", k]
 
+    # A kernel's output is visible only to the account that produced it --
+    # verified against the live API, not assumed: ceoricky's token cannot see
+    # rickaryadas/btp-r1-blender-stmt at all, and the list endpoint's isPrivate
+    # flag says otherwise, so it cannot be trusted here. A stage that mounts
+    # another kernel therefore has to run as that kernel's owner and must not be
+    # rotated onto whichever account happens to have spare quota -- the mount
+    # would simply be missing and the session would fail after doing real work.
+    owners = {k.split("/")[0] for k in stage.get("kernel_sources", [])}
+    if len(owners) > 1:
+        sys.exit(f"{stage['name']}: kernel sources span accounts {sorted(owners)}; "
+                 "one session cannot mount both. Re-run the missing source under "
+                 "the other account, or share it.")
+    if owners:
+        cmd += ["--username", owners.pop()]
+
     if dry_run:
         print("   " + " ".join(cmd))
         return True, outdir
@@ -308,11 +339,17 @@ def push(stage, wait_minutes, dry_run, backend="kaggle", data=None,
         log(f"pushing {stage['name']} (~{stage['hours']} GPU-h)")
         p = subprocess.run(cmd, cwd=ROOT, capture_output=True, text=True)
         blob = (p.stdout or "") + (p.stderr or "")
-        if QUOTA_MSG not in blob:
+        if not is_quota_error(blob):
             sys.stdout.write(blob[-4000:])
             return p.returncode == 0, outdir
-        log(f"weekly GPU quota exhausted; retrying in {wait_minutes} min. "
-            "The window is rolling, so this clears on its own.")
+        # kaggle_push.py rotates through the accounts in .env by itself and only
+        # reports quota once every one of them is spent -- so reaching here means
+        # there is no account left to switch to and waiting is the only option.
+        sys.stdout.write(blob[-4000:])
+        log(f"every configured account is out of weekly GPU quota:\n"
+            f"{describe_accounts()}\n"
+            f"retrying in {wait_minutes} min. The window is rolling, so this "
+            "clears on its own; adding an account to .env clears it sooner.")
         time.sleep(wait_minutes * 60)
 
 
@@ -356,7 +393,18 @@ def main():
             print(f"note: {missing} read a Kaggle kernel's output; point them "
                   "at local checkpoints or run those on Kaggle.\n")
 
-    print(f"\nPlan -- {sum(s['hours'] for s in plan):.1f} GPU-h of a 30 h week\n")
+    hours = sum(s["hours"] for s in plan)
+    if a.backend == "kaggle":
+        # 30 GPU-h per account per rolling week, so the budget the plan is
+        # measured against is the number of accounts configured in .env.
+        n_accounts = len(accounts())
+        print(f"\nPlan -- {hours:.1f} GPU-h against {30 * n_accounts} h "
+              f"({n_accounts} account(s) x 30 h/week)\n")
+        print("Accounts, in rotation order:")
+        print(describe_accounts())
+        print()
+    else:
+        print(f"\nPlan -- {hours:.1f} GPU-h on the local backend\n")
     for s in plan:
         print(f"  {s['name']:11s} ~{s['hours']:>4.1f} h   {s['why']}")
     print()

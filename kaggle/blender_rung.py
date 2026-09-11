@@ -127,10 +127,17 @@ for mod in ("GPUtil", "lpips", "plyfile", "cv2", "torchvision", "tqdm", "numpy",
 print(f"build OK (open3d={'yes' if open3d_ok else 'neutralised'})", flush=True)
 
 # §3 must still be exactly the §3 diff, checked every run.
-_, diff_out = kc.sh(f"git -C {WORK}/armB diff origin/main...HEAD --stat",
+# --name-only, not --stat: --stat elides a long path to ".../backward.cu", so
+# comparing it against full repository paths can only ever fail. That is what
+# aborted the first C1 attempt.
+_, diff_out = kc.sh(f"git -C {WORK}/armB diff origin/main...HEAD --name-only",
                     check_rc=False, logdir=LOGDIR, log_name="diff")
-touched = {ln.split("|")[0].strip() for ln in diff_out.splitlines() if "|" in ln}
-expected = {"arguments/__init__.py", "scene/gaussian_model.py", "render.py", "train.py"}
+touched = {ln.strip() for ln in diff_out.splitlines() if ln.strip()
+           and not ln.startswith("+ git")}
+expected = {"arguments/__init__.py", "scene/gaussian_model.py", "render.py", "train.py",
+            # Not source. Enumerated rather than waved through by a dotfile rule,
+            # so the check still catches anything else that is not §3.
+            ".gitignore"}
 if ARM_B_EXTRA:
     # C1 removes the 2D Mip opacity compensation. That term is computed in CUDA,
     # so the diff necessarily reaches the rasteriser. Enumerated rather than

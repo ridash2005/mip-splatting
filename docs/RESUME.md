@@ -1,10 +1,22 @@
 # Finishing the remaining runs
 
 The weekly Kaggle GPU quota (30 h) was exhausted on 8 September 2026. Everything
-below is built, tested and committed; each is one command once the quota resets.
+below is built, tested and committed; each is one command.
 
-The quota is per rolling week, so these become available again automatically.
-Check it in the notebook sidebar, or by pushing anything and reading the error.
+The quota is per account on a rolling week, so it returns automatically. Two
+accounts are now configured in `.env` (`rickaryadas`, then `ceoricky`), giving
+60 GPU-h a week against a programme that needs ~18.8. `tools/kaggle_push.py`
+switches accounts by itself when one is refused for quota, so a stalled push no
+longer needs anyone to notice: it only stops once both are spent. Check the
+state with `python -c "import sys;sys.path.insert(0,'tools');import
+kaggle_client as k;print(k.describe_accounts())"`, in the notebook sidebar, or
+by pushing anything and reading the error.
+
+One exception, and it is deliberate: `b2_eval` mounts the output of
+`rickaryadas/btp-r1-blender-stmt`, and a kernel's output is visible only to the
+account that produced it — verified against the live API. That stage is pinned
+to `rickaryadas` and does not rotate, so it waits for that account's own window.
+It costs 1 GPU-h.
 
 ## One command for all of it
 
@@ -12,10 +24,11 @@ Check it in the notebook sidebar, or by pushing anything and reading the error.
 python tools/finish.py            # add --dry-run first to see the plan
 ```
 
-Runs every stage below in dependency order, ~18.8 GPU-h of a 30 h week, so the
-whole programme fits inside one reset. It waits out the quota rather than
-failing on it, merges each result into `results/runs.csv`, and rebuilds the
-thesis at the end.
+Runs every stage below in dependency order, ~18.8 GPU-h against the 60 h that
+two accounts give, so the whole programme fits inside one window with room to
+repeat a stage. It rotates accounts when one runs out of quota and waits only
+when both are spent, merges each result into `results/runs.csv`, and rebuilds
+the thesis at the end.
 
 **It halts on a red gate.** The 8 September audit found that G2 failed and the
 ladder continued anyway; every stage now carries its exit criterion as code, and
@@ -84,13 +97,17 @@ python tools/kaggle_push.py kaggle/b2_eval.py \
     --slug btp-b2-eval --title "BTP b2 eval" \
     --dataset nguyenhung1903/nerf-synthetic-dataset \
     --kernel-source rickaryadas/btp-r1-blender-stmt --accelerator NvidiaTeslaT4 \
+    --username rickaryadas \
     --session-timeout 43200 --poll-timeout 43200 --retry-wrong-gpu 4 \
     --out results/kaggle_runs/b2
+# --username is required here and only here: a kernel's output is visible only
+# to the account that produced it, so this stage cannot be rotated onto the
+# second account. tools/finish.py adds the flag by itself.
 
 # R3's remaining scenes -- the session was already running when the quota was
 # reached and Kaggle lets those finish, so this only collects the output.
 python tools/kaggle_push.py kaggle/r3_real_scenes.py --fetch-only \
-    --slug btp-r3-tandt-db --poll-timeout 43200 \
+    --slug btp-r3-tandt-db --poll-timeout 43200 --username rickaryadas \
     --out results/kaggle_runs/r3_tandtdb
 ```
 

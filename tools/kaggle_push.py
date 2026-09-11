@@ -19,6 +19,12 @@ whichever GPU is free — a P100 on one launch, 2xT4 on the next. 3DGS needs
 compute capability 7.0+ (F15), so the kernel aborts in ~30 seconds on a P100
 and prints `R0_ABORT=WRONG_ACCELERATOR`. `--retry-wrong-gpu N` relaunches on
 exactly that marker, and on nothing else: a genuine failure is never retried.
+
+Quota note: each account in `.env` has its own 30 GPU-h week. When Kaggle
+refuses a push for want of quota, that account is put in cooldown and the push
+is retried as the next account -- see tools/kaggle_client.py. `--username`
+pins the run to one account and disables that rotation, which is what you want
+when fetching the log of a kernel a specific account already ran.
 """
 import argparse
 import json
@@ -30,7 +36,16 @@ import time
 import requests
 
 sys.path.insert(0, os.path.dirname(__file__))
-from kaggle_client import get_client  # noqa: E402
+from kaggle_client import (  # noqa: E402
+    QuotaExhausted,
+    accounts,
+    active_account,
+    describe_accounts,
+    get_client,
+    is_quota_error,
+    mark_exhausted,
+    next_account,
+)
 from kagglesdk.kernels.types.kernels_api_service import (  # noqa: E402
     ApiSaveKernelRequest,
     ApiGetKernelSessionStatusRequest,
@@ -61,10 +76,15 @@ ACCELERATORS = ("NvidiaTeslaT4", "NvidiaTeslaP100", "Tpu1VmV38")
 PUSH_URL = "https://www.kaggle.com/api/v1/kernels/push"
 
 
-def push_with_accelerator(body, accelerator):
+def push_with_accelerator(body, accelerator, username):
     """POST the save-kernel body with the `machineShape` field kagglesdk cannot set.
 
-    Returns (ref, version, url). Raises on a non-2xx or an `error` in the reply.
+    Returns (ref, version, url). Raises QuotaExhausted when Kaggle refuses the
+    push for want of weekly GPU quota, so the caller can rotate accounts; raises
+    on any other non-2xx or an `error` in the reply. A quota refusal arrives
+    both ways depending on the path Kaggle takes -- as a non-2xx body and as a
+    200 with an `error` string -- so both are checked.
+
     Note the server does not validate machineShape, so a typo is not caught here
     -- it is caught by the kernel's own check 1, which aborts on anything below
     compute capability 7.0 and says which GPU it actually got.
@@ -75,9 +95,13 @@ def push_with_accelerator(body, accelerator):
                       headers={"Authorization": f"Bearer {token}",
                                "Content-Type": "application/json"}, timeout=120)
     if r.status_code >= 300:
+        if is_quota_error(r.text):
+            raise QuotaExhausted(username, r.text[:300])
         raise SystemExit(f"push failed ({r.status_code}): {r.text[:600]}")
     d = r.json()
     if d.get("error"):
+        if is_quota_error(d["error"]):
+            raise QuotaExhausted(username, str(d["error"])[:300])
         raise SystemExit(f"push failed: {d['error']}")
     return d.get("ref"), d.get("versionNumber"), d.get("url")
 
@@ -150,7 +174,8 @@ def push(client, script_path, username, slug, title, datasets, session_timeout=N
         req.session_timeout_seconds = session_timeout
     if accelerator:
         from kagglesdk.kaggle_object import KaggleObject
-        ref, version, url = push_with_accelerator(KaggleObject.to_dict(req), accelerator)
+        ref, version, url = push_with_accelerator(KaggleObject.to_dict(req),
+                                                  accelerator, username)
         print(f"pushed {ref} (version {version}, accelerator={accelerator}) -> {url}")
 
         class _R:  # same shape the caller reads off save_kernel's reply
@@ -159,6 +184,10 @@ def push(client, script_path, username, slug, title, datasets, session_timeout=N
     else:
         resp = client.kernels.kernels_api_client.save_kernel(req)
         if resp.error:
+            # Same rotation signal as the accelerator path above: a quota
+            # refusal is a reason to change account, not to abort the ladder.
+            if is_quota_error(resp.error):
+                raise QuotaExhausted(username, str(resp.error)[:300])
             raise SystemExit(f"push failed: {resp.error}")
         print(f"pushed {resp.ref} (version {resp.version_number}) -> {resp.url}")
     # Kaggle derives the actual slug from new_title (must be "title, lowercased
@@ -240,10 +269,63 @@ def save_summary(log_resp, out_dir):
     return None
 
 
+def run_under(client, username, a):
+    """One push/poll/fetch cycle under a single account. Returns an exit code.
+
+    Raises QuotaExhausted rather than handling it, so the choice between
+    rotating to another account and giving up stays in one place, in main().
+
+    The wrong-GPU retry count restarts if the caller rotates accounts. That is
+    deliberate: each such attempt aborts in ~30 s on the kernel's own check 1,
+    so the quota cost is negligible, and a fresh account genuinely deserves its
+    full allowance of attempts at drawing a compute-capability 7.0+ GPU.
+    """
+    out_dir = a.out or f"results/kaggle_runs/{a.slug}"
+    if a.fetch_only:
+        # For a run launched from the web UI -- the only way to choose the
+        # accelerator. Nothing is pushed; the finished session's log and
+        # summary are pulled down exactly as they would be after a push.
+        status = poll(client, username, a.slug, timeout=a.poll_timeout)
+        log_resp = fetch_log(client, username, a.slug, out_dir)
+        save_summary(log_resp, out_dir)
+        return 1 if status == KernelWorkerStatus.ERROR else 0
+
+    for attempt in range(1, a.retry_wrong_gpu + 2):
+        _, actual_slug = push(client, a.script, username, a.slug, a.title,
+                              a.dataset, a.session_timeout, a.accelerator,
+                              a.set, a.kernel_source, not a.no_gpu)
+        if a.no_wait:
+            return 0
+        status = poll(client, username, actual_slug, timeout=a.poll_timeout)
+        out_dir = a.out or f"results/kaggle_runs/{actual_slug}"
+        log_resp = fetch_log(client, username, actual_slug, out_dir)
+
+        if WRONG_GPU_MARKER in log_resp.log and attempt <= a.retry_wrong_gpu:
+            print(f"attempt {attempt}: Kaggle allocated a sub-7.0 GPU; the kernel "
+                  f"aborted per F15. Relaunching in {a.retry_delay}s "
+                  f"({a.retry_wrong_gpu - attempt + 1} attempt(s) left).", flush=True)
+            time.sleep(a.retry_delay)
+            continue
+
+        save_summary(log_resp, out_dir)
+        if WRONG_GPU_MARKER in log_resp.log:
+            sys.exit(f"gave up after {attempt} attempts: Kaggle never allocated a "
+                     "compute-capability 7.0+ GPU. Raise --retry-wrong-gpu, or set "
+                     "the notebook's accelerator to 'GPU T4 x2' in the web UI and "
+                     "launch it there.")
+        return 1 if status == KernelWorkerStatus.ERROR else 0
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("script")
-    ap.add_argument("--username", default="rickaryadas")
+    ap.add_argument("--username", default=None,
+                     help="pin the run to one account configured in .env, which "
+                          "also disables quota rotation. Default: the first "
+                          "account that is not in quota cooldown. Required with "
+                          "--fetch-only when the kernel belongs to an account "
+                          "other than the first, since another account's token "
+                          "cannot see it.")
     ap.add_argument("--slug", required=True)
     ap.add_argument("--title", help="required unless --fetch-only; Kaggle derives "
                      "the slug from it (lowercased, dashed)")
@@ -283,42 +365,57 @@ def main():
     if not a.fetch_only and not a.title:
         ap.error("--title is required unless --fetch-only")
 
-    with get_client() as client:
-        out_dir = a.out or f"results/kaggle_runs/{a.slug}"
-        if a.fetch_only:
-            # For a run launched from the web UI -- the only way to choose the
-            # accelerator. Nothing is pushed; the finished session's log and
-            # summary are pulled down exactly as they would be after a push.
-            status = poll(client, a.username, a.slug, timeout=a.poll_timeout)
-            log_resp = fetch_log(client, a.username, a.slug, out_dir)
-            save_summary(log_resp, out_dir)
-            sys.exit(1 if status == KernelWorkerStatus.ERROR else 0)
-        for attempt in range(1, a.retry_wrong_gpu + 2):
-            _, actual_slug = push(client, a.script, a.username, a.slug, a.title,
-                                  a.dataset, a.session_timeout, a.accelerator,
-                                  a.set, a.kernel_source, not a.no_gpu)
-            if a.no_wait:
-                return
-            status = poll(client, a.username, actual_slug, timeout=a.poll_timeout)
-            out_dir = a.out or f"results/kaggle_runs/{actual_slug}"
-            log_resp = fetch_log(client, a.username, actual_slug, out_dir)
+    # --username pins the account and disables rotation; otherwise the first
+    # account in .env with quota left is used. active_account() fails loudly on
+    # a username that is not configured, rather than falling back to a token
+    # that cannot write to it.
+    if a.fetch_only and not a.username:
+        # Fetching a log spends no GPU quota, so cooldown is irrelevant to it --
+        # and letting rotation choose here would be actively wrong: a kernel's
+        # output is visible only to the account that ran it, so a rotated fetch
+        # would poll a kernel the token cannot see and look like a hung run.
+        # Pick the first configured account deterministically, and say so.
+        configured = accounts()
+        if not configured:
+            sys.exit("No Kaggle accounts configured. Add a KAGGLE_ACCOUNT_1_* "
+                     "block to .env (see tools/kaggle_client.py).")
+        account = configured[0]
+        if len(configured) > 1:
+            print(f"note: fetching as {account.username}, the first account in "
+                  ".env. Pass --username if this kernel belongs to another "
+                  "account -- its output is invisible to every other one.",
+                  flush=True)
+    else:
+        account = active_account(a.username)
+        if account is None:
+            sys.exit("Maximum weekly GPU quota reached on every configured "
+                     "account:\n" + describe_accounts()
+                     + "\nAdd another account to .env, or wait for the window.")
 
-            if WRONG_GPU_MARKER in log_resp.log and attempt <= a.retry_wrong_gpu:
-                print(f"attempt {attempt}: Kaggle allocated a sub-7.0 GPU; the kernel "
-                      f"aborted per F15. Relaunching in {a.retry_delay}s "
-                      f"({a.retry_wrong_gpu - attempt + 1} attempt(s) left).", flush=True)
-                time.sleep(a.retry_delay)
-                continue
-
-            save_summary(log_resp, out_dir)
-            if WRONG_GPU_MARKER in log_resp.log:
-                sys.exit(f"gave up after {attempt} attempts: Kaggle never allocated a "
-                         "compute-capability 7.0+ GPU. Raise --retry-wrong-gpu, or set "
-                         "the notebook's accelerator to 'GPU T4 x2' in the web UI and "
-                         "launch it there.")
-            if status == KernelWorkerStatus.ERROR:
-                sys.exit(1)
-            return
+    while True:
+        print(f"account: {account.username}", flush=True)
+        try:
+            with get_client(account) as client:
+                sys.exit(run_under(client, account.username, a))
+        except QuotaExhausted as e:
+            # Cooldown is persisted, so the next stage of the ladder -- and a
+            # restarted driver -- starts on the account that still has quota
+            # instead of rediscovering this one is dead.
+            mark_exhausted(e.username)
+            if a.username:
+                sys.exit(f"Maximum weekly GPU quota reached on {e.username}, which "
+                         "--username pinned this run to, so it cannot rotate. Wait "
+                         "for that account's rolling window. finish.py pins a stage "
+                         "only when it mounts a kernel output that account owns, "
+                         "which no other account can see.")
+            nxt = next_account(e.username)
+            if nxt is None:
+                sys.exit("Maximum weekly GPU quota reached on every configured "
+                         "account:\n" + describe_accounts()
+                         + "\nAdd another account to .env, or wait for the window.")
+            print(f"{e.username}: weekly GPU quota exhausted -> switching to "
+                  f"{nxt.username} and re-pushing.", flush=True)
+            account = nxt
 
 
 if __name__ == "__main__":

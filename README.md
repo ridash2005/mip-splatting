@@ -44,9 +44,15 @@ Remotes: `origin` = https://github.com/ridash2005/mip-splatting (this fork),
 ## Session constants
 
 ```
-KAGGLE_USERNAME = rickaryadas
+KAGGLE_ACCOUNTS = rickaryadas, ceoricky   (see .env; rotation order)
 HF_USERNAME     = rickaryadas
 ```
+
+Kaggle credentials live in `.env` at the repo root, which is gitignored and is
+the one place a token is written. Each account is a `KAGGLE_ACCOUNT_<n>_USERNAME`
+/ `_TOKEN` pair, numbered from 1; the pair is always resolved together, because
+a kernel is pushed to `<username>/<slug>` and authenticated with `<token>`.
+Copy `.env.example` to `.env` to set this up on a fresh checkout.
 
 ## Environment
 
@@ -75,6 +81,15 @@ why the kernel asserts the capability itself and prints the GPU it got. See
 Kaggle quota (§8.1) still to be read off the notebook sidebar; the secondary
 figures are 30 h/week, 12 h/session, ~20 GB `/kaggle/working`.
 
+**When the week runs out.** The 30 h allowance is per account on a rolling
+seven-day window, and exhausting it on 8 September 2026 stalled the ladder for
+days. `tools/kaggle_push.py` now rotates: when Kaggle refuses a push for want of
+quota, that account goes into cooldown (persisted in `.kaggle_quota_state.json`,
+so a restarted driver does not rediscover it) and the push is retried as the
+next account in `.env`. `tools/finish.py` only falls back to waiting once every
+account is spent. Adding an account to `.env` is what buys more compute; see
+`.env.example`. `make selftest` covers the rotation offline.
+
 ### Environment measured in-session
 
 | | |
@@ -83,6 +98,7 @@ figures are 30 h/week, 12 h/session, ~20 GB `/kaggle/working`.
 | accelerator | `machineShape=NvidiaTeslaT4` → **Tesla T4 ×2** (CC 7.5), passes F15 |
 | default (no `machineShape`) | Tesla P100 (CC 6.0) — aborts at check 1 |
 | concurrency | 2 batch GPU sessions per account |
+| weekly budget | 30 GPU-h per account, rolling; 2 accounts configured → 60 h |
 
 ### The two deviations from a clean `pip install`, and why
 

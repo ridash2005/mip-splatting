@@ -260,9 +260,53 @@ if SWEEP_SCENE in srcs:
     for tau in SWEEP_TAUS:
         do(SWEEP_SCENE, tau, "_sweep")
 
+# ------------------------------------------------- B2 across capture protocols
+# Rebuilt here rather than read from results/b2_protocols/protocols.json, which
+# was produced by an earlier definition of `arc` and `cone` -- fixed camera
+# counts, where the current tools/camera_protocols.py selects by ANGULAR EXTENT.
+# The two disagree by a factor of two on the cone's span (41 deg against 20), so
+# the B2 protocol table and the I-2 instrument table were quoting different
+# captures under the same names. Building both from one definition, in a session
+# that also has the cameras, is what makes them the same experiment.
+protocols = {}
+try:
+    import camera_protocols as cp  # noqa: E402
+
+    for scene in SCENES:
+        if scene not in srcs:
+            continue
+        xyz = inst.load_ply(os.path.join(srcs[scene], "point_cloud.ply"))["xyz"]
+        c2w_all, focal_all = inst.load_cameras(
+            f"{WORK}/multi-scale/{scene}/metadata.json")
+        spec = cp.build(c2w_all, focal_all, seed=0)
+        for proto in cp.PROTOCOLS:
+            idx = np.array(spec[proto]["idx"], dtype=int)
+            blocks, n_seen = shid.angular_gram(xyz, c2w_all[idx])
+            lm = shid.l_max(blocks, n_seen, TAUS[0])
+            kept = sum((shid.DEG_SLICES[l].stop - shid.DEG_SLICES[l].start)
+                       * int((lm >= l).sum()) for l in (1, 2, 3))
+            protocols[f"{scene}/{proto}"] = {
+                "scene": scene, "protocol": proto, "criterion": "cond",
+                "n_cameras": int(len(idx)), "span_deg": spec[proto]["span_deg"],
+                "mean_l_max": float(lm.mean()),
+                "non_dc_retained": float(kept / (15 * len(lm))),
+                "l_max_hist": {int(l): int((lm == l).sum()) for l in range(4)},
+                "mean_views": float(n_seen.mean()),
+            }
+            print(f"[b2-proto] {scene}/{proto} n_cam={len(idx)} "
+                  f"span={spec[proto]['span_deg']:.0f}deg "
+                  f"retained={protocols[f'{scene}/{proto}']['non_dc_retained']:.1%}",
+                  flush=True)
+    with open(f"{RESULTS}/b2_protocols.json", "w") as f:
+        json.dump(protocols, f, indent=2)
+except Exception as e:
+    failed["b2_protocols"] = f"{type(e).__name__}: {e}"[:400]
+    traceback.print_exc()
+
 summary = {"rung": RUNG, "iterations": ITERS, "scenes": SCENES, "taus": TAUS,
            "sweep_scene": SWEEP_SCENE, "sweep_taus": SWEEP_TAUS, "commit": commit,
            "gpu": gpu_name, "results": results, "failed": failed,
+           "protocols": protocols,
            "session_seconds": time.time() - SESSION_START,
            "gpu_hours_used": (time.time() - SESSION_START) / 3600.0}
 with open(f"{RESULTS}/b2.json", "w") as f:

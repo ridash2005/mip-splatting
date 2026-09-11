@@ -1,13 +1,14 @@
 RUNS   := results/runs.csv
 FIGDIR := figures
 
-.PHONY: selftest sync-armb table1 table2 figures figures-published report thesis clean-figures clean-thesis
+.PHONY: selftest sync-armb table1 table2 figures figures-published report thesis slides all clean-figures clean-thesis clean-slides
 
 # The reporting chain, verified against a fixture with known answers. Needs no
 # GPU, so it runs on the dev machine as well as inside the Kaggle kernel.
 selftest:
 	python tools/selftest_pipeline.py
 	python tools/test_instruments.py
+	python tools/test_kaggle_accounts.py
 
 # arm-b-3dgs-baseline must differ from main by the §3 diff and nothing else.
 # Run this after every push to main: the kernel clones both branches, and a
@@ -50,6 +51,20 @@ thesis:
 	cd thesis && pdflatex -interaction=nonstopmode main.tex >/dev/null
 	cd thesis && pdflatex -interaction=nonstopmode main.tex | grep -E "^!|Reference .* undefined" || true
 	@echo "--> thesis/main.pdf"
+
+# The panel deck. Reads the same three sources make_tex.py does -- runs.csv, the
+# rung summaries and thesis/generated/measured.tex -- and re-renders the figures
+# as PNG, because PowerPoint embeds neither PDF nor SVG. A slide therefore
+# cannot disagree with the thesis about a number.
+slides:
+	python tools/make_slides.py --runs $(RUNS) --out slides
+	@echo "--> slides/BTP-Panel.pptx"
+
+# Everything a submission needs, from one CSV.
+all: thesis slides
+
+clean-slides:
+	rm -rf slides
 
 clean-thesis:
 	rm -f thesis/*.aux thesis/*.log thesis/*.out thesis/*.toc thesis/main.pdf

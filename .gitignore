@@ -16,9 +16,13 @@ fused
 # generated artefacts -- everything regenerates from results/runs.csv
 figures/
 results/table*.md
+slides/
 
 # credentials / local secrets — never committed
 .env
 *.token
 kaggle.json
 kaggle_api_token
+
+# kaggle account rotation state -- local, regenerated automatically
+.kaggle_quota_state.json

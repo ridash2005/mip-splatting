@@ -733,6 +733,72 @@ def g2_table(rows, label, caption):
     return "\n".join(L)
 
 
+def budget_table(summaries_dir, label, caption):
+    """Every GPU session this project ran, and what it cost.
+
+    Read from the sessions' own summaries rather than maintained by hand, because
+    a budget table that is edited is a budget table that stops being true the
+    first time a run is repeated -- and several were.
+    """
+    seen, rows_ = {}, []
+    for d, _, files in os.walk(summaries_dir):
+        for fn in files:
+            if fn not in ("summary.json", "b2.json", "fps.json",
+                          "method_summary.json"):
+                continue
+            path = os.path.join(d, fn)
+            try:
+                s = json.load(open(path))
+            except Exception:
+                continue
+            hours = s.get("gpu_hours_used")
+            if hours is None:
+                continue
+            name = os.path.basename(d)
+            if name in seen:
+                continue
+            seen[name] = True
+            scenes = s.get("scenes") or s.get("only") or []
+            protos = s.get("protocols") or []
+            what = []
+            if scenes:
+                what.append(f"{len(scenes)} scene" + ("s" if len(scenes) > 1 else ""))
+            if protos:
+                what.append(f"{len(protos)} protocol"
+                            + ("s" if len(protos) > 1 else ""))
+            if s.get("methods"):
+                what.append(" + ".join(s["methods"]))
+            rows_.append((name, s.get("rung") or "", ", ".join(what),
+                          float(hours), bool(s.get("complete", True))))
+    if not rows_:
+        return placeholder(label, caption, "No session summary carries a cost.")
+    rows_.sort(key=lambda t: -t[3])
+    total = sum(r[3] for r in rows_)
+    L = [r"\begin{table}[htbp]", r"  \centering",
+         r"  \caption{" + caption + "}", r"  \label{tab:" + label + "}",
+         r"  \small", r"  \begin{tabular}{llrr}", r"    \toprule",
+         r"    session & rung & what it covered & GPU-h \\", r"    \midrule"]
+    for name, rung, what, hours, complete in rows_:
+        L.append("    " + " & ".join([
+            r"\texttt{" + name.replace("_", r"\_") + "}",
+            rung, what or r"---",
+            f"{hours:.2f}" + ("" if complete else r"$^{*}$"),
+        ]) + r" \\")
+    L += [r"    \midrule",
+          r"    \multicolumn{3}{l}{\textbf{total}} & \textbf{"
+          + f"{total:.1f}" + r"} \\",
+          r"    \bottomrule", r"  \end{tabular}",
+          r"  \par\vspace{2pt}\footnotesize Session wall-clock, which is how the "
+          r"free-tier weekly allowance of 30\,h per account is counted; a "
+          r"two-GPU session does twice the work in one hour of it. Read from "
+          r"each session's own JSON summary, so a repeated run appears at its "
+          r"real cost. $^{*}$ session did not report itself complete --- either "
+          r"it was a deliberately narrowed run or it ended early, and "
+          r"\S\ref{sec:budget} says which.",
+          r"\end{table}", ""]
+    return "\n".join(L)
+
+
 def fps_table(fps, label, caption):
     """C9: render-call fps for the three arms, and the ratio that is the claim."""
     if not fps or not fps.get("results"):
@@ -1042,6 +1108,29 @@ def macros(rows, summaries, inst=None):
     spreads = [max(v) - min(v) for v in grouped.values() if len(v) > 1]
     put("repeatSpread", max(spreads) if spreads else None, "{:.3f}")
 
+    # Seed-to-seed sigma: a different initial point cloud and view order, not the
+    # same configuration run twice. Larger than the atomics spread, and the bar
+    # a single-seed L1 claim actually has to clear.
+    seedacc = defaultdict(list)
+    for r in rows:
+        if (r.get("dataset") == "blender" and r.get("iterations") == "30000"
+                and r.get("load_allres") == "False"
+                and r.get("train_scale") == "1x"):
+            seedacc[(r["scene"], r["arm"], r["test_scale"])].append(float(r["psnr"]))
+    sds = {}
+    for k, v in seedacc.items():
+        if len(v) > 1:
+            m = sum(v) / len(v)
+            sds[k] = (sum((x - m) ** 2 for x in v) / (len(v) - 1)) ** 0.5
+    put("seedSigma", max(sds.values()) if sds else None, "{:.3f}")
+    armB = [s for k, s in sds.items() if k[1] == "B"]
+    armA = [s for k, s in sds.items() if k[1] == "A"]
+    put("seedSigmaArmB", max(armB) if armB else None, "{:.3f}")
+    put("seedSigmaArmA", max(armA) if armA else None, "{:.3f}")
+    worst = max(sds, key=sds.get) if sds else None
+    M["seedSigmaWhere"] = (f"{ARM_NAME[worst[1]]} on \\texttt{{{worst[0]}}} at "
+                           f"{SCALE_TEX[worst[2]]}") if worst else NOT_MEASURED
+
     bad = [k for k in M if not k.isalpha()]
     if bad:
         raise SystemExit(f"macro name(s) LaTeX cannot accept (letters only): {bad}")
@@ -1238,6 +1327,8 @@ def main():
             r"R7 Table 3 --- the stress suite. Where the claim lives.",
             sigma=seed_sigma),
         "table-geometry.tex": geometry_tables(geo, inst),
+        "table-budget.tex": budget_table(a.summaries, "budget",
+            r"Every GPU session this project ran, and what it cost."),
         "table-g2.tex": g2_table(rows, "g2",
             r"Gate G2, scored against the thresholds set before any run."),
         "table-c1.tex": c1_table(

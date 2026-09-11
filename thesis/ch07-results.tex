@@ -51,7 +51,7 @@ doubt.}
 
 \input{generated/table-cost}
 
-\subsection*{Gate G2, and why it does not pass}
+\section{Gate G2 --- the defect it found}
 \label{sec:g2}
 
 G2 was declared in advance as: 3DGS falls $\gtrsim13$\,dB from full to
@@ -251,8 +251,8 @@ matter.
         largest per-scale difference observed is $\repeatSpread$\,dB.
   \item \textbf{Seed-to-seed variation} --- a different initial point cloud and a
         different view order. Three seeds on two scenes, both arms, all four
-        scales, give a largest sample standard deviation of $\mathbf{0.139}$\,dB,
-        at 3DGS on \texttt{chair} at $\tfrac18$.
+        scales, give a largest sample standard deviation of
+        $\mathbf{\seedSigma}$\,dB, at \seedSigmaWhere.
 \end{enumerate}
 
 The second is roughly three and a half times the first, so the initialisation
@@ -260,19 +260,19 @@ draw matters considerably more than the atomics --- which is not obvious in
 advance, and is the reason R5 is marked not optional in the protocol.
 
 \keybox{the seed spread is not comfortably below the L1 tolerance}{%
-L1 allows $\pm0.20$\,dB. A worst-case seed standard deviation of $0.139$\,dB is
-only $1.4\times$ smaller than that, so a single-seed L1 claim at an unfavourable
-scale is marginal on its own terms. A three-seed mean has a standard error of
-$0.139/\sqrt{3} = 0.080$\,dB and is comfortable; a single run is not. Arm A's L1
+L1 allows $\pm0.20$\,dB. A worst-case seed standard deviation of
+$\seedSigma$\,dB is not comfortably below that, so a single-seed L1 claim at an
+unfavourable scale is marginal on its own terms. A three-seed mean has a
+standard error of $\seedSigma/\sqrt{3}$ and is comfortable; a single run is not. Arm A's L1
 reproduction in \S\ref{sec:table1} is a single-seed result, and its margins
 ($0.01$ to $0.09$\,dB) are of the same order as this $\sigma$. It should be read
 as L1 attained, not as L1 attained with room to spare.}
 
-The spread is also not uniform: it is largest for 3DGS at the most reduced test
-scale ($0.139$\,dB) and roughly five times smaller for Mip-Splatting on the same
-scene and scale ($0.025$\,dB). The arm without a band-limit is the less stable
-one under reseeding, which is consistent with the mechanism this thesis
-proposes, though two scenes are far too few to claim it as a finding.
+The spread is also not uniform: the worst case over all four scales is
+$\seedSigmaArmB$\,dB for 3DGS and $\seedSigmaArmA$\,dB for Mip-Splatting. The
+arm without a band-limit is the less stable one under reseeding, which is
+consistent with the mechanism this thesis proposes, though two scenes are far
+too few to claim it as a finding.
 
 \section{R3 --- real scenes}
 \label{sec:real}
@@ -662,48 +662,33 @@ quota no longer has (\S\ref{sec:budget}), and the prediction recorded against
 them stands unmarked and unhedged so that the comparison, when it comes, is not
 retrospective.
 
-\section{Compute budget, and what it stopped}
+\section{Compute budget}
 \label{sec:budget}
 
-The free-tier weekly allowance is 30 GPU-hours. It was exhausted, and the
-following is what that bought and what it left.
+The free-tier weekly allowance is 30 GPU-hours per account, counted as session
+wall-clock. It was exhausted once, on 8 September, which stalled the programme
+for three days and is the reason a second account exists: the binding constraint
+on this project has been compute, not code, and adding an account is what buys
+compute.
 
-\begin{table}[htbp]
-  \centering
-  \caption{Where the 30 GPU-hours went, and what remains.}
-  \label{tab:budget}
-  \small
-  \begin{tabular}{llr}
-    \toprule
-    run & outcome & GPU-h \\
-    \midrule
-    R0 smoke, 12 pre-flight checks         & all pass or honestly skipped & 0.5 \\
-    R1 Blender STMT, 8 scenes $\times$ 2 arms & arm A at L1 on all four scales & 4.0 \\
-    R2 Blender MTMT, 8 scenes $\times$ 2 arms & arm A within 0.54\,dB everywhere & 3.0 \\
-    R3 real scenes, 8 scenes $\times$ 2 arms  & no OOM; both open questions answered & 11.5 \\
-    R5 seed spread, 3 seeds                & $\sigma = 0.139$\,dB & 1.8 \\
-    I-1 / I-2 instruments                  & gates G3 and G4 pass & 0.1 \\
-    B1 parity, 2 scenes                    & 0.136\,dB, below the seed spread & 3.5 \\
-    B1 failed attempts (3)                 & three real bugs found & 2.0 \\
-    \midrule
-    \multicolumn{2}{l}{\emph{outstanding}} & \\
-    Table 2, remaining 6 scenes            & \status{not run} & ${\sim}3$ \\
-    Table 3, stress-suite PSNR columns     & \status{not run} & ${\sim}8$ \\
-    Table 4, B2 render and metrics         & \status{not run} & ${\sim}1$ \\
-    \bottomrule
-  \end{tabular}
-\end{table}
+\input{generated/table-budget}
 
-Three cells therefore stand empty that the method chapters would otherwise
-fill. They are empty rather than estimated, and \texttt{docs/RESUME.md} carries
-the exact command for each; every table in this document fills itself from
-\texttt{results/runs.csv} when they land.
+Three entries in that table are worth a sentence each, because they are the
+project's real costs rather than its planned ones.
 
-Two things are worth separating in that list. Table 2's remaining scenes are a
-formality --- parity is already established on two scenes, and
-Proposition~\ref{prop:reduction} plus the I-1 measurement say the other six
-cannot behave differently. Table 3 is not a formality: it is the only place the
-central claim of this thesis can be tested, and it has not been tested. The
-conditioning that drives it \emph{is} measured (\S\ref{sec:instrumentresults},
-Table~\ref{tab:instruments}), and the prediction is on record; the rendered
-quality difference is not.
+\begin{itemize}[leftmargin=1.4em,itemsep=3pt]
+  \item \texttt{r3\_real} is the largest single session and did not complete: it
+        ran the four indoor Mip-NeRF 360 scenes and was still going when the
+        weekly allowance ran out. Tanks \& Temples and Deep Blending were
+        collected separately in \texttt{r3\_tandtdb}, and between them
+        \S\ref{sec:real} has eight real scenes.
+  \item \texttt{c1\_verify} reports itself incomplete because it was narrowed to
+        one scene and one arm on purpose --- the point of C1 was to spend forty
+        minutes deciding whether a six-hour re-run was worth any quota at all.
+        It was.
+  \item The re-runs forced by \S\ref{sec:g2} are not overhead that better
+        planning would have avoided. They are what it costs to have the control
+        be the control, and the alternative --- reporting a between-arm gap that
+        silently contained an anti-aliasing term --- was not cheaper, only later.
+\end{itemize}
+

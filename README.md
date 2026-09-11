@@ -131,17 +131,28 @@ edit outside §3; it has been reverted.
 ## Status
 
 - [x] Forked upstream, cloned, remotes set up.
-- [x] Arm B diff applied verbatim on `arm-b-3dgs-baseline`. `git diff
-      main...arm-b-3dgs-baseline` is exactly **4 files, 7 insertions, 1
-      deletion**, enforced on every run by the kernel's check 4.
-- [x] **Reporting chain verified end to end** — `make selftest`, 37 assertions,
-      no GPU. See "What the self-test caught" below.
-- [x] **R0 complete. All twelve §6 checks pass or are honestly skipped.**
+- [x] **Reporting chain verified end to end** — `make selftest`, no GPU. See
+      "What the self-test caught" below.
+- [x] **R0 complete.** All twelve §6 checks pass or are honestly skipped.
       `lego`, 7000 iterations, both arms, Tesla T4 ×2, 0.47 GPU-hours.
-      Skips are checks 5/6 (their 33.3/33.4 dB targets are 30 000-iteration
-      values, so they are recorded, not scored) and check 12's Hugging Face leg
-      (no token; the Kaggle persistence leg is satisfied).
-- [ ] R1 (primary target), R2, R3, R5, R4 (optional).
+- [x] **R1 / R2** — Blender, single-scale and multi-scale train, 8 scenes × 2
+      arms. Arm A reproduces to **L1 at all four test scales**.
+- [x] **R3** — 8 real scenes: 4 indoor Mip-NeRF 360, Tanks & Temples, Deep
+      Blending. No OOM; peak VRAM 14.5–14.9 GB against a 15.4 GB card.
+- [x] **R5** — seed spread, 3 seeds × 2 scenes × 2 arms.
+- [x] **I-1 / I-2 instruments** across 5 capture protocols. Gates G3 and G4 pass.
+- [x] **B1 and B2 implemented.** B1 reduces to Mip-Splatting exactly where
+      Proposition 2 requires — 1.4e-21 in the unit test, and parity within the
+      seed spread in a full training run.
+- [x] **C1** — the 2D opacity compensation identified as the whole of the
+      1/8-scale defect that failed G2, and the arm rebuilt. See the note under
+      "The one architectural decision".
+- [ ] R4 (Mip-NeRF 360 outdoor, optional).
+
+Gate G2 failed on R1 and the first diagnosis of it was wrong. The story is worth
+reading before trusting any between-arm number from before C1: §7.2 of the
+thesis, and `docs/C12-related-work.md` for the literature review that narrowed
+what the project may claim.
 
 ### R0 result — `results/R0-report.md`
 
@@ -158,9 +169,15 @@ every reduced scale. The magnitudes do not, and are not claimed to: 7 000
 iterations is not the 30 000 the published numbers are measured at (F11).
 
 Mip-Splatting already sits within 0.3 dB of published at every scale, while
-3DGS is **+4.7 to +6.7 dB above** its published targets. The aliasing collapse
-deepens with training, so the gap should widen toward the published 10.98 dB at
-30 K — which is exactly what G2 tests.
+3DGS is **+4.7 to +6.7 dB above** its published targets. The reading at the time
+was that the aliasing collapse deepens with training, so the gap should widen
+toward the published 10.98 dB at 30 K.
+
+It did not, and the reason was not training length. Arm B was still carrying
+Mip-Splatting's 2D opacity compensation, so it was anti-aliasing better than
+3DGS at every scale; the overshoot visible here at 7 K is the same defect G2
+caught at 30 K. C1 removed it and `lego`'s 1/8-scale figure fell from 24.10 to
+17.46 against a published 17.69.
 
 **§3 verified on the artefact, not the diff text.** `filter_3D` read back out of
 the saved point clouds is **0.0 for arm B and 0.00163636 for arm A** (check

@@ -38,6 +38,7 @@ namespace FORWARD
 		const float focal_x, float focal_y,
 		const float tan_fovx, float tan_fovy,
 		const float kernel_size,
+		const bool mip_compensation,
 		int* radii,
 		float2* points_xy_image,
 		float* depths,

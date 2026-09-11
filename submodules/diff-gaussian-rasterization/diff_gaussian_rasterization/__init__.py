@@ -71,6 +71,7 @@ class _RasterizeGaussians(torch.autograd.Function):
             raster_settings.tanfovx,
             raster_settings.tanfovy,
             raster_settings.kernel_size,
+            raster_settings.mip_compensation,
             raster_settings.subpixel_offset,
             raster_settings.image_height,
             raster_settings.image_width,
@@ -121,6 +122,7 @@ class _RasterizeGaussians(torch.autograd.Function):
                 raster_settings.tanfovx, 
                 raster_settings.tanfovy, 
                 raster_settings.kernel_size,
+                raster_settings.mip_compensation,
                 raster_settings.subpixel_offset,
                 grad_out_color, 
                 sh, 
@@ -173,6 +175,10 @@ class GaussianRasterizationSettings(NamedTuple):
     campos : torch.Tensor
     prefiltered : bool
     debug : bool
+    # C1. True reproduces Mip-Splatting (the 2D Mip filter's opacity
+    # compensation rho). False keeps the dilation and drops rho, which with
+    # kernel_size=0.3 is vanilla 3DGS. Defaulted, so arm A is untouched.
+    mip_compensation : bool = True
 
 class GaussianRasterizer(nn.Module):
     def __init__(self, raster_settings):

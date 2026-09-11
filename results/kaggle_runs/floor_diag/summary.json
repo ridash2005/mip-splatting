@@ -1,0 +1,73 @@
+{
+  "rung": "R7",
+  "table": "2",
+  "iterations": 1000,
+  "scenes": [
+    "lego"
+  ],
+  "protocols": [
+    "full"
+  ],
+  "methods": [
+    "b1"
+  ],
+  "commit": "25ba5e741b01443234e082659ee40d069b5eab5e",
+  "gpu": "Tesla T4",
+  "n_gpu": 2,
+  "propositions_pass": true,
+  "convert_seconds": 99.17407965660095,
+  "protocol_spec": {
+    "lego": {
+      "full": {
+        "n": 100,
+        "span_deg": 178.97687028487118
+      }
+    }
+  },
+  "done": {
+    "b1/lego/full": {
+      "protocol": "full",
+      "n_train_cameras": 100,
+      "span_deg": 178.97687028487118,
+      "train_seconds": 118.12607192993164,
+      "peak_vram_mb": 14125,
+      "frac_above_floor": 0.0,
+      "mean_anisotropy": 1.0,
+      "render_seconds": 79.30558204650879,
+      "render_fps": 10.0875623046413,
+      "n_gaussians": 20529,
+      "model_mb": 5.174863,
+      "pooled_psnr": 26.46967315673828,
+      "split": {
+        "1x": {
+          "PSNR": 24.999641399383545,
+          "SSIM": 0.8729910707473755,
+          "LPIPS": 0.15194492246955632,
+          "n": 200
+        },
+        "1/2": {
+          "PSNR": 25.790946521759032,
+          "SSIM": 0.8904464974999428,
+          "LPIPS": 0.11948413722217083,
+          "n": 200
+        },
+        "1/4": {
+          "PSNR": 27.183690786361694,
+          "SSIM": 0.9254677161574364,
+          "LPIPS": 0.08949657037854195,
+          "n": 200
+        },
+        "1/8": {
+          "PSNR": 27.904421243667603,
+          "SSIM": 0.9540359023213386,
+          "LPIPS": 0.0559105571359396,
+          "n": 200
+        }
+      }
+    }
+  },
+  "failed": {},
+  "session_seconds": 587.1267170906067,
+  "gpu_hours_used": 0.16309075501230028,
+  "complete": true
+}

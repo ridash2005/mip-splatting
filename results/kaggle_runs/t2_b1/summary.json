@@ -1,0 +1,120 @@
+{
+  "rung": "R7",
+  "table": "2",
+  "iterations": 30000,
+  "scenes": [
+    "lego",
+    "chair"
+  ],
+  "protocols": [
+    "full"
+  ],
+  "methods": [
+    "b1"
+  ],
+  "commit": "6693604d6bd9194b7f2095de76fdc0997c2d15ff",
+  "gpu": "Tesla T4",
+  "n_gpu": 2,
+  "propositions_pass": true,
+  "convert_seconds": 181.97382521629333,
+  "protocol_spec": {
+    "lego": {
+      "full": {
+        "n": 100,
+        "span_deg": 178.97687028487118
+      }
+    },
+    "chair": {
+      "full": {
+        "n": 100,
+        "span_deg": 178.6578806541832
+      }
+    }
+  },
+  "done": {
+    "b1/chair/full": {
+      "protocol": "full",
+      "n_train_cameras": 100,
+      "span_deg": 178.6578806541832,
+      "train_seconds": 1802.100798368454,
+      "peak_vram_mb": 13607,
+      "frac_above_floor": 0.0,
+      "mean_anisotropy": 1.0,
+      "render_seconds": 80.80653381347656,
+      "render_fps": 9.900189529804821,
+      "n_gaussians": 266510,
+      "model_mb": 67.162076,
+      "pooled_psnr": 35.523250579833984,
+      "split": {
+        "1x": {
+          "PSNR": 35.828969974517825,
+          "SSIM": 0.9874979582428932,
+          "LPIPS": 0.01285480169346556,
+          "n": 200
+        },
+        "1/2": {
+          "PSNR": 37.76102317810059,
+          "SSIM": 0.9923719251155854,
+          "LPIPS": 0.007476184046827257,
+          "n": 200
+        },
+        "1/4": {
+          "PSNR": 36.024740829467774,
+          "SSIM": 0.9894273295998574,
+          "LPIPS": 0.011799340075813234,
+          "n": 200
+        },
+        "1/8": {
+          "PSNR": 32.47826175689697,
+          "SSIM": 0.9814444673061371,
+          "LPIPS": 0.020509781343862415,
+          "n": 200
+        }
+      }
+    },
+    "b1/lego/full": {
+      "protocol": "full",
+      "n_train_cameras": 100,
+      "span_deg": 178.97687028487118,
+      "train_seconds": 2018.342868089676,
+      "peak_vram_mb": 14055,
+      "frac_above_floor": 0.0,
+      "mean_anisotropy": 1.0,
+      "render_seconds": 89.23156332969666,
+      "render_fps": 8.96543745450391,
+      "n_gaussians": 293818,
+      "model_mb": 74.043692,
+      "pooled_psnr": 32.87343978881836,
+      "split": {
+        "1x": {
+          "PSNR": 35.89774847984314,
+          "SSIM": 0.9837771096825599,
+          "LPIPS": 0.015076441797427833,
+          "n": 200
+        },
+        "1/2": {
+          "PSNR": 35.45638499259949,
+          "SSIM": 0.9890324103832245,
+          "LPIPS": 0.008535857512615621,
+          "n": 200
+        },
+        "1/4": {
+          "PSNR": 31.861637535095216,
+          "SSIM": 0.9847930863499641,
+          "LPIPS": 0.013361855736002326,
+          "n": 200
+        },
+        "1/8": {
+          "PSNR": 28.27799012184143,
+          "SSIM": 0.9734843000769615,
+          "LPIPS": 0.02546830290928483,
+          "n": 200
+        }
+      }
+    }
+  },
+  "failed": {},
+  "session_seconds": 2583.6337547302246,
+  "gpu_hours_used": 0.7176760432455275,
+  "complete": true
+}

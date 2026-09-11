@@ -71,7 +71,7 @@ __device__ glm::vec3 computeColorFromSH(int idx, int deg, int max_coeffs, const 
 }
 
 // Forward version of 2D covariance matrix computation
-__device__ float4 computeCov2D(const float3& mean, float focal_x, float focal_y, float tan_fovx, float tan_fovy, float kernel_size, const float* cov3D, const float* viewmatrix)
+__device__ float4 computeCov2D(const float3& mean, float focal_x, float focal_y, float tan_fovx, float tan_fovy, float kernel_size, bool mip_compensation, const float* cov3D, const float* viewmatrix)
 {
 	// The following models the steps outlined by equations 29
 	// and 31 in "EWA Splatting" (Zwicker et al., 2002). 
@@ -111,10 +111,19 @@ __device__ float4 computeCov2D(const float3& mean, float focal_x, float focal_y,
 	// compute the coef of alpha based on the detemintant
 	const float det_0 = max(1e-6, cov[0][0] * cov[1][1] - cov[0][1] * cov[0][1]);
 	const float det_1 = max(1e-6, (cov[0][0] + kernel_size) * (cov[1][1] + kernel_size) - cov[0][1] * cov[0][1]);
-	float coef = sqrt(det_0 / (det_1+1e-6) + 1e-6);
+	// The 2D Mip filter's opacity compensation rho = sqrt(det(Sigma') /
+	// det(Sigma' + kI)). Vanilla 3DGS dilates by a fixed 0.3f and applies NO
+	// compensation, so `mip_compensation == false` with kernel_size == 0.3f
+	// reproduces graphdeco-inria/diff-gaussian-rasterization@59f5f77 exactly:
+	// the rest of this function is identical to it line for line.
+	float coef = 1.0f;
+	if (mip_compensation)
+	{
+		coef = sqrt(det_0 / (det_1+1e-6) + 1e-6);
 
-	if (det_0 <= 1e-6 || det_1 <= 1e-6){
-		coef = 0.0f;
+		if (det_0 <= 1e-6 || det_1 <= 1e-6){
+			coef = 0.0f;
+		}
 	}
 
 	cov[0][0] += kernel_size;
@@ -181,6 +190,7 @@ __global__ void preprocessCUDA(int P, int D, int M,
 	const float tan_fovx, float tan_fovy,
 	const float focal_x, float focal_y,
 	const float kernel_size,
+	const bool mip_compensation,
 	int* radii,
 	float2* points_xy_image,
 	float* depths,
@@ -225,7 +235,7 @@ __global__ void preprocessCUDA(int P, int D, int M,
 	}
 
 	// Compute 2D screen-space covariance matrix
-	float4 cov = computeCov2D(p_orig, focal_x, focal_y, tan_fovx, tan_fovy, kernel_size, cov3D, viewmatrix);
+	float4 cov = computeCov2D(p_orig, focal_x, focal_y, tan_fovx, tan_fovy, kernel_size, mip_compensation, cov3D, viewmatrix);
 
 	// Invert covariance (EWA algorithm)
 	float det = (cov.x * cov.z - cov.y * cov.y);
@@ -439,6 +449,7 @@ void FORWARD::preprocess(int P, int D, int M,
 	const float focal_x, float focal_y,
 	const float tan_fovx, float tan_fovy,
 	const float kernel_size,
+	const bool mip_compensation,
 	int* radii,
 	float2* means2D,
 	float* depths,
@@ -467,6 +478,7 @@ void FORWARD::preprocess(int P, int D, int M,
 		tan_fovx, tan_fovy,
 		focal_x, focal_y,
 		kernel_size,
+		mip_compensation,
 		radii,
 		means2D,
 		depths,

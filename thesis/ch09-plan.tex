@@ -13,15 +13,16 @@
     \midrule
     W1 & Accounts and quotas; the twelve pre-flight assertions; R0. Literature due-diligence begun. & \textbf{done.} Gates G0, G1. Measured throughput replaced the estimates. \\
     W2 & R1 and R2, both arms. I-1 attached. & \textbf{done.} Arm A is L1 at all four scales; \textbf{G2 fails and is diagnosed} (\S\ref{sec:g2}). \\
-    W3 & R5 and R3. I-2 on trained checkpoints. & \textbf{done.} \textbf{Gates G3 and G4 pass} (\S\ref{sec:instrumentresults}); $\sigma$ measured at $0.139$\,dB worst case (\S\ref{sec:spread}); real scenes at \S\ref{sec:real}. \\
+    W3 & R5 and R3. I-2 on trained checkpoints. & \textbf{done.} \textbf{Gates G3 and G4 pass} (\S\ref{sec:instrumentresults}); $\sigma$ measured at $\seedSigma$\,dB worst case (\S\ref{sec:spread}); real scenes at \S\ref{sec:real}. \\
     W4 & Stress suite constructed from existing images. & \textbf{done.} Five protocols, versioned and seeded; conditioning measured on all of them. \\
     \midrule
-    W5--W6 & Implement $\Lambda$ accumulation; the exact-reduction unit test; wire $\Sigma_{\mathrm{filt}}$ into the covariance path. & \textbf{done, early.} Reduction verified to $1.4\times10^{-21}$ in the unit test and $0.136$\,dB in training. No CUDA change was needed: the rasteriser already accepts a precomputed covariance. \\
+    W5--W6 & Implement $\Lambda$ accumulation; the exact-reduction unit test; wire $\Sigma_{\mathrm{filt}}$ into the covariance path. & \textbf{done, early.} Reduction verified to $1.4\times10^{-21}$ in the unit test and $0.136$\,dB in training. B1 needed no CUDA change: the rasteriser already accepts a precomputed covariance. \\
     W9--W10 & Implement B2; sweep $\tau$. & \textbf{done, early.} Criterion measured on 8 scenes and 5 protocols; Equation~\eqref{eq:lmax} amended to a condition number on the evidence (\S\ref{sec:b2amend}). \\
     \midrule
-    next & Table~\ref{tab:stress}'s PSNR columns --- the only untested claim in the thesis. Ablations. Mid-term seminar, opening on the I-2 figure. & blocked on the weekly GPU quota; exact commands in \texttt{docs/RESUME.md}. \\
+    C-series & Fix what the September audit found: the 3DGS arm's 2D opacity compensation (C1, C2); the stress-suite PSNR columns (T3); B2's rendered columns (T4); matched render speed (C9); the literature due-diligence (C12). & \textbf{done.} G2's cause found and the arm re-measured (\S\ref{sec:g2}); the contribution narrowed against concurrent work (\S\ref{sec:narrowing}); the cap prediction replaces the two-view one wherever a protocol is involved (\S\ref{sec:capprediction}). \\
+    \midrule
     W11--W13 & Efficiency curves; variable-length SH storage for the memory result; writing. R4 as optional overflow. & Autumn report. \\
-    Spring & B3 sampling-aware densification (stretch); pose-noise sensitivity; variable-length SH storage; paper draft. & thesis and submission. \\
+    Spring & B3 sampling-aware densification (stretch); pose-noise sensitivity; variable-length SH storage; composition with a view-side clamp (\S\ref{sec:narrowing}); paper draft. & thesis and submission. \\
     \bottomrule
   \end{tabular}
 \end{table}

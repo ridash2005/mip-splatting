@@ -150,19 +150,40 @@ def picture(s, name, x, y, w):
     return None
 
 
+def _wrapped_lines(cell, width_in, size):
+    """How many lines `cell` takes in a box `width_in` wide at `size` points.
+
+    PowerPoint does the wrapping, not this function, so the row height has to be
+    predicted rather than measured. Segoe UI averages about 137/size characters
+    per inch at these sizes -- close enough that a row never overlaps the next,
+    which is the only property that matters here.
+    """
+    per_line = max(8, int(width_in * 137.0 / size))
+    longest = max((len(seg) for seg in str(cell).split("\n")), default=0)
+    n_explicit = str(cell).count("\n") + 1
+    return max(n_explicit, -(-longest // per_line))
+
+
 def table(s, x, y, w, rows, col_w, size=13, head=True):
-    """A rule-separated table. python-pptx's own table styling is not usable here."""
+    """A rule-separated table. python-pptx's own table styling is not usable here.
+
+    Row height follows the tallest cell in the row: a fixed height silently
+    overlaps the row below as soon as one cell wraps, which is exactly what a
+    generated table does the first time a measured string grows.
+    """
     yy = y
-    line_h = Inches(0.34)
+    line_in = size / 72.0 * 1.32
     for i, row in enumerate(rows):
         xx = x
+        n = max(_wrapped_lines(c, col_w[j].inches, size) for j, c in enumerate(row))
+        row_h = Inches(line_in * n + 0.10)
         for j, cell in enumerate(row):
             bold = (i == 0 and head)
             colour = INK if (i == 0 and head) else INK_2
-            text(s, xx, yy, col_w[j], line_h, str(cell), size=size, bold=bold,
-                 colour=colour)
+            text(s, xx, yy, col_w[j], row_h, str(cell), size=size, bold=bold,
+                 colour=colour, spacing=1.15)
             xx += col_w[j]
-        yy += line_h
+        yy += row_h
         if i == 0 and head:
             rule(s, yy - Inches(0.06), x, w)
             yy += Inches(0.06)
@@ -275,7 +296,7 @@ def build(prs, D):
     # 5 ------------------------------------------------- what is actually new
     s = slide(prs)
     header(s, "due diligence", "What the literature already had, and what is left")
-    table(s, M, Inches(1.95), W - 2 * M, [
+    end = table(s, M, Inches(1.95), W - 2 * M, [
         ["", "what it does", "why this work survives it"],
         ["AAA-Gaussians (2025)",
          "already makes the 3D filter a full 3\u00d73",
@@ -287,8 +308,8 @@ def build(prs, D):
          "Fisher information in 3DGS",
          "scores cameras to ACQUIRE; changes the dataset, not the primitive"],
     ], [Inches(3.0), Inches(4.2), Inches(4.7)], size=14)
-    rule(s, Inches(3.9))
-    text(s, M, Inches(4.15), W - 2 * M, Inches(0.45),
+    rule(s, end + Inches(0.16))
+    text(s, M, end + Inches(0.34), W - 2 * M, Inches(0.45),
          "So the contribution was narrowed, before the decisive experiment was run:",
          size=16, colour=MUTED)
     text(s, M, Inches(4.7), W - 2 * M, Inches(1.8),

@@ -27,6 +27,8 @@ M-6  alpha <- alpha sqrt(|Sigma| / |Sigma + Sigma_filt|) preserves total mass fo
 Exit status is non-zero if any claim fails its tolerance, so this is a test, not a
 demo -- the rung kernels run it the same way they run test_fisher_filter.py.
 """
+import argparse
+import json
 import sys
 
 import numpy as np
@@ -35,6 +37,10 @@ if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
 FAILURES = []
+
+# What the thesis quotes. Written to JSON by --json and read by
+# tools/make_tex.py, so no closed-form number is ever typed into the document.
+RESULTS = {}
 
 
 def check(name, ok, detail=""):
@@ -111,7 +117,7 @@ def m4():
         phi = np.arctan2(np.hypot(p[0], p[1]), p[2])
         pred = np.cos(phi) ** 2
         worst = max(worst, abs(ratio - pred))
-        sampled.append(ratio)
+        sampled.append((float(np.degrees(phi)), float(ratio), float(pred)))
         print(f"  {np.degrees(phi):10.2f}  {ratio:15.6f}  {pred:12.6f}  "
               f"{abs(ratio - pred):10.2e}")
 
@@ -132,7 +138,10 @@ def m4():
     check("off-axis: shortcut differs from the truth", rel > 0.05,
           f"relative max|diff| = {rel:.3f}")
     print(f"\n  four sampled poses, lambda_2/lambda_1 = "
-          f"{', '.join(f'{r:.3f}' for r in sorted(sampled))}")
+          f"{', '.join(f'{r[1]:.3f}' for r in sorted(sampled))}")
+    RESULTS["m4"] = {"poses": sorted(sampled, key=lambda t: t[0]),
+                     "law_max_abs_err": float(worst), "n_sweep": 2000,
+                     "offaxis_rel_diff": float(rel)}
     return sorted(sampled)
 
 
@@ -153,12 +162,19 @@ def m5():
     print(f"  {'theta':>7}  {'measured spectrum (sorted desc)':>36}  "
           f"{'predicted set':>30}  {'|diff|':>9}")
     worst = 0.0
+    spectrum = []
     for deg in (2, 6, 15, 45, 90, 120, 179):
         th = np.radians(deg)
         lam = np.linalg.eigvalsh(two_view(th))[::-1]
         pred = np.sort([2.0, 2 * np.cos(th / 2) ** 2, 2 * np.sin(th / 2) ** 2])[::-1]
         diff = np.abs(lam - pred).max()
         worst = max(worst, diff)
+        spectrum.append({"theta_deg": deg, "measured": [float(x) for x in lam],
+                         "predicted": [float(x) for x in pred], "abs_err": float(diff),
+                         "true_ratio": float(lam[2] / lam[0]),
+                         "naive": float(np.sin(th / 2) ** 2),
+                         "corrected": float(min(np.sin(th / 2) ** 2,
+                                                np.cos(th / 2) ** 2))})
         print(f"  {deg:5d} deg  {np.array2string(lam, precision=6):>36}  "
               f"{np.array2string(pred, precision=6):>30}  {diff:9.1e}")
     check("spectrum == {2, 2cos^2(theta/2), 2sin^2(theta/2)}", worst < 1e-10,
@@ -192,46 +208,101 @@ def m5():
         flag = "  <-- naive form wrong here" if abs(true - naive) > 1e-6 else ""
         print(f"  {deg:5d} deg  {true:17.6f}  {naive:11.6f}  {corrected:17.6f}{flag}")
     check("lambda_min/lambda_max == min(sin^2, cos^2) for all theta", ok)
+    RESULTS["m5"] = {"spectrum": spectrum, "max_abs_err": float(worst),
+                     "triaxial_at_45": [float(x) for x in
+                                        np.linalg.eigvalsh(two_view(np.radians(45)))[::-1]]}
 
 
 # --------------------------------------------------------------------------
 # M-5b -- what the STRESS PROTOCOLS actually predict
 # --------------------------------------------------------------------------
-def m5b():
-    """The two-view law does not transfer to a 100-camera hemisphere.
+def cap_ratio(alpha):
+    """lambda_min/lambda_max of Lambda for views uniform on a cap of half-angle alpha.
 
-    §6.4's regime table reads the two-view formula off a protocol's measured
-    angular SPAN, which is only defensible when the protocol really is two views.
-    A cone of ten cameras spanning 41 degrees is a distribution, and its Lambda is
-    the SUM over that distribution -- a different number. This computes the honest
-    prediction for a cap of half-angle alpha, so §6.4 can quote something the
-    instruments can actually confirm.
+    Closed form. With directions d uniform on a spherical cap of half-angle
+    alpha about +z, cos t is uniform on [cos alpha, 1], so
+
+        E[d_z^2] = (1 + c + c^2)/3,          c = cos alpha,
+        E[d_x^2] = E[d_y^2] = (1 - E[d_z^2])/2.
+
+    The unit-weight observability matrix is Lambda = N (I - E[d d^T]), diagonal
+    in this frame, so
+
+        lambda_depth = N (1 - E[d_z^2]),   lambda_lat = N (1 + E[d_z^2])/2,
+
+    and the ratio below follows. It is exact, not a small-angle expansion; the
+    Monte-Carlo check in m5b() confirms it against sampled directions.
+    """
+    c = np.cos(alpha)
+    e = (1.0 + c + c * c) / 3.0
+    return 2.0 * (1.0 - e) / (1.0 + e)
+
+
+def m5b():
+    """The two-view law does not transfer to a distribution of cameras.
+
+    Section 6.4's regime table reads the two-view formula off a protocol's
+    measured angular SPAN, which is only defensible when the protocol really is
+    two views. A cone of ten cameras spanning 20 degrees is a distribution, and
+    its Lambda is the SUM over that distribution -- a different number.
+
+    The direction of the error matters and is easy to get backwards. For a cap
+    of half-angle alpha the ratio is asymptotically HALF the two-view value
+    (alpha^2/2 against sin^2 alpha ~ alpha^2), because the cap's cameras are
+    spread over the interval rather than sitting at its two extremes. A smaller
+    lambda_3/lambda_1 is a WORSE-conditioned capture, so the two-view form
+    UNDERSTATES a cap's depth anisotropy -- by sqrt(2) in sigma_D/sigma_L. That
+    is the direction that matters: the measured anisotropy exceeding the two-view
+    prediction is the model working, not the model failing.
     """
     print("\nM-5b  the multi-view prediction the protocols need")
     print("-" * 62)
     print("  cameras spread over a spherical cap, primitive at the centre.")
-    print(f"  {'span':>8}  {'half-angle':>11}  {'l_min/l_max':>12}  "
-          f"{'two-view sin^2':>15}  {'ratio':>7}")
+    print("  closed form:  l_min/l_max = 2(1-E)/(1+E),  E = (1+c+c^2)/3, c = cos(span/2)")
+    print(f"  {'span':>8}  {'cap (exact)':>12}  {'cap (MC)':>10}  "
+          f"{'two-view':>10}  {'cap sD/sL':>10}  {'2view sD/sL':>12}")
 
     rng = np.random.default_rng(0)
-    for span_deg in (6, 20, 41, 60, 93, 179):
+    cap = []
+    worst_mc = 0.0
+    for span_deg in (6, 20, 41, 60, 80, 93, 120, 168, 179):
         alpha = np.radians(span_deg) / 2.0
-        # Uniform on a cap of half-angle alpha about +z.
-        n = 20000
+        exact = cap_ratio(alpha)
+        # Monte-Carlo on the same cap, so the closed form is checked not asserted.
+        n = 200000
         cos_t = 1 - rng.random(n) * (1 - np.cos(alpha))
         sin_t = np.sqrt(1 - cos_t ** 2)
         phi = rng.random(n) * 2 * np.pi
         d = np.stack([sin_t * np.cos(phi), sin_t * np.sin(phi), cos_t], axis=1)
-        # Lambda = sum_n (I - d d^T), the unit-weight observability matrix.
         lam_mat = n * np.eye(3) - d.T @ d
         lam = np.linalg.eigvalsh(lam_mat)[::-1]
-        ratio = lam[2] / lam[0]
-        naive = np.sin(np.radians(span_deg) / 2) ** 2
-        print(f"  {span_deg:5d} deg  {np.degrees(alpha):10.1f} deg  {ratio:12.6f}  "
-              f"{naive:15.6f}  {naive / max(ratio, 1e-12):7.2f}x")
-    print("\n  The two-view form OVERSTATES the degradation of a cap by the factor")
-    print("  in the last column. §6.4's table must use the cap prediction, and the")
-    print("  instruments' measured lambda_3/lambda_1 must be compared to THAT.")
+        mc = lam[2] / lam[0]
+        worst_mc = max(worst_mc, abs(mc - exact) / exact)
+        naive = np.sin(alpha) ** 2
+        cap.append({"span_deg": span_deg,
+                    "half_deg": float(np.degrees(alpha)),
+                    "cap_ratio": float(exact),
+                    "cap_ratio_mc": float(mc),
+                    "two_view": float(naive),
+                    "understatement": float(exact / max(naive, 1e-12)),
+                    "cap_sigma_ratio": float(1.0 / np.sqrt(max(exact, 1e-12))),
+                    "two_view_sigma_ratio": float(1.0 / np.sqrt(max(naive, 1e-12)))})
+        print(f"  {span_deg:5d} deg  {exact:12.6f}  {mc:10.6f}  {naive:10.6f}  "
+              f"{1 / np.sqrt(exact):10.2f}x  {1 / np.sqrt(naive):11.2f}x")
+    check("cap closed form matches Monte-Carlo over 9 spans", worst_mc < 5e-3,
+          f"max relative error = {worst_mc:.2e}")
+
+    small = cap_ratio(np.radians(0.5)) / np.sin(np.radians(0.5)) ** 2
+    check("cap ratio -> half the two-view value as the span closes",
+          abs(small - 0.5) < 1e-3, f"cap/two-view at 1 deg span = {small:.6f}")
+
+    print("\n  The two-view form UNDERSTATES the depth anisotropy of a cap: its")
+    print("  l_min/l_max is about twice the cap's, so sigma_D/sigma_L is sqrt(2)")
+    print("  too small. Section 6.4's table must quote the cap prediction, and the")
+    print("  instruments' measured sigma_D/sigma_L must be compared to THAT.")
+    RESULTS["m5b"] = {"cap": cap, "n_samples": 200000,
+                      "mc_max_rel_err": float(worst_mc),
+                      "small_span_limit": float(small)}
 
 
 # --------------------------------------------------------------------------
@@ -269,9 +340,14 @@ def m6():
     a_mip = alpha_iso * np.sqrt(np.prod(np.diag(Sigma)) / np.prod(np.diag(Sigma) + f2))
     check("reduces to Mip-Splatting's scalar form when Sigma_filt = f^2 I",
           abs(a_aniso - a_mip) < 1e-14, f"|diff| = {abs(a_aniso - a_mip):.2e}")
+    RESULTS["m6"] = {"mass_max_rel_err": float(worst), "n_trials": 500,
+                     "iso_abs_diff": float(abs(a_aniso - a_mip))}
 
 
 if __name__ == "__main__":
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--json", help="also write every quoted number here")
+    args = ap.parse_args()
     print("=" * 62)
     print("Closed-form claims of §4 and Appendix B, verified numerically")
     print("=" * 62)
@@ -280,6 +356,11 @@ if __name__ == "__main__":
     m5b()
     m6()
     print("\n" + "=" * 62)
+    if args.json:
+        RESULTS["failures"] = FAILURES
+        with open(args.json, "w", encoding="utf-8") as fh:
+            json.dump(RESULTS, fh, indent=2)
+        print(f"wrote {args.json}")
     if FAILURES:
         print(f"FAILED: {len(FAILURES)} claim(s): {', '.join(FAILURES)}")
         sys.exit(1)

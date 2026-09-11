@@ -20,6 +20,7 @@ Discipline, matching tools/make_figures.py:
 import argparse
 import csv
 import json
+import math
 import os
 import sys
 from collections import defaultdict
@@ -39,6 +40,21 @@ PUBLISHED = {
     "MTMT": {"B": [28.79, 30.66, 31.64, 27.98], "A": [32.81, 34.49, 35.45, 35.50]},
 }
 NOT_MEASURED = r"\notmeasured"
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from test_geometry_claims import cap_ratio  # noqa: E402  the verified closed form
+
+
+def cap_sigma_ratio(span_deg):
+    """sigma_D/sigma_L predicted for cameras spread over a cap of this span.
+
+    The two-view form 1/sin(theta/2) is exact only for two views; a capture
+    protocol is a distribution over a cap, and for that the two-view form
+    understates the depth anisotropy by sqrt(2) in sigma. Every prediction
+    quoted against a measured span therefore uses this, not Equation (4.8).
+    """
+    r = cap_ratio(math.radians(span_deg) / 2.0)
+    return 1.0 / math.sqrt(max(r, 1e-12))
 
 
 def load(runs_path):
@@ -310,7 +326,7 @@ def instruments_table(inst, label, caption):
             f"{v['median_frac_exceeding_floor_worst_dir'] * 100:.0f}\\%",
             f"{v['median_frac_exceeding_floor_all_dirs'] * 100:.0f}\\%",
             f"{v['median_sigma_ratio_measured']:.2f}$\\times$",
-            f"{v['median_sigma_ratio_predicted']:.2f}$\\times$",
+            f"{cap_sigma_ratio(v['median_span_deg']):.2f}$\\times$",
             f"{v['median_ratio_est_over_floor_p50']:.2f}",
         ]) + r" \\")
     n = max((v["n_scenes"] for v in bp.values()), default=0)
@@ -321,8 +337,10 @@ def instruments_table(inst, label, caption):
           r"\emph{est./floor} is the median of "
           r"$\sqrt{s^2/\lambda_{\min}}\,/\,f_k$: below one the floor binds and "
           r"Proposition~\ref{prop:reduction} applies; above one the estimation "
-          r"term governs. \emph{predicted} is Equation~\eqref{eq:anisotropy} at "
-          r"the measured span, exact for two symmetric views.",
+          r"term governs. \emph{predicted} is the cap form of "
+          r"\S\ref{sec:capprediction} evaluated at each protocol's own measured "
+          r"span --- not Equation~\eqref{eq:anisotropy}, which is exact for two "
+          r"views and understates a distributed capture by $\sqrt{2}$.",
           r"\end{table}", ""]
     return "\n".join(L)
 
@@ -392,14 +410,29 @@ def method_table(rows, inst, label, caption):
            and r.get("train_scale", "").split("/")[0] == "1x"
            and (r.get("train_scale") == "1x" or r.get("train_scale").endswith("/full"))]
     order = ["3dgs", "mip-splatting", "b1-fisher"]
+    # Matched scenes, or the table is not a comparison. B1 was measured on two
+    # scenes before it was measured on eight; averaging its two against the
+    # baselines' eight compares lego and chair to a different set of objects and
+    # reads as a gain that is nothing but scene difficulty. Restrict every row to
+    # the scenes all three methods have, and say how many that is.
+    per_method_scenes = {}
+    for r in sel:
+        if r.get("method") in order:
+            per_method_scenes.setdefault(r["method"], set()).add(r["scene"])
+    present = [m for m in order if per_method_scenes.get(m)]
+    if not present:
+        return placeholder(label, caption, "The method has not been evaluated.")
+    common = set.intersection(*(per_method_scenes[m] for m in present))
+    if not common:
+        return placeholder(label, caption,
+                           "No scene has been measured under every method, so no "
+                           "matched comparison exists yet.")
     acc = {}
     for r in sel:
         m = r.get("method")
-        if m not in order:
+        if m not in order or r["scene"] not in common:
             continue
         acc.setdefault(m, {}).setdefault(r["test_scale"], []).append(r)
-    if not acc:
-        return placeholder(label, caption, "The method has not been evaluated.")
 
     floor = (inst or {}).get("by_protocol", {}).get("full", {})
     floor_pct = floor.get("median_frac_exceeding_floor_worst_dir")
@@ -426,8 +459,23 @@ def method_table(rows, inst, label, caption):
         else:
             cells.append(r"n/a")
         L.append("    " + " & ".join(cells) + r" \\")
+    # The paired quantity the chapter actually argues about.
+    d_b1 = acc.get("b1-fisher", {})
+    d_mip = acc.get("mip-splatting", {})
+    if d_b1 and d_mip:
+        L.append(r"    \midrule")
+        cells = [r"$\Delta$ (B1 $-$ Mip-Splatting)"]
+        for sc in SCALES:
+            a = [float(r["psnr"]) for r in d_b1.get(sc, [])]
+            b = [float(r["psnr"]) for r in d_mip.get(sc, [])]
+            cells.append(f"{mean(a) - mean(b):+.3f}" if a and b else NOT_MEASURED)
+        cells += ["", ""]
+        L.append("    " + " & ".join(cells) + r" \\")
+
     L += [r"    \bottomrule", r"  \end{tabular}",
-          r"  \par\vspace{2pt}\footnotesize Mean PSNR over the scenes measured, "
+          r"  \par\vspace{2pt}\footnotesize Mean PSNR over the "
+          + str(len(common)) + r" scene(s) measured under \emph{every} method "
+          r"(" + ", ".join(r"\texttt{" + s + "}" for s in sorted(common)) + r"), "
           r"30\,000 iterations, single-scale train. \emph{floor-dominated} is the "
           r"fraction of primitives where the Nyquist floor exceeds the estimation "
           r"term in every direction, measured by I-1 on the same capture; where it "
@@ -437,49 +485,274 @@ def method_table(rows, inst, label, caption):
     return "\n".join(L)
 
 
-def stress_table(rows, inst, label, caption):
-    """Table 3: the stress suite, measured PSNR per protocol per method."""
+# Run-to-run noise of the harness, from R5 (§7.5). The stress-suite delta is
+# reported as a multiple of it, because a gain smaller than the noise is not a
+# gain. Overwritten from the measured repeat spread in main().
+SIGMA_FALLBACK = 0.039
+
+# Every column that makes two rows a different configuration rather than a
+# repeat of the same one. Leaving any of these out silently merges unrelated
+# runs and reports their difference as harness noise -- dropping load_allres
+# alone pools STMT with MTMT and inflates a 0.039 dB spread to 2.4 dB.
+CONFIG_KEY = ("dataset", "scene", "method", "arm", "train_scale", "test_scale",
+              "iterations", "load_allres", "kernel_size", "seed")
+
+
+def _b1_diagnostics(summaries_dir="results/kaggle_runs"):
+    """frac_above_floor and mean_anisotropy per protocol, from the runs' own JSON.
+
+    The filter prints both during training and method_eval.py records them per
+    job; they never reach runs.csv because they are properties of the filter
+    rather than of a rendered image. §6.6 asks for them beside the PSNR, so they
+    are read back from the summaries here rather than retyped.
+    """
+    out = {}
+    for d, _, files in os.walk(summaries_dir):
+        for fn in files:
+            if fn not in ("summary.json", "method_summary.json"):
+                continue
+            try:
+                s = json.load(open(os.path.join(d, fn)))
+            except Exception:
+                continue
+            for key, job in (s.get("done") or {}).items():
+                if "frac_above_floor" not in job:
+                    continue
+                parts = key.split("/")
+                if len(parts) != 3:
+                    continue
+                method, _scene, proto = parts
+                if method != "b1":
+                    continue
+                e = out.setdefault(proto, {"floor": [], "aniso": []})
+                e["floor"].append(job["frac_above_floor"])
+                e["aniso"].append(job["mean_anisotropy"])
+    return out
+
+
+def stress_table(rows, inst, label, caption, sigma=SIGMA_FALLBACK):
+    """Table 3: the stress suite -- the thesis's central empirical claim.
+
+    Per protocol: the paired PSNR delta, that delta in units of the harness's own
+    run-to-run noise, and the two filter diagnostics (§6.6) without which a
+    positive delta cannot be attributed to the estimation term binding.
+    """
     sel = [r for r in rows if "/" in (r.get("train_scale") or "")]
     if not sel:
         return placeholder(label, caption,
                            "The stress-suite training runs have not been performed.")
+    # Paired per scene: both methods train on the same protocol subset with the
+    # same seed in the same session, so the delta is a within-scene difference
+    # and must not be taken between two different scene means.
     acc = {}
     for r in sel:
         proto = r["train_scale"].split("/")[1]
         acc.setdefault(proto, {}).setdefault(r["method"], {}) \
-           .setdefault(r["test_scale"], []).append(float(r["psnr"]))
+           .setdefault((r["scene"], r["test_scale"]), []).append(float(r["psnr"]))
     bp = (inst or {}).get("by_protocol", {})
+    diag = _b1_diagnostics()
     L = [r"\begin{table}[htbp]", r"  \centering",
          r"  \caption{" + caption + "}", r"  \label{tab:" + label + "}",
-         r"  \small", r"  \begin{tabular}{lrrrrr}", r"    \toprule",
-         r"    protocol & $\sigma_D/\sigma_L$ & Mip-Splatting & B1 & $\Delta$"
-         r" & predicted \\", r"    \midrule"]
-    pred = {"full": r"$\approx 0$", "arc": r"$>0$", "cone": r"$\gg 0$",
-            "mixed": r"$>0$", "grazing": r"$>0$"}
+         r"  \small", r"  \setlength{\tabcolsep}{4pt}",
+         r"  \begin{tabular}{lrrrrrrrr}", r"    \toprule",
+         r"    protocol & span & $\sigma_D/\sigma_L$ & Mip-Spl. & B1 & $\Delta$"
+         r" & $\Delta/\sigma$ & above floor & aniso. \\", r"    \midrule"]
     for proto in PROTO_ORDER:
         d = acc.get(proto)
         if not d:
             continue
-        mip = [x for v in d.get("mip-splatting", {}).values() for x in v]
-        b1 = [x for v in d.get("b1-fisher", {}).values() for x in v]
-        aniso = (bp.get(proto) or {}).get("median_sigma_ratio_measured")
-        delta = (mean(b1) - mean(mip)) if (mip and b1) else None
+        mip_d = d.get("mip-splatting", {})
+        b1_d = d.get("b1-fisher", {})
+        keys = sorted(set(mip_d) & set(b1_d))
+        paired = [mean(b1_d[k]) - mean(mip_d[k]) for k in keys]
+        mip = [x for k in keys for x in mip_d[k]]
+        b1 = [x for k in keys for x in b1_d[k]]
+        delta = mean(paired) if paired else None
+        v = bp.get(proto) or {}
+        aniso = v.get("median_sigma_ratio_measured")
+        span = v.get("median_span_deg")
+        dg = diag.get(proto) or {}
         L.append("    " + " & ".join([
             PROTO_LABEL[proto],
+            f"${span:.0f}^\\circ$" if span else NOT_MEASURED,
             f"{aniso:.2f}$\\times$" if aniso else NOT_MEASURED,
             f"{mean(mip):.2f}" if mip else NOT_MEASURED,
             f"{mean(b1):.2f}" if b1 else NOT_MEASURED,
-            (r"\textbf{" + f"{delta:+.2f}" + "}") if delta is not None else NOT_MEASURED,
-            pred.get(proto, ""),
+            (r"\textbf{" + f"{delta:+.3f}" + "}") if delta is not None else NOT_MEASURED,
+            f"{delta / sigma:+.1f}" if delta is not None and sigma else NOT_MEASURED,
+            f"{mean(dg.get('floor', [])) * 100:.0f}\\%" if dg.get("floor") else NOT_MEASURED,
+            f"{mean(dg.get('aniso', [])):.2f}$\\times$" if dg.get("aniso") else NOT_MEASURED,
         ]) + r" \\")
     L += [r"    \bottomrule", r"  \end{tabular}",
           r"  \par\vspace{2pt}\footnotesize Mean PSNR over scenes and test "
-          r"scales. Training cameras are restricted to the protocol; the test set "
-          r"is left whole, so only the capture geometry varies. The predicted "
-          r"column was filled from Equation~\eqref{eq:anisotropy} before any of "
-          r"these runs.",
+          r"scales; $\Delta$ is paired within scene and test scale, never between "
+          r"two means. Training cameras are restricted to the protocol and the "
+          r"test set is left whole, so only the capture geometry varies. "
+          r"$\sigma = " + f"{sigma:.3f}" + r"$\,dB is the harness's own "
+          r"run-to-run spread (\S\ref{sec:spread}), so $\Delta/\sigma$ says "
+          r"whether a difference is a result. \emph{above floor} is the fraction "
+          r"of primitives on which the estimation term exceeds the Nyquist floor "
+          r"in at least one direction, and \emph{aniso.} the mean ratio of the "
+          r"filter's largest to smallest axis --- both printed by the filter "
+          r"during training. Where \emph{above floor} is $0\,\%$, "
+          r"Proposition~\ref{prop:reduction} makes the two rows the same filter "
+          r"and $\Delta$ measures nothing but noise.",
           r"\end{table}", ""]
     return "\n".join(L)
+
+
+def fps_table(fps, label, caption):
+    """C9: render-call fps for the three arms, and the ratio that is the claim."""
+    if not fps or not fps.get("results"):
+        return placeholder(label, caption,
+                           "The matched render-speed benchmark has not been run. "
+                           "The \\texttt{render\\_fps} column of "
+                           "Table~\\ref{tab:cost} is wall time over a whole "
+                           "\\texttt{render.py} invocation and is deliberately "
+                           "not quoted here in its place.")
+    res = fps["results"]
+    base = (res.get("mip") or {}).get("fps")
+    L = [r"\begin{table}[htbp]", r"  \centering",
+         r"  \caption{" + caption + "}", r"  \label{tab:" + label + "}",
+         r"  \small", r"  \begin{tabular}{lrrrr}", r"    \toprule",
+         r"    method & primitives & fps & vs.\ Mip-Splatting & filter setup \\",
+         r"    \midrule"]
+    for key in ("3dgs", "mip", "b1"):
+        v = res.get(key)
+        if not v:
+            continue
+        ratio = (v["fps"] / base) if base else None
+        setup = v.get("filter_setup_seconds") or 0.0
+        L.append("    " + " & ".join([
+            v["label"],
+            f"{v['n_gaussians']:,}".replace(",", r"\,"),
+            f"{v['fps']:.1f}",
+            f"{ratio:.3f}$\\times$" if ratio else NOT_MEASURED,
+            (f"{setup:.2f}\\,s" if setup else r"---"),
+        ]) + r" \\")
+    L += [r"    \bottomrule", r"  \end{tabular}",
+          r"  \par\vspace{2pt}\footnotesize \texttt{" + str(fps.get("scene", "")) +
+          r"}, " + str((res.get("mip") or res.get("b1") or {}).get("n_views", 0)) +
+          r" test views, " + str(fps.get("gpu", "")) + r", median of "
+          + str(fps.get("repeats", 0)) + r" passes after "
+          + str(fps.get("warmup_views", 0)) + r" warm-up views, CUDA "
+          r"synchronised around each pass. The render \emph{call} only: no scene "
+          r"load, no PNG encode, no disk write --- which is why these numbers are "
+          r"an order of magnitude above the \texttt{render\_fps} column of "
+          r"Table~\ref{tab:cost}, and why the ratio rather than the absolute "
+          r"figure is what this thesis defends. \emph{filter setup} is the "
+          r"one-off cost of building $\Sigma_{\mathrm{filt}}$ from the training "
+          r"cameras before the loop begins.",
+          r"\end{table}", ""]
+    return "\n".join(L)
+
+
+def geometry_tables(geo, inst):
+    """M-4, M-5 and M-5b, from tools/test_geometry_claims.py's own JSON.
+
+    These are closed forms, not measurements, but they are still generated
+    rather than typed: the script that verifies them is the only place their
+    digits exist, so a change to the derivation cannot fail to reach the
+    document.
+    """
+    if not geo:
+        return placeholder("offaxis", r"Off-axis anisotropy of a single view.",
+                           "tools/test\\_geometry\\_claims.py has not been run.")
+    out = []
+
+    m4 = geo.get("m4") or {}
+    L = [r"\begin{table}[htbp]", r"  \centering",
+         r"  \caption{M-4 --- a single view is already anisotropic off-axis. The "
+         r"rank-1 shortcut $(f/z)^2(I-dd^{\!\top})$ is a projector, so its two "
+         r"non-zero eigenvalues are equal by construction; the true "
+         r"$J^{\!\top}\!J$ separates them by exactly $\cos^2\varphi$. Four "
+         r"randomly drawn poses, and the law verified over "
+         + str(m4.get("n_sweep", 0)) + r" more.}",
+         r"  \label{tab:offaxis}", r"  \small",
+         r"  \begin{tabular}{rrrr}", r"    \toprule",
+         r"    $\varphi$ (off-axis) & $\lambda_2/\lambda_1$ measured "
+         r"& $\cos^2\varphi$ & $|\text{diff}|$ \\", r"    \midrule"]
+    for phi, ratio, pred in m4.get("poses", []):
+        L.append(f"    ${phi:.1f}^\\circ$ & {ratio:.4f} & {pred:.4f} & "
+                 f"$<10^{{-15}}$ \\\\")
+    L += [r"    \bottomrule", r"  \end{tabular}",
+          r"  \par\vspace{2pt}\footnotesize Maximum error of the law over the "
+          r"sweep: $" + f"{m4.get('law_max_abs_err', 0):.1e}".replace("e-", r"\times10^{-")
+          + r"}$. At a representative off-axis point the shortcut differs from "
+          r"the truth by " + f"{m4.get('offaxis_rel_diff', 0) * 100:.0f}" +
+          r"\,\% of the largest entry --- and differs in \emph{shape}, not by a "
+          r"scalar, so no choice of scalar filter absorbs it.",
+          r"\end{table}", ""]
+    out.append("\n".join(L))
+
+    m5 = geo.get("m5") or {}
+    L = [r"\begin{table}[htbp]", r"  \centering",
+         r"  \caption{M-5 --- the exact two-view spectrum. $\Lambda \propto 2I - "
+         r"d_1d_1^{\!\top} - d_2d_2^{\!\top}$ is diagonal in the frame of the two "
+         r"rays with eigenvalues $\{2,\,2\cos^2(\theta/2),\,2\sin^2(\theta/2)\}$. "
+         r"Three distinct values: the filter is \emph{triaxial}, and the in-plane "
+         r"lateral direction is degraded as well as depth.}",
+         r"  \label{tab:twoviewspectrum}", r"  \small",
+         r"  \begin{tabular}{rrrrrr}", r"    \toprule",
+         r"    $\theta$ & $\lambda_1$ & $\lambda_2$ & $\lambda_3$ "
+         r"& $\lambda_{\min}/\lambda_{\max}$ & $\sin^2(\theta/2)$ \\",
+         r"    \midrule"]
+    for e in m5.get("spectrum", []):
+        m = e["measured"]
+        flag = "" if abs(e["true_ratio"] - e["naive"]) < 1e-6 else r"$^{\dagger}$"
+        L.append(f"    ${e['theta_deg']}^\\circ$ & {m[0]:.4f} & {m[1]:.4f} & "
+                 f"{m[2]:.6f} & {e['true_ratio']:.6f}{flag} & {e['naive']:.6f} \\\\")
+    L += [r"    \bottomrule", r"  \end{tabular}",
+          r"  \par\vspace{2pt}\footnotesize Measured against numerical "
+          r"eigendecomposition; maximum absolute error $"
+          + f"{m5.get('max_abs_err', 0):.0e}".replace("e-", r"\times10^{-") + r"}$. "
+          r"$^{\dagger}$ past $\theta = 90^\circ$ the depth direction is better "
+          r"constrained than the in-plane lateral one and the two exchange roles, "
+          r"so the ratio of smallest to largest is "
+          r"$\min(\sin^2(\theta/2), \cos^2(\theta/2))$ and not $\sin^2(\theta/2)$. "
+          r"Equation~\eqref{eq:anisotropy} is stated for $\theta \le 90^\circ$, "
+          r"which is the whole of the regime the stress protocols occupy.",
+          r"\end{table}", ""]
+    out.append("\n".join(L))
+
+    m5b = geo.get("m5b") or {}
+    bp = (inst or {}).get("by_protocol", {})
+    by_span = {}
+    for k in PROTO_ORDER:
+        v = bp.get(k)
+        if v:
+            by_span[k] = (v["median_span_deg"], v["median_sigma_ratio_measured"])
+    L = [r"\begin{table}[htbp]", r"  \centering",
+         r"  \caption{M-5b --- a protocol is a distribution, not two views. For "
+         r"cameras spread over a cap of half-angle $\alpha$, "
+         r"$\lambda_3/\lambda_1 = 2(1-E)/(1+E)$ with "
+         r"$E = (1+c+c^2)/3$, $c = \cos\alpha$ --- exact, and asymptotically "
+         r"\emph{half} the two-view value, because a cap's cameras are spread "
+         r"across the interval rather than sitting at its two ends. The two-view "
+         r"form therefore \emph{understates} a real capture's depth anisotropy by "
+         r"$\sqrt{2}$ in $\sigma$.}",
+         r"  \label{tab:cap}", r"  \small",
+         r"  \begin{tabular}{rrrr}", r"    \toprule",
+         r"    span & cap $\sigma_D/\sigma_L$ & two-view $\sigma_D/\sigma_L$ "
+         r"& measured \\", r"    \midrule"]
+    for e in m5b.get("cap", []):
+        near = [k for k, (sp, _) in by_span.items()
+                if abs(sp - e["span_deg"]) <= 3.0]
+        meas = (f"{by_span[near[0]][1]:.2f}$\\times$ (" + PROTO_LABEL[near[0]] + ")"
+                if near else "")
+        L.append(f"    ${e['span_deg']}^\\circ$ & {e['cap_sigma_ratio']:.2f}"
+                 r"$\times$ & " + f"{e['two_view_sigma_ratio']:.2f}" +
+                 r"$\times$ & " + meas + r" \\")
+    L += [r"    \bottomrule", r"  \end{tabular}",
+          r"  \par\vspace{2pt}\footnotesize Closed form checked against "
+          + f"{m5b.get('n_samples', 0):,}".replace(",", r"\,") +
+          r" sampled directions per span, maximum relative error $"
+          + f"{m5b.get('mc_max_rel_err', 0):.0e}".replace("e-", r"\times10^{-")
+          + r"}$. The measured column is I-2 on the protocol whose median span "
+          r"matches the row, from Table~\ref{tab:instruments}.",
+          r"\end{table}", ""]
+    out.append("\n".join(L))
+    return "\n".join(out)
 
 
 def b2_table(b2, label, caption):
@@ -654,6 +927,8 @@ def macros(rows, summaries, inst=None):
         v = bp.get(k) or {}
         put("inst" + name + "Aniso", v.get("median_sigma_ratio_measured"))
         put("inst" + name + "Span", v.get("median_span_deg"), "{:.0f}")
+        put("inst" + name + "Cap",
+            cap_sigma_ratio(v["median_span_deg"]) if v else None)
         put("inst" + name + "ExceedWorst",
             None if not v else v["median_frac_exceeding_floor_worst_dir"] * 100, "{:.0f}")
         put("inst" + name + "ExceedAll",
@@ -706,8 +981,21 @@ def main():
     # chair -- it moved arm A's full-res figure by nearly a decibel before this
     # filter was added. The seed table below deliberately takes all seeds.
     b2proto, b2sweep = {}, {}
+    # The B2 run rebuilds the protocol sweep from the same camera_protocols.py
+    # the instruments use, so it supersedes the local file, which was produced
+    # under an earlier definition of arc and cone and disagrees with
+    # Table~\ref{tab:instruments} about what a "cone" is.
+    for d, _, files in os.walk(a.summaries):
+        for fn_ in files:
+            if fn_ == "b2_protocols.json":
+                try:
+                    b2proto = json.load(open(os.path.join(d, fn_)))
+                except Exception:
+                    pass
     for path, tgt in (("results/b2_protocols/protocols.json", "proto"),
                       ("results/b2_protocols/tau_sweep.json", "sweep")):
+        if tgt == "proto" and b2proto:
+            continue
         if os.path.exists(path):
             try:
                 loaded = json.load(open(path))
@@ -730,9 +1018,37 @@ def main():
                                                 and "b2" in str(list(cand["results"])[:3])):
                     b2 = cand
 
+    fps = {}
+    for d, _, files in os.walk(a.summaries):
+        for fn_ in files:
+            if fn_ not in ("fps.json", "summary.json"):
+                continue
+            try:
+                cand = json.load(open(os.path.join(d, fn_)))
+            except Exception:
+                continue
+            if cand.get("rung") == "C9" and cand.get("results"):
+                fps = cand
+
+    geo = {}
+    if os.path.exists("results/geometry/claims.json"):
+        try:
+            geo = json.load(open("results/geometry/claims.json"))
+        except Exception:
+            geo = {}
+
     stmt = select(rows, iterations=30000, load_allres="False", seed=0)
     mtmt = select(rows, iterations=30000, load_allres="True", seed=0)
     seeds = select(rows, iterations=30000, load_allres="False")
+
+    # The noise the stress-suite delta is measured against. Largest spread
+    # between repeats of one identical configuration -- measured, not assumed,
+    # and falling back to the R0 figure only if no repeat exists yet.
+    grouped = defaultdict(list)
+    for r in rows:
+        grouped[tuple(r.get(k) for k in CONFIG_KEY)].append(float(r["psnr"]))
+    reps = [max(v) - min(v) for v in grouped.values() if len(v) > 1]
+    seed_sigma = max(reps) if reps else SIGMA_FALLBACK
 
     written = {
         "table1-stmt.tex": scale_table(
@@ -759,7 +1075,12 @@ def main():
             r"R7 Table 2 --- the method against both baselines on the standard "
             r"Blender benchmark."),
         "table-stress.tex": stress_table(rows, inst, "stress",
-            r"R7 Table 3 --- the stress suite. Where the claim lives."),
+            r"R7 Table 3 --- the stress suite. Where the claim lives.",
+            sigma=seed_sigma),
+        "table-geometry.tex": geometry_tables(geo, inst),
+        "table-fps.tex": fps_table(fps, "fps",
+            r"C9 --- matched render speed. The render call alone, all three arms "
+            r"in one session on one GPU."),
         "table-b2-protocols.tex": b2_protocol_table(
             b2proto, b2sweep, "btwoproto",
             r"B2 --- the identifiability criterion across capture protocols."),

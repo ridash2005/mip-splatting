@@ -14,7 +14,7 @@ into a document by hand.
     python make_figures.py --mode published --out figures/
     python make_figures.py --mode measured  --runs results/runs.csv --out figures/
 """
-import argparse, os, csv, math, sys
+import argparse, os, csv, json, math, sys
 
 # The report is UTF-8 (arrows, section signs, en dashes). A Windows console
 # defaults to cp1252 and would raise UnicodeEncodeError on the way out, so the
@@ -327,10 +327,12 @@ def fig_fisher_geometry(out):
     t = np.linspace(0, 2*np.pi, 400)
     fig, axes = plt.subplots(1, 2, figsize=(7.1, 3.15))
     LIM = 6.6
-    for ax, th_deg, title in ((axes[0], 20, "One-sided arc · θ = 20°"),
-                              (axes[1], 90, "Full orbit · θ = 90°")):
+    # The spans the built protocols actually realise, and the cap prediction at
+    # those spans -- not a two-view formula read off a nominal angle.
+    for ax, th_deg, title in ((axes[0], 20, "Low-parallax cone · span 20°"),
+                              (axes[1], 80, "One-sided arc · span 80°")):
         th = np.radians(th_deg)
-        ratio = 1.0 / np.sin(th / 2)            # sigma_depth / sigma_lat, exact
+        ratio = _cap_sigma_ratio(th_deg)        # sigma_depth / sigma_lat
         # camera rays, drawn to the primitive at the origin
         for a in (-th/2, th/2):
             d = np.array([np.sin(a), -np.cos(a)])
@@ -361,25 +363,422 @@ def fig_fisher_geometry(out):
     _save(fig, out, "fig5-fisher-geometry")
 
 
+def _cap_sigma_ratio(span_deg):
+    """sigma_D/sigma_L for views uniform on a cap of this angular span.
+
+    The closed form of §4.9, verified in tools/test_geometry_claims.py. Imported
+    from there rather than reimplemented, so a figure can never disagree with the
+    derivation it illustrates.
+    """
+    import math
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    from test_geometry_claims import cap_ratio
+    return 1.0 / math.sqrt(max(cap_ratio(math.radians(span_deg) / 2.0), 1e-12))
+
+
+def _instrument_protocols(path="results/kaggle_runs/instruments/summary.json"):
+    """(span, measured sigma_D/sigma_L, label) per protocol, or [] if unmeasured."""
+    if not os.path.exists(path):
+        return []
+    try:
+        bp = (json.load(open(path)) or {}).get("by_protocol") or {}
+    except Exception:
+        return []
+    names = {"full": "full orbit", "grazing": "grazing", "arc": "one-sided arc",
+             "cone": "low-parallax cone", "mixed": "mixed focal"}
+    out = []
+    for k, v in bp.items():
+        if k in names and v.get("median_span_deg"):
+            out.append((v["median_span_deg"], v["median_sigma_ratio_measured"],
+                        names[k]))
+    return sorted(out)
+
+
 def fig_anisotropy_curve(out):
-    """sigma_depth/sigma_lat = 1/sin(theta/2), with the capture protocols marked."""
+    """The prediction, both forms, against what the protocols actually measured.
+
+    Two curves, because the difference between them is a correction this project
+    had to make: the two-view closed form is exact for two cameras and understates
+    a distributed capture by sqrt(2). Plotting only the two-view curve would put
+    every measured point above the prediction and invite the reading that the
+    model is wrong, when the model being applied was the wrong one.
+    """
     import numpy as np
-    th = np.radians(np.linspace(1.5, 120, 400))
-    fig, ax = plt.subplots(figsize=(3.9, 2.6))
-    ax.plot(np.degrees(th), 1/np.sin(th/2), color=S1, lw=2.0, zorder=3)
-    ax.axhline(1.0, color=S2, lw=1.6, zorder=2)
-    ax.text(112, 1.14, "Mip-Splatting assumes 1", fontsize=7.0, color=S2, ha="right")
-    for deg, name in ((6, "low-parallax"), (20, "one-sided arc"), (75, "full orbit")):
-        v = 1/np.sin(np.radians(deg)/2)
-        ax.plot(deg, v, "o", color=INK, ms=5, mec=SURFACE, mew=1.2, zorder=4)
-        ax.annotate(f"{name}\n{v:.1f}×", (deg, v), xytext=(7, 3),
-                    textcoords="offset points", fontsize=7.0, color=INK_2)
-    ax.set_yscale("log"); ax.set_ylim(0.8, 60); ax.set_xlim(0, 120)
-    ax.set_yticks([1, 2, 5, 10, 20, 50]); ax.set_yticklabels(["1×","2×","5×","10×","20×","50×"])
-    ax.set_xlabel("parallax angle θ subtended at the primitive", fontsize=7.5)
+    deg = np.linspace(2.0, 179, 500)
+    fig, ax = plt.subplots(figsize=(5.2, 3.1))
+    ax.plot(deg, [_cap_sigma_ratio(d) for d in deg], color=S1, lw=2.0, zorder=4,
+            label="prediction — cameras over a cap (Eq. 4.10)")
+    ax.plot(deg, 1/np.sin(np.radians(deg)/2), color=S1, lw=1.4, ls=(0, (4, 3)),
+            zorder=3, label="two-view closed form (Eq. 4.8) — understates by $\\sqrt{2}$")
+    ax.axhline(1.0, color=S2, lw=1.6, zorder=2,
+               label="Mip-Splatting assumes 1 everywhere")
+
+    meas = _instrument_protocols()
+    for i, (span, val, name) in enumerate(meas):
+        ax.plot(span, val, "o", color=INK, ms=5.5, mec=SURFACE, mew=1.2, zorder=6,
+                label="measured (I-2, 8 scenes)" if i == 0 else None)
+    # full orbit and mixed focal sit at the same span and within 0.02x of each
+    # other -- which is itself the mixed-focal result -- so they are labelled as
+    # one point rather than as two overlapping ones.
+    by_name = {n: (s, v) for s, v, n in meas}
+    groups = []
+    if "full orbit" in by_name and "mixed focal" in by_name:
+        s, v = by_name["full orbit"]
+        groups.append(((s, v), f"full orbit {v:.2f}×\n"
+                               f"mixed focal {by_name['mixed focal'][1]:.2f}×",
+                       (-72, 30)))
+    for n, off in (("grazing", (-52, 4)), ("one-sided arc", (8, 12)),
+                   ("low-parallax cone", (10, -20))):
+        if n in by_name:
+            s, v = by_name[n]
+            groups.append(((s, v), f"{n}\n{v:.2f}×", off))
+    for (s, v), text, off in groups:
+        lead = abs(off[0]) > 30 or abs(off[1]) > 20
+        ax.annotate(text, (s, v), xytext=off, textcoords="offset points",
+                    fontsize=7.0, color=INK_2, linespacing=1.3, zorder=7,
+                    arrowprops=(dict(arrowstyle="-", color=MUTED, lw=0.6,
+                                     shrinkA=1, shrinkB=3) if lead else None))
+    ax.set_yscale("log"); ax.set_ylim(0.82, 40); ax.set_xlim(0, 190)
+    ax.set_yticks([1, 2, 5, 10, 20]); ax.set_yticklabels(["1×", "2×", "5×", "10×", "20×"])
+    ax.set_xticks([0, 45, 90, 135, 180])
+    ax.set_xlabel("angular span of the training cameras, at the primitive", fontsize=7.5)
     ax.set_ylabel("depth / lateral uncertainty", fontsize=7.5)
+    ax.legend(frameon=False, fontsize=6.9, loc="upper right", labelcolor=INK_2,
+              handlelength=2.0)
     _clean(ax)
     _save(fig, out, "fig6-anisotropy")
+
+
+# ----------------------------------------------------------- figs 7-10, measured
+# Everything below draws only from results/runs.csv and the runs' own summaries.
+# Each returns without writing anything if its measurement does not exist yet: a
+# figure is a claim, and an empty panel is preferable to an invented one.
+
+PROTO_ORDER = ["full", "grazing", "mixed", "arc", "cone"]
+PROTO_LABEL = {"full": "full orbit", "grazing": "grazing", "mixed": "mixed focal",
+               "arc": "one-sided arc", "cone": "low-parallax cone"}
+
+
+def _placeholder_panel(out, name, msg):
+    """A visibly empty figure, so the document builds and says what is missing.
+
+    The alternative --- emitting nothing --- breaks the LaTeX build on a missing
+    \\includegraphics, and the alternative to that is drawing the figure from
+    something other than a measurement, which is the one thing this file exists
+    to prevent.
+    """
+    fig, ax = plt.subplots(figsize=(5.6, 1.5))
+    ax.axis("off")
+    ax.text(0.5, 0.62, "not yet measured", ha="center", va="center",
+            fontsize=11, color=MUTED, style="italic")
+    ax.text(0.5, 0.26, msg, ha="center", va="center", fontsize=7.2, color=MUTED)
+    _save(fig, out, name)
+
+
+def _rows(path="results/runs.csv"):
+    if not os.path.exists(path):
+        return []
+    with open(path, newline="") as f:
+        return [r for r in csv.DictReader(f)
+                if r.get("psnr") and "SUPERSEDED" not in (r.get("notes") or "")]
+
+
+def _summaries(root="results/kaggle_runs"):
+    out = []
+    for d, _, files in os.walk(root):
+        for fn in files:
+            if fn.endswith("summary.json") or fn == "fps.json":
+                try:
+                    out.append(json.load(open(os.path.join(d, fn))))
+                except Exception:
+                    pass
+    return out
+
+
+# Every column that makes two rows a different configuration rather than a
+# repeat of the same one. Leaving any of these out silently merges unrelated
+# runs and reports their difference as harness noise: dropping load_allres alone
+# turned the 0.039 dB atomics spread into 2.4 dB, because it pooled STMT with
+# MTMT.
+CONFIG_KEY = ("dataset", "scene", "method", "arm", "train_scale", "test_scale",
+              "iterations", "load_allres", "kernel_size", "seed")
+
+
+def _seed_sigma(rows):
+    """Largest spread between repeats of one identical configuration, in dB."""
+    from collections import defaultdict
+    g = defaultdict(list)
+    for r in rows:
+        g[tuple(r.get(k) for k in CONFIG_KEY)].append(float(r["psnr"]))
+    sp = [max(v) - min(v) for v in g.values() if len(v) > 1]
+    return max(sp) if sp else None
+
+
+def fig_stress(out):
+    """The decisive experiment: paired Delta per protocol against the noise floor.
+
+    Paired within (scene, test scale) because both methods train on the same
+    protocol subset in the same session; a difference of two scene means would
+    not be the same quantity.
+    """
+    import numpy as np
+    rows = [r for r in _rows() if "/" in (r.get("train_scale") or "")]
+    if not rows:
+        print("fig7: no stress-suite rows yet — placeholder")
+        _placeholder_panel(out, "fig7-stress-delta",
+                           "generated from results/runs.csv once the stress "
+                           "suite has run")
+        return
+    sigma = _seed_sigma(_rows()) or 0.039
+
+    acc = {}
+    for r in rows:
+        proto = r["train_scale"].split("/")[1]
+        acc.setdefault(proto, {}).setdefault(r["method"], {}) \
+           .setdefault((r["scene"], r["test_scale"]), []).append(float(r["psnr"]))
+
+    floor = {}
+    for s in _summaries():
+        for key, job in (s.get("done") or {}).items():
+            parts = key.split("/")
+            if len(parts) == 3 and parts[0] == "b1" and "frac_above_floor" in job:
+                floor.setdefault(parts[2], []).append(job["frac_above_floor"])
+
+    protos, deltas, above = [], [], []
+    for p in PROTO_ORDER:
+        d = acc.get(p) or {}
+        mip, b1 = d.get("mip-splatting", {}), d.get("b1-fisher", {})
+        keys = sorted(set(mip) & set(b1))
+        if not keys:
+            continue
+        paired = [sum(b1[k]) / len(b1[k]) - sum(mip[k]) / len(mip[k]) for k in keys]
+        protos.append(PROTO_LABEL[p])
+        deltas.append(sum(paired) / len(paired))
+        f = floor.get(p)
+        above.append(sum(f) / len(f) if f else None)
+    if not protos:
+        print("fig7: no protocol has both methods — placeholder")
+        _placeholder_panel(out, "fig7-stress-delta",
+                           "no capture protocol has been run under both methods "
+                           "yet")
+        return
+
+    fig, ax = plt.subplots(figsize=(5.6, 3.0))
+    y = np.arange(len(protos))
+    ax.axvspan(-3 * sigma, 3 * sigma, color=GRID, zorder=1)
+    ax.axvline(0, color=MUTED, lw=1.0, zorder=2)
+    ax.barh(y, deltas, height=0.55, zorder=3,
+            color=[S1 if v > 0 else S2 for v in deltas])
+    for i, (v, a) in enumerate(zip(deltas, above)):
+        off = 4 if v >= 0 else -4
+        ax.annotate(f"{v:+.3f} dB   ({v/sigma:+.1f}σ)", (v, i), xytext=(off, 0),
+                    textcoords="offset points", fontsize=7.0, color=INK,
+                    va="center", ha="left" if v >= 0 else "right")
+        if a is not None:
+            ax.annotate(f"{a*100:.0f}% above floor", (0, i), xytext=(4, -11),
+                        textcoords="offset points", fontsize=6.6, color=MUTED,
+                        va="center", ha="left")
+    ax.set_yticks(y); ax.set_yticklabels(protos, fontsize=7.6)
+    ax.invert_yaxis()
+    lim = max(0.16, max(abs(v) for v in deltas) * 1.9)
+    ax.set_xlim(-lim, lim)
+    ax.set_xlabel("PSNR difference, B1 − Mip-Splatting (dB), paired per scene and scale",
+                  fontsize=7.4)
+    ax.text(3 * sigma, len(protos) - 0.35, f"  ±3σ = ±{3*sigma:.3f} dB",
+            fontsize=6.8, color=MUTED, va="center")
+    _clean(ax, ygrid=False); ax.xaxis.grid(True)
+    _save(fig, out, "fig7-stress-delta")
+
+
+def fig_floor(out):
+    """Where the Nyquist floor stops binding — the mechanism, in one panel.
+
+    The method can only differ from its baseline where the estimation term
+    exceeds the floor. This is that quantity, measured, across the capture
+    protocols, with unity marked: below it Proposition 2 applies and the two are
+    the same filter.
+    """
+    p = "results/kaggle_runs/instruments/summary.json"
+    if not os.path.exists(p):
+        print("fig8: instruments not run — placeholder")
+        _placeholder_panel(out, "fig8-floor-binding", "the instruments have not run")
+        return
+    bp = (json.load(open(p)) or {}).get("by_protocol") or {}
+    items = [(k, bp[k]) for k in PROTO_ORDER if k in bp]
+    if not items:
+        print("fig8: no protocols measured — placeholder")
+        _placeholder_panel(out, "fig8-floor-binding", "no protocol measured")
+        return
+
+    import numpy as np
+    fig, ax = plt.subplots(figsize=(5.2, 3.0))
+    x = np.arange(len(items))
+    vals = [v["median_ratio_est_over_floor_p50"] for _, v in items]
+    ax.axhline(1.0, color=INK_2, lw=1.2, ls=(0, (4, 3)), zorder=3)
+    ax.bar(x, vals, width=0.55, zorder=4,
+           color=[S1 if v > 1 else REF for v in vals])
+    for i, val in enumerate(vals):
+        ax.annotate(f"{val:.2f}", (i, val), xytext=(0, 3), textcoords="offset points",
+                    fontsize=7.2, color=INK, ha="center", weight="bold")
+    ax.set_yscale("log"); ax.set_ylim(0.08, 400)
+    ax.set_yticks([0.1, 0.3, 1, 3, 10, 30])
+    ax.set_yticklabels(["0.1", "0.3", "1", "3", "10", "30"])
+    # The span and the floor occupancy belong with the protocol's name, not
+    # written over its bar where the contrast fights the fill.
+    ax.set_xticks(x)
+    ax.set_xticklabels(
+        [f"{PROTO_LABEL[k]}\nspan {v['median_span_deg']:.0f}°\n"
+         f"{v['median_frac_exceeding_floor_worst_dir']*100:.0f}% / "
+         f"{v['median_frac_exceeding_floor_all_dirs']*100:.0f}%"
+         for k, v in items], fontsize=6.9, linespacing=1.5)
+    ax.set_ylabel("estimation term ÷ Nyquist floor  (median)", fontsize=7.5)
+    # One caption block, in the only region no bar occupies. Splitting it above
+    # and below the line reads better but puts grey text across three bars.
+    ax.text(-0.42, 78,
+            "dashed line: the Nyquist floor.\n"
+            "above it the estimation term governs, and B1 can differ;\n"
+            "below it Proposition 2 makes B1 $\\equiv$ Mip-Splatting exactly.",
+            fontsize=7.0, color=INK_2, ha="left", va="top", linespacing=1.5)
+    _clean(ax)
+    ax.tick_params(axis="x", pad=4)
+    _save(fig, out, "fig8-floor-binding")
+
+
+def fig_parity(out):
+    """Proposition 2 as a picture: B1 against its baseline on matched scenes."""
+    rows = [r for r in _rows()
+            if r.get("dataset") == "blender" and r.get("iterations") == "30000"
+            and r.get("load_allres") == "False" and r.get("seed") == "0"
+            and (r.get("train_scale") == "1x"
+                 or (r.get("train_scale") or "").endswith("/full"))]
+    per = {}
+    for r in rows:
+        per.setdefault(r["method"], set()).add(r["scene"])
+    order = [m for m in ("3dgs", "mip-splatting", "b1-fisher") if per.get(m)]
+    if len(order) < 2:
+        print("fig9: fewer than two methods measured — placeholder")
+        _placeholder_panel(out, "fig9-parity", "fewer than two methods measured")
+        return
+    common = set.intersection(*(per[m] for m in order))
+    if not common:
+        print("fig9: no scene measured under every method — placeholder")
+        _placeholder_panel(out, "fig9-parity",
+                           "no scene has been measured under every method")
+        return
+
+    import numpy as np
+    scales = ["1x", "1/2", "1/4", "1/8"]
+    acc = {}
+    for r in rows:
+        if r["scene"] in common and r["method"] in order:
+            acc.setdefault(r["method"], {}).setdefault(r["test_scale"], []) \
+               .append(float(r["psnr"]))
+    sigma = _seed_sigma(_rows()) or 0.039
+
+    fig, axes = plt.subplots(1, 2, figsize=(7.1, 2.9),
+                             gridspec_kw={"width_ratios": [1.25, 1]})
+    x = np.arange(len(scales))
+    style = {"3dgs": (S2, "3DGS"), "mip-splatting": (S1, "Mip-Splatting"),
+             "b1-fisher": (INK, "B1 — Fisher band-limit")}
+    for m in order:
+        c, lab = style[m]
+        vals = [sum(acc[m][s]) / len(acc[m][s]) if acc[m].get(s) else None
+                for s in scales]
+        ls = (0, (5, 2)) if m == "b1-fisher" else "-"
+        axes[0].plot(x, vals, color=c, lw=1.9, ls=ls, marker="o", ms=4.5,
+                     mec=SURFACE, mew=1.0, label=lab, zorder=4)
+    axes[0].set_xticks(x); axes[0].set_xticklabels(["full", "½", "¼", "⅛"])
+    axes[0].set_xlabel("test scale", fontsize=7.5)
+    axes[0].set_ylabel("PSNR (dB)", fontsize=7.5)
+    axes[0].legend(frameon=False, fontsize=7.0, labelcolor=INK_2, loc="lower left")
+    axes[0].set_title(f"{len(common)} scene(s) measured under every method",
+                      fontsize=8.0, loc="left", pad=8)
+    _clean(axes[0])
+
+    if "b1-fisher" in acc and "mip-splatting" in acc:
+        d = [(sum(acc["b1-fisher"][s]) / len(acc["b1-fisher"][s])
+              - sum(acc["mip-splatting"][s]) / len(acc["mip-splatting"][s]))
+             if acc["b1-fisher"].get(s) and acc["mip-splatting"].get(s) else 0.0
+             for s in scales]
+        axes[1].axhspan(-sigma, sigma, color=GRID, zorder=1)
+        axes[1].axhline(0, color=MUTED, lw=1.0, zorder=2)
+        axes[1].bar(x, d, width=0.5, color=S1, zorder=3)
+        for i, v in enumerate(d):
+            axes[1].annotate(f"{v:+.3f}", (i, v), xytext=(0, 3 if v >= 0 else -10),
+                             textcoords="offset points", fontsize=6.8, color=INK,
+                             ha="center")
+        axes[1].set_xticks(x); axes[1].set_xticklabels(["full", "½", "¼", "⅛"])
+        axes[1].set_ylim(-max(0.25, max(abs(v) for v in d) * 2.2),
+                         max(0.25, max(abs(v) for v in d) * 2.2))
+        axes[1].set_ylabel("B1 − Mip-Splatting (dB)", fontsize=7.5)
+        axes[1].set_title(f"Proposition 2 requires 0; shaded band is ±σ = {sigma:.3f} dB",
+                          fontsize=7.6, loc="left", pad=8)
+        _clean(axes[1], ygrid=False); axes[1].yaxis.grid(True)
+    _save(fig, out, "fig9-parity")
+
+
+def fig_b2(out):
+    """B2: the fraction of non-DC SH the criterion keeps, by capture protocol."""
+    # Prefer the B2 run's own sweep: it is built from the same camera_protocols
+    # definition the instruments use, where the checked-in file predates the
+    # switch from fixed camera counts to angular extent.
+    p = None
+    for d, _, files in os.walk("results/kaggle_runs"):
+        for fn in files:
+            if fn == "b2_protocols.json":
+                p = os.path.join(d, fn)
+    if p is None:
+        p = "results/b2_protocols/protocols.json"
+    if not os.path.exists(p):
+        print("fig10: B2 protocol sweep not present — placeholder")
+        _placeholder_panel(out, "fig10-b2-retention", "the B2 sweep has not run")
+        return
+    try:
+        data = json.load(open(p))
+    except Exception:
+        return
+    # Keyed "<scene>/<protocol>"; average over whatever scenes were evaluated.
+    acc = {}
+    for key, v in data.items():
+        if not isinstance(v, dict) or "non_dc_retained" not in v:
+            continue
+        p = v.get("protocol") or (key.split("/")[-1])
+        e = acc.setdefault(p, {"frac": [], "lmax": [], "span": []})
+        e["frac"].append(v["non_dc_retained"])
+        e["lmax"].append(v.get("mean_l_max"))
+        if v.get("span_deg"):
+            e["span"].append(v["span_deg"])
+    rows = []
+    for k in PROTO_ORDER:
+        e = acc.get(k)
+        if not e or not e["frac"]:
+            continue
+        lm = [x for x in e["lmax"] if x is not None]
+        rows.append((PROTO_LABEL[k], sum(e["frac"]) / len(e["frac"]),
+                     (sum(lm) / len(lm)) if lm else None,
+                     (sum(e["span"]) / len(e["span"])) if e["span"] else None))
+    if not rows:
+        print("fig10: no usable B2 rows — placeholder")
+        _placeholder_panel(out, "fig10-b2-retention", "no usable B2 rows")
+        return
+
+    import numpy as np
+    fig, ax = plt.subplots(figsize=(5.2, 2.9))
+    x = np.arange(len(rows))
+    ax.bar(x, [r[1] * 100 for r in rows], width=0.55, color=S1, zorder=3)
+    for i, r in enumerate(rows):
+        ax.annotate(f"{r[1]*100:.1f}%", (i, r[1] * 100), xytext=(0, 3),
+                    textcoords="offset points", fontsize=7.0, color=INK, ha="center")
+        if r[2] is not None:
+            ax.annotate(f"$\\ell_{{max}}$ = {r[2]:.2f}", (i, 2.5), fontsize=6.7,
+                        color=MUTED, ha="center", va="bottom", zorder=5)
+    ax.set_xticks(x); ax.set_xticklabels([r[0] for r in rows], fontsize=7.2)
+    ax.set_ylim(0, 112)
+    ax.set_ylabel("non-DC SH coefficients retained (%)", fontsize=7.5)
+    ax.set_title("B2 keeps degree 3 where the views support it, and not otherwise",
+                 fontsize=8.0, loc="left", pad=8)
+    _clean(ax)
+    _save(fig, out, "fig10-b2-retention")
 
 
 # ------------------------------------------------------------------- entry point
@@ -417,6 +816,12 @@ def main():
     fig_cost_quality(a.out)
     fig_fisher_geometry(a.out)
     fig_anisotropy_curve(a.out)
+    # Measured-result figures. Each refuses to draw if its run has not happened,
+    # so the figure set is always a truthful picture of what exists.
+    fig_stress(a.out)
+    fig_floor(a.out)
+    fig_parity(a.out)
+    fig_b2(a.out)
 
 
 if __name__ == "__main__":

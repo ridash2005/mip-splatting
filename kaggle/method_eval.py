@@ -145,8 +145,14 @@ def run_one(gpu, method, scene, proto):
     out = f"{WORK}/out/{tag}"
     env = f"OMP_NUM_THREADS=4 CUDA_VISIBLE_DEVICES={gpu}"
     spec = protocol_spec[scene][proto]
-    subset = json.dumps(spec["idx"])
-    sub_flag = "" if proto == "full" else f"--camera_subset '{subset}'"
+    # The whole spec, not just the index list: `mixed` keeps every camera and
+    # changes a seeded half's focal length, so passing only `idx` would train it
+    # identically to the full orbit and record the result under the other name.
+    payload = {"idx": spec["idx"]}
+    if spec.get("focal"):
+        payload["focal"] = spec["focal"]
+    sub_flag = ("" if proto == "full"
+                else f"--camera_subset '{json.dumps(payload)}'")
     st = {"protocol": proto, "n_train_cameras": spec["n"], "span_deg": spec["span_deg"]}
 
     probe = kc.VramProbe(gpu=gpu)

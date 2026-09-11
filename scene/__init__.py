@@ -78,13 +78,48 @@ class Scene:
         subset = getattr(args, "camera_subset", "")
         if subset:
             import json as _json
-            idx = _json.loads(subset) if subset.strip().startswith("[") \
+            from PIL import Image
+            from utils.graphics_utils import fov2focal
+            spec = _json.loads(subset) if subset.strip().startswith(("[", "{")) \
                 else _json.load(open(subset))
-            if isinstance(idx, dict):
-                idx = idx["idx"]
+            focal = None
+            if isinstance(spec, dict):
+                idx, focal = spec["idx"], spec.get("focal")
+            else:
+                idx = spec
             before = len(scene_info.train_cameras)
-            scene_info = scene_info._replace(
-                train_cameras=[scene_info.train_cameras[i] for i in idx])
+            picked = [scene_info.train_cameras[i] for i in idx]
+
+            # `mixed_focal` is the one protocol that changes INTRINSICS rather
+            # than pose: every camera is kept and a seeded random half is
+            # downsampled. Restricting the index list alone leaves it identical
+            # to the full orbit -- the protocol would then be recorded under a
+            # name for a capture it is not, which is precisely the defect §7.2
+            # exists to warn about.
+            #
+            # Downsampling by k scales the focal length AND the image dimensions
+            # by 1/k, so the field of view is UNCHANGED and what changes is the
+            # pixel footprint -- which is the whole point, since f_k takes
+            # d_min and f_max from different cameras. Overriding the FoV instead
+            # would point the camera somewhere else and render a different scene.
+            if focal:
+                assert len(focal) == len(idx), (
+                    f"camera_subset: {len(focal)} focal lengths for "
+                    f"{len(idx)} cameras")
+                changed = 0
+                for j, cam in enumerate(picked):
+                    k = fov2focal(cam.FovX, cam.width) / float(focal[j])
+                    if abs(k - 1.0) < 1e-6:
+                        continue
+                    w, h = max(1, round(cam.width / k)), max(1, round(cam.height / k))
+                    picked[j] = cam._replace(
+                        image=cam.image.resize((w, h), Image.LANCZOS),
+                        width=w, height=h)
+                    changed += 1
+                print(f"camera_subset: downsampled {changed} of {len(picked)} "
+                      f"cameras; field of view unchanged, pixel footprint is not")
+
+            scene_info = scene_info._replace(train_cameras=picked)
             print(f"camera_subset: training on {len(idx)} of {before} cameras")
 
         for resolution_scale in resolution_scales:

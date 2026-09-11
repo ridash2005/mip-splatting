@@ -61,24 +61,39 @@ signal-processing failure mode. The objects involved are familiar ones.
   \end{tabular}
 \end{table}
 
-The contribution is to compute the acquisition-side prefilter from estimation
-theory rather than choosing it, and to make it anisotropic because the
-information is.
+The contribution is to compute the acquisition-side prefilter from the
+conditioning of the capture rather than choosing it, and to keep it anisotropic
+because the information is. \emph{An} anisotropic 3D filter is not itself new
+--- AAA-Gaussians (2025) has one, derived from the view being rendered --- and
+neither is a per-primitive second-order information matrix, which PUP 3D-GS
+(2025) builds in order to prune. Section~\ref{sec:relatedwork} states the line of
+separation precisely and Chapter~\ref{ch:discussion} returns to it; the short
+form is that what is new here is the \emph{source} of the anisotropy and the
+retention of its \emph{spectrum}.
 
 \section{Contributions}
 
 \begin{enumerate}[leftmargin=1.4em,itemsep=2pt]
   \item A derivation of the per-primitive, per-direction band-limit from the
-        Fisher information of the capture geometry, using the same Jacobian the
-        renderer already forms (\S\ref{sec:jacobian}--\S\ref{sec:accumulation}).
+        conditioning of the training capture --- an observability matrix
+        accumulated from the same Jacobian the renderer already forms
+        (\S\ref{sec:jacobian}--\S\ref{sec:accumulation}). The novelty is that
+        the band-limit is a function of the cameras that \emph{saw} the
+        primitive, not of the camera now rendering it, and that its whole
+        spectrum is used rather than a scalar summary
+        (\S\ref{sec:relatedwork}).
   \item A proof that Mip-Splatting's scalar filter is the single-view,
         lateral-only, isotropised special case, with its constant $\sqrt{0.2}$
         identified as $s\,\sigma_{\mathrm{pix}} = 0.447$\,px
         (\S\ref{sec:proposition1}).
-  \item An exact expression for the anisotropy,
-        $\sigma_{\mathrm{depth}}/\sigma_{\mathrm{lat}} = 1/\sin(\theta/2)$, which
-        predicts where the method must help and where it must not
-        (\S\ref{sec:anisotropy}).
+  \item Exact expressions for the anisotropy in three regimes: within one view,
+        $\lambda_2/\lambda_1 = \cos^2\varphi$ off-axis (\S\ref{sec:offaxis});
+        across two views, the triaxial spectrum
+        $\{2, 2\cos^2(\theta/2), 2\sin^2(\theta/2)\}$
+        (\S\ref{sec:anisotropy}); and over a distribution of views, the cap form
+        of \S\ref{sec:capprediction}, which is what a real protocol obeys and
+        which the two-view form understates by $\sqrt{2}$. Together they predict
+        where the method must help and where it must not.
   \item An exact-reduction theorem making parity on well-conditioned benchmarks
         structural (\S\ref{sec:proposition2}).
   \item An angular identifiability criterion for spherical-harmonic

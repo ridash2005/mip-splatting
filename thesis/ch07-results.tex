@@ -263,6 +263,29 @@ peak of $\rZeroPeakVram$\,MB of VRAM. The last of these matters for scope: 16\,G
 is nowhere near binding on the Blender scenes, so the compute envelope of
 \S\ref{ch:design} constrains the \emph{real} scenes and not these.
 
+\section{Render speed, measured rather than argued}
+\label{sec:fps}
+
+Section~\ref{sec:implcost} argues that B1 cannot cost anything at render time:
+$\Lambda_k$ is recomputed on the filter's own training schedule and never inside
+the render loop. That is an argument about code, and the first question a
+graphics audience asks deserves a measurement.
+
+\input{generated/table-fps}
+
+\keybox{the \texttt{render\_fps} column of Table~\ref{tab:cost} does not measure
+rendering}{%
+It is views divided by the wall time of a whole \texttt{render.py} invocation,
+so it carries the process start, the scene load, the PLY parse, PNG encoding and
+the disk writes --- which is why it reads $8$--$10$ against a published
+$180$--$300$, and why quoting it as a rendering result would be a serious
+misreading of this project's own data. It is retained in Table~\ref{tab:cost}
+because it is what that rung logged and deleting a logged number is not an
+option; it is not used as a rendering claim anywhere. The measurement that
+answers the question is Table~\ref{tab:fps}, and what it defends is the
+\emph{ratio}, since every cost shared by the three arms has been excluded from
+all of them equally.}
+
 \section{The instruments --- I-1 and I-2}
 \label{sec:instrumentresults}
 
@@ -272,6 +295,22 @@ of its own. Both were therefore run over every trained scene, and over the five
 capture protocols of \S\ref{sec:stress}, at a total cost of two minutes.
 
 \input{generated/table-instruments}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.86\linewidth]{figures/fig8-floor-binding.pdf}
+  \caption{The mechanism, measured. B1 can only differ from Mip-Splatting where
+  the estimation term $s^2/\lambda_i$ exceeds the Nyquist floor $f_k^2$; below
+  the dashed line Proposition~\ref{prop:reduction} makes them the same filter to
+  numerical precision. On the standard full orbit the floor dominates by a factor
+  of three, and it still dominates under grazing and mixed-focal capture. Only
+  the arc and the cone cross the line --- which is the entire content of the
+  claim that this method is a capture-conditioning method and not a general
+  improvement. The percentages under each protocol are the fraction of
+  primitives above the floor in the worst-constrained direction and in all
+  directions.}
+  \label{fig:floorbinding}
+\end{figure}
 
 \subsection*{I-1 on the standard benchmark: the floor binds everywhere}
 On the full orbit, the estimation term $s^2/\lambda_i$ exceeds
@@ -310,14 +349,33 @@ exactly as Equation~\eqref{eq:anisotropy} requires:
         others.
   \item \textbf{Low-parallax cone} ($20^\circ$ span): the estimation term
         exceeds the floor in \emph{all} directions on $100\,\%$ of primitives,
-        by a median factor of $12$. Per scene the measured
-        $\sigma_{\mathrm{depth}}/\sigma_{\mathrm{lat}}$ runs from $4.5\times$ at
-        a $29^\circ$ span to $19.2\times$ at $10^\circ$ --- against the
-        $19\times$ that Table~\ref{tab:regimes} predicts at $6^\circ$.
-  \item \textbf{Grazing} views degrade the conditioning mildly ($1.45\times$),
-        and \textbf{mixed focal} barely at all ($1.16\times$ against the full
-        orbit's $1.14\times$).
+        by a median factor of $12$. The measured
+        $\sigma_{\mathrm{depth}}/\sigma_{\mathrm{lat}}$ is $\instConeAniso\times$
+        against the $\instConeCap\times$ that Equation~\eqref{eq:cap} predicts at
+        that span.
+  \item \textbf{Grazing} views degrade the conditioning mildly
+        ($\instGrazingAniso\times$ measured, $\instGrazingCap\times$ predicted),
+        and \textbf{mixed focal} barely at all ($\instMixedAniso\times$ against
+        the full orbit's $\instFullAniso\times$).
 \end{itemize}
+
+\keybox{the prediction has to be the cap form, and then it holds}{%
+Every measured anisotropy above exceeds the two-view prediction of
+Equation~\eqref{eq:anisotropy}, and by roughly the same factor throughout ---
+$1.14$ against $1.00$, $2.28$ against $1.56$, $9.45$ against $5.76$. That is not
+five independent discrepancies; it is one, and \S\ref{sec:capprediction} names
+it. A protocol is a distribution of cameras over an angular window, not two
+cameras at its ends, and for a cap the correct $\lambda_3/\lambda_1$ is
+asymptotically \emph{half} the two-view value --- so the two-view form
+understates $\sigma_D/\sigma_L$ by $\sqrt{2}$. Against Equation~\eqref{eq:cap},
+evaluated at each protocol's own measured span, the five rows of
+Table~\ref{tab:instruments} agree to $10$--$15\,\%$ instead of being low by
+$60\,\%$. The residual is one-signed --- measurement always slightly above
+prediction --- which is what \S\ref{sec:offaxis} leads one to expect: the cap
+model is parallax-only, and perspective adds anisotropy of its own that a cap of
+ray directions does not contain. The largest residual, grazing at
+$\instGrazingAniso\times$ against a predicted $\instGrazingCap\times$, is the
+protocol built to maximise obliquity, which is the same statement.}
 
 So gates G3 and G4 are both passed, and the regime table of
 \S\ref{sec:anisotropy} is confirmed as a measurement rather than left as a
@@ -342,6 +400,20 @@ it did.
 \label{sec:table2m}
 
 \input{generated/table-method}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\linewidth]{figures/fig9-parity.pdf}
+  \caption{Proposition~\ref{prop:reduction} as a measurement. \emph{Left:} the
+  three methods over the scenes measured under all of them --- B1's curve is
+  drawn dashed \emph{on top of} Mip-Splatting's, and is invisible beneath it
+  because that is what the proposition requires. \emph{Right:} the same thing as
+  a difference, against the harness's own run-to-run spread. Every scale sits
+  inside $\pm\sigma$. The 3DGS curve is there to set the scale: the difference
+  the band-limit makes is several decibels, and the difference between
+  \emph{which} band-limit is hundredths of one.}
+  \label{fig:parity}
+\end{figure}
 
 \keybox{the prediction here was parity, and it was recorded first}{%
 I-1 measured the Nyquist floor binding on $100\,\%$ of primitives on these
@@ -419,6 +491,19 @@ one session on the same data with the same seed, so the delta is paired.
 
 \input{generated/table-stress}
 
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.9\linewidth]{figures/fig7-stress-delta.pdf}
+  \caption{The central empirical claim, in one panel. Paired PSNR difference
+  between B1 and Mip-Splatting per capture protocol, with the harness's own
+  run-to-run spread shaded at $\pm3\sigma$; a bar inside the shaded band is not a
+  result. Protocols are ordered by conditioning, best at the top, and each
+  carries the fraction of primitives on which the estimation term exceeded the
+  Nyquist floor --- which is what determines whether the two arms were running
+  the same filter at all.}
+  \label{fig:stress}
+\end{figure}
+
 \section{Table 4 --- B2, angular identifiability}
 \label{sec:table4}
 
@@ -437,6 +522,18 @@ demonstrated on a full orbit, and this is now measured for both rather than
 argued for one.}
 
 \input{generated/table-b2-protocols}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.82\linewidth]{figures/fig10-b2-retention.pdf}
+  \caption{B2 across the capture protocols. The same shape as
+  Figure~\ref{fig:floorbinding}, in the angular domain rather than the spatial
+  one: on a well-conditioned capture the criterion keeps every coefficient and
+  the method reduces to its baseline, and it removes coefficients only where the
+  views cannot support them. A criterion that pruned on the full orbit would be
+  wrong, not economical.}
+  \label{fig:b2retention}
+\end{figure}
 
 Under degraded capture the criterion does what \S\ref{ch:method2} claims: a
 primitive seen from a narrow cone cannot support degree 3, and is not given it.

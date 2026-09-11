@@ -8,22 +8,39 @@ measurements, the accumulated sampling Fisher information
 \[
   \Lambda_k \;=\; \sum_n w_{nk}\,(J_nW_n)^{\!\top}\,\Sigma_{\mathrm{pix}}^{-1}\,(J_nW_n)
 \]
-gives, by the Cram\'er--Rao bound, a direction-dependent floor on how precisely
-the capture localises that primitive.
+--- a per-primitive observability matrix, and the Fisher information of that
+measurement model at unit weights --- gives a direction-dependent floor on how
+precisely the capture localises that primitive. Cram\'er--Rao motivates the form;
+the claim tested is the weaker one that structure finer than $1/\sqrt{\lambda_i}$
+along eigendirection $i$ is not identifiable from these images.
 
 We prove three things. First, Mip-Splatting's filter is exactly the
 single-view, lateral-only, isotropised special case of this expression, and its
 constant $\sqrt{0.2}$ is precisely the product $s\,\sigma_{\mathrm{pix}}$ --- a
-confidence radius of $0.447$ pixels. Second, for two views subtending a parallax
-angle $\theta$ at the primitive, the ratio of depth to lateral uncertainty is
-exactly $1/\sin(\theta/2)$, so a scalar filter under-smooths along depth by
-$5.8\times$ on a $20^\circ$ arc and by $19\times$ on a $6^\circ$ cone, while
-approaching correctness on a full orbit. Third, flooring the anisotropic filter
-at Mip-Splatting's own value makes the method reduce to that baseline exactly
-when the floor dominates, so parity on well-conditioned benchmarks is a
-structural guarantee rather than an empirical hope. We additionally propose a
-per-primitive angular identifiability criterion that masks spherical-harmonic
-coefficients the capture cannot determine --- 76\,\% of the model's parameters.
+confidence radius of $0.447$ pixels, which identifies a magic number in a
+published paper. Second, the anisotropy has a closed form in three regimes: a
+single view is already anisotropic off-axis by $\cos^2\varphi$; two views
+subtending $\theta$ give the triaxial spectrum
+$\{2,\,2\cos^2(\theta/2),\,2\sin^2(\theta/2)\}$; and a \emph{distribution} of
+views over an angular span --- which is what a capture protocol actually is ---
+obeys a cap form that the two-view expression understates by $\sqrt{2}$. Against
+that form, the measured conditioning of five capture protocols agrees to
+$10$--$15\,\%$, where the two-view expression is low by $60\,\%$. Third,
+flooring the anisotropic filter at Mip-Splatting's own value makes the method
+reduce to that baseline exactly when the floor dominates, so parity on
+well-conditioned benchmarks is a structural guarantee rather than an empirical
+hope. We additionally propose a per-primitive angular identifiability criterion
+that masks spherical-harmonic coefficients the capture cannot determine ---
+76\,\% of the model's parameters.
+
+Concurrent work has narrowed what may be claimed here, and the narrowing is
+stated rather than defended. AAA-Gaussians (2025) already makes the 3D filter a
+full $3\times3$, derived from the view being rendered; PUP 3D-GS (2025) already
+builds a per-primitive second-order spatial sensitivity, which it collapses to a
+scalar and thresholds for pruning. What is new is therefore neither the
+anisotropy nor the matrix, but the \emph{source} of the anisotropy --- the
+conditioning of the training capture, fixed once per primitive --- and the
+retention of its \emph{spectrum}.
 
 \medskip
 \keybox{status of this version}{%

@@ -36,7 +36,7 @@ nothing about depth. For a pinhole camera the eigenvalues of $I_n$ are exactly
 $(0,\ (f/z)^2/\sigma_{\mathrm{pix}}^2,\ (f/z)^2/\sigma_{\mathrm{pix}}^2)$
 (Appendix~\ref{app:rank}). Depth information exists only through parallax.
 
-\section{Accumulation and the bound}
+\section{Accumulation, and what $\Lambda_k$ is}
 \label{sec:accumulation}
 Summing over views, weighted by each view's visibility and blending contribution
 $w_{nk}$ --- which the rasteriser already accumulates ---
@@ -45,10 +45,42 @@ $w_{nk}$ --- which the rasteriser already accumulates ---
   \;=\; V\,\mathrm{diag}(\lambda_1,\lambda_2,\lambda_3)\,V^{\!\top}.
   \label{eq:lambda}
 \end{equation}
-By the Cram\'er--Rao bound, any unbiased estimator of $p_k$ satisfies
-$\mathrm{Cov}(\hat p_k) \succeq \Lambda_k^{-1}$. Along eigendirection $i$, the
-position is determined to no better than a standard deviation
-$1/\sqrt{\lambda_i}$.
+
+\paragraph{The weight, defined.} $w_{nk} = T_{nk}\,\alpha_k \in [0,1]$ is the
+primitive's blending contribution in view $n$: the transmittance accumulated in
+front of it times its own opacity, which is exactly the coefficient the
+rasteriser already multiplies its colour by. It is zero for a primitive the view
+does not see and near one for an unoccluded opaque one. This weighting is a
+\emph{heuristic} down-weighting of occluded views and not part of any likelihood:
+a view that cannot see a primitive carries no information about it, and $w_{nk}$
+is the cheapest available statement of that fact. It is stated as a heuristic
+because calling it anything more would be a claim the derivation does not
+support.
+
+\paragraph{What the matrix is, precisely.} With unit weights,
+Equation~\eqref{eq:lambda} \emph{is} the Fisher information of the measurement
+model in Equation~\eqref{eq:measurement}. With the weights it is not, so the
+honest name for $\Lambda_k$ is an \textbf{observability matrix} --- a
+view-weighted accumulation of the per-view measurement information, coinciding
+with the Fisher information exactly when $w_{nk} \equiv 1$. Under the
+point-feature approximation of Equation~\eqref{eq:measurement},
+Equation~\eqref{eq:lambda} is also the Gauss--Newton approximation to the Hessian
+of the photometric cost in $p_k$: the residual is linearised through $J_nW_n$ and
+second-derivative terms are dropped, which is what every bundle adjustment does
+and for the same reason.
+
+\paragraph{Why this matters for the claim.} The Cram\'er--Rao bound
+$\mathrm{Cov}(\hat p_k) \succeq \Lambda_k^{-1}$ holds for an unbiased estimator
+of the measurement model as written. A splatting optimiser is not that estimator:
+it fits a photometric loss over a densifying set of correlated primitives, not
+independent point features with Gaussian localisation noise. Cram\'er--Rao is
+therefore kept as the \emph{motivation} for the form of
+Equation~\eqref{eq:filtervar} --- it says why the inverse of an information
+matrix is the right shape for a resolution limit --- and is not asserted as a
+bound this work verifies. What is asserted, and what the experiments test, is
+weaker and sufficient: along eigendirection $i$ the capture constrains position
+to order $1/\sqrt{\lambda_i}$, so structure finer than that is not identifiable
+from these images.
 
 \keybox{principle}{%
 A primitive should not be narrower, along a given direction, than the
@@ -69,11 +101,28 @@ at a scene-scale fraction:
   \quad \alpha_k \leftarrow \alpha_k\sqrt{|\Sigma_k|/|\Sigma_k+\Sigma_{\mathrm{filt}}|}.
   \label{eq:filter}
 \end{equation}
-Two hyperparameters are introduced and none removed. $s$ is a confidence
-scaling, default $1$ (one standard deviation). $\beta$ caps the filter in
+Two hyperparameters are introduced and none removed. $\beta$ caps the filter in
 degenerate directions where $\lambda_i \to 0$; without it an unconstrained
 direction would produce an unbounded primitive. The opacity compensation is
-Mip-Splatting's own, unchanged.
+Mip-Splatting's own, unchanged, and Appendix~\ref{app:mass} shows it carries over
+to an anisotropic $\Sigma_{\mathrm{filt}}$ without modification.
+
+\paragraph{$s$ and $\sigma_{\mathrm{pix}}$, disentangled.} These two appear only
+as the product $s\,\sigma_{\mathrm{pix}}$, so quoting a default for one and a
+value for the product over-determines them. The convention used throughout, and
+the one the implementation follows:
+\begin{itemize}[leftmargin=1.4em,itemsep=2pt]
+  \item $\sigma_{\mathrm{pix}} = \sqrt{0.2} = 0.447$\,px is \emph{inherited},
+        not chosen. Proposition~\ref{prop:constant} shows it is the localisation
+        noise implicit in Mip-Splatting's constant, and taking it verbatim is
+        what makes Proposition~\ref{prop:reduction} exact rather than
+        approximate.
+  \item $s$ is the dimensionless confidence multiplier, default $\mathbf{1}$
+        (one standard deviation). It is the only free knob of the pair, and
+        every result in this thesis is at $s=1$.
+\end{itemize}
+So $s\,\sigma_{\mathrm{pix}} = 0.447$\,px at the default, and a reader changing
+$s$ changes the confidence level and nothing else.
 
 \paragraph{Consistency of the floor and the cap.} The floor must never exceed the
 cap, or Equation~\eqref{eq:filtervar} would be ill-posed. Requiring
@@ -106,20 +155,104 @@ method and its baseline from ``similar in spirit'' into ``the baseline is a
 corollary'', and it explains a magic number in a published paper.
 Appendix~\ref{app:prop1} gives the derivation in full.
 
+\section{One view is already anisotropic}
+\label{sec:offaxis}
+
+Before parallax enters at all, there is anisotropy the scalar filter discards.
+Section~\ref{sec:jacobian} quotes the single-view eigenvalues
+$(0, (f/z)^2, (f/z)^2)/\sigma_{\mathrm{pix}}^2$, and that is exact --- \emph{on
+the optical axis}. The convenient rank-1 form
+$(f/z)^2(I - dd^{\!\top})/\sigma_{\mathrm{pix}}^2$ that suggests it is a
+projector scaled by $(f/z)^2$, and a projector's non-zero eigenvalues are equal
+by construction, whatever $d$ is. The true $J_n^{\!\top}J_n$ is not a projector
+off-axis.
+
+Writing $a = (x/z,\,y/z)$ for the normalised off-axis displacement,
+$J = (f/z)B$ with $B = \big[\begin{smallmatrix}1&0&-a_1\\0&1&-a_2\end{smallmatrix}\big]$,
+so $BB^{\!\top}$ has trace $2+|a|^2$ and determinant $1+|a|^2$. Its eigenvalues
+are therefore $1+|a|^2$ and $1$, giving
+\begin{equation}
+  \frac{\lambda_2}{\lambda_1} \;=\; \frac{1}{1+|a|^2} \;=\; \cos^2\varphi,
+  \qquad \varphi = \arctan|a| \ \text{the off-axis angle.}
+  \label{eq:offaxis}
+\end{equation}
+
+\input{generated/table-geometry}
+
+At the corner of a $50^\circ$-field camera $\varphi$ approaches $25^\circ$ and
+the two lateral eigenvalues already differ by $20\,\%$; the sampled poses of
+Table~\ref{tab:offaxis} run from $0.93$ down to $0.47$. So \textbf{perspective
+contributes anisotropy independently of parallax}, and a scalar filter discards
+it before the parallax argument of \S\ref{sec:anisotropy} has even begun. The
+implementation uses the full $J_nW_n$ and never the rank-1 shortcut, so this
+term is retained rather than recovered; the shortcut appears in this document
+only where it makes an argument shorter, and Equation~\eqref{eq:offaxis} records
+what it costs. This is also the most likely explanation for the residual in
+\S\ref{sec:instrumentresults}: the grazing protocol, which is a full orbit tilted
+towards obliquity, measures more anisotropy than any parallax-only model
+predicts.
+
 \section{The anisotropy, exactly}
 \label{sec:anisotropy}
 Consider two cameras at distance $z$, symmetric about the primitive, subtending
 a parallax angle $\theta$. Evaluating Equation~\eqref{eq:lambda}
-(Appendix~\ref{app:twoview}) gives the closed form
+(Appendix~\ref{app:twoview}) gives $\Lambda \propto 2I - d_1d_1^{\!\top} -
+d_2d_2^{\!\top}$, whose spectrum is exactly
+$\{2,\ 2\cos^2(\theta/2),\ 2\sin^2(\theta/2)\}$ --- three distinct values, so the
+correct filter is \emph{triaxial}: the in-plane lateral direction is degraded as
+well as depth, and only the direction perpendicular to the plane of the two rays
+is fully constrained. Taking the extreme pair,
 \begin{equation}
   \frac{\lambda_3}{\lambda_1} = \sin^2(\theta/2),
   \qquad
-  \frac{\sigma_{\mathrm{depth}}}{\sigma_{\mathrm{lat}}} = \frac{1}{\sin(\theta/2)} .
+  \frac{\sigma_{\mathrm{depth}}}{\sigma_{\mathrm{lat}}} = \frac{1}{\sin(\theta/2)}
+  \qquad (\theta \le 90^\circ).
   \label{eq:anisotropy}
 \end{equation}
-This is exact, not asymptotic --- verified numerically against pinhole Jacobians
-at $\theta = 2^\circ, 6^\circ, 15^\circ, 45^\circ, 90^\circ$, agreeing to six
-significant figures (Table~\ref{tab:twoview}).
+This is exact, not asymptotic --- verified against pinhole Jacobians to
+$4\times10^{-16}$ over $\theta = 2^\circ$ to $179^\circ$
+(Table~\ref{tab:twoviewspectrum}). The restriction $\theta \le 90^\circ$ is not
+cosmetic: past $90^\circ$ the depth direction becomes better constrained than the
+in-plane lateral one and the two exchange roles, so the ratio of smallest to
+largest is $\min(\sin^2(\theta/2), \cos^2(\theta/2))$. At $\theta = 120^\circ$
+the naive form reads $0.75$ where the truth is $0.25$ --- a factor of three, in
+the optimistic direction. Every protocol this thesis stresses lies well below
+$90^\circ$, and the full orbit lies so far above it that the ratio is $\approx 1$
+either way, so the restriction costs nothing and its absence would have been an
+error.
+
+\subsection{A protocol is a distribution, not two views}
+\label{sec:capprediction}
+
+Equation~\eqref{eq:anisotropy} is exact for \emph{two} cameras. A capture
+protocol is ten or a hundred, spread over an angular window, and $\Lambda$ is the
+sum over that spread --- a different number. Reading the two-view formula off a
+protocol's measured span is only defensible when the protocol really is two
+views, and none of them is.
+
+For cameras distributed uniformly over a spherical cap of half-angle
+$\alpha = \theta/2$ about the mean viewing direction, $\cos t$ is uniform on
+$[\cos\alpha, 1]$, so with $c = \cos\alpha$ and $E = \mathbb{E}[d_z^2] =
+(1+c+c^2)/3$,
+\begin{equation}
+  \frac{\lambda_3}{\lambda_1} \;=\; \frac{2(1-E)}{1+E},
+  \qquad
+  \frac{\sigma_{\mathrm{depth}}}{\sigma_{\mathrm{lat}}}
+  \;=\; \sqrt{\frac{1+E}{2(1-E)}} .
+  \label{eq:cap}
+\end{equation}
+
+\keybox{the two-view form understates a real capture, and by a known factor}{%
+As $\alpha \to 0$, Equation~\eqref{eq:cap} tends to $\alpha^2/2$ while
+$\sin^2\alpha \to \alpha^2$: the cap's $\lambda_3/\lambda_1$ is
+\textbf{half} the two-view value, because a cap's cameras are spread across the
+window rather than sitting at its two ends. A smaller $\lambda_3/\lambda_1$ is a
+\emph{worse}-conditioned capture, so Equation~\eqref{eq:anisotropy} applied to a
+protocol \emph{understates} its depth anisotropy by $\sqrt{2}$ in $\sigma$. The
+direction matters: I-2 measuring more anisotropy than the two-view form predicts
+is the model working, not failing, and reporting it against the two-view number
+would have made a confirmation look like a discrepancy. Every prediction quoted
+against a measured span in this thesis therefore uses Equation~\eqref{eq:cap}.}
 
 \begin{figure}[htbp]
   \centering
@@ -147,22 +280,28 @@ significant figures (Table~\ref{tab:twoview}).
 
 \begin{table}[htbp]
   \centering
-  \caption{What Equation~\eqref{eq:anisotropy} predicts. A set of falsifiable
-  predictions, made before the experiments, and the reason the stress suite of
-  \S\ref{sec:stress} exists. A method that helped uniformly everywhere would
-  contradict its own derivation.}
+  \caption{What Equation~\eqref{eq:cap} predicts, at the spans the protocols of
+  \S\ref{sec:stress} actually realise. A set of falsifiable predictions, made
+  before the experiments, and the reason the stress suite exists. A method that
+  helped uniformly everywhere would contradict its own derivation.}
   \label{tab:regimes}
   \small
   \begin{tabular}{lccl}
     \toprule
-    capture & $\theta$ & $\sigma_D/\sigma_L$ & expectation \\
+    capture & span & $\sigma_D/\sigma_L$ & expectation \\
     \midrule
-    full orbit (standard benchmarks) & ${\sim}75^\circ$ & $1.6\times$ & parity --- the floor dominates \\
-    one-sided arc & ${\sim}20^\circ$ & $5.8\times$ & gain along depth \\
-    low-parallax cone & ${\sim}6^\circ$ & $19\times$ & largest gain \\
+    full orbit (standard benchmarks) & $179^\circ$ & $1.00\times$ & parity --- the floor dominates \\
+    grazing orbit & $168^\circ$ & $1.04\times$ & parity from parallax alone \\
+    one-sided arc & $80^\circ$ & $2.03\times$ & gain along depth \\
+    low-parallax cone & $20^\circ$ & $8.10\times$ & largest gain \\
     single view & $0^\circ$ & $\infty$ & cap $\beta$ binds; scene-scale prior \\
     \bottomrule
   \end{tabular}
+  \par\vspace{2pt}\footnotesize Spans are the medians the built protocols
+  measured (Table~\ref{tab:instruments}), so the prediction and the measurement
+  are evaluated at the same geometry. Quoting Equation~\eqref{eq:anisotropy}
+  here instead would give $1.00$, $1.01$, $1.56$ and $5.76\times$ --- uniformly
+  low, for the reason \S\ref{sec:capprediction} gives.
 \end{table}
 
 \section{Exact reduction to the baseline}
@@ -194,10 +333,39 @@ is already in force --- it \emph{is} the arm-B construction of
 \S\ref{sec:onecodebase}, and Chapter~\ref{ch:results} reports it verified on the
 saved models rather than asserted.
 
+\section{What an anisotropic filter costs the implementation}
+\label{sec:implcost}
+
+Two consequences follow from $\Sigma_{\mathrm{filt}}$ being a matrix rather than
+a scalar, and both are properties of the code rather than of the derivation.
+
+\paragraph{The full $3\times3$ must reach the rasteriser.} Mip-Splatting can add
+its filter by updating each scale as $s_i \leftarrow \sqrt{s_i^2 + f_k^2}$,
+because $f_k^2 I$ commutes with $\Sigma_k$ and shares its eigenvectors. An
+anisotropic $\Sigma_{\mathrm{filt}}$ does not commute with $\Sigma_k$ in general:
+$V$ diagonalises $\Lambda_k$ and $R$ diagonalises $\Sigma_k$, and nothing aligns
+them. So $\Sigma_k + \Sigma_{\mathrm{filt}}$ is not expressible as a per-axis
+update of the scale vector, and the summed covariance has to be formed in full
+and passed through the rasteriser's precomputed-covariance input. The
+implementation does exactly this, via \texttt{cov3D\_precomp}; where the filter
+comes out isotropic --- which Proposition~\ref{prop:reduction} makes the
+common case --- it takes Mip-Splatting's own scalar path instead, so parity is
+not merely algebraic but a shared code path.
+
+\paragraph{Nothing differentiates an eigendecomposition.} $\Lambda_k$ is
+computed under \texttt{no\_grad} and held constant between recomputations,
+exactly as \texttt{filter\_3D} is. The eigendecomposition is therefore never on
+the backward path, and the question of differentiating through a possibly
+degenerate eigenvector basis --- which is where a naive implementation of this
+idea would fail --- does not arise. The filter is a piecewise-constant
+band-limit that the optimiser sees as a fixed additive covariance, not a learned
+quantity.
+
 \section{Cost}
 $\Lambda_k$ is a sum of $N$ outer products of a $2\times3$ matrix, followed by a
 $3\times3$ symmetric eigendecomposition per primitive. It is recomputed on the
 same schedule Mip-Splatting already uses for \texttt{filter\_3D} --- every 100
 iterations, roughly 290 times across a 30\,000-iteration run --- and never at
 render time. Rendering speed is therefore unchanged by construction, which is
-the answer to the first question a graphics audience will ask.
+the answer to the first question a graphics audience will ask, and
+\S\ref{sec:fps} measures it rather than leaving it as an argument.

@@ -13,9 +13,11 @@
     $R, S$ & rotation and scale factors of $\Sigma_k = RSS^{\!\top}R^{\!\top}$ & 3DGS \\
     $W_n, J_n, \Sigma'$ & viewing transform, projection Jacobian, screen-space covariance & EWA / 3DGS \\
     $\tau_{\mathrm{pos}}=0.0002,\ \varphi=1.6$ & densification gradient threshold and split divisor & 3DGS \\
-    $f_k,\ s=0.2$ & inherited Nyquist floor and the 3D smoothing filter variance & Mip-Splatting \\
-    $\Lambda_k, \lambda_i, V$ & accumulated sampling Fisher information, its eigenvalues and eigenvectors & this work \\
-    $\sigma_{\mathrm{pix}}, w_{nk}, \beta$ & pixel localisation noise, visibility/contribution weight, scene-scale cap fraction & this work \\
+    $f_k^2 = 0.2\,(d_{\min}/f_{\max})^2$ & inherited per-primitive Nyquist floor, the 3D smoothing filter variance & Mip-Splatting \\
+    $\Lambda_k, \lambda_i, V$ & per-primitive observability matrix, its eigenvalues and eigenvectors; the Fisher information at unit weights (\S\ref{sec:accumulation}) & this work \\
+    $\sigma_{\mathrm{pix}} = \sqrt{0.2}$\,px & pixel localisation noise, inherited from $f_k$ by Proposition~\ref{prop:constant}, not chosen & this work \\
+    $s = 1,\ \beta = 0.01$ & dimensionless confidence multiplier; scene-scale cap fraction & this work \\
+    $w_{nk} = T_{nk}\alpha_k \in [0,1]$ & view $n$'s blending contribution to primitive $k$; a heuristic occlusion weight & this work \\
     $A_k, \ell_{\max}(k), \tau$ & angular Gram matrix, per-primitive SH degree, conditioning threshold & this work \\
     \bottomrule
   \end{tabular}
@@ -36,38 +38,93 @@ the camera frame. The third eigenvalue is exactly zero: a single view carries no
 depth information. The lateral scale $s\,\sigma_{\mathrm{pix}}z/f$ of
 \S\ref{sec:proposition1} follows immediately from the first two.
 
-\section{Two symmetric views}
+\section{Two symmetric views --- the exact spectrum}
 \label{app:twoview}
 Place two cameras at distance $z$, symmetric about the primitive, subtending
-parallax angle $\theta$. The direction perpendicular to the plane of the two rays
-is constrained fully by both views, giving
-$\lambda_1 = 2(f/z)^2/\sigma_{\mathrm{pix}}^2$. The direction along the mean
-viewing direction receives only the component each ray's transverse plane
-projects onto it, contributing $\sin^2(\theta/2)$ of the same quantity. Hence
-$\lambda_3/\lambda_1 = \sin^2(\theta/2)$, and
-Equation~\eqref{eq:anisotropy} follows.
+parallax angle $\theta$, with unit ray directions $d_1, d_2$. Each view
+contributes $(f/z)^2(I - d_nd_n^{\!\top})/\sigma_{\mathrm{pix}}^2$ on-axis
+(\S\ref{app:rank}), so up to the common factor
+\begin{equation}
+  \Lambda \;\propto\; 2I - d_1d_1^{\!\top} - d_2d_2^{\!\top}.
+\end{equation}
+Take coordinates with $\hat x$ the bisector of the two rays, $\hat y$ in their
+plane and $\hat z$ perpendicular to it, so
+$d_{1,2} = (\cos\tfrac\theta2,\ \pm\sin\tfrac\theta2,\ 0)$. Then
+$d_1d_1^{\!\top} + d_2d_2^{\!\top} = \mathrm{diag}(2\cos^2\tfrac\theta2,\
+2\sin^2\tfrac\theta2,\ 0)$ --- the off-diagonal terms cancel by symmetry --- and
+$\Lambda$ is diagonal with
+\begin{equation}
+  \mathrm{spec}(\Lambda) \;=\;
+  \big\{\,\underbrace{2}_{\perp\text{ to the plane}},\ \
+  \underbrace{2\cos^2(\theta/2)}_{\text{in-plane lateral}},\ \
+  \underbrace{2\sin^2(\theta/2)}_{\text{along the bisector (depth)}}\,\big\}.
+  \label{eq:twoviewspectrum}
+\end{equation}
+Two lines, and stronger than the descriptive argument it replaces.
 
-\begin{table}[htbp]
-  \centering
-  \caption{Numerical verification against full pinhole Jacobians, with $z=4$,
-  $f=1000$, $\sigma_{\mathrm{pix}}=1$. Agreement to six significant figures. The
-  relation is exact for two symmetric views, not a small-angle approximation ---
-  which matters, because the interesting regime ($\theta \approx 6^\circ$) is
-  precisely where a small-angle expansion would be least trustworthy.}
-  \label{tab:twoview}
-  \small
-  \begin{tabular}{ccccc}
-    \toprule
-    $\theta$ & $\lambda_3/\lambda_1$ measured & $\sin^2(\theta/2)$ & $\sigma_D/\sigma_L$ measured & $1/\sin(\theta/2)$ \\
-    \midrule
-    $2^\circ$  & 0.000305 & 0.000305 & 57.299 & 57.299 \\
-    $6^\circ$  & 0.002739 & 0.002739 & 19.107 & 19.107 \\
-    $15^\circ$ & 0.017037 & 0.017037 &  7.661 &  7.661 \\
-    $45^\circ$ & 0.146447 & 0.146447 &  2.613 &  2.613 \\
-    $90^\circ$ & 0.500000 & 0.500000 &  1.414 &  1.414 \\
-    \bottomrule
-  \end{tabular}
-\end{table}
+\paragraph{The filter is triaxial, not merely elongated.} All three values differ
+at a generic $\theta$. The in-plane lateral direction carries
+$2\cos^2(\theta/2)$, strictly less than the $2$ available perpendicular to the
+plane, so a two-view capture degrades \emph{two} directions and not only depth.
+An isotropic filter is wrong along both; a filter elongated only along depth
+would be wrong along one. This is why $\Sigma_{\mathrm{filt}}$ is built from the
+full eigendecomposition of $\Lambda_k$ rather than from a depth axis and a
+lateral scalar.
+
+\paragraph{The ordering caveat.} $\lambda_3/\lambda_1 = \sin^2(\theta/2)$ is the
+ratio of \emph{smallest} to \emph{largest} only while
+$\sin^2(\theta/2) \le \cos^2(\theta/2)$, that is for $\theta \le 90^\circ$. Past
+that the depth direction is better constrained than the in-plane lateral one and
+the two exchange roles, so in general
+$\lambda_{\min}/\lambda_{\max} = \min(\sin^2\tfrac\theta2, \cos^2\tfrac\theta2)$.
+Equation~\eqref{eq:anisotropy} is stated with the restriction for this reason;
+Table~\ref{tab:twoviewspectrum} shows the two forms diverging by a factor of
+three at $\theta = 120^\circ$.
+
+\section{A distribution of views}
+\label{app:cap}
+Equation~\eqref{eq:twoviewspectrum} is exact for two cameras and is applied in
+this thesis only to two cameras. For a protocol --- ten or a hundred cameras over
+an angular window --- $\Lambda$ is the sum over the distribution. For directions
+uniform on a cap of half-angle $\alpha$ about the mean viewing direction,
+$\cos t$ is uniform on $[\cos\alpha, 1]$, so with $c = \cos\alpha$,
+\begin{equation}
+  E \;\equiv\; \mathbb{E}[d_z^2] \;=\; \frac{1+c+c^2}{3},
+  \qquad
+  \mathbb{E}[d_x^2] = \mathbb{E}[d_y^2] = \frac{1-E}{2},
+\end{equation}
+and $\Lambda = N\big(I - \mathbb{E}[dd^{\!\top}]\big)$ is diagonal with
+$\lambda_{\mathrm{depth}} = N(1-E)$ and $\lambda_{\mathrm{lat}} = N(1+E)/2$,
+giving Equation~\eqref{eq:cap}. Expanding at small $\alpha$: $E = 1 -
+\alpha^2/2 + O(\alpha^4)$, so $\lambda_3/\lambda_1 \to \alpha^2/2$ against the
+two-view $\sin^2\alpha \to \alpha^2$ --- a factor of exactly two, confirmed
+numerically at $0.500013$ for a $1^\circ$ span. The closed form agrees with
+$2\times10^5$ sampled directions per span to $3\times10^{-3}$ relative
+(Table~\ref{tab:cap}).
+
+\section{The opacity compensation carries over unchanged}
+\label{app:mass}
+\begin{lemma}[Mass preservation]
+\label{lem:mass}
+For any positive-definite $\Sigma$ and $\Sigma_{\mathrm{filt}}$, the update
+$\alpha \leftarrow \alpha\sqrt{|\Sigma| / |\Sigma + \Sigma_{\mathrm{filt}}|}$
+leaves $\int \alpha \exp\!\big(-\tfrac12 x^{\!\top}\Sigma^{-1}x\big)\,dx$
+unchanged.
+\end{lemma}
+\begin{proof}
+The integral is $\alpha(2\pi)^{3/2}\sqrt{|\Sigma|}$. Replacing $\Sigma$ by
+$\Sigma + \Sigma_{\mathrm{filt}}$ multiplies it by
+$\sqrt{|\Sigma + \Sigma_{\mathrm{filt}}|/|\Sigma|}$, which the update cancels
+exactly. Nothing in the argument uses the form of $\Sigma_{\mathrm{filt}}$
+beyond positive-definiteness.
+\end{proof}
+So Mip-Splatting's compensation needs no modification for the anisotropic case:
+it is not a scalar identity that happens to hold, it is the general one they
+instantiated at $\Sigma_{\mathrm{filt}} = f_k^2 I$. Verified to
+$4\times10^{-16}$ relative over 500 random anisotropic $\Sigma_{\mathrm{filt}}$,
+and to $6\times10^{-17}$ against Mip-Splatting's own scalar expression in the
+isotropic case, by \texttt{tools/test\_geometry\_claims.py}.
+
 
 \section{Proposition~\ref{prop:constant}, in full}
 \label{app:prop1}
@@ -115,8 +172,11 @@ point at the work; bibliographic details are to be confirmed on retrieval.
     2 & \textsc{cited} M\"uller, Evans, Schied, Keller. Instant Neural Graphics Primitives. ACM TOG 41(4), 2022. & Speed baseline in the 3DGS tables. \\
     2 & \textsc{cited} Fridovich-Keil, Yu, Tancik, Chen, Recht, Kanazawa. Plenoxels. CVPR 2022. & Speed baseline; the ``no neural network needed'' result. \\
     2 & \textsc{unchecked} Durand, Holzschuch, Soler, Chan, Sillion. A Frequency Analysis of Light Transport. SIGGRAPH 2005. & Frequency-domain treatment of light transport; likely relevant to the sampling argument. \\
-    2 & \textsc{unchecked} Kheradmand et al. 3D Gaussian Splatting as Markov Chain Monte Carlo. NeurIPS 2024. & Nearest principled density-control work. Required for due-diligence. \\
-    2 & \textsc{unchecked} Jiang et al. FisherRF. ECCV 2024 \textperiodcentered\ Hanson et al. PUP 3D-GS. CVPR 2025. & Fisher information already used in this area. Establishing precisely how their use differs from Chapter~\ref{ch:method1} is the single highest-priority due-diligence item. \\
+    1 & \textsc{checked} AAA-Gaussians: Anti-Aliased and Artifact-Free 3D Gaussian Rendering. arXiv:2504.12811, 2025. & \textbf{Concurrent prior art for the anisotropic 3D filter.} Theirs is derived from the current view ray and recomputed per frame; this thesis's is derived from the training capture and fixed per primitive. Forced the narrowing recorded in \S\ref{sec:relatedwork}. \\
+    1 & \textsc{checked} Hanson et al. PUP 3D-GS: Principled Uncertainty Pruning for 3D Gaussian Splatting. CVPR 2025. & \textbf{The matrix is not new.} Same second-order spatial sensitivity accumulated over training views --- collapsed to a scalar and thresholded for pruning. B1's novelty is retaining the spectrum. \\
+    2 & \textsc{checked} Kheradmand et al. 3D Gaussian Splatting as Markov Chain Monte Carlo. NeurIPS 2024. & Nearest principled density-control work. Orthogonal: no filter, no band-limit, no covariance floor. No collision. \\
+    2 & \textsc{checked} Jiang et al. FisherRF: Active View Selection and Mapping with Radiance Fields Using Fisher Information. ECCV 2024. & Same statistical object, opposite use: scores candidate cameras for acquisition, never a primitive's covariance. Changes the dataset, not the primitive. \\
+    2 & \textsc{checked} Liang et al. Analytic-Splatting. ECCV 2024. & Replaces the 2D pixel-window approximation with a closed-form integral. Improves the \emph{2D} half of Mip-Splatting; composable with this work, which changes the 3D half. \\
     3 & \textsc{cited} Gaussian Opacity Fields (arXiv 2404.10772). & Source of the improved densification metric later integrated into the Mip-Splatting repository --- a reproduction hazard if the commit is not pinned. \\
     3 & \textsc{unchecked} 3DGS compression survey (CGF 2025) and the methods it covers. & Where a B2 memory result must be positioned. \\
     \bottomrule

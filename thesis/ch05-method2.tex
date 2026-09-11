@@ -33,7 +33,52 @@ principle --- do not fit what the capture does not determine --- but not a
 mechanism, and not a failure mode. B2 also carries a memory result that B1 does
 not, since masked coefficients need not be stored.}
 
-\paragraph{Status.} B2 is derived and specified here; it is
-\status{not yet implemented}. Table~\ref{tab:b2} in Chapter~\ref{ch:results}
-records the configurations it will be measured against, with every measured cell
-empty. The handbook schedules the implementation for W9--W10.
+\section{Making $\tau$ mean the same thing everywhere}
+\label{sec:b2scale}
+
+Equation~\eqref{eq:lmax} as written thresholds $\lambda_{\min}(A_k(\ell))$
+against an absolute $\tau$, and that does not survive contact with a real
+capture. Two separate scale dependencies are at fault, and they need separate
+fixes.
+
+\paragraph{View count.} $A_k$ is a \emph{sum} over views, so a primitive seen by
+$100$ cameras has eigenvalues an order of magnitude larger than one seen by $10$,
+before any question of conditioning arises. The normalised form
+\begin{equation}
+  \bar A_k \;=\; \frac{A_k}{\sum_n w_{nk}}
+  \label{eq:gramnorm}
+\end{equation}
+removes it: $\bar A_k$ is a weighted \emph{average} of $y y^{\!\top}$ over the
+directions that saw the primitive, so $\tau$ means the same thing for primitives
+with different view counts. Without this, $\tau$ silently encodes a preference
+for well-observed primitives that has nothing to do with whether their angular
+sampling is well spread.
+
+\paragraph{Angular spread.} Normalising is necessary and not sufficient. Even on
+$\bar A_k$, $\lambda_{\min}$ still scales with how widely the directions are
+spread, so one $\tau$ cannot serve a $100$-camera orbit and a $10$-camera cone.
+Section~\ref{sec:b2amend} measures this: at $\tau = 0.01$ the absolute form keeps
+everything on a full orbit and nothing on either degraded protocol, and at
+$\tau = 0.001$ it keeps $82\,\%$ on the arc. It is a cliff, not a graded
+response. The scale-free condition number
+\begin{equation}
+  \ell_{\max}(k) \;=\; \max\Big\{\, \ell \;:\;
+  \frac{\lambda_{\min}\big(\bar A_k(\ell)\big)}{\lambda_{\max}\big(\bar A_k(\ell)\big)} > \tau \,\Big\}
+  \label{eq:lmaxcond}
+\end{equation}
+behaves as the criterion should at a single threshold, and is what the
+implementation uses. Equation~\eqref{eq:lmax} is retained above because it is
+the form the argument is most naturally stated in, and because the amendment is
+a result: it is a change to the method that only measurement could have
+produced, and \S\ref{sec:b2amend} reports the measurement that forced it rather
+than folding it silently into the derivation.
+
+\paragraph{Status.} B2 is implemented and measured. The criterion is evaluated on
+all eight Blender scenes and across the five capture protocols of
+\S\ref{sec:stress} without a GPU, since Equation~\eqref{eq:gram} depends only on
+primitive positions and training view directions; Table~\ref{tab:b2} adds the
+rendered-quality and model-size columns. One caveat carries through to every
+statement about memory: masking coefficients to zero does not shrink a
+fixed-width PLY, so \emph{no model-size saving is claimed from these numbers}.
+Realising it needs variable-length SH storage, which Chapter~\ref{ch:plan}
+schedules for Spring.

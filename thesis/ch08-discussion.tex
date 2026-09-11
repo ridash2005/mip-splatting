@@ -16,10 +16,55 @@
     G4 & I-2 shows $\lambda_3/\lambda_1 \approx 1$ on every protocol, including the narrow cone & Equation~\eqref{eq:anisotropy} would be contradicted by measurement, which would indicate an error in the visibility weighting $w_{nk}$ rather than in the geometry. Diagnose before proceeding. \\
     --- & Table~\ref{tab:stress}'s full-orbit row shows a loss against Mip-Splatting & a bug, not a result: Proposition~\ref{prop:reduction} forbids it. The filter never smooths less than the baseline in any direction. \\
     --- & Table~\ref{tab:stress} shows uniform gains across all protocols & also suspicious. The derivation predicts a regime structure; uniform improvement would suggest the comparison is not controlled. \\
-    --- & prior work has already made the 3D filter anisotropic or per-direction & the only finding that invalidates the project outright, and the reason the literature due-diligence is scheduled in week 1--2, when it costs nothing, rather than in March. \\
+    --- & prior work has already made the 3D filter anisotropic or per-direction & the only finding that invalidates the project outright, and the reason the literature due-diligence is scheduled in week 1--2, when it costs nothing, rather than in March. \textbf{This one fired}; see \S\ref{sec:narrowing}. \\
     \bottomrule
   \end{tabular}
 \end{table}
+
+\section{The gate that fired, and what it cost}
+\label{sec:narrowing}
+
+Of the five refutation conditions above, one was observed. The due-diligence
+review of \S\ref{sec:relatedwork} found that AAA-Gaussians (April 2025) already
+replaces Mip-Splatting's screen-space filter with a full $3\times3$ 3D
+covariance, and that PUP 3D-GS (CVPR 2025) already builds a per-primitive
+second-order spatial sensitivity accumulated over training views. Either fact
+alone removes part of what \S\ref{ch:intro} originally claimed.
+
+It did not invalidate the project, and the reason is worth stating precisely
+rather than defensively. AAA-Gaussians derives the anisotropy from the
+\emph{current view ray} and recomputes it every rendered frame; their effective
+sampling rate is $\min(\hat v_{\mathrm{train}}, \hat v)$ with $\hat v$ the rate
+of the camera now looking, so the filter cannot be a quantity stored once per
+primitive. PUP collapses its matrix to a scalar and thresholds it for pruning;
+the eigenstructure --- the entire content of this method --- is discarded before
+it is used. Neither computes a band-limit from the \emph{conditioning of the
+capture}, which is what the stress suite tests. A primitive seen only from a
+narrow baseline is under-determined along depth no matter which view renders it,
+and a filter derived from the render-time ray carries no memory of that.
+
+Three consequences, all applied rather than merely noted:
+
+\begin{enumerate}[leftmargin=1.4em,itemsep=3pt]
+  \item Chapter~\ref{ch:intro} no longer claims ``an anisotropic 3D filter'' as a
+        contribution. It claims the \emph{source} of the anisotropy and the
+        retention of the \emph{spectrum}.
+  \item AAA-Gaussians is cited as concurrent prior art and as \emph{composable}:
+        B1 sets the floor from the capture that happened, theirs clamps it by the
+        view being rendered. A system could carry both.
+  \item PUP is cited as the right precedent for ``this matrix is a meaningful
+        per-primitive quantity'', which strengthens the motivation for
+        Chapter~\ref{ch:method1} even as it weakens its novelty claim.
+\end{enumerate}
+
+\keybox{a literature search is an experiment, and this one returned a result}{%
+The review was scheduled for weeks 1--2 and slipped. It was completed before the
+stress suite spent its GPU budget, which is the deadline that actually mattered:
+the response --- narrowing the contribution and re-framing two chapters --- would
+have been identical in March, but would have been made under a submission
+deadline instead of before the decisive experiment was designed. Nothing in the
+experimental design changed, because no one else's filter is a function of the
+training-camera spread, so there was still an untested claim to test.}
 
 \section{Limitations, stated rather than discovered}
 
@@ -65,7 +110,9 @@ estimation limit exceeds what is useful there, and the claim narrows accordingly
     Why Fisher information rather than ``resolution''? & Per-view precisions add, and Fisher information is the object that adds. It also carries the right rank structure: one view contributes rank 2, so depth resolution appears only once there is baseline. \\
     You are smoothing --- does that not lose detail? & Never below the floor, which is the baseline's own limit, so lateral detail is untouched by construction. Extra smoothing appears only along unconstrained directions. Training PSNR is expected to fall slightly and held-out PSNR to rise; both are reported. \\
     More views make the filter smaller. Is the anti-aliasing limit not set by the sharpest view alone? & Two filters are in play. The render-side anti-alias filter is set by the sharpest sampling rate --- that is Mip-Splatting's 2D Mip filter, unchanged here. The representation-side limit is an estimation question and genuinely improves with parallax. Conflating them is the error in the scalar 3D filter; the floor keeps them separate. \\
-    Did you slow rendering down? & No. The filter changes covariance values, not the rasterisation algorithm, and $\Lambda$ is recomputed ${\sim}290$ times across training, never at render time. Measured fps is in Table~\ref{tab:cost}. \\
+    Did you slow rendering down? & No, and it is measured rather than argued. The filter changes covariance values, not the rasterisation algorithm, and $\Lambda$ is recomputed ${\sim}290$ times across training, never at render time. Table~\ref{tab:fps} times the render call alone for all three arms in one session on one GPU (\S\ref{sec:fps}). The \texttt{render\_fps} column of Table~\ref{tab:cost} is \emph{not} the answer to this question: it is wall time over a whole \texttt{render.py} invocation, I/O and PNG encoding included. \\
+    An anisotropic 3D filter already exists (AAA-Gaussians). What is left? & The source of the anisotropy. Theirs is the ray of the view being rendered, recomputed per frame; this one is the spectrum of the training capture, fixed per primitive. A narrow-baseline primitive is under-determined along depth whichever view renders it, and their filter cannot see that. \S\ref{sec:narrowing} states the separation and the narrowing it forced. \\
+    PUP 3D-GS builds the same matrix. Is $\Lambda_k$ new? & The matrix is not; what is done with it is. PUP reduces it to a scalar sensitivity and thresholds that to prune. This method keeps the eigenvectors and uses them to shape a filter. Retaining the spectrum instead of a scalar summary of it is the honest statement of novelty, and \S\ref{sec:relatedwork} makes it before a reader has to. \\
     Where does it fail? & Captures so degenerate that $\beta$ binds everywhere, where the filter degenerates to a scene-scale prior; and textureless regions, where the point-feature likelihood poorly models the photometric one. Both are in the limitations section with figures. \\
     \bottomrule
   \end{tabular}

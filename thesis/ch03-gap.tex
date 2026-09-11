@@ -67,3 +67,78 @@ quantity, which is the control for everything that follows.
         \texttt{\#TODO consider focal length and image width} on the current
         branch.
 \end{enumerate}
+
+\section{Concurrent work, and what it leaves for this thesis}
+\label{sec:relatedwork}
+
+A due-diligence review was run before the stress suite, with one question: has
+anyone already made the \emph{3D} filter anisotropic or per-direction? The answer
+is partly yes, and the contribution stated in \S\ref{ch:intro} has been narrowed
+accordingly rather than defended. Two of the five papers below change what this
+thesis may claim; the change is recorded here, in the chapter that sets up the
+gap, and not buried in the discussion.
+
+\begin{table}[htbp]
+  \centering
+  \caption{The five papers that could have pre-empted this work, and the line of
+  separation in each case. The review is recorded in full in
+  \texttt{docs/C12-related-work.md}, three lines per paper: the claim, the
+  mechanism, and the evidence that settled it.}
+  \label{tab:related}
+  \small
+  \begin{tabular}{p{0.21\linewidth}p{0.34\linewidth}p{0.37\linewidth}}
+    \toprule
+    work & what it does & relation to this thesis \\
+    \midrule
+    \textbf{AAA-Gaussians} (arXiv:2504.12811, 2025)
+      & Replaces the 2D Mip filter with a full $3\times3$ 3D filter, whose
+        anisotropy is decomposed about the \emph{current view ray} and
+        recomputed every rendered frame.
+      & \textbf{Removes the novelty of ``an anisotropic 3D filter''.} What
+        remains is the \emph{source} of the anisotropy: theirs is the view being
+        rendered, this thesis's is the conditioning of the capture that was
+        available. The two are composable, not competing. \\
+    \addlinespace[2pt]
+    \textbf{PUP 3D-GS} (CVPR 2025)
+      & A second-order sensitivity of the photometric error in each primitive's
+        spatial parameters, accumulated over training views, collapsed to a
+        scalar and thresholded to prune $90\,\%$ of primitives.
+      & \textbf{The matrix itself is not new.} It is built from the same
+        ingredients as $\Lambda_k$. The divergence is what survives: PUP keeps a
+        scalar and discards the eigenstructure, which is precisely what B1 uses. \\
+    \addlinespace[2pt]
+    \textbf{FisherRF} (ECCV 2024)
+      & Fisher information over model parameters as an acquisition function for
+        next-best-view selection.
+      & Same statistical object, opposite direction of use: it chooses which
+        camera to \emph{acquire}; B1 takes the cameras as given. Changes the
+        dataset, not the primitive. \\
+    \addlinespace[2pt]
+    \textbf{3DGS-MCMC} (NeurIPS 2024)
+      & Recasts densify/prune/reset as MCMC sampling, removing the heuristics and
+        the dependence on initialisation.
+      & Orthogonal and composable. No filter, no band-limit, no covariance floor.
+        Cited as the nearest principled density-control work. \\
+    \addlinespace[2pt]
+    \textbf{Analytic-Splatting} (ECCV 2024)
+      & Integrates the Gaussian response over the square pixel window in closed
+        form instead of approximating the window by a 2D Gaussian.
+      & Improves the \emph{2D} half of Mip-Splatting; this thesis changes the
+        \emph{3D} half. Directly composable. \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\keybox{what the claim is, after the narrowing}{%
+Not ``an anisotropic 3D filter'' --- AAA-Gaussians has one. Not ``a per-primitive
+second-order information matrix'' --- PUP 3D-GS builds one. The claim that
+survives, and the only one the experiments are asked to support, is a
+\emph{per-primitive band-limit read off the conditioning of the training
+capture}: a quantity fixed once per primitive by the cameras that saw it, rather
+than by the camera now looking at it, and retaining the spectrum rather than a
+scalar summary of it. A primitive seen from a narrow baseline is
+under-determined along depth no matter which view renders it, and a filter
+derived from the render-time ray carries no memory of that. The \texttt{cone} and
+\texttt{arc} protocols of \S\ref{sec:stress} exist to isolate exactly that
+regime, and nobody has tested it, because nobody else's filter is a function of
+the training-camera spread.}

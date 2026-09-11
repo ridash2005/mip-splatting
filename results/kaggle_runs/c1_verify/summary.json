@@ -1,0 +1,72 @@
+{
+  "rung": "C1",
+  "protocol": "STMT",
+  "load_allres": false,
+  "seeds": [
+    0
+  ],
+  "scenes": [
+    "lego"
+  ],
+  "iterations": 30000,
+  "gpu": "Tesla T4",
+  "n_gpu": 2,
+  "torch": "2.10.0+cu128",
+  "cuda": "12.8",
+  "open3d": true,
+  "armA_commit": "a77201ee6c60a7fa4d8442e92112bc115538a373",
+  "armB_commit": "de7cb44c168b1cc901d7b7974153604bda1007bd",
+  "convert_seconds": 102.43900918960571,
+  "done": {
+    "B/lego": {
+      "split": {
+        "1x": {
+          "PSNR": 36.04880769729614,
+          "SSIM": 0.9839501041173935,
+          "LPIPS": 0.01381712634349242,
+          "n": 200
+        },
+        "1/2": {
+          "PSNR": 27.03032651901245,
+          "SSIM": 0.951243699491024,
+          "LPIPS": 0.029715319350361823,
+          "n": 200
+        },
+        "1/4": {
+          "PSNR": 21.167303018569946,
+          "SSIM": 0.8510634809732437,
+          "LPIPS": 0.08076533181592822,
+          "n": 200
+        },
+        "1/8": {
+          "PSNR": 17.46381155014038,
+          "SSIM": 0.7398961061239242,
+          "LPIPS": 0.13447791714221238,
+          "n": 200
+        }
+      },
+      "stats": {
+        "train_seconds": 1564.0160505771637,
+        "peak_vram_mb": 5027,
+        "iters_per_second": 19.181388828413365,
+        "render_seconds": 90.99143242835999,
+        "n_rendered": 800,
+        "render_fps": 8.792036553879527,
+        "n_gaussians": 370111,
+        "filter_3D_max": 0.0,
+        "model_mb": 93.269528,
+        "metrics_seconds": 75.99332356452942,
+        "pooled_psnr": 25.427562713623047
+      }
+    }
+  },
+  "failed": {},
+  "session_seconds": 2045.371120929718,
+  "gpu_hours_used": 0.5681586449013816,
+  "complete": false,
+  "filter_3D_max": {
+    "B/lego": 0.0
+  },
+  "armB_all_zero": true,
+  "armA_all_nonzero": true
+}

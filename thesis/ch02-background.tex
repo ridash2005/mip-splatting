@@ -34,10 +34,21 @@ regularisation is applied to $\Sigma_k$; nothing bounds how small a primitive
 may become.
 
 \section{Mip-Splatting}
-Mip-Splatting adds two filters. The 2D Mip filter is a render-side
-reconstruction prefilter matched to the display sampling rate, and this work does
-not change it. The 3D smoothing filter is the acquisition-side limit at issue
-here: a scalar variance
+Mip-Splatting adds two filters, and it matters for Chapter~\ref{ch:results} that
+they are separate objects.
+
+\paragraph{The 2D Mip filter} is a render-side reconstruction prefilter matched
+to the display sampling rate. It dilates the projected covariance by $kI$ and
+compensates the opacity by $\rho = \sqrt{\lvert\Sigma'\rvert / \lvert\Sigma' +
+kI\rvert}$, so that widening the splat does not brighten it. Vanilla 3DGS
+performs the same fixed dilation --- $k = 0.3$ --- and applies \emph{no}
+compensation at all. The proposed method does not change this filter; but the
+distinction is not cosmetic, because an arm that keeps $\rho$ is anti-aliasing
+better than 3DGS in screen space whatever its 3D filter does, and
+\S\ref{sec:g2} reports what that cost before it was found.
+
+\paragraph{The 3D smoothing filter} is the acquisition-side limit at issue here:
+a scalar variance
 \begin{equation}
   f_k^2 \;=\; 0.2\,\Big(\frac{d_{\min,k}}{f_{\max}}\Big)^{\!2},
   \qquad \Sigma_k \leftarrow \Sigma_k + f_k^2 I,

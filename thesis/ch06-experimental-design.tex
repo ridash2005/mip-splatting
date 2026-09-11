@@ -50,9 +50,27 @@ whereas the Blender reader takes one global \texttt{camera\_angle\_x}.
 
 The benefit is methodological: both arms share one dataloader, one metrics
 implementation and one LPIPS backbone (VGG), so any difference between them is
-the method rather than the plumbing. The diff that separates the arms is four
-files, seven insertions and one deletion, and the build asserts that on every
-run.
+the method rather than the plumbing. The diff that separates the arms is
+enumerated in the kernel and asserted on every run, and a change outside it
+aborts the session before any training starts.
+
+\keybox{sharing a codebase shares more than the plumbing, and that is the trap}{%
+``The 3D filter zeroed and \texttt{kernel\_size}~$=0.3$'' makes the arm 3DGS in
+its \emph{3D} band-limit, exactly, and says nothing about its \emph{2D} one.
+Both arms inherited Mip-Splatting's screen-space opacity compensation, which
+3DGS does not have, so for the first three rungs the arm labelled 3DGS was
+anti-aliasing better than 3DGS --- and the between-arm gap, the quantity this
+whole construction exists to protect, carried a residual anti-aliasing term.
+Section~\ref{sec:g2} is the diagnosis and the re-measurement. The lesson is not
+that the single-codebase decision was wrong, because it is forced; it is that
+``both arms share everything but the diff'' is a claim about what the diff
+\emph{omits}, and omissions are exactly what a diff does not show.}
+
+\paragraph{The arms, as run.} Arm A is Mip-Splatting unmodified. Arm B is the
+same codebase with \texttt{filter\_3D} identically zero, \texttt{kernel\_size}
+$=0.3$, \emph{and} the 2D opacity compensation disabled in the rasteriser --- all
+three, which together are vanilla 3DGS's band-limit semantics in both domains.
+The third was added after \S\ref{sec:g2} found it missing.
 
 \section{The ladder}
 \begin{table}[htbp]

@@ -14,9 +14,20 @@ not the original `graphdeco-inria/gaussian-splatting`:
 
 - **Arm A — Mip-Splatting**: the repository as shipped.
 - **Arm B — 3DGS**: the same repository with the 3D smoothing filter zeroed
-  (`--disable_3D_filter`) and `--kernel_size 0.3`. See §3 of the prompt for why
-  this is exactly 3DGS, not an approximation, and why the original repo cannot
-  read the multi-scale Blender format at all.
+  (`--disable_3D_filter`), `--kernel_size 0.3`, **and** the 2D Mip filter's
+  opacity compensation disabled in the rasteriser
+  (`--disable_2D_mip_compensation`, branch `arm-b-3dgs-vanilla`). See §3 of the
+  prompt for why the first two are exactly 3DGS's *3D* band-limit, and why the
+  original repo cannot read the multi-scale Blender format at all.
+
+  The third flag was added after gate G2 failed. Zeroing the 3D filter makes the
+  arm 3DGS in one domain and says nothing about the other: both arms had
+  inherited Mip-Splatting's screen-space opacity compensation
+  `rho = sqrt(det(Sigma')/det(Sigma'+kI))`, which vanilla 3DGS does not apply, so
+  the arm labelled 3DGS was anti-aliasing better than 3DGS. On `lego` at 30K,
+  removing it leaves full resolution unchanged (36.08 -> 36.05) and drops 1/8
+  scale from 24.10 to 17.46 against a published 17.69. Every arm-B row measured
+  before that is marked `SUPERSEDED_BY_C2` in `results/runs.csv` and kept.
 
 ## Repo layout
 
@@ -222,6 +233,24 @@ make table1     # R1 Blender STMT: 3DGS vs Mip-Splatting, 4 test scales
 make table2     # R2 Blender MTMT
 make figures    # figures/, redrawn from measured rows with the published curve
                 # kept as a faint reference line
+make thesis     # thesis/main.pdf, tables and figures regenerated first
+make slides     # slides/BTP-Panel.pptx, from the same three sources
+make all        # both
+```
+
+`make thesis` and `make slides` read the same inputs — `results/runs.csv`, the
+rung summaries under `results/kaggle_runs/`, and `results/geometry/claims.json`
+— so a slide cannot disagree with the document about a number. A table or figure
+whose run has not happened is emitted as an explicit "not yet measured"
+placeholder rather than drawn from the published column; `make_figures.py
+--mode measured` additionally refuses to run at all if the CSV has no usable
+rows.
+
+Superseded rows are dropped from every average and kept in the file:
+
+```
+python tools/supersede.py --by C2 --where arm=B dataset=blender --dry-run
+python tools/test_geometry_claims.py --json results/geometry/claims.json
 ```
 
 `ITERS` selects which runs a table or figure averages, and defaults to 30000 —

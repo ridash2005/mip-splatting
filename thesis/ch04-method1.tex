@@ -162,10 +162,10 @@ Before parallax enters at all, there is anisotropy the scalar filter discards.
 Section~\ref{sec:jacobian} quotes the single-view eigenvalues
 $(0, (f/z)^2, (f/z)^2)/\sigma_{\mathrm{pix}}^2$, and that is exact --- \emph{on
 the optical axis}. The convenient rank-1 form
-$(f/z)^2(I - dd^{\!\top})/\sigma_{\mathrm{pix}}^2$ that suggests it is a
-projector scaled by $(f/z)^2$, and a projector's non-zero eigenvalues are equal
-by construction, whatever $d$ is. The true $J_n^{\!\top}J_n$ is not a projector
-off-axis.
+$(f/z)^2(I - dd^{\!\top})/\sigma_{\mathrm{pix}}^2$ suggests otherwise, because
+$I - dd^{\!\top}$ is a projector and a projector's non-zero eigenvalues are equal
+by construction, whatever $d$ is. Off-axis, the true $J_n^{\!\top}J_n$ is not a
+projector, and the two lateral eigenvalues separate.
 
 Writing $a = (x/z,\,y/z)$ for the normalised off-axis displacement,
 $J = (f/z)B$ with $B = \big[\begin{smallmatrix}1&0&-a_1\\0&1&-a_2\end{smallmatrix}\big]$,

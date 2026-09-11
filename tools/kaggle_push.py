@@ -155,6 +155,21 @@ def push(client, script_path, username, slug, title, datasets, session_timeout=N
     with open(script_path, encoding="utf-8") as f:
         text = f.read()
     text = apply_overrides(text, overrides)
+
+    # Kaggle keys a notebook by the slug it derives from the title, and ignores a
+    # requested slug that does not match it. That is harmless on a first push and
+    # fatal on a retry: the create succeeds, the SESSION is refused for the
+    # two-concurrent-GPU-session cap, and the next attempt is a second create
+    # against a title that is now taken -- 409, forever. Deriving the slug the
+    # same way Kaggle does makes the retry an update of the notebook the first
+    # attempt created, which is what it was always meant to be.
+    derived = re.sub(r"[^a-z0-9]+", "-", (title or slug).lower()).strip("-")
+    if derived and derived != slug:
+        print(f"note: using slug {derived!r} derived from the title "
+              f"(requested {slug!r}); Kaggle keys the notebook by this, so a "
+              f"retry updates it instead of colliding with its own title")
+        slug = derived
+
     req = ApiSaveKernelRequest()
     req.slug = f"{username}/{slug}"
     req.new_title = title

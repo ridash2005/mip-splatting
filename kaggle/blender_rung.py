@@ -36,6 +36,10 @@ from datetime import datetime, timezone
 
 WORK = "/kaggle/working"
 REPO = "https://github.com/ridash2005/mip-splatting.git"
+# Where the Blender data lives. The Kaggle defaults; tools/run_local.py
+# overrides both so the same kernel runs on a cluster node unchanged.
+DATA_MOUNT = "/kaggle/input/nerf-synthetic-dataset"
+DATA_ROOT = "/kaggle/input"
 LOGDIR = f"{WORK}/logs"
 RESULTS = f"{WORK}/results"
 # --- parameters, rewritten by `kaggle_push.py --set NAME=VALUE` ---------------
@@ -158,7 +162,7 @@ if ARM_B_EXTRA:
     print("rasteriser carries mip_compensation: the C1 switch is live", flush=True)
 
 # ============================================================ data
-blender_dir = kc.resolve_blender_dir(SCENES[0])
+blender_dir = kc.resolve_blender_dir(SCENES[0], mount=DATA_MOUNT, root=DATA_ROOT)
 print("blender dir:", blender_dir, flush=True)
 t0 = time.time()
 for scene in SCENES:

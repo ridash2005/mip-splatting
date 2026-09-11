@@ -22,6 +22,22 @@ ladder continued anyway; every stage now carries its exit criterion as code, and
 nothing downstream of a failed gate is allowed to run and be read as though the
 gate had passed. `--only <stage>` and `--from <stage>` drive it by hand.
 
+### Off Kaggle
+
+Nothing about the science is Kaggle-specific — only three constants are (`WORK`,
+`REPO`, the dataset mount). To run the same kernels, the same pinned branches and
+the same assertions on a cluster node or any CUDA device with capability ≥ 7.0:
+
+```bash
+python tools/finish.py --backend local --data /path/to/nerf_synthetic
+```
+
+The arms are cloned from this checkout rather than GitHub, so the run needs no
+network, and the commit hashes recorded in every CSV row are unchanged — the
+provenance stays identical. On a cluster this line *is* the sbatch body.
+`b2_eval` is the one stage that reads a Kaggle kernel's output; point it at local
+checkpoints or leave it on Kaggle.
+
 Stage order is `c1_verify → t3_stress → c2_armb → t2_full → b2_eval`.
 `c1_verify` is first because it is 0.8 h and decides whether the 6 h arm-B
 re-run is worth any quota at all; `t3_stress` does not depend on it, since B1

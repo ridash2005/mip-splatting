@@ -32,6 +32,10 @@ from datetime import datetime, timezone
 
 WORK = "/kaggle/working"
 REPO = "https://github.com/ridash2005/mip-splatting.git"
+# Where the Blender data lives. The Kaggle defaults; tools/run_local.py
+# overrides both so the same kernel runs on a cluster node unchanged.
+DATA_MOUNT = "/kaggle/input/nerf-synthetic-dataset"
+DATA_ROOT = "/kaggle/input"
 BRANCH = "method-b1-b2"
 LOGDIR = f"{WORK}/logs"
 RESULTS = f"{WORK}/results"
@@ -102,7 +106,7 @@ print(f"Propositions 1 and 2 unit test: {'PASS' if rc_prop == 0 else 'FAIL'}", f
 if rc_prop != 0:
     raise SystemExit("ABORT: the exact-reduction test failed; no result would be valid.")
 
-blender_dir = kc.resolve_blender_dir(SCENES[0])
+blender_dir = kc.resolve_blender_dir(SCENES[0], mount=DATA_MOUNT, root=DATA_ROOT)
 t0 = time.time()
 for scene in SCENES:
     if not os.path.exists(f"{WORK}/multi-scale/{scene}/metadata.json"):

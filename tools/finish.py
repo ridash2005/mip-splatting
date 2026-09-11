@@ -270,8 +270,26 @@ def log(msg):
     print(f"[{ts}] {msg}", flush=True)
 
 
-def push(stage, wait_minutes, dry_run):
+def push(stage, wait_minutes, dry_run, backend="kaggle", data=None,
+         work_root=None):
     outdir = os.path.join(KRUNS, stage["out"])
+
+    if backend == "local":
+        # Same kernel, same pinned branches, same assertions -- on whatever GPU
+        # this machine has. Nothing about the science is Kaggle-specific.
+        work = os.path.join(work_root or os.path.join(ROOT, ".scratch"),
+                            stage["out"])
+        cmd = [sys.executable, "tools/run_local.py", stage["script"],
+               "--data", data, "--work", work, "--out", outdir]
+        for s in stage.get("sets", []):
+            cmd += ["--set", s]
+        if dry_run:
+            print("   " + " ".join(cmd))
+            return True, outdir
+        log(f"running {stage['name']} locally (~{stage['hours']} GPU-h)")
+        p = subprocess.run(cmd, cwd=ROOT)
+        return p.returncode == 0, outdir
+
     cmd = [sys.executable, "tools/kaggle_push.py", stage["script"],
            "--slug", stage["slug"], "--title", stage["title"],
            "--dataset", DATASET, "--accelerator", "NvidiaTeslaT4",
@@ -314,6 +332,10 @@ def main():
     ap.add_argument("--from", dest="start")
     ap.add_argument("--wait-minutes", type=int, default=30,
                     help="how long to sleep when the weekly quota is exhausted")
+    ap.add_argument("--backend", choices=("kaggle", "local"), default="kaggle",
+                    help="local runs the same kernels on this machine's GPU")
+    ap.add_argument("--data", help="[local] directory holding the scene folders")
+    ap.add_argument("--work-root", help="[local] scratch directory")
     a = ap.parse_args()
 
     plan = STAGES
@@ -326,6 +348,13 @@ def main():
         plan = plan[names.index(a.start):]
     if not plan:
         sys.exit("nothing to run")
+    if a.backend == "local" and not a.data:
+        sys.exit("--backend local needs --data (the directory holding lego/, chair/, ...)")
+    if a.backend == "local":
+        missing = [s["name"] for s in plan if s.get("kernel_sources")]
+        if missing:
+            print(f"note: {missing} read a Kaggle kernel's output; point them "
+                  "at local checkpoints or run those on Kaggle.\n")
 
     print(f"\nPlan -- {sum(s['hours'] for s in plan):.1f} GPU-h of a 30 h week\n")
     for s in plan:
@@ -334,7 +363,7 @@ def main():
     if a.dry_run:
         for s in plan:
             print(f"\n-- {s['name']}")
-            push(s, a.wait_minutes, True)
+            push(s, a.wait_minutes, True, a.backend, a.data, a.work_root)
         return
 
     passed = set()
@@ -344,7 +373,8 @@ def main():
             log(f"SKIP {s['name']}: needs {req}, which did not pass")
             continue
 
-        ok, outdir = push(s, a.wait_minutes, False)
+        ok, outdir = push(s, a.wait_minutes, False, a.backend, a.data,
+                          a.work_root)
         if not ok:
             log(f"HALT: {s['name']} did not complete")
             return 1

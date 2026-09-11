@@ -32,6 +32,10 @@ import traceback
 
 WORK = "/kaggle/working"
 REPO = "https://github.com/ridash2005/mip-splatting.git"
+# Where the Blender data lives. The Kaggle defaults; tools/run_local.py
+# overrides both so the same kernel runs on a cluster node unchanged.
+DATA_MOUNT = "/kaggle/input/nerf-synthetic-dataset"
+DATA_ROOT = "/kaggle/input"
 BRANCH = "method-b1-b2"
 LOGDIR = f"{WORK}/logs"
 RESULTS = f"{WORK}/results"
@@ -83,7 +87,7 @@ kc.sh(f"pip install -v {WORK}/repo/submodules/diff-gaussian-rasterization",
       logdir=LOGDIR, log_name="build")
 kc.sh(f"pip install -v {WORK}/repo/submodules/simple-knn", logdir=LOGDIR, log_name="build")
 
-blender_dir = kc.resolve_blender_dir(SCENES[0])
+blender_dir = kc.resolve_blender_dir(SCENES[0], mount=DATA_MOUNT, root=DATA_ROOT)
 for scene in SCENES:
     if not os.path.exists(f"{WORK}/multi-scale/{scene}/metadata.json"):
         kc.sh(f"python {WORK}/repo/convert_blender_data.py --blender_dir {blender_dir} "

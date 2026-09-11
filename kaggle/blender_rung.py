@@ -46,6 +46,15 @@ SEEDS = [0]                # R5 sweeps these; see tools/seeded_train.py.
                            # anchors to the R1/R2 numbers rather than redrawing.
 SCENES = ["ship", "drums", "ficus", "hotdog", "lego", "materials", "mic", "chair"]
 ITERS = 30000
+ARM_B_BRANCH = "arm-b-3dgs-baseline"   # "arm-b-3dgs-vanilla" drops the 2D Mip
+                                       # opacity compensation as well (C1). The
+                                       # branch decides what arm B *is*, so it
+                                       # is recorded in every CSV row's notes.
+ARM_B_EXTRA = ""                       # "--disable_2D_mip_compensation" with
+                                       # the vanilla branch; the flag exists
+                                       # nowhere else and would be rejected.
+ARMS_ENABLED = ["A", "B"]              # narrow to save quota when only one arm
+                                       # is in question.
 # -----------------------------------------------------------------------------
 METHOD = f"ours_{ITERS}"
 KEEP_QUALITATIVE = 6
@@ -71,7 +80,7 @@ if cap < (7, 0):
 
 # ============================================================ clone + build
 subprocess.run(f"git clone --recursive -b main {REPO} {WORK}/armA", shell=True, check=True)
-subprocess.run(f"git clone --recursive -b arm-b-3dgs-baseline {REPO} {WORK}/armB",
+subprocess.run(f"git clone --recursive -b {ARM_B_BRANCH} {REPO} {WORK}/armB",
                shell=True, check=True)
 sys.path.insert(0, f"{WORK}/armA/tools")
 import kernel_common as kc          # noqa: E402
@@ -130,7 +139,8 @@ csv_path = f"{RESULTS}/runs.csv"
 ARMS = {
     "A": dict(dir=f"{WORK}/armA", flags="--kernel_size 0.1", method="mip-splatting",
               commit=armA_commit, kernel_size="0.1", disable="False"),
-    "B": dict(dir=f"{WORK}/armB", flags="--kernel_size 0.3 --disable_3D_filter",
+    "B": dict(dir=f"{WORK}/armB",
+              flags=f"--kernel_size 0.3 --disable_3D_filter {ARM_B_EXTRA}".strip(),
               method="3dgs", commit=armB_commit, kernel_size="0.3", disable="True"),
 }
 done, failed = {}, {}
@@ -309,7 +319,7 @@ if any(sd != 0 for sd in SEEDS):
 
 
 jobs = [(arm, scene, seed) for seed in SEEDS for scene in SCENES
-        for arm in ("A", "B")]
+        for arm in ARMS_ENABLED]
 lock = threading.Lock()
 queue_idx = [0]
 

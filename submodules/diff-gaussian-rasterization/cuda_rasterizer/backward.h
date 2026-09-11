@@ -53,6 +53,7 @@ namespace BACKWARD
 		const float focal_x, float focal_y,
 		const float tan_fovx, float tan_fovy,
 		const float kernel_size,
+		const bool mip_compensation,
 		const glm::vec3* campos,
 		const float3* dL_dmean2D,
 		const float* dL_dconics,

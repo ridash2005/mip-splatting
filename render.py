@@ -38,6 +38,7 @@ def render_sets(dataset : ModelParams, iteration : int, pipeline : PipelineParam
     with torch.no_grad():
         gaussians = GaussianModel(dataset.sh_degree)
         gaussians._disable_3D_filter = dataset.disable_3D_filter
+        gaussians._disable_2D_mip_compensation = dataset.disable_2D_mip_compensation
         scene = Scene(dataset, gaussians, load_iteration=iteration, shuffle=False)
         scale_factor = dataset.resolution
         bg_color = [1,1,1] if dataset.white_background else [0, 0, 0]

@@ -55,7 +55,12 @@ class ModelParams(ParamGroup):
         self.data_device = "cuda"
         self.eval = False
         self._kernel_size = 0.1
-        self.disable_3D_filter = False
+        # C1. Vanilla 3DGS dilates the 2D covariance by a fixed 0.3 and applies
+        # NO opacity compensation; Mip-Splatting compensates by
+        # rho = sqrt(det(Sigma') / det(Sigma' + kI)). With this set AND
+        # --kernel_size 0.3, the rasteriser reproduces 3DGS exactly. Off by
+        # default, so arm A is untouched.
+        self.disable_2D_mip_compensation = False
         # self.use_spatial_gaussian_bias = False
         self.ray_jitter = False
         self.resample_gt_image = False

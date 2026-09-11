@@ -55,6 +55,18 @@ class ModelParams(ParamGroup):
         self.data_device = "cuda"
         self.eval = False
         self._kernel_size = 0.1
+        # Arm B. Zeroes the 3D smoothing filter, which with --kernel_size 0.3 is
+        # 3DGS's band-limit semantics exactly (Proposition 2). train.py,
+        # render.py and gaussian_model.py all read it; it was dropped from this
+        # file, and only this file, when the C1 flag below was added, so every
+        # arm-B run on this branch aborted at argument parsing.
+        self.disable_3D_filter = False
+        # C1. Vanilla 3DGS dilates the 2D covariance by a fixed 0.3 and applies
+        # NO opacity compensation; Mip-Splatting compensates by
+        # rho = sqrt(det(Sigma') / det(Sigma' + kI)). With this set AND
+        # --kernel_size 0.3, the rasteriser reproduces 3DGS exactly. Off by
+        # default, so arm A is untouched.
+        self.disable_2D_mip_compensation = False
         # self.use_spatial_gaussian_bias = False
         self.ray_jitter = False
         self.resample_gt_image = False

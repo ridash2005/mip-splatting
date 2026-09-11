@@ -51,6 +51,8 @@ def training(dataset, opt, pipe, testing_iterations, saving_iterations, checkpoi
     first_iter = 0
     tb_writer = prepare_output_and_logger(dataset)
     gaussians = GaussianModel(dataset.sh_degree)
+    gaussians._disable_3D_filter = dataset.disable_3D_filter
+    gaussians._disable_2D_mip_compensation = dataset.disable_2D_mip_compensation
     scene = Scene(dataset, gaussians)
     gaussians.training_setup(opt)
     if checkpoint:

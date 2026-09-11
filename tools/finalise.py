@@ -39,6 +39,12 @@ SUPERSEDES = [
                           "iterations=30000"],
          unless="C2M", require=32,
          why="arm B, multi-scale train and test: same defect, same arm."),
+    dict(by="T3M", where=["train_scale=1x/mixed", "dataset=blender"],
+         unless="T3M", require=16,
+         why="the mixed-focal protocol: the first stress run passed only the "
+             "index list, so it trained the full orbit under another name. The "
+             "re-run applies the focal override the protocol actually "
+             "specifies."),
 ]
 
 

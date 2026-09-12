@@ -36,20 +36,35 @@ def load(runs_path, load_allres, iterations):
         return None, set()
     acc = defaultdict(lambda: defaultdict(list))
     seen_iters = set()
-    with open(runs_path, newline="") as f:
-        for r in csv.DictReader(f):
-            if r.get("dataset") != "blender" or not r.get("psnr"):
-                continue
-            if r.get("load_allres") != load_allres:
-                continue
-            seen_iters.add(r.get("iterations", ""))
-            if r.get("iterations") != str(iterations):
-                continue
-            arm = r.get("arm")
-            if arm not in ARM_NAME:
-                continue
-            acc[arm][r["test_scale"]].append(
-                (float(r["psnr"]), float(r["ssim"] or 0), float(r["lpips"] or 0)))
+    # Through make_tex's loader: superseded rows out, probe rows out, repeats of
+    # one configuration collapsed to a single row so a twice-measured scene does
+    # not count twice. This file used to walk the CSV raw, which meant the
+    # markdown tables it writes could disagree with the thesis tables built from
+    # the same file -- and did, by nearly a decibel.
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    import make_tex as mt
+    picked = []
+    for r in mt.collapse_repeats(mt.load(runs_path)):
+        if r.get("dataset") != "blender" or not r.get("psnr"):
+            continue
+        if r.get("seed") != "0" or r.get("train_scale") not in ("1x", "multi"):
+            continue
+        if r.get("load_allres") != load_allres:
+            continue
+        seen_iters.add(r.get("iterations", ""))
+        if r.get("iterations") != str(iterations):
+            continue
+        if r.get("arm") not in ARM_NAME:
+            continue
+        picked.append(r)
+    # Matched on scenes, as every between-arm table in the thesis is. Without it
+    # arm A averaged eight scenes against arm B's seven -- ship completes on one
+    # arm and not the other -- and the two columns were means over different
+    # objects. It read 33.44 where the thesis read 33.86.
+    picked, _common = mt.matched(picked, ("A", "B"))
+    for r in picked:
+        acc[r["arm"]][r["test_scale"]].append(
+            (float(r["psnr"]), float(r["ssim"] or 0), float(r["lpips"] or 0)))
     out = {}
     for arm, byscale in acc.items():
         if len(byscale) < 4:
@@ -110,7 +125,10 @@ def main():
     print(md)
     if a.md:
         os.makedirs(os.path.dirname(a.md) or ".", exist_ok=True)
-        with open(a.md, "w") as f:
+        # Explicit UTF-8: the table body carries "·" and "→", and the default
+        # locale encoding on Windows is cp1252, which wrote a file no UTF-8
+        # reader could open.
+        with open(a.md, "w", encoding="utf-8") as f:
             f.write(md + "\n")
         print(f"\nwrote {a.md}", file=sys.stderr)
 

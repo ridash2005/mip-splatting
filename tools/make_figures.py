@@ -526,11 +526,12 @@ def _placeholder_panel(out, name, msg):
 
 
 def _rows(path="results/runs.csv"):
+    """The record, through the one loader. See load_runs for why not a copy."""
     if not os.path.exists(path):
         return []
-    with open(path, newline="") as f:
-        return [r for r in csv.DictReader(f)
-                if r.get("psnr") and "SUPERSEDED" not in (r.get("notes") or "")]
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    import make_tex as mt
+    return mt.load(path)
 
 
 def _summaries(root="results/kaggle_runs"):

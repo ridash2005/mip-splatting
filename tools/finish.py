@@ -62,7 +62,11 @@ def rows(**where):
         return []
     out = []
     for r in csv.DictReader(open(RUNS)):
-        if "SUPERSEDED" in (r.get("notes") or ""):
+        notes = r.get("notes") or ""
+        # PROBE rows share a config key with the standard tables and differ only
+        # in a commit; they are measurements, and they are held out of every
+        # average on purpose. See make_tex.load_probe.
+        if "SUPERSEDED" in notes or "PROBE=" in notes:
             continue
         if all(str(r.get(k)) == str(v) for k, v in where.items()):
             out.append(r)

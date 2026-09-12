@@ -236,6 +236,7 @@ def main():
            r5.returncode != 0, (r5.stderr or "").strip()[-160:])
 
     check_kernel_helpers()
+    check_outputs_agree()
 
     print()
     if failures:
@@ -243,6 +244,63 @@ def main():
         return 1
     print("reporting chain verified end to end.")
     return 0
+
+
+def check_outputs_agree():
+    """The thesis, the markdown tables and the figures must agree, to the digit.
+
+    They did not. Four code paths read results/runs.csv and three of them had
+    their own copy of the filter: one kept superseded rows, one pooled every
+    seed, one counted a twice-measured scene twice, and none of them matched the
+    scenes between arms. fig1 read 34.61 dB at full scale where Table 1 read
+    33.65 for the same quantity, and the markdown table read a third number
+    again. Each was individually defensible and collectively incoherent.
+
+    Everything now goes through make_tex's load()/collapse_repeats()/matched(),
+    so this asserts the property that fix was for -- and would fail if anyone
+    reintroduced a private loader.
+    """
+    here = os.path.dirname(os.path.abspath(__file__))
+    root = os.path.dirname(here)
+    runs = os.path.join(root, "results", "runs.csv")
+    if not os.path.exists(runs):
+        ok("outputs agree (no record yet, skipped)", True)
+        return
+    sys.path.insert(0, here)
+    import make_tex as mt
+    import make_table as mtab
+    import make_figures as mfig
+
+    rows = mt.collapse_repeats(mt.load(runs))
+    for protocol, allres, ts in (("STMT", "False", "1x"), ("MTMT", "True", "multi")):
+        sel = mt.select(rows, iterations=30000, load_allres=allres, seed=0)
+        sel, _ = mt.matched(sel, ("A", "B"))
+        acc = mt.by_arm_scale(sel)
+        tex = {a: mt.mean([float(r["psnr"]) for r in acc[a].get("1x", [])])
+               for a in ("A", "B") if acc.get(a)}
+
+        tbl, _seen = mtab.load(runs, allres, 30000)
+        md = {a: ((tbl or {}).get(a, {}).get("1x") or (None,))[0]
+              for a in ("A", "B")}
+
+        figs = mfig.load_runs(runs, iterations=30000) or {}
+        title = ("Single-scale train → multi-scale test" if ts == "1x"
+                 else "Multi-scale train → multi-scale test")
+        fg = {"A": (figs.get((title, "Mip-Splatting")) or [None])[0],
+              "B": (figs.get((title, "3DGS")) or [None])[0]}
+
+        for arm in ("A", "B"):
+            vals = [v for v in (tex.get(arm), md.get(arm), fg.get(arm))
+                    if v is not None]
+            if len(vals) < 2:
+                continue
+            spread = max(vals) - min(vals)
+            ok(f"{protocol} arm {arm} at full scale agrees across thesis, "
+               f"markdown and figure",
+               spread < 0.005,
+               "tex=%s md=%s fig=%s" % tuple(
+                   f"{v:.3f}" if isinstance(v, float) else "--"
+                   for v in (tex.get(arm), md.get(arm), fg.get(arm))))
 
 
 def load_kernel_helpers():

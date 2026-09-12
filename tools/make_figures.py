@@ -252,7 +252,13 @@ def fig_cost_quality(out):
 # misses, load_runs still returns a non-empty dict, the "refuses to draw" gate
 # passes, and fig 1 silently draws the PUBLISHED curve under a "measured" filename
 # — exactly what §11/§14 forbid. Any slug not listed here is a hard error.
+# Figure 1 is the two-baseline scale-degradation plot and draws only these two.
+# b1-fisher is listed so the unknown-slug guard below stays a guard: it exists to
+# catch a method nobody has taught the figures about, and it started firing on a
+# method this project produces on purpose, which left every figure stale against
+# runs.csv without failing the build.
 METHOD_LABEL = {"3dgs": "3DGS", "mip-splatting": "Mip-Splatting"}
+METHOD_KNOWN = set(METHOD_LABEL) | {"b1-fisher"}
 
 
 def load_runs(path, iterations=None):
@@ -261,25 +267,57 @@ def load_runs(path, iterations=None):
     `iterations` restricts to one training length. Averaging a 7 000-iteration
     smoke row together with a 30 000-iteration R1 row would produce a number that
     describes neither run, so the caller must say which one it wants.
+
+    Reads the record through make_tex's loaders, deliberately. This used to walk
+    the CSV itself, and so it kept superseded rows, pooled all three seeds, and
+    counted a scene measured twice twice -- which is why fig1 showed 34.61 dB
+    where Table 1 showed 33.65 for the same quantity. A figure and a table that
+    disagree about the same number are worse than either alone, and the only
+    durable fix is one loader.
     """
     if not path or not os.path.exists(path):
         return None
+    import make_tex as mt
+    rows_in = mt.collapse_repeats(mt.load(path))
+    rows_in = [r for r in rows_in if r.get("seed") == "0"]
+    # Matched on scenes, per training protocol and independently, exactly as the
+    # tables are. ship completes on the multi-scale protocol and not on the
+    # single-scale one, so the two groups legitimately have different scene
+    # sets; what neither may have is one curve over eight scenes against another
+    # over seven.
+    keep = []
+    for ts in ("1x", "multi"):
+        grp = [r for r in rows_in if r.get("train_scale") == ts]
+        keep += mt.matched(grp, ("A", "B"))[0]
+    rows_in = keep
     order = {"1x": 0, "1/2": 1, "1/4": 2, "1/8": 3}
     acc, seen_iters, bad_methods = {}, set(), set()
-    with open(path, newline="") as f:
-        for r in csv.DictReader(f):
+    if True:
+        for r in rows_in:
             if r.get("dataset") != "blender" or not r.get("psnr"):
                 continue
             seen_iters.add(r.get("iterations", ""))
             if iterations is not None and r.get("iterations") != str(iterations):
                 continue
-            label = METHOD_LABEL.get((r.get("method") or "").strip().lower())
-            if label is None:
+            slug = (r.get("method") or "").strip().lower()
+            if slug not in METHOD_KNOWN:
                 bad_methods.add(r.get("method"))
                 continue
-            proto = ("Single-scale train → multi-scale test"
-                     if r.get("train_scale") == "1x"
-                     else "Multi-scale train → multi-scale test")
+            label = METHOD_LABEL.get(slug)
+            if label is None:
+                continue            # known, but not one of this figure's two
+            # Only the two standard training protocols. A stress row carries
+            # train_scale like "1x/cone", which is neither, and the old
+            # either/or put every one of them in the multi-scale group -- a
+            # three-camera pencil averaged into a curve captioned
+            # "multi-scale train".
+            ts = r.get("train_scale")
+            if ts == "1x":
+                proto = "Single-scale train → multi-scale test"
+            elif ts == "multi":
+                proto = "Multi-scale train → multi-scale test"
+            else:
+                continue
             key = (proto, label)
             acc.setdefault(key, {}).setdefault(r["test_scale"], []).append(float(r["psnr"]))
     if bad_methods:
@@ -700,11 +738,28 @@ def fig_parity(out):
                       fontsize=8.0, loc="left", pad=8)
     _clean(axes[0])
 
-    if "b1-fisher" in acc and "mip-splatting" in acc:
-        d = [(sum(acc["b1-fisher"][s]) / len(acc["b1-fisher"][s])
-              - sum(acc["mip-splatting"][s]) / len(acc["mip-splatting"][s]))
-             if acc["b1-fisher"].get(s) and acc["mip-splatting"].get(s) else 0.0
+    # The delta panel is the parity claim, and it has to be PAIRED: same capture,
+    # same harness invocation, same build on both sides. Selecting on method
+    # alone let R1's standard-orbit Mip-Splatting rows stand in for
+    # Mip-Splatting at the full protocol, three commits older, which is the same
+    # defect the methodParityMax macro carried.
+    pair = {}
+    for r in rows:
+        if r["method"] not in ("mip-splatting", "b1-fisher"):
+            continue
+        if not (r.get("train_scale") or "").endswith("/full"):
+            continue
+        pair.setdefault((r["scene"], r["test_scale"], r.get("train_scale"),
+                         r.get("impl_commit")), {})[r["method"]] = float(r["psnr"])
+    both = {k: v for k, v in pair.items() if len(v) == 2}
+    if both:
+        per_scale = {}
+        for (scene, scale, _, _), v in both.items():
+            per_scale.setdefault(scale, []).append(
+                v["b1-fisher"] - v["mip-splatting"])
+        d = [sum(per_scale[s]) / len(per_scale[s]) if per_scale.get(s) else 0.0
              for s in scales]
+        n_pair = len({k[0] for k in both})
         axes[1].axhspan(-sigma, sigma, color=GRID, zorder=1)
         axes[1].axhline(0, color=MUTED, lw=1.0, zorder=2)
         axes[1].bar(x, d, width=0.5, color=S1, zorder=3)
@@ -716,9 +771,18 @@ def fig_parity(out):
         axes[1].set_ylim(-max(0.25, max(abs(v) for v in d) * 2.2),
                          max(0.25, max(abs(v) for v in d) * 2.2))
         axes[1].set_ylabel("B1 − Mip-Splatting (dB)", fontsize=7.5)
-        axes[1].set_title(f"Proposition 2 requires 0; shaded band is ±σ = {sigma:.3f} dB",
-                          fontsize=7.6, loc="left", pad=8)
+        axes[1].set_title(
+            f"Proposition 2 requires 0; paired on {n_pair} scene(s); "
+            f"shaded band is ±σ = {sigma:.3f} dB",
+            fontsize=7.6, loc="left", pad=8)
         _clean(axes[1], ygrid=False); axes[1].yaxis.grid(True)
+    else:
+        axes[1].text(0.5, 0.5, "no paired measurement yet" + chr(10) +
+                               "(both methods, same run, same build)",
+                     ha="center", va="center", fontsize=7.5, color=MUTED,
+                     transform=axes[1].transAxes)
+        axes[1].set_xticks([]); axes[1].set_yticks([])
+        _clean(axes[1], ygrid=False)
     _save(fig, out, "fig9-parity")
 
 

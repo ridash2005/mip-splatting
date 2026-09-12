@@ -62,6 +62,18 @@ ARM_B_BRANCH = "arm-b-3dgs-baseline"   # "arm-b-3dgs-vanilla" drops the 2D Mip
 ARM_B_EXTRA = ""                       # "--disable_2D_mip_compensation" with
                                        # the vanilla branch; the flag exists
                                        # nowhere else and would be rejected.
+ATTEMPTS = 1                           # how many times to try a scene that
+                                       # fails. Only raise it for a failure
+                                       # already shown to be NON-deterministic:
+                                       # ship dies with an illegal address in
+                                       # the forward raster at a different
+                                       # iteration every time (3000, 10320,
+                                       # 12100), so a repeat is a fresh draw
+                                       # rather than the same computation run
+                                       # twice. Every attempt is counted and
+                                       # reported, successful or not -- a
+                                       # measurement that needed four tries is
+                                       # a measurement that needed four tries.
 PROBE = ""                             # non-empty marks every row this run
                                        # writes as a PROBE: measured, kept, and
                                        # deliberately held out of the standard
@@ -220,10 +232,16 @@ ARMS = {
               method="3dgs", commit=armB_commit, kernel_size="0.3", disable="True"),
 }
 done, failed = {}, {}
+attempts_failed = {}      # every failed attempt, so the count is on the record
 
 
-def run_one(gpu, arm, scene, seed):
-    """train -> render -> metrics -> split -> CSV -> prune, for one (arm, scene)."""
+def run_one(gpu, arm, scene, seed, attempt=1):
+    """train -> render -> metrics -> split -> CSV -> prune, for one (arm, scene).
+
+    `attempt` is written into the row's notes when it is not the first, so a
+    measurement that took more than one try says so where the tables read it
+    rather than only in the session summary.
+    """
     cfg = ARMS[arm]
     suffix = "" if seed == 0 else f"_s{seed}"
     out = f"{WORK}/out_arm{arm}/{scene}{suffix}"
@@ -298,7 +316,8 @@ def run_one(gpu, arm, scene, seed):
         "gpu_model": gpu_name, "platform": "kaggle", "level_claimed": "L1",
         "notes": f"{RUNG} Blender {'MTMT' if LOAD_ALLRES else 'STMT'}, {ITERS} iters, "
                  f"{len(SCENES)}-scene sweep, seed {seed}"
-                 + (f", PROBE={PROBE}" if PROBE else ""),
+                 + (f", PROBE={PROBE}" if PROBE else "")
+                 + (f", attempt {attempt} of {ATTEMPTS}" if attempt > 1 else ""),
     })
     removed = kc.prune_renders(out, METHOD, keep=KEEP_QUALITATIVE)
     print(f"[{tag}] done: pooled {pooled:.3f} dB, {st['n_gaussians']} gaussians, "
@@ -323,6 +342,11 @@ def build_summary():
         "armA_commit": armA_commit, "armB_commit": armB_commit,
         "convert_seconds": convert_seconds,
         "done": done, "failed": failed,
+        # The attempt ledger. A scene that needed four tries and a scene that
+        # worked first time are not the same measurement, and the difference is
+        # invisible once only the surviving run is in runs.csv.
+        "attempts_allowed": ATTEMPTS,
+        "attempts_failed": attempts_failed,
         "session_seconds": time.time() - SESSION_START,
         "gpu_hours_used": (time.time() - SESSION_START) / 3600.0,
         "complete": len(done) == 2 * len(SCENES) * len(SEEDS),
@@ -411,11 +435,28 @@ def worker(gpu):
             arm, scene, seed = jobs[queue_idx[0]]
             queue_idx[0] += 1
         key = f"{arm}/{scene}" + ("" if seed == 0 else f"/s{seed}")
-        try:
-            done[key] = run_one(gpu, arm, scene, seed)
-        except Exception as e:
-            failed[key] = f"{type(e).__name__}: {e}"[:600]
-            traceback.print_exc()
+        tries = []
+        for attempt in range(1, max(1, ATTEMPTS) + 1):
+            try:
+                r = run_one(gpu, arm, scene, seed, attempt=attempt)
+                r["attempts"] = attempt
+                r["attempt_errors"] = tries
+                done[key] = r
+                if tries:
+                    print(f"[{key}] succeeded on attempt {attempt} of "
+                          f"{ATTEMPTS}; {len(tries)} earlier attempt(s) failed",
+                          flush=True)
+                break
+            except Exception as e:
+                msg = f"{type(e).__name__}: {e}"[:600]
+                tries.append(msg)
+                traceback.print_exc()
+                print(f"[{key}] attempt {attempt} of {ATTEMPTS} failed",
+                      flush=True)
+        else:
+            failed[key] = (f"{len(tries)} attempt(s), all failed. Last: "
+                           + (tries[-1] if tries else ""))[:900]
+            attempts_failed[key] = tries
         with lock:
             checkpoint_summary()   # every scene, so a killed session keeps its work
 

@@ -59,11 +59,18 @@ def macros(path):
 
 
 def runs(path):
+    """The record, read exactly as the thesis reads it.
+
+    Through make_tex's loaders rather than a second copy of the filter: this one
+    dropped SUPERSEDED rows but not PROBE rows, and did not collapse repeats, so
+    a deck built from it could disagree with the table it was summarising. One
+    loader, three outputs.
+    """
     if not os.path.exists(path):
         return []
-    with open(path, newline="") as f:
-        return [r for r in csv.DictReader(f)
-                if r.get("psnr") and "SUPERSEDED" not in (r.get("notes") or "")]
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    import make_tex as mt
+    return mt.collapse_repeats(mt.load(path))
 
 
 def summaries(root):

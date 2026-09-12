@@ -73,6 +73,54 @@ def load(runs_path):
                 and "PROBE=" not in (r.get("notes") or "")]
 
 
+def collapse_repeats(rows):
+    """One row per configuration, averaging any repeats of it.
+
+    A configuration can legitimately be measured twice -- the C2S seed sweep ran
+    chair and lego twice on the same build -- and both rows belong in the file.
+    But a table that means over rows then weights those cells double against
+    every other scene, which is a silent, scene-dependent bias in a column whose
+    whole job is to be comparable. Collapsing first makes every scene count once.
+
+    Repeats of DIFFERENT builds are a different thing and are not the caller's
+    to average: those are marked superseded, and audit_cells() fails the build if
+    any survive. This only ever collapses rows that agree on the code.
+    """
+    groups = defaultdict(list)
+    for r in rows:
+        groups[tuple(r.get(k) for k in CONFIG_KEY)].append(r)
+    out = []
+    for v in groups.values():
+        if len(v) == 1:
+            out.append(v[0])
+            continue
+        merged = dict(v[0])
+        for col in ("psnr", "ssim", "lpips", "render_fps", "train_seconds"):
+            vals = [float(r[col]) for r in v if r.get(col)]
+            if vals:
+                merged[col] = f"{sum(vals) / len(vals):.5g}"
+        merged["notes"] = (merged.get("notes") or "") + f" [mean of {len(v)} repeats]"
+        out.append(merged)
+    return out
+
+
+def audit_cells(rows):
+    """Refuse to build a table whose cells average across different builds.
+
+    Table 2's arm-B column was, for a while, 32 cells each blending the
+    defective rasteriser with the build that replaced it, because both runs
+    carried the same rung name and the supersede guard keyed on the rung. The
+    numbers looked entirely reasonable. Nothing catches that except this.
+    """
+    groups = defaultdict(list)
+    for r in rows:
+        groups[tuple(r.get(k) for k in CONFIG_KEY)].append(r)
+    bad = [(k, sorted({r["impl_commit"][:8] for r in v}))
+           for k, v in groups.items()
+           if len({r["impl_commit"] for r in v}) > 1]
+    return bad
+
+
 def load_probe(runs_path, name):
     """The rows of one probe, which load() deliberately does not return.
 
@@ -1393,7 +1441,7 @@ def b2_protocol_table(proto, sweep, label, caption):
 
 
 # ------------------------------------------------------------------- macros
-def macros(rows, summaries, inst=None):
+def macros(rows, summaries, inst=None, raw=None):
     """Inline numbers, as \\newcommand. Undefined data yields a visible marker."""
     M = {}
 
@@ -1457,8 +1505,12 @@ def macros(rows, summaries, inst=None):
     # full-orbit run with a three-camera pencil run of the same scene and called
     # the 23 dB between them harness noise.
     grouped = defaultdict(list)
-    for r in rows:
-        grouped[tuple(r.get(k) for k in CONFIG_KEY)].append(float(r["psnr"]))
+    for r in (raw if raw is not None else rows):
+        # On the build too. Two rasterisers disagreeing is not run-to-run noise,
+        # and reporting it as such is how a 23 dB pencil-vs-orbit difference once
+        # became "harness spread".
+        grouped[tuple(r.get(k) for k in CONFIG_KEY)
+                + (r.get("impl_commit"),)].append(float(r["psnr"]))
     spreads = [max(v) - min(v) for v in grouped.values() if len(v) > 1]
     put("repeatSpread", max(spreads) if spreads else None, "{:.3f}")
 
@@ -1525,33 +1577,36 @@ def macros(rows, summaries, inst=None):
     M["cOneScene"] = (c1scene or NOT_MEASURED).replace("_", "")
 
     # Table 2's parity: the largest |B1 - Mip-Splatting| over the matched
-    # scenes and all four test scales. Quoted in the abstract and in §7.11, and
-    # it moved by an order of magnitude when the scene set went from two to
-    # seven, so it cannot be a typed constant.
+    # scenes and all four test scales. Quoted in the abstract and in §7.11.
+    #
+    # PAIRED, and the pairing is the whole claim. Proposition 2 says B1 becomes
+    # Mip-Splatting when the floor dominates, so the two numbers being differenced
+    # have to come from the same capture, the same harness invocation and the same
+    # build -- otherwise the difference also contains whatever separates two runs.
+    # This selector used to accept train_scale "1x" as well as ".../full", which
+    # let R1's eight mip scenes stand in for mip at the full protocol: B1 was then
+    # differenced against a run three commits older that had never used the
+    # protocol, two scenes were counted twice on one side and once on the other,
+    # and the result read 0.02 dB when the like-for-like figure was not yet
+    # measurable at all. Requiring (protocol, build) to match on both sides is
+    # what makes the number mean what the abstract says it means.
     msel = [r for r in rows if r.get("dataset") == "blender"
             and r.get("iterations") == "30000" and r.get("load_allres") == "False"
             and r.get("seed") == "0"
-            and (r.get("train_scale") == "1x"
-                 or (r.get("train_scale") or "").endswith("/full"))]
-    mper = {}
+            and (r.get("train_scale") or "").endswith("/full")
+            and r.get("method") in ("mip-splatting", "b1-fisher")]
+    pairs = defaultdict(dict)
     for r in msel:
-        if r.get("method") in ("mip-splatting", "b1-fisher"):
-            mper.setdefault(r["method"], set()).add(r["scene"])
-    if len(mper) == 2:
-        common_m = mper["mip-splatting"] & mper["b1-fisher"]
-        acc_m = {}
-        for r in msel:
-            if r.get("method") in ("mip-splatting", "b1-fisher")                     and r["scene"] in common_m:
-                acc_m.setdefault(r["method"], {}).setdefault(
-                    r["test_scale"], []).append(float(r["psnr"]))
-        gaps = []
-        for sc in SCALES:
-            a_ = acc_m.get("b1-fisher", {}).get(sc)
-            b_ = acc_m.get("mip-splatting", {}).get(sc)
-            if a_ and b_:
-                gaps.append(abs(mean(a_) - mean(b_)))
+        pairs[(r["scene"], r["test_scale"], r.get("train_scale"),
+               r.get("impl_commit"))][r["method"]] = float(r["psnr"])
+    both = {k: v for k, v in pairs.items() if len(v) == 2}
+    if both:
+        per_scale = defaultdict(list)
+        for (scene, scale, _, _), v in both.items():
+            per_scale[scale].append(abs(v["b1-fisher"] - v["mip-splatting"]))
+        gaps = [max(per_scale[sc]) for sc in SCALES if per_scale.get(sc)]
         put("methodParityMax", max(gaps) if gaps else None, "{:.3f}")
-        M["methodParityScenes"] = str(len(common_m))
+        M["methodParityScenes"] = str(len({k[0] for k in both}))
     else:
         put("methodParityMax", None)
         M["methodParityScenes"] = NOT_MEASURED
@@ -1585,7 +1640,14 @@ def main():
     ap.add_argument("--summaries", default="results/kaggle_runs")
     a = ap.parse_args()
     os.makedirs(a.out, exist_ok=True)
-    rows = load(a.runs)
+    raw = load(a.runs)
+    bad = audit_cells([r for r in raw if r.get("iterations") == "30000"])
+    if bad:
+        sys.exit("results/runs.csv: %d reported cell(s) average across more "
+                 "than one build; supersede the older one (tools/supersede.py "
+                 "--unless-impl-commit-prefix). First: %r %r"
+                 % (len(bad), bad[0][0], bad[0][1]))
+    rows = collapse_repeats(raw)
 
     summaries = {}
     for d, _, files in os.walk(a.summaries):
@@ -1709,9 +1771,14 @@ def main():
     # The noise the stress-suite delta is measured against. Largest spread
     # between repeats of one identical configuration -- measured, not assumed,
     # and falling back to the R0 figure only if no repeat exists yet.
+    # From `raw`, not `rows`: collapse_repeats has already averaged these away,
+    # and the spread between repeats is exactly what this measures. Grouped on
+    # the build as well as the configuration, so a difference between two
+    # rasterisers is never reported as run-to-run noise.
     grouped = defaultdict(list)
-    for r in rows:
-        grouped[tuple(r.get(k) for k in CONFIG_KEY)].append(float(r["psnr"]))
+    for r in raw:
+        grouped[tuple(r.get(k) for k in CONFIG_KEY)
+                + (r.get("impl_commit"),)].append(float(r["psnr"]))
     reps = [max(v) - min(v) for v in grouped.values() if len(v) > 1]
     seed_sigma = max(reps) if reps else SIGMA_FALLBACK
 
@@ -1778,7 +1845,7 @@ def main():
             r"I-1 (floor occupancy) and I-2 (conditioning) across the five "
             r"capture protocols of \S\ref{sec:stress}. Computed from trained "
             r"point clouds and camera geometry; no retraining."),
-        "measured.tex": macros(rows, summaries, inst),
+        "measured.tex": macros(rows, summaries, inst, raw=raw),
     }
     for name, body in written.items():
         with open(os.path.join(a.out, name), "w", encoding="utf-8") as f:

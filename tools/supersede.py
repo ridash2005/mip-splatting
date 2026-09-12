@@ -41,6 +41,23 @@ def main():
                          "blender_rung run_id starts 'r1-' whatever the rung, so "
                          "this is what distinguishes a replacement from the row "
                          "it replaces")
+    ap.add_argument("--unless-impl-commit-prefix", default=None,
+                    help="never mark a row built at this commit -- the "
+                         "replacement rows themselves. Use this, not "
+                         "--unless-notes-contains, when the re-run carries the "
+                         "SAME rung name as the run it replaces: both then have "
+                         "the rung in `notes`, both are exempt, nothing is "
+                         "marked, and every cell is silently averaged across "
+                         "two builds. That is exactly what happened to the "
+                         "C2M arm-B rows, where each of 32 cells blended the "
+                         "defective rasteriser with the one that fixed it.")
+    ap.add_argument("--only-replacement-cells", action="store_true",
+                    help="mark only rows whose (scene, test_scale) the "
+                         "replacement actually covers. Without it a re-run of "
+                         "two scenes supersedes all eight and the table loses "
+                         "six it still has good rows for -- --require cannot "
+                         "catch that, because the replacement did land, just "
+                         "not for every cell.")
     ap.add_argument("--require", type=int, default=0, metavar="N",
                     help="refuse unless at least N rows are exempt -- i.e. unless "
                          "the replacement actually landed. Without it, marking "
@@ -65,8 +82,15 @@ def main():
               if (a.unless_run_id_prefix
                   and r["run_id"].startswith(a.unless_run_id_prefix))
               or (a.unless_notes_contains
-                  and a.unless_notes_contains in (r.get("notes") or ""))]
+                  and a.unless_notes_contains in (r.get("notes") or ""))
+              or (a.unless_impl_commit_prefix
+                  and (r.get("impl_commit") or "").startswith(
+                      a.unless_impl_commit_prefix))]
     target = [r for r in matching if r not in exempt]
+    if a.only_replacement_cells:
+        covered = {(r.get("scene"), r.get("test_scale")) for r in exempt}
+        target = [r for r in target
+                  if (r.get("scene"), r.get("test_scale")) in covered]
 
     if a.require and len(exempt) < a.require:
         sys.exit(f"refusing: {len(exempt)} replacement row(s) present, need at "

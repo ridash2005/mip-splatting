@@ -1,4 +1,4 @@
-Sat Sep 12 02:10:37 2026       
+Sat Sep 12 08:18:00 2026       
 +-----------------------------------------------------------------------------------------+
 | NVIDIA-SMI 580.159.04             Driver Version: 580.159.04     CUDA Version: 13.0     |
 +-----------------------------------------+------------------------+----------------------+
@@ -7,11 +7,11 @@ Sat Sep 12 02:10:37 2026
 |                                         |                        |               MIG M. |
 |=========================================+========================+======================|
 |   0  Tesla T4                       Off |   00000000:00:04.0 Off |                    0 |
-| N/A   38C    P8             10W /   70W |       0MiB /  15360MiB |      0%      Default |
+| N/A   55C    P8              9W /   70W |       0MiB /  15360MiB |      0%      Default |
 |                                         |                        |                  N/A |
 +-----------------------------------------+------------------------+----------------------+
 |   1  Tesla T4                       Off |   00000000:00:05.0 Off |                    0 |
-| N/A   34C    P8             10W /   70W |       0MiB /  15360MiB |      0%      Default |
+| N/A   49C    P8             10W /   70W |       0MiB /  15360MiB |      0%      Default |
 |                                         |                        |                  N/A |
 +-----------------------------------------+------------------------+----------------------+
 
@@ -24,13 +24,13 @@ Sat Sep 12 02:10:37 2026
 +-----------------------------------------------------------------------------------------+
 torch 2.10.0+cu128 cuda 12.8 cap (7, 5) Tesla T4 x2
 Cloning into '/kaggle/working/repo'...
-repo 0223597df40010aa970e38972d7c4a96e1bf69d2
+repo 207e07117a2c54f87a0f3ea391cdb99b52a4e99f
 + pip install -q ninja gputil lpips plyfile opencv-python
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 43.3/43.3 kB 2.0 MB/s eta 0:00:00
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 53.8/53.8 kB 3.7 MB/s eta 0:00:00
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 43.3/43.3 kB 1.6 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 53.8/53.8 kB 4.1 MB/s eta 0:00:00
 + pip install -q open3d
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 447.7/447.7 MB 3.9 MB/s eta 0:00:00
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 8.9/8.9 MB 64.7 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 447.7/447.7 MB 4.2 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 8.9/8.9 MB 109.8 MB/s eta 0:00:00
 applied build fix: added #include <cfloat> to /kaggle/working/repo/submodules/simple-knn/simple_knn.cu
 + pip install -v /kaggle/working/repo/submodules/diff-gaussian-rasterization
 Using pip 24.1.2 from /usr/local/lib/python3.12/dist-packages/pip (python 3.12)
@@ -38,14 +38,14 @@ Processing ./repo/submodules/diff-gaussian-rasterization
   Preparing metadata (setup.py): started
   Running command python setup.py egg_info
   running egg_info
-  creating /tmp/pip-pip-egg-info-jiaqfwmc/diff_gaussian_rasterization.egg-info
-  writing /tmp/pip-pip-egg-info-jiaqfwmc/diff_gaussian_rasterization.egg-info/PKG-INFO
-  writing dependency_links to /tmp/pip-pip-egg-info-jiaqfwmc/diff_gaussian_rasterization.egg-info/dependency_links.txt
-  writing top-level names to /tmp/pip-pip-egg-info-jiaqfwmc/diff_gaussian_rasterization.egg-info/top_level.txt
-  writing manifest file '/tmp/pip-pip-egg-info-jiaqfwmc/diff_gaussian_rasterization.egg-info/SOURCES.txt'
-  reading manifest file '/tmp/pip-pip-egg-info-jiaqfwmc/diff_gaussian_rasterization.egg-info/SOURCES.txt'
+  creating /tmp/pip-pip-egg-info-2huubtqz/diff_gaussian_rasterization.egg-info
+  writing /tmp/pip-pip-egg-info-2huubtqz/diff_gaussian_rasterization.egg-info/PKG-INFO
+  writing dependency_links to /tmp/pip-pip-egg-info-2huubtqz/diff_gaussian_rasterization.egg-info/dependency_links.txt
+  writing top-level names to /tmp/pip-pip-egg-info-2huubtqz/diff_gaussian_rasterization.egg-info/top_level.txt
+  writing manifest file '/tmp/pip-pip-egg-info-2huubtqz/diff_gaussian_rasterization.egg-info/SOURCES.txt'
+  reading manifest file '/tmp/pip-pip-egg-info-2huubtqz/diff_gaussian_rasterization.egg-info/SOURCES.txt'
   adding license file 'LICENSE.md'
-  writing manifest file '/tmp/pip-pip-egg-info-jiaqfwmc/diff_gaussian_rasterization.egg-info/SOURCES.txt'
+  writing manifest file '/tmp/pip-pip-egg-info-2huubtqz/diff_gaussian_rasterization.egg-info/SOURCES.txt'
   Preparing metadata (setup.py): finished with status 'done'
 Building wheels for collected packages: diff_gaussian_rasterization
   Building wheel for diff_gaussian_rasterization (setup.py): started
@@ -56,7 +56,7 @@ Building wheels for collected packages: diff_gaussian_rasterization
   creating build/lib.linux-x86_64-cpython-312/diff_gaussian_rasterization
   copying diff_gaussian_rasterization/__init__.py -> build/lib.linux-x86_64-cpython-312/diff_gaussian_rasterization
   running build_ext
-  W0912 02:11:29.172000 107 torch/utils/cpp_extension.py:535] There are no x86_64-linux-gnu-g++ version bounds defined for CUDA version 12.8
+  W0912 08:18:45.221000 108 torch/utils/cpp_extension.py:535] There are no x86_64-linux-gnu-g++ version bounds defined for CUDA version 12.8
   building 'diff_gaussian_rasterization._C' extension
   creating /kaggle/working/repo/submodules/diff-gaussian-rasterization/build/temp.linux-x86_64-cpython-312/cuda_rasterizer
   [1/5] /usr/local/cuda/bin/nvcc --generate-dependencies-with-compile --dependency-output /kaggle/working/repo/submodules/diff-gaussian-rasterization/build/temp.linux-x86_64-cpython-312/cuda_rasterizer/forward.o.d -I/usr/local/lib/python3.12/dist-packages/torch/include -I/usr/local/lib/python3.12/dist-packages/torch/include/torch/csrc/api/include -I/usr/local/cuda/include -I/usr/include/python3.12 -c -c /kaggle/working/repo/submodules/diff-gaussian-rasterization/cuda_rasterizer/forward.cu -o /kaggle/working/repo/submodules/diff-gaussian-rasterization/build/temp.linux-x86_64-cpython-312/cuda_rasterizer/forward.o -D__CUDA_NO_HALF_OPERATORS__ -D__CUDA_NO_HALF_CONVERSIONS__ -D__CUDA_NO_BFLOAT16_CONVERSIONS__ -D__CUDA_NO_HALF2_OPERATORS__ --expt-relaxed-constexpr --compiler-options ''"'"'-fPIC'"'"'' -I/kaggle/working/repo/submodules/diff-gaussian-rasterization/third_party/glm/ -DTORCH_API_INCLUDE_EXTENSION_H -DTORCH_EXTENSION_NAME=_C -gencode=arch=compute_75,code=sm_75 -std=c++17
@@ -307,8 +307,8 @@ Building wheels for collected packages: diff_gaussian_rasterization
   running install_lib
   creating build/bdist.linux-x86_64/wheel
   creating build/bdist.linux-x86_64/wheel/diff_gaussian_rasterization
-  copying build/lib.linux-x86_64-cpython-312/diff_gaussian_rasterization/__init__.py -> build/bdist.linux-x86_64/wheel/./diff_gaussian_rasterization
   copying build/lib.linux-x86_64-cpython-312/diff_gaussian_rasterization/_C.cpython-312-x86_64-linux-gnu.so -> build/bdist.linux-x86_64/wheel/./diff_gaussian_rasterization
+  copying build/lib.linux-x86_64-cpython-312/diff_gaussian_rasterization/__init__.py -> build/bdist.linux-x86_64/wheel/./diff_gaussian_rasterization
   running install_egg_info
   running egg_info
   writing diff_gaussian_rasterization.egg-info/PKG-INFO
@@ -320,7 +320,7 @@ Building wheels for collected packages: diff_gaussian_rasterization
   Copying diff_gaussian_rasterization.egg-info to build/bdist.linux-x86_64/wheel/./diff_gaussian_rasterization-0.0.0-py3.12.egg-info
   running install_scripts
   creating build/bdist.linux-x86_64/wheel/diff_gaussian_rasterization-0.0.0.dist-info/WHEEL
-  creating '/tmp/pip-wheel-3v9bmx6i/diff_gaussian_rasterization-0.0.0-cp312-cp312-linux_x86_64.whl' and adding 'build/bdist.linux-x86_64/wheel' to it
+  creating '/tmp/pip-wheel-csq4brha/diff_gaussian_rasterization-0.0.0-cp312-cp312-linux_x86_64.whl' and adding 'build/bdist.linux-x86_64/wheel' to it
   adding 'diff_gaussian_rasterization/_C.cpython-312-x86_64-linux-gnu.so'
   adding 'diff_gaussian_rasterization/__init__.py'
   adding 'diff_gaussian_rasterization-0.0.0.dist-info/licenses/LICENSE.md'
@@ -330,7 +330,7 @@ Building wheels for collected packages: diff_gaussian_rasterization
   adding 'diff_gaussian_rasterization-0.0.0.dist-info/RECORD'
   removing build/bdist.linux-x86_64/wheel
   Building wheel for diff_gaussian_rasterization (setup.py): finished with status 'done'
-  Created wheel for diff_gaussian_rasterization: filename=diff_gaussian_rasterization-0.0.0-cp312-cp312-linux_x86_64.whl size=3594743 sha256=db50ae077a210fadeb08d582ecca6084e949663ee9c2743403b561d2456a406d
+  Created wheel for diff_gaussian_rasterization: filename=diff_gaussian_rasterization-0.0.0-cp312-cp312-linux_x86_64.whl size=3594742 sha256=b1bf405ba7f4c2ee0c21cf4fab7d2a777fd1fb652d757386907f7495aff5e862
   Stored in directory: /root/.cache/pip/wheels/ab/06/f2/7a6285c344bab1d62d8cbe8cafc04c596a579b9f9e5ddb562e
 Successfully built diff_gaussian_rasterization
 Installing collected packages: diff_gaussian_rasterization
@@ -341,13 +341,13 @@ Processing ./repo/submodules/simple-knn
   Preparing metadata (setup.py): started
   Running command python setup.py egg_info
   running egg_info
-  creating /tmp/pip-pip-egg-info-76iki8qn/simple_knn.egg-info
-  writing /tmp/pip-pip-egg-info-76iki8qn/simple_knn.egg-info/PKG-INFO
-  writing dependency_links to /tmp/pip-pip-egg-info-76iki8qn/simple_knn.egg-info/dependency_links.txt
-  writing top-level names to /tmp/pip-pip-egg-info-76iki8qn/simple_knn.egg-info/top_level.txt
-  writing manifest file '/tmp/pip-pip-egg-info-76iki8qn/simple_knn.egg-info/SOURCES.txt'
-  reading manifest file '/tmp/pip-pip-egg-info-76iki8qn/simple_knn.egg-info/SOURCES.txt'
-  writing manifest file '/tmp/pip-pip-egg-info-76iki8qn/simple_knn.egg-info/SOURCES.txt'
+  creating /tmp/pip-pip-egg-info-gfzg_nlr/simple_knn.egg-info
+  writing /tmp/pip-pip-egg-info-gfzg_nlr/simple_knn.egg-info/PKG-INFO
+  writing dependency_links to /tmp/pip-pip-egg-info-gfzg_nlr/simple_knn.egg-info/dependency_links.txt
+  writing top-level names to /tmp/pip-pip-egg-info-gfzg_nlr/simple_knn.egg-info/top_level.txt
+  writing manifest file '/tmp/pip-pip-egg-info-gfzg_nlr/simple_knn.egg-info/SOURCES.txt'
+  reading manifest file '/tmp/pip-pip-egg-info-gfzg_nlr/simple_knn.egg-info/SOURCES.txt'
+  writing manifest file '/tmp/pip-pip-egg-info-gfzg_nlr/simple_knn.egg-info/SOURCES.txt'
   Preparing metadata (setup.py): finished with status 'done'
 Building wheels for collected packages: simple_knn
   Building wheel for simple_knn (setup.py): started
@@ -355,7 +355,7 @@ Building wheels for collected packages: simple_knn
   running bdist_wheel
   running build
   running build_ext
-  W0912 02:12:52.021000 225 torch/utils/cpp_extension.py:535] There are no x86_64-linux-gnu-g++ version bounds defined for CUDA version 12.8
+  W0912 08:20:04.653000 226 torch/utils/cpp_extension.py:535] There are no x86_64-linux-gnu-g++ version bounds defined for CUDA version 12.8
   building 'simple_knn._C' extension
   creating /kaggle/working/repo/submodules/simple-knn/build/temp.linux-x86_64-cpython-312
   [1/3] /usr/local/cuda/bin/nvcc --generate-dependencies-with-compile --dependency-output /kaggle/working/repo/submodules/simple-knn/build/temp.linux-x86_64-cpython-312/simple_knn.o.d -I/usr/local/lib/python3.12/dist-packages/torch/include -I/usr/local/lib/python3.12/dist-packages/torch/include/torch/csrc/api/include -I/usr/local/cuda/include -I/usr/include/python3.12 -c -c /kaggle/working/repo/submodules/simple-knn/simple_knn.cu -o /kaggle/working/repo/submodules/simple-knn/build/temp.linux-x86_64-cpython-312/simple_knn.o -D__CUDA_NO_HALF_OPERATORS__ -D__CUDA_NO_HALF_CONVERSIONS__ -D__CUDA_NO_BFLOAT16_CONVERSIONS__ -D__CUDA_NO_HALF2_OPERATORS__ --expt-relaxed-constexpr --compiler-options ''"'"'-fPIC'"'"'' -DTORCH_API_INCLUDE_EXTENSION_H -DTORCH_EXTENSION_NAME=_C -gencode=arch=compute_75,code=sm_75 -std=c++17
@@ -414,7 +414,7 @@ Building wheels for collected packages: simple_knn
   Copying simple_knn.egg-info to build/bdist.linux-x86_64/wheel/./simple_knn-0.0.0-py3.12.egg-info
   running install_scripts
   creating build/bdist.linux-x86_64/wheel/simple_knn-0.0.0.dist-info/WHEEL
-  creating '/tmp/pip-wheel-za_yjpgj/simple_knn-0.0.0-cp312-cp312-linux_x86_64.whl' and adding 'build/bdist.linux-x86_64/wheel' to it
+  creating '/tmp/pip-wheel-22cat5ou/simple_knn-0.0.0-cp312-cp312-linux_x86_64.whl' and adding 'build/bdist.linux-x86_64/wheel' to it
   adding 'simple_knn/_C.cpython-312-x86_64-linux-gnu.so'
   adding 'simple_knn-0.0.0.dist-info/METADATA'
   adding 'simple_knn-0.0.0.dist-info/WHEEL'
@@ -422,7 +422,7 @@ Building wheels for collected packages: simple_knn
   adding 'simple_knn-0.0.0.dist-info/RECORD'
   removing build/bdist.linux-x86_64/wheel
   Building wheel for simple_knn (setup.py): finished with status 'done'
-  Created wheel for simple_knn: filename=simple_knn-0.0.0-cp312-cp312-linux_x86_64.whl size=3393879 sha256=8e701b8df0e77513ad8f27467c3d18a32a06f11fe489e4a238ce79e6cd8f9cf9
+  Created wheel for simple_knn: filename=simple_knn-0.0.0-cp312-cp312-linux_x86_64.whl size=3393880 sha256=d7feae370be2f1cbc9397445d512ac84defe64f39eabe607cd2bf797c0465b93
   Stored in directory: /root/.cache/pip/wheels/cb/b9/33/81960efda1471685833da4d25d613aa16a636d6e999b651d86
 Successfully built simple_knn
 Installing collected packages: simple_knn
@@ -487,7 +487,7 @@ number of testing images: 800
 Generating random point cloud (100000)...
 Loading Training Cameras
 Loading Test Cameras
-[mip] 112.8 fps  (292946 gaussians, 800x800, spread 1.0)
+[mip] 112.7 fps  (292946 gaussians, 800x800, spread 0.8)
 Loading trained model at iteration 30000
 Found metadata.json file, assuming multi scale Blender data set!
 Reading train from metadata.json
@@ -501,8 +501,8 @@ Loading Test Cameras
 Computing 3D filter
 floor check: max|f_k(B1) - filter_3D(Mip)| = 0.000e+00 (rel 0.000e+00); medians 1.308681e-03 vs 1.308681e-03
 Fisher filter: 0.0% of primitives above the floor, mean anisotropy 1.00x, 0.00% capped
-[b1] 111.3 fps  (291214 gaussians, 800x800, spread 1.5)
-R9_SUMMARY_JSON={"rung": "C9", "scene": "lego", "iterations": 30000, "commit": "0223597df40010aa970e38972d7c4a96e1bf69d2", "gpu": "Tesla T4", "n_gpu": 2, "warmup_views": 20, "repeats": 3, "results": {"mip": {"label": "Mip-Splatting", "model": "/kaggle/input/notebooks/ceoricky/btp-t3-stress/out/mip_lego_full", "n_gaussians": 292946, "n_views": 800, "fps_passes": [113.29077558079345, 112.76655647085481, 112.25664719520655], "fps": 112.76655647085481, "fps_spread": 1.0341283855868966, "filter_setup_seconds": 0.0, "resolution": [800, 800]}, "b1": {"label": "B1 --- Fisher band-limit", "model": "/kaggle/input/notebooks/ceoricky/btp-t3-stress/out/b1_lego_full", "n_gaussians": 291214, "n_views": 800, "fps_passes": [112.08595152479171, 111.32597585719877, 110.63216698955024], "fps": 111.32597585719877, "fps_spread": 1.4537845352414678, "filter_setup_seconds": 2.4729456901550293, "resolution": [800, 800]}}, "failed": {}, "ratio_vs_mip": {"mip": 1.0, "b1": 0.9872251077026692}, "one_rasteriser_build": true, "note": "Render call only: no scene load, no PNG encode, no disk write. All three arms share one rasteriser build; the 3DGS row is 3DGS's band-limit semantics (filter_3D == 0, kernel_size 0.3) rather than the C1 vanilla build, which differs only in the opacity compensation multiply.", "session_seconds": 412.3275420665741, "gpu_hours_used": 0.11453542874919044, "complete": false}
+[b1] 111.6 fps  (291214 gaussians, 800x800, spread 1.2)
+R9_SUMMARY_JSON={"rung": "C9", "scene": "lego", "iterations": 30000, "commit": "207e07117a2c54f87a0f3ea391cdb99b52a4e99f", "gpu": "Tesla T4", "n_gpu": 2, "warmup_views": 20, "repeats": 3, "results": {"mip": {"label": "Mip-Splatting", "model": "/kaggle/input/notebooks/ceoricky/btp-t3-stress/out/mip_lego_full", "n_gaussians": 292946, "n_views": 800, "fps_passes": [113.07997370387241, 112.65801771077338, 112.24058455924555], "fps": 112.65801771077338, "fps_spread": 0.839389144626864, "filter_setup_seconds": 0.0, "resolution": [800, 800]}, "b1": {"label": "B1 --- Fisher band-limit", "model": "/kaggle/input/notebooks/ceoricky/btp-t3-stress/out/b1_lego_full", "n_gaussians": 291214, "n_views": 800, "fps_passes": [112.17951998390676, 111.57002149687757, 111.00874632292471], "fps": 111.57002149687757, "fps_spread": 1.17077366098205, "filter_setup_seconds": 2.3504557609558105, "resolution": [800, 800]}}, "failed": {}, "ratio_vs_mip": {"mip": 1.0, "b1": 0.990342487503295}, "one_rasteriser_build": true, "note": "Render call only: no scene load, no PNG encode, no disk write. All three arms share one rasteriser build; the 3DGS row is 3DGS's band-limit semantics (filter_3D == 0, kernel_size 0.3) rather than the C1 vanilla build, which differs only in the opacity compensation multiply.", "session_seconds": 397.25997018814087, "gpu_hours_used": 0.11034999205006493, "complete": false}
 /usr/local/lib/python3.12/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\|'
   cells[i][c] = re.sub('\\\\\|', '|', cell)
 /usr/local/lib/python3.12/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\_'

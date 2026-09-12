@@ -49,6 +49,28 @@ SUPERSEDES = [
                           "iterations=30000"],
          unless="C2M", require=32,
          why="arm B, multi-scale train and test: same defect, same arm."),
+    # These two are keyed on the COMMIT, not the rung name. A re-run that keeps
+    # its rung has the rung in its notes just like the run it replaces, so
+    # --unless-notes-contains exempts both and marks neither -- which is how 32
+    # arm-B cells in Table 2 came to be averages over two different rasterisers,
+    # one of them the defective build C1 was written to replace.
+    dict(by="C2M-rebuild",
+         where=["arm=B", "dataset=blender", "load_allres=True",
+                "iterations=30000"],
+         unless_commit="7896e78d", require=32,
+         why="arm B, multi-scale: the first C2M sweep ran on 061a9084, before "
+             "the forward and backward degeneracy guards were matched. The "
+             "re-run on 7896e78d is the same rung and the same eight scenes, "
+             "so only the commit separates them."),
+    dict(by="R7-floor",
+         where=["arm=C", "dataset=blender", "iterations=30000",
+                "train_scale=1x/full"],
+         unless_commit="22a5fbba", require=8, only_cells=True,
+         why="B1 at the full protocol: 6693604d re-derived Mip-Splatting's "
+             "floor instead of taking it, which differed by 0.5%% at the median "
+             "on the first call and seeded a different densification "
+             "trajectory. 22a5fbba takes theirs, which is what makes "
+             "Proposition 2 exact in the floor as well."),
     dict(by="T3M", where=["train_scale=1x/mixed", "dataset=blender"],
          unless="T3M", require=16,
          why="the mixed-focal protocol: the first stress run passed only the "
@@ -86,10 +108,16 @@ def main():
     print("\n2. mark superseded rows (refused until the replacement is present)")
     for s in SUPERSEDES:
         print(f"  -- {s['by']}: {s['why']}")
+        guard = (["--unless-impl-commit-prefix", s["unless_commit"]]
+                 if s.get("unless_commit")
+                 else ["--unless-notes-contains", s["unless"]])
+        if s.get("only_cells"):
+            # The replacement covers two scenes of the eight; without this the
+            # other six are marked too and the table loses rows nothing replaced.
+            guard += ["--only-replacement-cells"]
         rc = sh([py, "tools/supersede.py", "--by", s["by"], "--where"]
-                + s["where"]
-                + ["--unless-notes-contains", s["unless"],
-                   "--require", str(s["require"])], a.dry_run)
+                + s["where"] + guard
+                + ["--require", str(s["require"])], a.dry_run)
         if rc:
             print(f"     not applied yet; {s['by']} has not landed.")
 

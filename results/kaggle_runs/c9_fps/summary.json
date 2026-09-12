@@ -2,7 +2,7 @@
   "rung": "C9",
   "scene": "lego",
   "iterations": 30000,
-  "commit": "0223597df40010aa970e38972d7c4a96e1bf69d2",
+  "commit": "207e07117a2c54f87a0f3ea391cdb99b52a4e99f",
   "gpu": "Tesla T4",
   "n_gpu": 2,
   "warmup_views": 20,
@@ -14,12 +14,12 @@
       "n_gaussians": 292946,
       "n_views": 800,
       "fps_passes": [
-        113.29077558079345,
-        112.76655647085481,
-        112.25664719520655
+        113.07997370387241,
+        112.65801771077338,
+        112.24058455924555
       ],
-      "fps": 112.76655647085481,
-      "fps_spread": 1.0341283855868966,
+      "fps": 112.65801771077338,
+      "fps_spread": 0.839389144626864,
       "filter_setup_seconds": 0.0,
       "resolution": [
         800,
@@ -32,13 +32,13 @@
       "n_gaussians": 291214,
       "n_views": 800,
       "fps_passes": [
-        112.08595152479171,
-        111.32597585719877,
-        110.63216698955024
+        112.17951998390676,
+        111.57002149687757,
+        111.00874632292471
       ],
-      "fps": 111.32597585719877,
-      "fps_spread": 1.4537845352414678,
-      "filter_setup_seconds": 2.4729456901550293,
+      "fps": 111.57002149687757,
+      "fps_spread": 1.17077366098205,
+      "filter_setup_seconds": 2.3504557609558105,
       "resolution": [
         800,
         800
@@ -48,11 +48,11 @@
   "failed": {},
   "ratio_vs_mip": {
     "mip": 1.0,
-    "b1": 0.9872251077026692
+    "b1": 0.990342487503295
   },
   "one_rasteriser_build": true,
   "note": "Render call only: no scene load, no PNG encode, no disk write. All three arms share one rasteriser build; the 3DGS row is 3DGS's band-limit semantics (filter_3D == 0, kernel_size 0.3) rather than the C1 vanilla build, which differs only in the opacity compensation multiply.",
-  "session_seconds": 412.3275420665741,
-  "gpu_hours_used": 0.11453542874919044,
+  "session_seconds": 397.25997018814087,
+  "gpu_hours_used": 0.11034999205006493,
   "complete": false
 }

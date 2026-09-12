@@ -214,6 +214,29 @@ def push(client, script_path, username, slug, title, datasets, session_timeout=N
     return resp, actual_slug
 
 
+def transient(fn, what, tries=20, delay=30):
+    """Retry a Kaggle API call through a network blip.
+
+    A poll runs for hours against a remote that occasionally closes a keep-alive
+    connection without answering. requests surfaces that as ConnectionError, and
+    one of them used to end the wait -- three twelve-hour sessions were left
+    running on Kaggle with nothing watching them, killed by a blip that lasted
+    less than a second. A transport failure says nothing about the kernel, so it
+    is retried; an API-level failure is returned to the caller untouched.
+    """
+    for i in range(tries):
+        try:
+            return fn()
+        except (requests.exceptions.ConnectionError,
+                requests.exceptions.Timeout,
+                requests.exceptions.ChunkedEncodingError) as e:
+            if i == tries - 1:
+                raise
+            print(f"  [{what}] transport error ({type(e).__name__}); "
+                  f"retrying in {delay}s ({i + 1}/{tries - 1})", flush=True)
+            time.sleep(delay)
+
+
 def poll(client, username, slug, interval=30, timeout=6 * 3600):
     req = ApiGetKernelSessionStatusRequest()
     req.user_name = username
@@ -221,7 +244,9 @@ def poll(client, username, slug, interval=30, timeout=6 * 3600):
     start = time.time()
     last = None
     while True:
-        resp = client.kernels.kernels_api_client.get_kernel_session_status(req)
+        resp = transient(
+            lambda: client.kernels.kernels_api_client.get_kernel_session_status(req),
+            f"poll {slug}")
         if resp.status != last:
             print(f"[{time.time() - start:6.0f}s] status: {resp.status.name}", flush=True)
             last = resp.status
@@ -238,7 +263,9 @@ def fetch_log(client, username, slug, out_dir):
     req = ApiListKernelSessionOutputRequest()
     req.user_name = username
     req.kernel_slug = slug
-    resp = client.kernels.kernels_api_client.list_kernel_session_output(req)
+    resp = transient(
+        lambda: client.kernels.kernels_api_client.list_kernel_session_output(req),
+        f"fetch {slug}")
 
     # The listing is capped at 500 entries per page and the rung's own
     # results/ directory sorts after the cloned repository's, so a single page

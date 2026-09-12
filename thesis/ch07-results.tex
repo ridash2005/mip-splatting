@@ -327,6 +327,22 @@ graphics audience asks deserves a measurement.
 
 \input{generated/table-fps}
 
+B1 renders at $0.987\times$ Mip-Splatting --- $1.3\,\%$ slower, on a model with
+$0.6\,\%$ fewer primitives, which is within the variation two training runs of
+the same configuration produce in primitive count alone. The filter's own
+construction costs $2.47$\,s, paid once before the loop begins, and $\Lambda_k$
+is never touched inside it. The claim of \S\ref{sec:implcost} is therefore
+measured rather than argued.
+
+\paragraph{The 3DGS row is missing, and why.} The benchmark mounts each arm's own
+trained model and scores whichever it finds. The vanilla arm-B model was to come
+from the C2 session, which ended in error with six of eight scenes complete
+(\S\ref{sec:budget}); the mount did not carry a \texttt{lego} model the
+benchmark could discover, so that row is absent rather than estimated. Nothing
+about the comparison this section defends depends on it: the quantity at issue is
+B1 against \emph{its own baseline}, and both of those are here, measured in one
+session on one GPU.
+
 \keybox{the \texttt{render\_fps} column of Table~\ref{tab:cost} does not measure
 rendering}{%
 It is views divided by the wall time of a whole \texttt{render.py} invocation,

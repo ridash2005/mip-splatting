@@ -596,6 +596,63 @@ diagnostic column decides whether the PSNR column is an experiment at all, which
 is why it is printed by the filter during training and carried here beside the
 result rather than reconstructed afterwards.}
 
+\subsection*{What the table says}
+
+Read down the \emph{above floor} column and the $\Delta$ column together and the
+result is a single sentence: \textbf{the method does nothing on five protocols
+and helps on the sixth, and the five where it does nothing are exactly the five
+where Proposition~\ref{prop:reduction} says it must.}
+
+On the full orbit, the grazing orbit, the mixed-focal capture, the one-sided arc
+and the count-based cone, the estimation term exceeds the Nyquist floor on
+\emph{zero} primitives. $\Sigma_{\mathrm{filt}} = f_k^2 I$ identically, the mean
+anisotropy is $1.00\times$ to two decimals, and the two arms take the same code
+path. The measured differences over those five rows run from $-0.041$ to
+$+0.012$\,dB, every one of them inside the harness's own run-to-run spread. That
+is not a weak result; it is the proposition holding, on five independently
+degraded captures, to the precision of the instrument.
+
+On the narrow pencil the filter engages for the first time in this project: the
+estimation term exceeds the floor on $93\,\%$ of primitives and the filter comes
+out genuinely anisotropic at $1.47\times$. And there B1 is ahead --- by
+$+0.197$\,dB on the mean, and, more to the point, \emph{on every one of the eight
+paired cells}, two scenes by four test scales, with per-cell gains from $+0.163$
+to $+0.217$\,dB. A sign that is consistent across all eight pairings is not a
+mean that happens to come out positive.
+
+\keybox{the ordering was predicted before the runs, and it is the whole claim}{%
+Section~\ref{sec:anisotropy} does not predict that this method helps. It predicts
+\emph{where}: nowhere that the Nyquist floor dominates, and increasingly as the
+capture's angular span closes. A method that helped uniformly would contradict
+its own derivation, and \S\ref{ch:discussion} recorded that in advance as a
+reason for suspicion rather than celebration. What the table shows is the
+predicted step: five rows at zero, one row at $5\times$ the noise, and the step
+falls exactly at the span where the estimation term overtakes the floor. The
+crossover is between the count-based cone at $54^\circ$ and the pencil at
+$29^\circ$, and the suite contains both only because the two protocol
+definitions of \S\ref{sec:branchdefect} disagreed and both were kept.}
+
+\subsection*{What it does not say}
+
+\begin{enumerate}[leftmargin=1.4em,itemsep=3pt]
+  \item \textbf{The regime is narrow, and the absolute numbers say so.} A
+        three-camera capture reconstructs badly: both arms sit near $14$\,dB on
+        the pencil, against $34$ on the full orbit. The gain is real and it is
+        measured on a reconstruction nobody would ship. What this establishes is
+        that the mechanism is the one claimed --- the filter acts when and only
+        when the estimation term binds --- not that the method is useful at this
+        operating point.
+  \item \textbf{Two scenes, one seed.} The eight consistent pairings are eight
+        cells of one run, not eight independent experiments. The seed spread of
+        \S\ref{sec:spread} bounds the noise on a cell; it does not bound the
+        scene-to-scene variation of the effect, and two scenes cannot.
+  \item \textbf{The count-based cone is a null result, not a missing one.} At
+        $54^\circ$ the floor still binds everywhere and the method is provably
+        inert. That row is evidence about where the crossover is, and it is the
+        reason the crossover can be stated as a measurement rather than as an
+        extrapolation from the pencil alone.
+\end{enumerate}
+
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.9\linewidth]{figures/fig7-stress-delta.pdf}

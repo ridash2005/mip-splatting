@@ -581,12 +581,16 @@ def fig_stress(out):
                         va="center", ha="left")
     ax.set_yticks(y); ax.set_yticklabels(protos, fontsize=7.6)
     ax.invert_yaxis()
-    lim = max(0.16, max(abs(v) for v in deltas) * 1.9)
+    lim = max(0.16, max(abs(v) for v in deltas) * 1.9, 4 * sigma)
     ax.set_xlim(-lim, lim)
     ax.set_xlabel("PSNR difference, B1 − Mip-Splatting (dB), paired per scene and scale",
                   fontsize=7.4)
-    ax.text(3 * sigma, len(protos) - 0.35, f"  ±3σ = ±{3*sigma:.3f} dB",
-            fontsize=6.8, color=MUTED, va="center")
+    # Inside the axes, always. Placed at 3*sigma it lands outside the limits the
+    # moment sigma is large, and bbox_inches="tight" then stretches the figure to
+    # contain it -- which produced a 15000-pixel-wide panel.
+    ax.text(min(3 * sigma, lim * 0.92), len(protos) - 0.35,
+            f"  ±3σ = ±{3*sigma:.3f} dB",
+            fontsize=6.8, color=MUTED, va="center", ha="right")
     _clean(ax, ygrid=False); ax.xaxis.grid(True)
     _save(fig, out, "fig7-stress-delta")
 

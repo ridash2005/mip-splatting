@@ -385,9 +385,9 @@ matter.
         $\mathbf{\seedSigma}$\,dB, at \seedSigmaWhere.
 \end{enumerate}
 
-The second is roughly three and a half times the first, so the initialisation
-draw matters considerably more than the atomics --- which is not obvious in
-advance, and is the reason R5 is marked not optional in the protocol.
+The second is $\seedVsRepeat\times$ the first, so the initialisation draw
+matters materially more than the atomics --- which is not obvious in advance,
+and is the reason R5 is marked not optional in the protocol.
 
 \keybox{the seed spread is not comfortably below the L1 tolerance}{%
 L1 allows $\pm0.20$\,dB. A worst-case seed standard deviation of
@@ -819,8 +819,9 @@ On the full orbit, the grazing orbit, the mixed-focal capture, the one-sided arc
 and the count-based cone, the estimation term exceeds the Nyquist floor on
 \emph{zero} primitives. $\Sigma_{\mathrm{filt}} = f_k^2 I$ identically, the mean
 anisotropy is $1.00\times$ to two decimals, and the two arms take the same code
-path. The measured differences over those five rows run from $-0.041$ to
-$+0.017$\,dB --- every one inside the harness's own run-to-run spread, and none
+path. The measured differences over those $\stressFlatCount$ rows run from
+$\stressFlatMin$ to $\stressFlatMax$\,dB --- every one inside the harness's own
+run-to-run spread, and none
 exceeding $0.8\sigma$. That
 is not a weak result; it is the proposition holding, on five independently
 degraded captures, to the precision of the instrument.
@@ -828,7 +829,8 @@ degraded captures, to the precision of the instrument.
 On the narrow pencil the filter engages for the first time in this project: the
 estimation term exceeds the floor on $93\,\%$ of primitives and the filter comes
 out genuinely anisotropic at $1.47\times$. And there B1 is ahead --- by
-$+0.197$\,dB on the mean --- four times the run-to-run spread --- and, more to
+$\stressBindDelta$\,dB on the mean --- $\stressBindSigma\times$ the run-to-run
+spread --- and, more to
 the point, \emph{on every one of the eight paired cells}, two scenes by four test
 scales, with per-cell gains from $+0.163$ to $+0.217$\,dB. A sign that is
 consistent across all eight pairings is not a mean that happens to come out

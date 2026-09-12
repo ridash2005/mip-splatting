@@ -79,14 +79,15 @@ regimes, and the scale-free condition number does (\S\ref{sec:b2amend}).
 
 Whether that translates into rendered quality on a degraded capture is
 Table~\ref{tab:stress}, and it is now measured. Across six capture protocols the
-answer has the shape the derivation demands: on the five where the Nyquist floor
-still dominates, the estimation term exceeds it on \emph{zero} primitives, the
-filter is isotropic to two decimals, and B1 differs from Mip-Splatting by
-$-0.041$ to $+0.012$\,dB --- Proposition~\ref{prop:reduction} holding to the
-precision of the instrument. On the sixth, a three-camera pencil spanning
-$29^\circ$, the estimation term exceeds the floor on $93\,\%$ of primitives, the
-filter becomes anisotropic at $1.47\times$, and B1 leads by $+0.197$\,dB --- on
-the mean and on every one of the eight paired cells. The step falls exactly where
+answer has the shape the derivation demands: on the $\stressFlatCount$ where the
+Nyquist floor still dominates, the estimation term exceeds it on \emph{zero}
+primitives, the filter is isotropic to two decimals, and B1 differs from
+Mip-Splatting by $\stressFlatMin$ to $\stressFlatMax$\,dB ---
+Proposition~\ref{prop:reduction} holding to the precision of the instrument. On
+the sixth, a three-camera pencil spanning $29^\circ$, the estimation term exceeds
+the floor on $93\,\%$ of primitives, the filter becomes anisotropic at
+$1.47\times$, and B1 leads by $\stressBindDelta$\,dB --- on the mean and on every
+one of the eight paired cells. The step falls exactly where
 the estimation term overtakes the floor.
 
 Two things that result is not. The pencil reconstructs at $14$\,dB against the

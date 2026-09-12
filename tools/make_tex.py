@@ -686,6 +686,31 @@ def _b1_diagnostics(summaries_dir="results/kaggle_runs"):
     return out
 
 
+def stress_deltas(rows):
+    """{protocol: paired B1 - Mip-Splatting delta}, the same figure Table 3 shows.
+
+    Factored out because the abstract and \S7.12 both quote the range of it, and
+    quoting a computed range in prose is how "$-0.041$ to $+0.012$" came to sit
+    in the abstract while the table said $+0.017$ -- the abstract had the grazing
+    row, which stopped being the largest when mixed focal was re-run against the
+    focal override it had never actually applied.
+    """
+    acc = {}
+    for r in rows:
+        t = r.get("train_scale") or ""
+        if "/" not in t:
+            continue
+        acc.setdefault(t.split("/")[1], {}).setdefault(r["method"], {})            .setdefault((r["scene"], r["test_scale"]), []).append(float(r["psnr"]))
+    out = {}
+    for proto, d in acc.items():
+        mip_d, b1_d = d.get("mip-splatting", {}), d.get("b1-fisher", {})
+        keys = sorted(set(mip_d) & set(b1_d))
+        paired = [mean(b1_d[k]) - mean(mip_d[k]) for k in keys]
+        if paired:
+            out[proto] = mean(paired)
+    return out
+
+
 def stress_table(rows, inst, label, caption, sigma=SIGMA_FALLBACK):
     """Table 3: the stress suite -- the thesis's central empirical claim.
 
@@ -1513,6 +1538,7 @@ def macros(rows, summaries, inst=None, raw=None):
                 + (r.get("impl_commit"),)].append(float(r["psnr"]))
     spreads = [max(v) - min(v) for v in grouped.values() if len(v) > 1]
     put("repeatSpread", max(spreads) if spreads else None, "{:.3f}")
+    _rep = max(spreads) if spreads else None
 
     # Seed-to-seed sigma: a different initial point cloud and view order, not the
     # same configuration run twice. Larger than the atomics spread, and the bar
@@ -1530,6 +1556,28 @@ def macros(rows, summaries, inst=None, raw=None):
             sds[k] = (sum((x - m) ** 2 for x in v) / (len(v) - 1)) ** 0.5
     put("seedSigma", max(sds.values()) if sds else None, "{:.3f}")
     armB = [s for k, s in sds.items() if k[1] == "B"]
+    # The prose compares these two, and comparing them in prose is how a
+    # sentence saying "three and a half times" outlived the numbers that made
+    # it true. The ratio is derived from the same two macros the reader sees.
+    _sig = max(sds.values()) if sds else None
+    put("seedVsRepeat", (_sig / _rep) if (_rep and _sig) else None, "{:.1f}")
+
+    # The stress suite's two regimes, as a range rather than as two typed
+    # numbers. "Floor-dominated" is read from the filter's own diagnostic, not
+    # from a list of protocol names, so a protocol that changes regime moves
+    # itself between the two macros.
+    _sd = stress_deltas(rows)
+    _diag = _b1_diagnostics()
+    _flat = [v for proto, v in _sd.items()
+             if mean(_diag.get(proto, {}).get("floor") or [1.0]) == 0.0]
+    _bind = [v for proto, v in _sd.items()
+             if mean(_diag.get(proto, {}).get("floor") or [0.0]) > 0.0]
+    put("stressFlatMin", min(_flat) if _flat else None, "{:+.3f}")
+    put("stressFlatMax", max(_flat) if _flat else None, "{:+.3f}")
+    M["stressFlatCount"] = str(len(_flat)) if _flat else NOT_MEASURED
+    put("stressBindDelta", max(_bind) if _bind else None, "{:+.3f}")
+    put("stressBindSigma",
+        (max(_bind) / _rep) if (_bind and _rep) else None, "{:.1f}")
     armA = [s for k, s in sds.items() if k[1] == "A"]
     put("seedSigmaArmB", max(armB) if armB else None, "{:.3f}")
     put("seedSigmaArmA", max(armA) if armA else None, "{:.3f}")

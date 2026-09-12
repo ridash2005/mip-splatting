@@ -45,15 +45,18 @@ retention of its \emph{spectrum}.
 \medskip
 \keybox{status of this version}{%
 Both baselines are reproduced end to end on free compute across four rungs, and
-the reproduction is the subject of Chapter~\ref{ch:results}. Both arms land
-within $\stmtArmAMaxDelta$\,dB of their published figures at all four test
-scales --- L2 --- and the gap between them, which is the quantity the two-arm
-construction exists to measure, within $\stmtGapMaxDelta$\,dB, which is L1
-(Table~\ref{tab:stmt}). The
+the reproduction is the subject of Chapter~\ref{ch:results}. Mip-Splatting lands
+within $\stmtArmAMaxDelta$\,dB of its published figures at all four test scales
+over the $\stmtArmAScenes$ scenes that mean covers --- L1 on PSNR --- and the
+gap between the arms, which is the quantity the two-arm construction exists to
+measure, within $\stmtGapMaxDelta$\,dB, also L1 (Table~\ref{tab:stmt}). The 3DGS
+column claims nothing: \texttt{ship} does not train on the vanilla arm, so it
+stands at $\stmtArmBScenes$ scenes against an eight-scene published figure.
+The
 two falsification gates the method's premise rests on --- does the Nyquist floor
 bind everywhere, and is the capture conditioning really anisotropic --- are
 \textbf{both passed on measurement} (\S\ref{sec:instrumentresults}), before any
-method code exists. Three results run against expectation and are reported as
+method code exists. Several results run against expectation and are reported as
 such. Gate G2 failed, and the first diagnosis of the failure was itself wrong:
 the 3DGS arm had kept Mip-Splatting's screen-space opacity compensation, so the
 arm labelled 3DGS was anti-aliasing better than 3DGS. Rebuilt and re-measured,
@@ -62,11 +65,20 @@ reproduces to within $\stmtGapMaxDelta$\,dB at every test scale
 (\S\ref{sec:g2}). Re-measuring then exposed a second defect in the record rather
 than in the code: the replaced rows were retired by a rule keyed on the rung
 name, the re-run carried the same rung, and for a time every cell of one column
-was the mean of both builds (\S\ref{sec:blend}). The instrument and training kernels were cloning
-different branches, so the conditioning reported for a capture protocol and the
-rendered quality reported for it were measurements of different captures
-(\S\ref{sec:branchdefect}). And the seed-to-seed spread is close enough to the L1
-tolerance to qualify a single-seed claim (\S\ref{sec:spread}).
+was the mean of both builds (\S\ref{sec:blend}). A third was a denominator: both
+measured columns of Table~\ref{tab:stmt} were means over the seven scenes both
+arms have, compared against published figures that are means over eight, which
+inflated Mip-Splatting's apparent reproduction error fivefold and had it written
+up as L2 when it is L1 (\S\ref{sec:table1}). The instrument and training kernels
+were cloning different branches, so the conditioning reported for a capture
+protocol and the rendered quality reported for it were measurements of different
+captures (\S\ref{sec:branchdefect}). The explanation this document gave for the
+residual --- that the repository's densification differs from the one the
+published numbers were produced with --- was asserted for months and is now
+measured, and it is wrong: at the pre-GOF commit the difference is
+$\gofMaxEffect$\,dB at most and not consistently signed
+(\S\ref{sec:densification}). And the seed-to-seed spread is close enough to the
+L1 tolerance to qualify a single-seed claim (\S\ref{sec:spread}).
 
 Both proposed methods are now implemented. B1 reduces to its baseline exactly
 where the theory requires --- to $1.4\times10^{-21}$ in the unit test, and to

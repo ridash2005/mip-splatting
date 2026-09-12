@@ -41,22 +41,36 @@ measurement.
 
 \input{generated/table1-stmt}
 
-\keybox{both arms reproduce, and the gap between them reproduces best of all}{%
-Over the $\stmtMatchedScenes$ scenes measured under both, 3DGS lands within
-$\stmtArmBMaxDelta$\,dB of its published figure at every test scale and
-Mip-Splatting within $\stmtArmAMaxDelta$\,dB. Neither is inside the
-$\pm0.20$\,dB of Table~\ref{tab:levels} at every scale, so neither carries an
-unqualified L1 claim on its own; what \emph{is} inside it, at all four scales, is
-the \textbf{gap} --- within $\stmtGapMaxDelta$\,dB of the published gap
-throughout. That is the quantity the two-arm construction exists to produce and
-the one every later comparison rests on, and it is reproduced to L1 tolerance
-even where the absolute levels are not.
+\keybox{Mip-Splatting reproduces to L1, and the gap reproduces with it}{%
+Over the $\stmtArmAScenes$ scenes the published mean covers, Mip-Splatting lands
+within $\stmtArmAMaxDelta$\,dB of its published figure at every test scale.
+That is inside the $\pm0.20$\,dB of Table~\ref{tab:levels}, so arm A carries an
+\textbf{L1} claim on PSNR. The \textbf{gap} between the arms, on the
+$\stmtMatchedScenes$ scenes both measured, is within $\stmtGapMaxDelta$\,dB of
+the published gap at all four scales --- also L1, and it is the quantity the
+two-arm construction exists to produce.
 
-Read the absolute columns as L2 and the gap column as L1. The residual on the
-levels is the densification difference of \S\ref{sec:densification}, which both
-arms share and which therefore cancels in the gap --- that cancellation is the
-whole argument for running both arms in one codebase, and here it is visible as
-a number.}
+The 3DGS column is a different matter and claims nothing. \texttt{ship} does not
+train on the vanilla arm (\S\ref{sec:shipfails}), so that column is a
+$\stmtArmBScenes$-scene mean standing against an eight-scene published one. Its
+$\stmtArmBMaxDelta$\,dB is not a reproduction error and is not reported as one;
+it is mostly the missing scene.}
+
+\keybox{this table used to say something weaker, and the weakness was an artefact}{%
+Both \emph{ours} columns were computed on the matched seven scenes, and compared
+against published figures that are means over eight. \texttt{ship} is arm A's
+weakest scene at full resolution --- $30.48$\,dB against a set mean of
+$33.44$ --- so excluding it lifted arm A's mean by $0.42$\,dB, and that entire
+lift was being reported as reproduction error. Arm A read $0.50$\,dB from its
+published figure and was written up as L2.
+
+Two comparisons live in this table and they do not take the same denominator. A
+column compared against a published eight-scene mean has to be an eight-scene
+mean. A gap between two arms has to be over the scenes both arms have, or it is
+partly the difference between two sets of objects. Computing both on the
+matched set made the second correct and the first wrong, and the error was
+invisible because it moved the number in the direction a reproduction error
+would move it.}
 
 \subsection*{The same result, as a picture}
 \label{sec:qualitative}
@@ -399,24 +413,56 @@ the Mip-Splatting paper's numbers were produced. Original 3DGS splits on
 $\lVert\nabla\rVert \geq \tau_{\mathrm{pos}}$ alone. This is a real difference
 from published 3DGS and it is shared by both arms.}
 
-What it explains is the level at full resolution, not the slope across scales.
-Arm B reaches $\cOneBaseFull$\,dB on \texttt{lego} at full scale both with and
-without the compensation (Table~\ref{tab:c1}), against a published eight-scene
-mean of $33.33$; a better densification plausibly accounts for standing above the
-published level, and nothing about it changes when a screen-space opacity term is
-switched off. What it cannot explain is the $\tfrac18$-scale behaviour, because
-both columns of Table~\ref{tab:c1} carry the identical densification and differ
-by $\cOneCollapse$\,dB there. Level and slope are separate quantities, and the
-earlier reading of this section conflated them.
+What it does \emph{not} explain is arm A's distance from its published figure,
+and for two independent reasons. The first is that there is no longer much
+distance to explain: on the eight scenes the published mean covers, arm A is
+within $\stmtArmAMaxDelta$\,dB at every test scale. The $0.50$\,dB this section
+was written to account for was the artefact of \S\ref{sec:table1} --- a
+seven-scene mean standing against an eight-scene published one.
+
+The second is that the hypothesis has now been tested directly, and it fails.
+
+\input{generated/table-pregof}
+
+Commit \texttt{1ecf7d5} is the last before ``add GOF densification'' landed. It
+differs from the checkout every other table in this chapter was measured on by
+$43$ lines in \texttt{scene/gaussian\_model.py} and $2$ in \texttt{train.py},
+and nothing else; it is the configuration Mip-Splatting's published table was
+produced at. Arm A was re-run on it, all $\pregofScenes$ scenes, same data, same
+seed, same iterations.
+
+\keybox{the densification explanation is refuted}{%
+At the pre-GOF commit arm A reproduces the published figures to
+$\pregofMaxDelta$\,dB at every test scale --- effectively exactly, and well
+inside L1. If GOF densification were the cause of a standing offset, the
+post-GOF column would sit clearly above this one. It does not: the effect of
+that change is at most $\gofMaxEffect$\,dB and it is not consistently signed,
+$+0.07$ at full resolution and $-0.11$ at $\tfrac18$.
+
+So the densification difference is real, it is shared by both arms, and it is
+\emph{not} why arm A sits where it sits. It was never tested until now, and it
+was wrong. The sentence it replaces --- ``a better densification plausibly
+accounts for standing above the published level'' --- was doing the work of a
+measurement while being an assertion, and the word \emph{plausibly} was carrying
+all of it.}
+
+The earlier version of this section also argued the point from arm B's
+$\cOneBaseFull$\,dB on \texttt{lego} at full scale, set against a published
+eight-scene mean of $33.33$. That comparison is void: \texttt{lego} is one scene
+and an easy one, and a single scene standing above an eight-scene mean says
+nothing about either. It is the same mistake as the table above it, at a
+different denominator, and finding one is what exposed the other.
 
 Three consequences, revised:
 
 \begin{enumerate}[leftmargin=1.4em,itemsep=3pt]
-  \item \textbf{Arm B still carries no L1 claim against published 3DGS.} The
-        densification differs, so the published column in Tables~\ref{tab:stmt}
-        and~\ref{tab:mtmt} remains a reference point of a different
-        configuration for arm B and a target only for arm A. Its deltas are
-        reported and are not reproduction error.
+  \item \textbf{Arm A carries an L1 claim on PSNR; arm B carries none.} Arm A is
+        within $\stmtArmAMaxDelta$\,dB over the eight scenes the published mean
+        covers. Arm B is missing \texttt{ship}, so its column is a
+        $\stmtArmBScenes$-scene mean against an eight-scene published figure and
+        is not a reproduction test at all. Only PSNR is compared: the published
+        SSIM and LPIPS are not tabulated per scale in the source, so the L1
+        claim is scoped to PSNR and stated that way.
   \item \textbf{The between-arm comparison is now what it was claimed to be.}
         Before C1 it was not: the arms differed by the 2D compensation as well as
         by the 3D filter, so the gap column mixed the method with a residual
@@ -432,13 +478,11 @@ Three consequences, revised:
         has been given a chance to fail.
 \end{enumerate}
 
-Pinning the pre-GOF commit and re-running both arms would remove the remaining
-difference from published 3DGS, at the cost of a densification that no longer
-matches the Mip-Splatting arm --- which would move the difference between the
-arms out of the filter and back into the plumbing. Given that
-Table~\ref{tab:levels} makes the self-run baseline the control, the
-shared-densification choice is still the right one, and the residual is stated
-rather than removed.
+The shared-densification choice stands, and now for a better reason than before.
+It was defended on the grounds that pinning the pre-GOF commit would move the
+difference between the arms out of the filter and back into the plumbing, which
+is still true. What has changed is that the cost of keeping GOF is now measured
+rather than assumed, and it is $\gofMaxEffect$\,dB at worst.
 
 \section{Run-to-run spread (I-3)}
 \label{sec:spread}

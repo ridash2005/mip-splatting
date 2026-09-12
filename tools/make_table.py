@@ -57,11 +57,13 @@ def load(runs_path, load_allres, iterations):
         if r.get("arm") not in ARM_NAME:
             continue
         picked.append(r)
-    # Matched on scenes, as every between-arm table in the thesis is. Without it
-    # arm A averaged eight scenes against arm B's seven -- ship completes on one
-    # arm and not the other -- and the two columns were means over different
-    # objects. It read 33.44 where the thesis read 33.86.
-    picked, _common = mt.matched(picked, ("A", "B"))
+    # NOT matched. This table sets each arm beside its published figure, and the
+    # published figure is a mean over all eight Blender scenes, so each column
+    # has to be a mean over the scenes that arm measured. Matching them here
+    # would drop `ship` from arm A -- its weakest scene at full resolution --
+    # and inflate the column by 0.42 dB against a target it is supposed to be
+    # compared with. The between-arm quantity is the gap, and that one is
+    # matched; it lives in the thesis table, not here.
     for r in picked:
         acc[r["arm"]][r["test_scale"]].append(
             (float(r["psnr"]), float(r["ssim"] or 0), float(r["lpips"] or 0)))

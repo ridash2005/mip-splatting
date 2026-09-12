@@ -32,13 +32,19 @@ Mip-Splatting used one view's worth; this work uses all of it.
   \includegraphics[width=\linewidth]{figures/fig1-scale-degradation.pdf}
   \caption{The failure the band-limit prevents. Blender synthetic, mean PSNR,
   from Mip-Splatting Tables 1--2 (faint dashed) with this project's own
-  reproduction overlaid where measured. \emph{Left:} trained at one scale,
-  tested at four. 3DGS loses $15.64$\,dB in the published numbers as the test
-  sampling rate departs from the training rate, because primitives have shrunk
-  below what any view resolves; Mip-Splatting loses $4.69$\,dB. \emph{Right:}
-  when the training set already spans all four scales, 3DGS partly recovers but
-  still trails everywhere --- the representation absorbs the scale mismatch into
-  the fit rather than into a prefilter.}
+  reproduction overlaid where measured. Each measured curve is a mean over the
+  scenes that arm has, matching the eight-scene denominator of the published
+  curve it is drawn against; the $\tfrac18$ arrow is annotated from the
+  \emph{published} pair, because the two measured curves are means over
+  different scene sets (\texttt{ship} trains only on arm A,
+  \S\ref{sec:shipfails}) and the distance between them is therefore not a gap.
+  \emph{Left:} trained at one scale, tested at four. 3DGS loses $15.64$\,dB in
+  the published numbers as the test sampling rate departs from the training
+  rate, because primitives have shrunk below what any view resolves;
+  Mip-Splatting loses $4.69$\,dB. \emph{Right:} when the training set already
+  spans all four scales, 3DGS partly recovers but still trails everywhere ---
+  the representation absorbs the scale mismatch into the fit rather than into a
+  prefilter.}
   \label{fig:degradation}
 \end{figure}
 

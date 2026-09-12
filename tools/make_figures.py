@@ -147,13 +147,11 @@ def fig_scale_degradation(out, measured=None):
     # published points with the published 10.98 typed beside it, which on a
     # panel whose solid curves are this project's own measurement reads as a
     # measured gap. Both numbers are quoted; neither is typed.
-    t0 = "Single-scale train → multi-scale test"
-    m_b = (measured or {}).get((t0, "3DGS"))
-    m_a = (measured or {}).get((t0, "Mip-Splatting"))
-    if m_b and m_a:
-        lo, hi, tag = m_b[3], m_a[3], "ours"
-    else:
-        lo, hi, tag = STMT["3DGS"][3], STMT["Mip-Splatting"][3], "published"
+    # On the PUBLISHED pair. The two measured curves are means over different
+    # scene sets -- arm B cannot train `ship` -- so the vertical distance
+    # between them is not a gap and must not be annotated as one. The published
+    # pair is two eight-scene means and their difference is well defined.
+    lo, hi, tag = STMT["3DGS"][3], STMT["Mip-Splatting"][3], "published"
     axes[0].annotate("", xy=(3, lo), xytext=(3, hi),
                      arrowprops=dict(arrowstyle="<->", color=INK_2, lw=0.9,
                                      shrinkA=3, shrinkB=3))
@@ -291,16 +289,12 @@ def load_runs(path, iterations=None):
     import make_tex as mt
     rows_in = mt.collapse_repeats(mt.load(path))
     rows_in = [r for r in rows_in if r.get("seed") == "0"]
-    # Matched on scenes, per training protocol and independently, exactly as the
-    # tables are. ship completes on the multi-scale protocol and not on the
-    # single-scale one, so the two groups legitimately have different scene
-    # sets; what neither may have is one curve over eight scenes against another
-    # over seven.
-    keep = []
-    for ts in ("1x", "multi"):
-        grp = [r for r in rows_in if r.get("train_scale") == ts]
-        keep += mt.matched(grp, ("A", "B"))[0]
-    rows_in = keep
+    # NOT matched, and deliberately. Each curve here is drawn against its own
+    # published dashed curve, and the published curve is a mean over all eight
+    # Blender scenes -- so the measured curve has to be a mean over the scenes
+    # that arm measured, or the overlay compares different sets of objects.
+    # The between-arm quantity in this figure is the 1/8 gap arrow, and that one
+    # is annotated from the published pair, which is what it is drawn on.
     order = {"1x": 0, "1/2": 1, "1/4": 2, "1/8": 3}
     acc, seen_iters, bad_methods = {}, set(), set()
     if True:

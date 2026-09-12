@@ -255,39 +255,80 @@ def matched(rows, arms=("A", "B")):
 
 
 def scale_table(rows, protocol, label, caption):
-    """The headline table: published target beside our measurement, per scale."""
-    rows, common = matched(rows)
-    acc = by_arm_scale(rows)
-    scenes = sorted(common)
+    r"""The headline table: published target beside our measurement, per scale.
+
+    Two different scene sets, deliberately, because two different questions are
+    being asked and they do not take the same denominator.
+
+    The published figure is a mean over all EIGHT Blender scenes, so a column
+    compared against it has to be a mean over the eight scenes that arm
+    measured. This table used to compute both arms on the MATCHED set instead --
+    the scenes both arms have, which is seven, because arm B cannot train
+    \texttt{ship}. \texttt{ship} is arm A's weakest scene at full resolution
+    (30.48 dB against a set mean of 33.44), so dropping it lifted arm A's mean
+    by 0.42 dB, and that entire lift was being reported as reproduction error.
+    It is what made arm A look like L2 when it is L1.
+
+    The GAP column keeps the matched set, and must: a difference between a
+    seven-scene mean and an eight-scene mean is not a gap, it is partly the
+    difference between two sets of objects.
+    """
+    matched_rows, common = matched(rows)
+    acc_all = by_arm_scale(rows)            # each arm on its own scenes
+    acc_m = by_arm_scale(matched_rows)      # both arms on the shared scenes
+    n_of = {a: len({r["scene"] for r in rows if r.get("arm") == a})
+            for a in ("A", "B")}
     pub = PUBLISHED[protocol]
     L = [r"\begin{table}[htbp]", r"  \centering",
          r"  \caption{" + caption + "}", r"  \label{tab:" + label + "}",
          r"  \small",
          r"  \begin{tabular}{lcccccc}", r"    \toprule",
          r"    & \multicolumn{2}{c}{3DGS (arm B)} & \multicolumn{2}{c}{Mip-Splatting (arm A)}"
-         r" & \multicolumn{2}{c}{gap, ours} \\",
+         r" & \multicolumn{2}{c}{gap, matched} \\",
          r"    \cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-7}",
          r"    test scale & published & \textbf{ours} & published & \textbf{ours}"
          r" & published & \textbf{ours} \\",
          r"    \midrule"]
     for i, sc in enumerate(SCALES):
         cells = [SCALE_TEX[sc]]
-        got = {}
         for arm in ("B", "A"):
-            p = pub[arm][i]
-            vals = [float(r["psnr"]) for r in acc.get(arm, {}).get(sc, [])]
-            m = mean(vals)
-            got[arm] = m
-            cells += [f"{p:.2f}", (r"\textbf{" + f"{m:.2f}" + "}") if m else NOT_MEASURED]
+            p_ = pub[arm][i]
+            m = mean([float(r["psnr"]) for r in acc_all.get(arm, {}).get(sc, [])])
+            cells += [f"{p_:.2f}",
+                      (r"\textbf{" + f"{m:.2f}" + "}") if m else NOT_MEASURED]
+        gA = mean([float(r["psnr"]) for r in acc_m.get("A", {}).get(sc, [])])
+        gB = mean([float(r["psnr"]) for r in acc_m.get("B", {}).get(sc, [])])
         gap_pub = pub["A"][i] - pub["B"][i]
-        gap_ours = (got["A"] - got["B"]) if (got["A"] and got["B"]) else None
-        cells += [f"{gap_pub:+.2f}", (r"\textbf{" + f"{gap_ours:+.2f}" + "}")
+        gap_ours = (gA - gB) if (gA and gB) else None
+        cells += [f"{gap_pub:+.2f}",
+                  (r"\textbf{" + f"{gap_ours:+.2f}" + "}")
                   if gap_ours is not None else NOT_MEASURED]
         L.append("    " + " & ".join(cells) + r" \\")
     L += [r"    \bottomrule", r"  \end{tabular}"]
-    if scenes:
-        L.append(r"  \par\vspace{2pt}\footnotesize Mean over " + str(len(scenes))
-                 + r" scene(s): \texttt{" + ", ".join(scenes) + r"}. PSNR in dB.")
+    if common:
+        same = n_of["A"] == n_of["B"] == len(common)
+        note = r"  \par\vspace{2pt}\footnotesize PSNR in dB. "
+        if same:
+            note += (r"Mean over " + str(len(common)) + r" scenes: \texttt{"
+                     + ", ".join(sorted(common)) + r"}.")
+        else:
+            note += (r"The \emph{ours} column for each arm is a mean over the "
+                     r"scenes that arm measured --- " + str(n_of["A"])
+                     + r" for Mip-Splatting, " + str(n_of["B"])
+                     + r" for 3DGS --- because the published figure it is "
+                     r"compared against is a mean over all eight. The "
+                     r"\emph{gap} column is restricted to the "
+                     + str(len(common)) + r" scenes both arms have (\texttt{"
+                     + ", ".join(sorted(common)) + r"}), so it is a difference "
+                     r"between the same objects; it is therefore \emph{not} the "
+                     r"difference of the two columns to its left. "
+                     r"\texttt{ship} trains only on arm A "
+                     r"(\S\ref{sec:shipfails}), which is the whole of the "
+                     r"discrepancy, and it leaves the 3DGS column a "
+                     + str(n_of["B"]) + r"-scene mean against an eight-scene "
+                     r"published one --- so that column carries no reproduction "
+                     r"claim, and none is made from it.")
+        L.append(note)
     else:
         L.append(r"  \par\vspace{2pt}\footnotesize \emph{Not yet measured.} "
                  r"Published targets shown so the table states what it is aiming at; "
@@ -1512,7 +1553,7 @@ def b2_protocol_table(proto, sweep, label, caption):
 
 # ------------------------------------------------------------------- macros
 def macros(rows, summaries, inst=None, raw=None, b2c_for_macros=None,
-           all_rows_for_macros=None):
+           all_rows_for_macros=None, runs_path=None):
     """Inline numbers, as \\newcommand. Undefined data yields a visible marker."""
     M = {}
 
@@ -1538,20 +1579,29 @@ def macros(rows, summaries, inst=None, raw=None, b2c_for_macros=None,
         put(proto.capitalize() + "GapEighth", (aF - bF) if aF and bF else None)
         M[proto.capitalize() + "Scenes"] = str(len({r["scene"] for r in sel})) or "0"
 
-    # Largest |ours - published| per arm on the STMT protocol, over the matched
-    # scenes. The L1 verdict is quoted from these; they moved when arm B was
-    # re-measured and the scene set became matched, and a typed constant would
-    # not have.
-    stmt_m, _cm = matched(select(rows, iterations=30000, load_allres="False",
-                                 seed=0))
-    acc_s = by_arm_scale(stmt_m)
+    # Largest |ours - published| per arm on the STMT protocol.
+    #
+    # On the arm's OWN scene set, not the matched one, because the published
+    # figure is a mean over all eight Blender scenes. These were computed on the
+    # matched seven, which excludes `ship` because arm B cannot train it, and
+    # `ship` is arm A's weakest scene at full resolution -- so dropping it lifted
+    # arm A's mean by 0.42 dB and the lift was reported as reproduction error.
+    # It is what made arm A read 0.50 dB (L2) when the like-for-like figure is
+    # 0.09 (L1).
+    stmt_all = select(rows, iterations=30000, load_allres="False", seed=0)
+    stmt_m, _cm = matched(stmt_all)
+    acc_all, acc_s = by_arm_scale(stmt_all), by_arm_scale(stmt_m)
     for arm, tag in (("A", "ArmA"), ("B", "ArmB")):
         ds = []
         for i, sc in enumerate(SCALES):
-            v = [float(r["psnr"]) for r in acc_s.get(arm, {}).get(sc, [])]
+            v = [float(r["psnr"]) for r in acc_all.get(arm, {}).get(sc, [])]
             if v:
                 ds.append(abs(mean(v) - PUBLISHED["STMT"][arm][i]))
         put("stmt" + tag + "MaxDelta", max(ds) if ds else None, "{:.2f}")
+        M["stmt" + tag + "Scenes"] = str(len(
+            {r["scene"] for r in stmt_all if r.get("arm") == arm})) or NOT_MEASURED
+    # The gap keeps the matched set: a difference between a seven-scene mean and
+    # an eight-scene one is partly the difference between two sets of objects.
     gaps = []
     for i, sc in enumerate(SCALES):
         a_ = [float(r["psnr"]) for r in acc_s.get("A", {}).get(sc, [])]
@@ -1561,6 +1611,27 @@ def macros(rows, summaries, inst=None, raw=None, b2c_for_macros=None,
             gaps.append(abs((mean(a_) - mean(b_)) - pub_gap))
     put("stmtGapMaxDelta", max(gaps) if gaps else None, "{:.2f}")
     M["stmtMatchedScenes"] = str(len(_cm)) if _cm else NOT_MEASURED
+
+    # The L1 probe: arm A at the last commit before GOF densification landed,
+    # which is the configuration Mip-Splatting's published table was produced at.
+    _pg = load_probe(runs_path or "results/runs.csv", "pregof")
+    _pgd = []
+    for i, sc in enumerate(SCALES):
+        v = [float(r["psnr"]) for r in _pg if r.get("test_scale") == sc]
+        if v:
+            _pgd.append(abs(mean(v) - PUBLISHED["STMT"]["A"][i]))
+    put("pregofMaxDelta", max(_pgd) if _pgd else None, "{:.2f}")
+    M["pregofScenes"] = (str(len({r["scene"] for r in _pg})) if _pg
+                         else NOT_MEASURED)
+    # The effect of the densification change itself, which Chapter 7 named as
+    # the cause of the offset before it was measured.
+    _gof = []
+    for i, sc in enumerate(SCALES):
+        a = mean([float(r["psnr"]) for r in _pg if r.get("test_scale") == sc])
+        b = mean([float(r["psnr"]) for r in acc_all.get("A", {}).get(sc, [])])
+        if a is not None and b is not None:
+            _gof.append(abs(b - a))
+    put("gofMaxEffect", max(_gof) if _gof else None, "{:.2f}")
 
     r0 = summaries.get("R0") or {}
     sa, sb = r0.get("stats_A") or {}, r0.get("stats_B") or {}
@@ -1951,7 +2022,8 @@ def main():
             r"point clouds and camera geometry; no retraining."),
         "measured.tex": macros(rows, summaries, inst, raw=raw,
                                b2c_for_macros=b2c,
-                               all_rows_for_macros=load_all(a.runs)),
+                               all_rows_for_macros=load_all(a.runs),
+                               runs_path=a.runs),
     }
     for name, body in written.items():
         with open(os.path.join(a.out, name), "w", encoding="utf-8") as f:

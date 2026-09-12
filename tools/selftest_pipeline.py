@@ -274,7 +274,10 @@ def check_outputs_agree():
     rows = mt.collapse_repeats(mt.load(runs))
     for protocol, allres, ts in (("STMT", "False", "1x"), ("MTMT", "True", "multi")):
         sel = mt.select(rows, iterations=30000, load_allres=allres, seed=0)
-        sel, _ = mt.matched(sel, ("A", "B"))
+        # Each arm on its own scenes, which is what all three outputs now print
+        # in their published-comparison columns. This check matched the scenes
+        # and so agreed with all three on a number none of them showed any more
+        # -- a green that proved only that three code paths shared one bug.
         acc = mt.by_arm_scale(sel)
         tex = {a: mt.mean([float(r["psnr"]) for r in acc[a].get("1x", [])])
                for a in ("A", "B") if acc.get(a)}

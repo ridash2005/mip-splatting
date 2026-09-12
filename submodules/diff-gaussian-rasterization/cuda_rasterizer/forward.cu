@@ -120,10 +120,19 @@ __device__ float4 computeCov2D(const float3& mean, float focal_x, float focal_y,
 	if (mip_compensation)
 	{
 		coef = sqrt(det_0 / (det_1+1e-6) + 1e-6);
+	}
 
-		if (det_0 <= 1e-6 || det_1 <= 1e-6){
-			coef = 0.0f;
-		}
+	// Degeneracy guard, OUTSIDE the compensation branch. det_0 and det_1 are
+	// already max()'d against 1e-6, so this fires exactly when the projected
+	// covariance is singular to that tolerance -- a numerical guard, not part of
+	// the anti-aliasing model. It lived inside the branch, which meant switching
+	// the compensation off also removed the guard: degenerate primitives then
+	// survived at full opacity with an unbounded screen-space radius, and `ship`
+	// and `chair` died reproducibly on both GPUs with an illegal memory access
+	// around iteration 3000. The C1 switch is supposed to isolate the rho term
+	// and nothing else; before this it removed two things.
+	if (det_0 <= 1e-6 || det_1 <= 1e-6){
+		coef = 0.0f;
 	}
 
 	cov[0][0] += kernel_size;

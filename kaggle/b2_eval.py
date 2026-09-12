@@ -47,6 +47,10 @@ SCENES = ["ship", "drums", "ficus", "hotdog", "lego", "materials", "mic", "chair
 TAUS = [0.01]
 SWEEP_SCENE = "lego"          # the tau sweep runs on this one scene
 SWEEP_TAUS = [0.003, 0.03, 0.1]
+# Which capture the CRITERION reads. "full" is the standard benchmark, where B2
+# masks nothing by construction; a degraded protocol is where the comparison
+# against magnitude pruning has content. The test set is never restricted.
+PROTOCOL = "full"
 # ----------------------------------------------------------------------------
 
 METHOD_DIR = f"ours_{ITERS}"
@@ -141,10 +145,26 @@ def write_masked_ply(src_ply, dst_ply, keep_mask):
 
 
 def b2_mask(scene, tau):
-    """keep_mask [N,15] from Equation 5.2, plus the diagnostics."""
+    """keep_mask [N,15] from Equation 5.2, plus the diagnostics.
+
+    PROTOCOL restricts the cameras the criterion is allowed to see, which is what
+    makes the table a comparison. On a full orbit B2 retains 100 %, so the masked
+    model IS the control and magnitude pruning matched to that fraction prunes
+    nothing: three identical rows, and no way to tell a good criterion from a bad
+    one. The question -- does identifiability masking beat magnitude pruning at
+    matched size -- only has content where the criterion actually masks.
+
+    The TEST set is never restricted. Only the capture the criterion reads is.
+    """
     ply = os.path.join(srcs[scene], "point_cloud.ply")
     data = inst.load_ply(ply)
-    c2w, _ = inst.load_cameras(f"{WORK}/multi-scale/{scene}/metadata.json")
+    c2w, focal = inst.load_cameras(f"{WORK}/multi-scale/{scene}/metadata.json")
+    if PROTOCOL and PROTOCOL != "full":
+        import camera_protocols as cp
+        idx = np.array(cp.build(c2w, focal, seed=0)[PROTOCOL]["idx"], dtype=int)
+        print(f"[{scene}] B2 criterion sees the {PROTOCOL} subset: "
+              f"{len(idx)} of {len(c2w)} cameras", flush=True)
+        c2w = c2w[idx]
     blocks, n_seen = shid.angular_gram(data["xyz"], c2w)
     lm = shid.l_max(blocks, n_seen, tau)
     keep = np.zeros((len(lm), 15), dtype=bool)
@@ -304,6 +324,7 @@ except Exception as e:
     traceback.print_exc()
 
 summary = {"rung": RUNG, "iterations": ITERS, "scenes": SCENES, "taus": TAUS,
+           "protocol": PROTOCOL,
            "sweep_scene": SWEEP_SCENE, "sweep_taus": SWEEP_TAUS, "commit": commit,
            "gpu": gpu_name, "results": results, "failed": failed,
            "protocols": protocols,

@@ -157,13 +157,53 @@ Arm A is untouched and was not re-run: nothing about this defect involves it.
 
 \input{generated/table-g2}
 
+All three criteria pass, against thresholds that were set before any run and have
+not been touched since. And the consequence reaches further than the gate: with
+the arm rebuilt, Table~\ref{tab:stmt} reproduces \emph{both} baselines rather
+than one. 3DGS lands within $0.42$\,dB of its published figure at every test
+scale and Mip-Splatting within $0.50$, and the gap column --- the quantity the
+whole two-arm construction exists to measure --- reproduces to within $0.2$\,dB
+at all four. This project did not have that before; it had arm A at L1 and an arm
+B that was several decibels adrift for a reason it had explained incorrectly.
+
 \keybox{what this cost, and what it bought}{%
 It cost the R1 arm-B column, the R2 arm-B column and the arm-B half of the seed
-spread --- three rungs of measurement, re-run. It bought a 3DGS arm that is
-actually 3DGS in both band-limits rather than one, so the control every later
-comparison rests on is the method and not a residual anti-aliasing term. The
-between-arm comparison was the one thing the earlier diagnosis insisted was
-safe, and it was the thing that was wrong.}
+spread --- three rungs of measurement, re-run, and it surfaced a numerical
+fragility that had been hidden by the compensation (\S\ref{sec:shipfails}). It
+bought a 3DGS arm that is actually 3DGS in both band-limits rather than one, so
+the control every later comparison rests on is the method and not a residual
+anti-aliasing term. Worth restating plainly: the between-arm comparison was the
+one thing the earlier diagnosis insisted was safe, and it was the thing that was
+wrong.}
+
+\subsection*{What the vanilla arm cost in robustness}
+\label{sec:shipfails}
+
+Removing the compensation also removed a guard. The same CUDA branch that
+computes $\rho$ carries \texttt{coef = 0} for a primitive whose projected
+covariance is singular to the tolerance the determinants are clamped at --- a
+numerical guard, not part of the anti-aliasing model. With the compensation
+switched off, degenerate primitives survived at full opacity with an unbounded
+screen-space radius, and two scenes died reproducibly, on both GPUs, with a CUDA
+illegal memory access around iteration $3\,000$. Six trained normally, which is
+what made it look transient.
+
+Hoisting the guard out of the branch fixed one of the two. The other then failed
+in the \emph{backward} pass instead, because the backward kernel still had its
+copy of the guard inside the branch: the forward was contributing nothing for a
+degenerate primitive while a gradient still flowed to its opacity. Zeroing a
+forward contribution and leaving its gradient live is not a consistent pair, and
+matching them is what the C1 switch should have done from the start --- it was
+supposed to isolate one term and it removed three.
+
+\keybox{a switch that is not minimal is not a control}{%
+Each of those three removals was invisible: no assertion covered them, the
+numbers that came back were plausible, and six of eight scenes were unaffected.
+What exposed them was a failure that could not be waved through --- a crash --- and
+then a failure that \emph{moved} from the forward pass to the backward one when
+half the fix was applied, which is what identified the second half. A switch
+meant to isolate a single term has to be checked against what it leaves alone,
+not only against what it changes.}
 
 \section{Baseline reproduction --- Blender, multi-scale train and test}
 \label{sec:table2}

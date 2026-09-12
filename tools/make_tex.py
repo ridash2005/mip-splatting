@@ -1358,6 +1358,38 @@ def macros(rows, summaries, inst=None):
         if c1new.get("1x") and c1new.get("1/8") else None)
     M["cOneScene"] = (c1scene or NOT_MEASURED).replace("_", "")
 
+    # Table 2's parity: the largest |B1 - Mip-Splatting| over the matched
+    # scenes and all four test scales. Quoted in the abstract and in §7.11, and
+    # it moved by an order of magnitude when the scene set went from two to
+    # seven, so it cannot be a typed constant.
+    msel = [r for r in rows if r.get("dataset") == "blender"
+            and r.get("iterations") == "30000" and r.get("load_allres") == "False"
+            and r.get("seed") == "0"
+            and (r.get("train_scale") == "1x"
+                 or (r.get("train_scale") or "").endswith("/full"))]
+    mper = {}
+    for r in msel:
+        if r.get("method") in ("mip-splatting", "b1-fisher"):
+            mper.setdefault(r["method"], set()).add(r["scene"])
+    if len(mper) == 2:
+        common_m = mper["mip-splatting"] & mper["b1-fisher"]
+        acc_m = {}
+        for r in msel:
+            if r.get("method") in ("mip-splatting", "b1-fisher")                     and r["scene"] in common_m:
+                acc_m.setdefault(r["method"], {}).setdefault(
+                    r["test_scale"], []).append(float(r["psnr"]))
+        gaps = []
+        for sc in SCALES:
+            a_ = acc_m.get("b1-fisher", {}).get(sc)
+            b_ = acc_m.get("mip-splatting", {}).get(sc)
+            if a_ and b_:
+                gaps.append(abs(mean(a_) - mean(b_)))
+        put("methodParityMax", max(gaps) if gaps else None, "{:.3f}")
+        M["methodParityScenes"] = str(len(common_m))
+    else:
+        put("methodParityMax", None)
+        M["methodParityScenes"] = NOT_MEASURED
+
     bp = (inst or {}).get("by_protocol", {})
     for k, name in (("full", "Full"), ("arc", "Arc"), ("cone", "Cone"),
                     ("mixed", "Mixed"), ("grazing", "Grazing")):

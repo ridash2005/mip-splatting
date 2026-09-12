@@ -616,10 +616,11 @@ and the sequence is worth recording because each step ruled something out.
 
 With the clamp reduced to a division guard, $|\Sigma|$ taken from the scale
 vector where $\prod s_i^2$ is exact, and the isotropic regime using
-Mip-Splatting's own scalar expression, the largest difference over two scenes
-and four scales fell from $1.245$\,dB to $\mathbf{0.136}$\,dB --- below the
-$0.139$\,dB seed spread of \S\ref{sec:spread}, and on \texttt{lego} within the
-$0.039$\,dB run-to-run noise.
+Mip-Splatting's own scalar expression, the largest difference over the two scenes
+then measured fell from $1.245$\,dB to $0.136$\,dB. On the full eight-scene
+benchmark it is now $\mathbf{\methodParityMax}$\,dB, an order of magnitude below
+the seed spread of \S\ref{sec:spread} --- the two-scene figure was itself
+dominated by which two scenes they were.
 
 \keybox{what made this findable}{%
 The unit test of \S\ref{sec:proposition2} passed throughout, because its scales
@@ -873,8 +874,9 @@ the L3 discipline of Table~\ref{tab:levels}.
 
 About the proposed method they establish three things and leave one open. B1 is
 implemented and reduces to its baseline exactly where the theory says it must,
-verified to $1.4\times10^{-21}$ in the unit test and to $0.136$\,dB --- below the
-seed spread --- in a full training run. B2 is implemented and masks nothing on
+verified to $1.4\times10^{-21}$ in the unit test and to $\methodParityMax$\,dB
+--- well below the seed spread --- over $\methodParityScenes$ scenes and four
+test scales in full training runs. B2 is implemented and masks nothing on
 well-conditioned captures, which is the same result in the angular domain. And
 the conditioning that both methods depend on varies across capture protocols
 exactly as Equation~\eqref{eq:cap} predicts.

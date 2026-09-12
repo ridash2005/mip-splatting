@@ -387,6 +387,45 @@ where Table~\ref{tab:regimes} anticipated $1.6\times$. A method evaluated only
 on this benchmark could not show an improvement, and if one appeared it would be
 a bug.}
 
+\subsection*{A defect that made two chapters disagree}
+\label{sec:branchdefect}
+
+Before the numbers: the instrument results below and the PSNR results of
+\S\ref{sec:table3} were, for a time, measurements of \emph{different captures}
+reported under the same protocol names, and it is worth saying exactly how,
+because nothing in either run could have detected it.
+
+The instrument kernel cloned the repository's default branch. The training
+kernel clones the method branch. Between them, the definition of \texttt{arc}
+and \texttt{cone} had changed: the default branch sizes them by angular
+\emph{width}, giving $20$ cameras across $81^\circ$ and $3$ across $30^\circ$;
+the method branch sizes them by camera \emph{count}, giving $25$ across
+$93^\circ$ and $10$ across $54^\circ$. The change was deliberate and its stated
+reason is sound --- a $20^\circ$ wedge catches three cameras on a Blender
+capture, and three views is a sparse-reconstruction experiment rather than a
+conditioning one. What was missed is that only one of the two kernels was
+updated.
+
+Each run was internally consistent, each printed the span it had built, and each
+was correct about its own capture. The error was in reading them side by side,
+and it survived because both numbers looked reasonable: a cone \emph{is}
+narrower than an arc in both definitions, so the ordering the chapter argues for
+held in either. It is the same class of mistake as the arm-B compensation of
+\S\ref{sec:g2} --- a quantity that was never what its label said --- and it was
+found the same way, by a measurement that could not be reconciled with another
+rather than by an assertion firing.
+
+\keybox{what it cost, and the one line that prevents it}{%
+It cost the first reading of gates G3 and G4. On the width-based cone the
+estimation term exceeds the Nyquist floor on $100\,\%$ of primitives in
+\emph{every} direction; on the count-based cone it exceeds it nowhere. Both are
+measured, both are right, and only the first is the regime this method is about.
+The instrument kernel is now pinned to the same branch the training kernel
+clones, and every protocol table in this chapter carries the span the session
+that produced the row actually built --- where the instruments and the training
+run disagree about a protocol's geometry by more than $2^\circ$, the
+conditioning cell is left empty rather than filled from the other capture.}
+
 \subsection*{I-2 across the stress suite: the regime structure is real}
 The refutation condition at gate G3 is that the floor exceeds the estimation
 term on nearly every primitive in \emph{every} scene --- which would make

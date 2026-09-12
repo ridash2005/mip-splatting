@@ -1,4 +1,4 @@
-Fri Sep 11 18:32:03 2026       
+Fri Sep 11 19:41:06 2026       
 +-----------------------------------------------------------------------------------------+
 | NVIDIA-SMI 580.159.04             Driver Version: 580.159.04     CUDA Version: 13.0     |
 +-----------------------------------------+------------------------+----------------------+
@@ -7,11 +7,11 @@ Fri Sep 11 18:32:03 2026
 |                                         |                        |               MIG M. |
 |=========================================+========================+======================|
 |   0  Tesla T4                       Off |   00000000:00:04.0 Off |                    0 |
-| N/A   39C    P8             10W /   70W |       0MiB /  15360MiB |      0%      Default |
+| N/A   39C    P8              9W /   70W |       0MiB /  15360MiB |      0%      Default |
 |                                         |                        |                  N/A |
 +-----------------------------------------+------------------------+----------------------+
 |   1  Tesla T4                       Off |   00000000:00:05.0 Off |                    0 |
-| N/A   37C    P8             10W /   70W |       0MiB /  15360MiB |      0%      Default |
+| N/A   42C    P8              9W /   70W |       0MiB /  15360MiB |      0%      Default |
 |                                         |                        |                  N/A |
 +-----------------------------------------+------------------------+----------------------+
 
@@ -25,13 +25,13 @@ Fri Sep 11 18:32:03 2026
 torch 2.10.0+cu128  cuda 12.8  capability (7, 5)  gpu Tesla T4 x2
 Cloning into '/kaggle/working/armA'...
 Cloning into '/kaggle/working/armB'...
-armA b13f9754838b64d8b9eee688ca26e0abf3b606f9 armB 186ffcaeedadbe9ee7effcbad718c200c8d7a775
+armA a77201ee6c60a7fa4d8442e92112bc115538a373 armB de7cb44c168b1cc901d7b7974153604bda1007bd
 + pip install -q ninja gputil lpips plyfile opencv-python
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 43.3/43.3 kB 1.0 MB/s eta 0:00:00
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 53.8/53.8 kB 1.9 MB/s eta 0:00:00
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 43.3/43.3 kB 1.1 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 53.8/53.8 kB 2.8 MB/s eta 0:00:00
 + pip install -q open3d
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 447.7/447.7 MB 3.8 MB/s eta 0:00:00
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 8.9/8.9 MB 42.0 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 447.7/447.7 MB 3.7 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 8.9/8.9 MB 57.2 MB/s eta 0:00:00
 applied build fix: added #include <cfloat> to /kaggle/working/armA/submodules/simple-knn/simple_knn.cu
 applied build fix: added #include <cfloat> to /kaggle/working/armB/submodules/simple-knn/simple_knn.cu
 installing the rasteriser from armB
@@ -41,14 +41,14 @@ Processing ./armB/submodules/diff-gaussian-rasterization
   Preparing metadata (setup.py): started
   Running command python setup.py egg_info
   running egg_info
-  creating /tmp/pip-pip-egg-info-wyah7omp/diff_gaussian_rasterization.egg-info
-  writing /tmp/pip-pip-egg-info-wyah7omp/diff_gaussian_rasterization.egg-info/PKG-INFO
-  writing dependency_links to /tmp/pip-pip-egg-info-wyah7omp/diff_gaussian_rasterization.egg-info/dependency_links.txt
-  writing top-level names to /tmp/pip-pip-egg-info-wyah7omp/diff_gaussian_rasterization.egg-info/top_level.txt
-  writing manifest file '/tmp/pip-pip-egg-info-wyah7omp/diff_gaussian_rasterization.egg-info/SOURCES.txt'
-  reading manifest file '/tmp/pip-pip-egg-info-wyah7omp/diff_gaussian_rasterization.egg-info/SOURCES.txt'
+  creating /tmp/pip-pip-egg-info-rg1dta7v/diff_gaussian_rasterization.egg-info
+  writing /tmp/pip-pip-egg-info-rg1dta7v/diff_gaussian_rasterization.egg-info/PKG-INFO
+  writing dependency_links to /tmp/pip-pip-egg-info-rg1dta7v/diff_gaussian_rasterization.egg-info/dependency_links.txt
+  writing top-level names to /tmp/pip-pip-egg-info-rg1dta7v/diff_gaussian_rasterization.egg-info/top_level.txt
+  writing manifest file '/tmp/pip-pip-egg-info-rg1dta7v/diff_gaussian_rasterization.egg-info/SOURCES.txt'
+  reading manifest file '/tmp/pip-pip-egg-info-rg1dta7v/diff_gaussian_rasterization.egg-info/SOURCES.txt'
   adding license file 'LICENSE.md'
-  writing manifest file '/tmp/pip-pip-egg-info-wyah7omp/diff_gaussian_rasterization.egg-info/SOURCES.txt'
+  writing manifest file '/tmp/pip-pip-egg-info-rg1dta7v/diff_gaussian_rasterization.egg-info/SOURCES.txt'
   Preparing metadata (setup.py): finished with status 'done'
 Building wheels for collected packages: diff_gaussian_rasterization
   Building wheel for diff_gaussian_rasterization (setup.py): started
@@ -59,15 +59,15 @@ Building wheels for collected packages: diff_gaussian_rasterization
   creating build/lib.linux-x86_64-cpython-312/diff_gaussian_rasterization
   copying diff_gaussian_rasterization/__init__.py -> build/lib.linux-x86_64-cpython-312/diff_gaussian_rasterization
   running build_ext
-  W0911 18:33:15.762000 149 torch/utils/cpp_extension.py:535] There are no x86_64-linux-gnu-g++ version bounds defined for CUDA version 12.8
+  W0911 19:41:59.439000 150 torch/utils/cpp_extension.py:535] There are no x86_64-linux-gnu-g++ version bounds defined for CUDA version 12.8
   building 'diff_gaussian_rasterization._C' extension
   creating /kaggle/working/armB/submodules/diff-gaussian-rasterization/build/temp.linux-x86_64-cpython-312/cuda_rasterizer
-  [1/5] /usr/local/cuda/bin/nvcc --generate-dependencies-with-compile --dependency-output /kaggle/working/armB/submodules/diff-gaussian-rasterization/build/temp.linux-x86_64-cpython-312/cuda_rasterizer/backward.o.d -I/usr/local/lib/python3.12/dist-packages/torch/include -I/usr/local/lib/python3.12/dist-packages/torch/include/torch/csrc/api/include -I/usr/local/cuda/include -I/usr/include/python3.12 -c -c /kaggle/working/armB/submodules/diff-gaussian-rasterization/cuda_rasterizer/backward.cu -o /kaggle/working/armB/submodules/diff-gaussian-rasterization/build/temp.linux-x86_64-cpython-312/cuda_rasterizer/backward.o -D__CUDA_NO_HALF_OPERATORS__ -D__CUDA_NO_HALF_CONVERSIONS__ -D__CUDA_NO_BFLOAT16_CONVERSIONS__ -D__CUDA_NO_HALF2_OPERATORS__ --expt-relaxed-constexpr --compiler-options ''"'"'-fPIC'"'"'' -I/kaggle/working/armB/submodules/diff-gaussian-rasterization/third_party/glm/ -DTORCH_API_INCLUDE_EXTENSION_H -DTORCH_EXTENSION_NAME=_C -gencode=arch=compute_75,code=sm_75 -std=c++17
+  [1/5] /usr/local/cuda/bin/nvcc --generate-dependencies-with-compile --dependency-output /kaggle/working/armB/submodules/diff-gaussian-rasterization/build/temp.linux-x86_64-cpython-312/cuda_rasterizer/forward.o.d -I/usr/local/lib/python3.12/dist-packages/torch/include -I/usr/local/lib/python3.12/dist-packages/torch/include/torch/csrc/api/include -I/usr/local/cuda/include -I/usr/include/python3.12 -c -c /kaggle/working/armB/submodules/diff-gaussian-rasterization/cuda_rasterizer/forward.cu -o /kaggle/working/armB/submodules/diff-gaussian-rasterization/build/temp.linux-x86_64-cpython-312/cuda_rasterizer/forward.o -D__CUDA_NO_HALF_OPERATORS__ -D__CUDA_NO_HALF_CONVERSIONS__ -D__CUDA_NO_BFLOAT16_CONVERSIONS__ -D__CUDA_NO_HALF2_OPERATORS__ --expt-relaxed-constexpr --compiler-options ''"'"'-fPIC'"'"'' -I/kaggle/working/armB/submodules/diff-gaussian-rasterization/third_party/glm/ -DTORCH_API_INCLUDE_EXTENSION_H -DTORCH_EXTENSION_NAME=_C -gencode=arch=compute_75,code=sm_75 -std=c++17
   /kaggle/working/armB/submodules/diff-gaussian-rasterization/cuda_rasterizer/auxiliary.h(151): warning #177-D: variable "p_proj" was declared but never referenced
      float3 p_proj = { p_hom.x * p_w, p_hom.y * p_w, p_hom.z * p_w };
             ^
   Remark: The warnings can be suppressed with "-diag-suppress <warning-number>"
-  [2/5] /usr/local/cuda/bin/nvcc --generate-dependencies-with-compile --dependency-output /kaggle/working/armB/submodules/diff-gaussian-rasterization/build/temp.linux-x86_64-cpython-312/cuda_rasterizer/forward.o.d -I/usr/local/lib/python3.12/dist-packages/torch/include -I/usr/local/lib/python3.12/dist-packages/torch/include/torch/csrc/api/include -I/usr/local/cuda/include -I/usr/include/python3.12 -c -c /kaggle/working/armB/submodules/diff-gaussian-rasterization/cuda_rasterizer/forward.cu -o /kaggle/working/armB/submodules/diff-gaussian-rasterization/build/temp.linux-x86_64-cpython-312/cuda_rasterizer/forward.o -D__CUDA_NO_HALF_OPERATORS__ -D__CUDA_NO_HALF_CONVERSIONS__ -D__CUDA_NO_BFLOAT16_CONVERSIONS__ -D__CUDA_NO_HALF2_OPERATORS__ --expt-relaxed-constexpr --compiler-options ''"'"'-fPIC'"'"'' -I/kaggle/working/armB/submodules/diff-gaussian-rasterization/third_party/glm/ -DTORCH_API_INCLUDE_EXTENSION_H -DTORCH_EXTENSION_NAME=_C -gencode=arch=compute_75,code=sm_75 -std=c++17
+  [2/5] /usr/local/cuda/bin/nvcc --generate-dependencies-with-compile --dependency-output /kaggle/working/armB/submodules/diff-gaussian-rasterization/build/temp.linux-x86_64-cpython-312/cuda_rasterizer/backward.o.d -I/usr/local/lib/python3.12/dist-packages/torch/include -I/usr/local/lib/python3.12/dist-packages/torch/include/torch/csrc/api/include -I/usr/local/cuda/include -I/usr/include/python3.12 -c -c /kaggle/working/armB/submodules/diff-gaussian-rasterization/cuda_rasterizer/backward.cu -o /kaggle/working/armB/submodules/diff-gaussian-rasterization/build/temp.linux-x86_64-cpython-312/cuda_rasterizer/backward.o -D__CUDA_NO_HALF_OPERATORS__ -D__CUDA_NO_HALF_CONVERSIONS__ -D__CUDA_NO_BFLOAT16_CONVERSIONS__ -D__CUDA_NO_HALF2_OPERATORS__ --expt-relaxed-constexpr --compiler-options ''"'"'-fPIC'"'"'' -I/kaggle/working/armB/submodules/diff-gaussian-rasterization/third_party/glm/ -DTORCH_API_INCLUDE_EXTENSION_H -DTORCH_EXTENSION_NAME=_C -gencode=arch=compute_75,code=sm_75 -std=c++17
   /kaggle/working/armB/submodules/diff-gaussian-rasterization/cuda_rasterizer/auxiliary.h(151): warning #177-D: variable "p_proj" was declared but never referenced
      float3 p_proj = { p_hom.x * p_w, p_hom.y * p_w, p_hom.z * p_w };
             ^
@@ -323,7 +323,7 @@ Building wheels for collected packages: diff_gaussian_rasterization
   Copying diff_gaussian_rasterization.egg-info to build/bdist.linux-x86_64/wheel/./diff_gaussian_rasterization-0.0.0-py3.12.egg-info
   running install_scripts
   creating build/bdist.linux-x86_64/wheel/diff_gaussian_rasterization-0.0.0.dist-info/WHEEL
-  creating '/tmp/pip-wheel-edf_t87l/diff_gaussian_rasterization-0.0.0-cp312-cp312-linux_x86_64.whl' and adding 'build/bdist.linux-x86_64/wheel' to it
+  creating '/tmp/pip-wheel-r3lt5410/diff_gaussian_rasterization-0.0.0-cp312-cp312-linux_x86_64.whl' and adding 'build/bdist.linux-x86_64/wheel' to it
   adding 'diff_gaussian_rasterization/_C.cpython-312-x86_64-linux-gnu.so'
   adding 'diff_gaussian_rasterization/__init__.py'
   adding 'diff_gaussian_rasterization-0.0.0.dist-info/licenses/LICENSE.md'
@@ -333,7 +333,7 @@ Building wheels for collected packages: diff_gaussian_rasterization
   adding 'diff_gaussian_rasterization-0.0.0.dist-info/RECORD'
   removing build/bdist.linux-x86_64/wheel
   Building wheel for diff_gaussian_rasterization (setup.py): finished with status 'done'
-  Created wheel for diff_gaussian_rasterization: filename=diff_gaussian_rasterization-0.0.0-cp312-cp312-linux_x86_64.whl size=3598926 sha256=96e21612b529d5f39d1a4a18606b1a0428f73e30c1d1a9ddb0f283add2a8cd2e
+  Created wheel for diff_gaussian_rasterization: filename=diff_gaussian_rasterization-0.0.0-cp312-cp312-linux_x86_64.whl size=3598927 sha256=0b5ac3002591d603540e8640e9f824421d74f8affd05ccc29b257fe57b4d750a
   Stored in directory: /root/.cache/pip/wheels/81/4d/00/b44cac72cd4d2fb56d7ab3679108b1710f7f4aa4f864a40352
 Successfully built diff_gaussian_rasterization
 Installing collected packages: diff_gaussian_rasterization
@@ -344,13 +344,13 @@ Processing ./armA/submodules/simple-knn
   Preparing metadata (setup.py): started
   Running command python setup.py egg_info
   running egg_info
-  creating /tmp/pip-pip-egg-info-dvc3cyif/simple_knn.egg-info
-  writing /tmp/pip-pip-egg-info-dvc3cyif/simple_knn.egg-info/PKG-INFO
-  writing dependency_links to /tmp/pip-pip-egg-info-dvc3cyif/simple_knn.egg-info/dependency_links.txt
-  writing top-level names to /tmp/pip-pip-egg-info-dvc3cyif/simple_knn.egg-info/top_level.txt
-  writing manifest file '/tmp/pip-pip-egg-info-dvc3cyif/simple_knn.egg-info/SOURCES.txt'
-  reading manifest file '/tmp/pip-pip-egg-info-dvc3cyif/simple_knn.egg-info/SOURCES.txt'
-  writing manifest file '/tmp/pip-pip-egg-info-dvc3cyif/simple_knn.egg-info/SOURCES.txt'
+  creating /tmp/pip-pip-egg-info-nzuyxo7f/simple_knn.egg-info
+  writing /tmp/pip-pip-egg-info-nzuyxo7f/simple_knn.egg-info/PKG-INFO
+  writing dependency_links to /tmp/pip-pip-egg-info-nzuyxo7f/simple_knn.egg-info/dependency_links.txt
+  writing top-level names to /tmp/pip-pip-egg-info-nzuyxo7f/simple_knn.egg-info/top_level.txt
+  writing manifest file '/tmp/pip-pip-egg-info-nzuyxo7f/simple_knn.egg-info/SOURCES.txt'
+  reading manifest file '/tmp/pip-pip-egg-info-nzuyxo7f/simple_knn.egg-info/SOURCES.txt'
+  writing manifest file '/tmp/pip-pip-egg-info-nzuyxo7f/simple_knn.egg-info/SOURCES.txt'
   Preparing metadata (setup.py): finished with status 'done'
 Building wheels for collected packages: simple_knn
   Building wheel for simple_knn (setup.py): started
@@ -358,7 +358,7 @@ Building wheels for collected packages: simple_knn
   running bdist_wheel
   running build
   running build_ext
-  W0911 18:34:50.692000 267 torch/utils/cpp_extension.py:535] There are no x86_64-linux-gnu-g++ version bounds defined for CUDA version 12.8
+  W0911 19:43:23.561000 268 torch/utils/cpp_extension.py:535] There are no x86_64-linux-gnu-g++ version bounds defined for CUDA version 12.8
   building 'simple_knn._C' extension
   creating /kaggle/working/armA/submodules/simple-knn/build/temp.linux-x86_64-cpython-312
   [1/3] /usr/local/cuda/bin/nvcc --generate-dependencies-with-compile --dependency-output /kaggle/working/armA/submodules/simple-knn/build/temp.linux-x86_64-cpython-312/simple_knn.o.d -I/usr/local/lib/python3.12/dist-packages/torch/include -I/usr/local/lib/python3.12/dist-packages/torch/include/torch/csrc/api/include -I/usr/local/cuda/include -I/usr/include/python3.12 -c -c /kaggle/working/armA/submodules/simple-knn/simple_knn.cu -o /kaggle/working/armA/submodules/simple-knn/build/temp.linux-x86_64-cpython-312/simple_knn.o -D__CUDA_NO_HALF_OPERATORS__ -D__CUDA_NO_HALF_CONVERSIONS__ -D__CUDA_NO_BFLOAT16_CONVERSIONS__ -D__CUDA_NO_HALF2_OPERATORS__ --expt-relaxed-constexpr --compiler-options ''"'"'-fPIC'"'"'' -DTORCH_API_INCLUDE_EXTENSION_H -DTORCH_EXTENSION_NAME=_C -gencode=arch=compute_75,code=sm_75 -std=c++17
@@ -417,7 +417,7 @@ Building wheels for collected packages: simple_knn
   Copying simple_knn.egg-info to build/bdist.linux-x86_64/wheel/./simple_knn-0.0.0-py3.12.egg-info
   running install_scripts
   creating build/bdist.linux-x86_64/wheel/simple_knn-0.0.0.dist-info/WHEEL
-  creating '/tmp/pip-wheel-bsc6d9a3/simple_knn-0.0.0-cp312-cp312-linux_x86_64.whl' and adding 'build/bdist.linux-x86_64/wheel' to it
+  creating '/tmp/pip-wheel-j6jcbnj8/simple_knn-0.0.0-cp312-cp312-linux_x86_64.whl' and adding 'build/bdist.linux-x86_64/wheel' to it
   adding 'simple_knn/_C.cpython-312-x86_64-linux-gnu.so'
   adding 'simple_knn-0.0.0.dist-info/METADATA'
   adding 'simple_knn-0.0.0.dist-info/WHEEL'
@@ -425,32 +425,2951 @@ Building wheels for collected packages: simple_knn
   adding 'simple_knn-0.0.0.dist-info/RECORD'
   removing build/bdist.linux-x86_64/wheel
   Building wheel for simple_knn (setup.py): finished with status 'done'
-  Created wheel for simple_knn: filename=simple_knn-0.0.0-cp312-cp312-linux_x86_64.whl size=3393855 sha256=b5bb322ce07069d6b65679aaa83aaf8687d420c985aafcbfa5b8bf4715c870d6
+  Created wheel for simple_knn: filename=simple_knn-0.0.0-cp312-cp312-linux_x86_64.whl size=3393855 sha256=6c1586255db9f6ceb7cd2500f8e2c962ae0d5fddab29a338c639bc98dc3c513c
   Stored in directory: /root/.cache/pip/wheels/8e/27/d8/553a219e282bfe710760578524e5a6a97696877f96239f6f7e
 Successfully built simple_knn
 Installing collected packages: simple_knn
 Successfully installed simple_knn-0.0.0
 build OK (open3d=yes)
-+ git -C /kaggle/working/armB diff origin/main...HEAD --stat
- arguments/__init__.py                              |  6 ++++++
- gaussian_renderer/__init__.py                      |  3 +++
- render.py                                          |  2 ++
- scene/gaussian_model.py                            |  5 ++++-
- .../cuda_rasterizer/backward.cu                    | 11 +++++++++--
- .../cuda_rasterizer/backward.h                     |  1 +
- .../cuda_rasterizer/forward.cu                     | 22 +++++++++++++++++-----
- .../cuda_rasterizer/forward.h                      |  1 +
- .../cuda_rasterizer/rasterizer.h                   |  2 ++
- .../cuda_rasterizer/rasterizer_impl.cu             |  4 ++++
- .../diff_gaussian_rasterization/__init__.py        |  6 ++++++
- .../rasterize_points.cu                            |  4 ++++
- .../diff-gaussian-rasterization/rasterize_points.h |  2 ++
- train.py                                           |  2 ++
- 14 files changed, 63 insertions(+), 8 deletions(-)
-ABORT: arm B introduces changes beyond §3: ['.../cuda_rasterizer/backward.cu', '.../cuda_rasterizer/backward.h', '.../cuda_rasterizer/forward.cu', '.../cuda_rasterizer/forward.h', '.../cuda_rasterizer/rasterizer.h', '.../cuda_rasterizer/rasterizer_impl.cu', '.../diff-gaussian-rasterization/rasterize_points.h', '.../diff_gaussian_rasterization/__init__.py', '.../rasterize_points.cu', 'arguments/__init__.py', 'gaussian_renderer/__init__.py', 'render.py', 'scene/gaussian_model.py', 'train.py']
++ git -C /kaggle/working/armB diff origin/main...HEAD --name-only
+.gitignore
+arguments/__init__.py
+gaussian_renderer/__init__.py
+render.py
+scene/gaussian_model.py
+submodules/diff-gaussian-rasterization/cuda_rasterizer/backward.cu
+submodules/diff-gaussian-rasterization/cuda_rasterizer/backward.h
+submodules/diff-gaussian-rasterization/cuda_rasterizer/forward.cu
+submodules/diff-gaussian-rasterization/cuda_rasterizer/forward.h
+submodules/diff-gaussian-rasterization/cuda_rasterizer/rasterizer.h
+submodules/diff-gaussian-rasterization/cuda_rasterizer/rasterizer_impl.cu
+submodules/diff-gaussian-rasterization/diff_gaussian_rasterization/__init__.py
+submodules/diff-gaussian-rasterization/rasterize_points.cu
+submodules/diff-gaussian-rasterization/rasterize_points.h
+train.py
+§3 diff confined to ['.gitignore', 'arguments/__init__.py', 'gaussian_renderer/__init__.py', 'render.py', 'scene/gaussian_model.py', 'submodules/diff-gaussian-rasterization/cuda_rasterizer/backward.cu', 'submodules/diff-gaussian-rasterization/cuda_rasterizer/backward.h', 'submodules/diff-gaussian-rasterization/cuda_rasterizer/forward.cu', 'submodules/diff-gaussian-rasterization/cuda_rasterizer/forward.h', 'submodules/diff-gaussian-rasterization/cuda_rasterizer/rasterizer.h', 'submodules/diff-gaussian-rasterization/cuda_rasterizer/rasterizer_impl.cu', 'submodules/diff-gaussian-rasterization/diff_gaussian_rasterization/__init__.py', 'submodules/diff-gaussian-rasterization/rasterize_points.cu', 'submodules/diff-gaussian-rasterization/rasterize_points.h', 'train.py']
+rasteriser carries mip_compensation: the C1 switch is live
+blender dir: /kaggle/input/datasets/nguyenhung1903/nerf-synthetic-dataset/nerf_synthetic
++ python /kaggle/working/armA/convert_blender_data.py --blender_dir /kaggle/input/datasets/nguyenhung1903/nerf-synthetic-dataset/nerf_synthetic --object_name ship --out_dir /kaggle/working/multi-scale
+['/kaggle/input/datasets/nguyenhung1903/nerf-synthetic-dataset/nerf_synthetic/ship']
+Converting from /kaggle/input/datasets/nguyenhung1903/nerf-synthetic-dataset/nerf_synthetic/ship to /kaggle/working/multi-scale/ship
+Split train
+Loading imgs
+Loaded all images, shape is (100, 800, 800, 4)
+Saving images
+Split val
+Loading imgs
+Loaded all images, shape is (100, 800, 800, 4)
+Saving images
+Split test
+Loading imgs
+Loaded all images, shape is (200, 800, 800, 4)
+Saving images
+train file_path <class 'list'> (400,)
+train cam2world <class 'list'> (400, 4, 4)
+train width <class 'list'> (400,)
+train height <class 'list'> (400,)
+train focal <class 'list'> (400,)
+train label <class 'list'> (400,)
+train near <class 'list'> (400,)
+train far <class 'list'> (400,)
+train lossmult <class 'list'> (400,)
+train pix2cam <class 'list'> (400, 3, 3)
+val file_path <class 'list'> (400,)
+val cam2world <class 'list'> (400, 4, 4)
+val width <class 'list'> (400,)
+val height <class 'list'> (400,)
+val focal <class 'list'> (400,)
+val label <class 'list'> (400,)
+val near <class 'list'> (400,)
+val far <class 'list'> (400,)
+val lossmult <class 'list'> (400,)
+val pix2cam <class 'list'> (400, 3, 3)
+test file_path <class 'list'> (800,)
+test cam2world <class 'list'> (800, 4, 4)
+test width <class 'list'> (800,)
+test height <class 'list'> (800,)
+test focal <class 'list'> (800,)
+test label <class 'list'> (800,)
+test near <class 'list'> (800,)
+test far <class 'list'> (800,)
+test lossmult <class 'list'> (800,)
+test pix2cam <class 'list'> (800, 3, 3)
++ python /kaggle/working/armA/convert_blender_data.py --blender_dir /kaggle/input/datasets/nguyenhung1903/nerf-synthetic-dataset/nerf_synthetic --object_name drums --out_dir /kaggle/working/multi-scale
+['/kaggle/input/datasets/nguyenhung1903/nerf-synthetic-dataset/nerf_synthetic/drums']
+Converting from /kaggle/input/datasets/nguyenhung1903/nerf-synthetic-dataset/nerf_synthetic/drums to /kaggle/working/multi-scale/drums
+Split train
+Loading imgs
+Loaded all images, shape is (100, 800, 800, 4)
+Saving images
+Split val
+Loading imgs
+Loaded all images, shape is (100, 800, 800, 4)
+Saving images
+Split test
+Loading imgs
+Loaded all images, shape is (200, 800, 800, 4)
+Saving images
+train file_path <class 'list'> (400,)
+train cam2world <class 'list'> (400, 4, 4)
+train width <class 'list'> (400,)
+train height <class 'list'> (400,)
+train focal <class 'list'> (400,)
+train label <class 'list'> (400,)
+train near <class 'list'> (400,)
+train far <class 'list'> (400,)
+train lossmult <class 'list'> (400,)
+train pix2cam <class 'list'> (400, 3, 3)
+val file_path <class 'list'> (400,)
+val cam2world <class 'list'> (400, 4, 4)
+val width <class 'list'> (400,)
+val height <class 'list'> (400,)
+val focal <class 'list'> (400,)
+val label <class 'list'> (400,)
+val near <class 'list'> (400,)
+val far <class 'list'> (400,)
+val lossmult <class 'list'> (400,)
+val pix2cam <class 'list'> (400, 3, 3)
+test file_path <class 'list'> (800,)
+test cam2world <class 'list'> (800, 4, 4)
+test width <class 'list'> (800,)
+test height <class 'list'> (800,)
+test focal <class 'list'> (800,)
+test label <class 'list'> (800,)
+test near <class 'list'> (800,)
+test far <class 'list'> (800,)
+test lossmult <class 'list'> (800,)
+test pix2cam <class 'list'> (800, 3, 3)
++ python /kaggle/working/armA/convert_blender_data.py --blender_dir /kaggle/input/datasets/nguyenhung1903/nerf-synthetic-dataset/nerf_synthetic --object_name ficus --out_dir /kaggle/working/multi-scale
+['/kaggle/input/datasets/nguyenhung1903/nerf-synthetic-dataset/nerf_synthetic/ficus']
+Converting from /kaggle/input/datasets/nguyenhung1903/nerf-synthetic-dataset/nerf_synthetic/ficus to /kaggle/working/multi-scale/ficus
+Split train
+Loading imgs
+Loaded all images, shape is (100, 800, 800, 4)
+Saving images
+Split val
+Loading imgs
+Loaded all images, shape is (100, 800, 800, 4)
+Saving images
+Split test
+Loading imgs
+Loaded all images, shape is (200, 800, 800, 4)
+Saving images
+train file_path <class 'list'> (400,)
+train cam2world <class 'list'> (400, 4, 4)
+train width <class 'list'> (400,)
+train height <class 'list'> (400,)
+train focal <class 'list'> (400,)
+train label <class 'list'> (400,)
+train near <class 'list'> (400,)
+train far <class 'list'> (400,)
+train lossmult <class 'list'> (400,)
+train pix2cam <class 'list'> (400, 3, 3)
+val file_path <class 'list'> (400,)
+val cam2world <class 'list'> (400, 4, 4)
+val width <class 'list'> (400,)
+val height <class 'list'> (400,)
+val focal <class 'list'> (400,)
+val label <class 'list'> (400,)
+val near <class 'list'> (400,)
+val far <class 'list'> (400,)
+val lossmult <class 'list'> (400,)
+val pix2cam <class 'list'> (400, 3, 3)
+test file_path <class 'list'> (800,)
+test cam2world <class 'list'> (800, 4, 4)
+test width <class 'list'> (800,)
+test height <class 'list'> (800,)
+test focal <class 'list'> (800,)
+test label <class 'list'> (800,)
+test near <class 'list'> (800,)
+test far <class 'list'> (800,)
+test lossmult <class 'list'> (800,)
+test pix2cam <class 'list'> (800, 3, 3)
++ python /kaggle/working/armA/convert_blender_data.py --blender_dir /kaggle/input/datasets/nguyenhung1903/nerf-synthetic-dataset/nerf_synthetic --object_name hotdog --out_dir /kaggle/working/multi-scale
+['/kaggle/input/datasets/nguyenhung1903/nerf-synthetic-dataset/nerf_synthetic/hotdog']
+Converting from /kaggle/input/datasets/nguyenhung1903/nerf-synthetic-dataset/nerf_synthetic/hotdog to /kaggle/working/multi-scale/hotdog
+Split train
+Loading imgs
+Loaded all images, shape is (100, 800, 800, 4)
+Saving images
+Split val
+Loading imgs
+Loaded all images, shape is (100, 800, 800, 4)
+Saving images
+Split test
+Loading imgs
+Loaded all images, shape is (200, 800, 800, 4)
+Saving images
+train file_path <class 'list'> (400,)
+train cam2world <class 'list'> (400, 4, 4)
+train width <class 'list'> (400,)
+train height <class 'list'> (400,)
+train focal <class 'list'> (400,)
+train label <class 'list'> (400,)
+train near <class 'list'> (400,)
+train far <class 'list'> (400,)
+train lossmult <class 'list'> (400,)
+train pix2cam <class 'list'> (400, 3, 3)
+val file_path <class 'list'> (400,)
+val cam2world <class 'list'> (400, 4, 4)
+val width <class 'list'> (400,)
+val height <class 'list'> (400,)
+val focal <class 'list'> (400,)
+val label <class 'list'> (400,)
+val near <class 'list'> (400,)
+val far <class 'list'> (400,)
+val lossmult <class 'list'> (400,)
+val pix2cam <class 'list'> (400, 3, 3)
+test file_path <class 'list'> (800,)
+test cam2world <class 'list'> (800, 4, 4)
+test width <class 'list'> (800,)
+test height <class 'list'> (800,)
+test focal <class 'list'> (800,)
+test label <class 'list'> (800,)
+test near <class 'list'> (800,)
+test far <class 'list'> (800,)
+test lossmult <class 'list'> (800,)
+test pix2cam <class 'list'> (800, 3, 3)
++ python /kaggle/working/armA/convert_blender_data.py --blender_dir /kaggle/input/datasets/nguyenhung1903/nerf-synthetic-dataset/nerf_synthetic --object_name lego --out_dir /kaggle/working/multi-scale
+['/kaggle/input/datasets/nguyenhung1903/nerf-synthetic-dataset/nerf_synthetic/lego']
+Converting from /kaggle/input/datasets/nguyenhung1903/nerf-synthetic-dataset/nerf_synthetic/lego to /kaggle/working/multi-scale/lego
+Split train
+Loading imgs
+Loaded all images, shape is (100, 800, 800, 4)
+Saving images
+Split val
+Loading imgs
+Loaded all images, shape is (100, 800, 800, 4)
+Saving images
+Split test
+Loading imgs
+Loaded all images, shape is (200, 800, 800, 4)
+Saving images
+train file_path <class 'list'> (400,)
+train cam2world <class 'list'> (400, 4, 4)
+train width <class 'list'> (400,)
+train height <class 'list'> (400,)
+train focal <class 'list'> (400,)
+train label <class 'list'> (400,)
+train near <class 'list'> (400,)
+train far <class 'list'> (400,)
+train lossmult <class 'list'> (400,)
+train pix2cam <class 'list'> (400, 3, 3)
+val file_path <class 'list'> (400,)
+val cam2world <class 'list'> (400, 4, 4)
+val width <class 'list'> (400,)
+val height <class 'list'> (400,)
+val focal <class 'list'> (400,)
+val label <class 'list'> (400,)
+val near <class 'list'> (400,)
+val far <class 'list'> (400,)
+val lossmult <class 'list'> (400,)
+val pix2cam <class 'list'> (400, 3, 3)
+test file_path <class 'list'> (800,)
+test cam2world <class 'list'> (800, 4, 4)
+test width <class 'list'> (800,)
+test height <class 'list'> (800,)
+test focal <class 'list'> (800,)
+test label <class 'list'> (800,)
+test near <class 'list'> (800,)
+test far <class 'list'> (800,)
+test lossmult <class 'list'> (800,)
+test pix2cam <class 'list'> (800, 3, 3)
++ python /kaggle/working/armA/convert_blender_data.py --blender_dir /kaggle/input/datasets/nguyenhung1903/nerf-synthetic-dataset/nerf_synthetic --object_name materials --out_dir /kaggle/working/multi-scale
+['/kaggle/input/datasets/nguyenhung1903/nerf-synthetic-dataset/nerf_synthetic/materials']
+Converting from /kaggle/input/datasets/nguyenhung1903/nerf-synthetic-dataset/nerf_synthetic/materials to /kaggle/working/multi-scale/materials
+Split train
+Loading imgs
+Loaded all images, shape is (100, 800, 800, 4)
+Saving images
+Split val
+Loading imgs
+Loaded all images, shape is (100, 800, 800, 4)
+Saving images
+Split test
+Loading imgs
+Loaded all images, shape is (200, 800, 800, 4)
+Saving images
+train file_path <class 'list'> (400,)
+train cam2world <class 'list'> (400, 4, 4)
+train width <class 'list'> (400,)
+train height <class 'list'> (400,)
+train focal <class 'list'> (400,)
+train label <class 'list'> (400,)
+train near <class 'list'> (400,)
+train far <class 'list'> (400,)
+train lossmult <class 'list'> (400,)
+train pix2cam <class 'list'> (400, 3, 3)
+val file_path <class 'list'> (400,)
+val cam2world <class 'list'> (400, 4, 4)
+val width <class 'list'> (400,)
+val height <class 'list'> (400,)
+val focal <class 'list'> (400,)
+val label <class 'list'> (400,)
+val near <class 'list'> (400,)
+val far <class 'list'> (400,)
+val lossmult <class 'list'> (400,)
+val pix2cam <class 'list'> (400, 3, 3)
+test file_path <class 'list'> (800,)
+test cam2world <class 'list'> (800, 4, 4)
+test width <class 'list'> (800,)
+test height <class 'list'> (800,)
+test focal <class 'list'> (800,)
+test label <class 'list'> (800,)
+test near <class 'list'> (800,)
+test far <class 'list'> (800,)
+test lossmult <class 'list'> (800,)
+test pix2cam <class 'list'> (800, 3, 3)
++ python /kaggle/working/armA/convert_blender_data.py --blender_dir /kaggle/input/datasets/nguyenhung1903/nerf-synthetic-dataset/nerf_synthetic --object_name mic --out_dir /kaggle/working/multi-scale
+['/kaggle/input/datasets/nguyenhung1903/nerf-synthetic-dataset/nerf_synthetic/mic']
+Converting from /kaggle/input/datasets/nguyenhung1903/nerf-synthetic-dataset/nerf_synthetic/mic to /kaggle/working/multi-scale/mic
+Split train
+Loading imgs
+Loaded all images, shape is (100, 800, 800, 4)
+Saving images
+Split val
+Loading imgs
+Loaded all images, shape is (100, 800, 800, 4)
+Saving images
+Split test
+Loading imgs
+Loaded all images, shape is (200, 800, 800, 4)
+Saving images
+train file_path <class 'list'> (400,)
+train cam2world <class 'list'> (400, 4, 4)
+train width <class 'list'> (400,)
+train height <class 'list'> (400,)
+train focal <class 'list'> (400,)
+train label <class 'list'> (400,)
+train near <class 'list'> (400,)
+train far <class 'list'> (400,)
+train lossmult <class 'list'> (400,)
+train pix2cam <class 'list'> (400, 3, 3)
+val file_path <class 'list'> (400,)
+val cam2world <class 'list'> (400, 4, 4)
+val width <class 'list'> (400,)
+val height <class 'list'> (400,)
+val focal <class 'list'> (400,)
+val label <class 'list'> (400,)
+val near <class 'list'> (400,)
+val far <class 'list'> (400,)
+val lossmult <class 'list'> (400,)
+val pix2cam <class 'list'> (400, 3, 3)
+test file_path <class 'list'> (800,)
+test cam2world <class 'list'> (800, 4, 4)
+test width <class 'list'> (800,)
+test height <class 'list'> (800,)
+test focal <class 'list'> (800,)
+test label <class 'list'> (800,)
+test near <class 'list'> (800,)
+test far <class 'list'> (800,)
+test lossmult <class 'list'> (800,)
+test pix2cam <class 'list'> (800, 3, 3)
++ python /kaggle/working/armA/convert_blender_data.py --blender_dir /kaggle/input/datasets/nguyenhung1903/nerf-synthetic-dataset/nerf_synthetic --object_name chair --out_dir /kaggle/working/multi-scale
+['/kaggle/input/datasets/nguyenhung1903/nerf-synthetic-dataset/nerf_synthetic/chair']
+Converting from /kaggle/input/datasets/nguyenhung1903/nerf-synthetic-dataset/nerf_synthetic/chair to /kaggle/working/multi-scale/chair
+Split train
+Loading imgs
+Loaded all images, shape is (100, 800, 800, 4)
+Saving images
+Split val
+Loading imgs
+Loaded all images, shape is (100, 800, 800, 4)
+Saving images
+Split test
+Loading imgs
+Loaded all images, shape is (200, 800, 800, 4)
+Saving images
+train file_path <class 'list'> (400,)
+train cam2world <class 'list'> (400, 4, 4)
+train width <class 'list'> (400,)
+train height <class 'list'> (400,)
+train focal <class 'list'> (400,)
+train label <class 'list'> (400,)
+train near <class 'list'> (400,)
+train far <class 'list'> (400,)
+train lossmult <class 'list'> (400,)
+train pix2cam <class 'list'> (400, 3, 3)
+val file_path <class 'list'> (400,)
+val cam2world <class 'list'> (400, 4, 4)
+val width <class 'list'> (400,)
+val height <class 'list'> (400,)
+val focal <class 'list'> (400,)
+val label <class 'list'> (400,)
+val near <class 'list'> (400,)
+val far <class 'list'> (400,)
+val lossmult <class 'list'> (400,)
+val pix2cam <class 'list'> (400, 3, 3)
+test file_path <class 'list'> (800,)
+test cam2world <class 'list'> (800, 4, 4)
+test width <class 'list'> (800,)
+test height <class 'list'> (800,)
+test focal <class 'list'> (800,)
+test label <class 'list'> (800,)
+test near <class 'list'> (800,)
+test far <class 'list'> (800,)
+test lossmult <class 'list'> (800,)
+test pix2cam <class 'list'> (800, 3, 3)
+[timing] convert all 8 scenes: 755s
++ OMP_NUM_THREADS=4 CUDA_VISIBLE_DEVICES=0 python train.py -s /kaggle/working/multi-scale/ship -m /kaggle/working/out_armB/ship --eval --white_background --iterations 30000 --test_iterations -1 --port 6209  --kernel_size 0.3 --disable_3D_filter --disable_2D_mip_compensation   (cwd=/kaggle/working/armB)+ OMP_NUM_THREADS=4 CUDA_VISIBLE_DEVICES=1 python train.py -s /kaggle/working/multi-scale/drums -m /kaggle/working/out_armB/drums --eval --white_background --iterations 30000 --test_iterations -1 --port 6210  --kernel_size 0.3 --disable_3D_filter --disable_2D_mip_compensation   (cwd=/kaggle/working/armB)
+
+Optimizing /kaggle/working/out_armB/drums
+Output folder: /kaggle/working/out_armB/drums [11/09 19:57:53]
+Found metadata.json file, assuming multi scale Blender data set! [11/09 19:57:53]
+Reading train from metadata.json [11/09 19:57:53]
+read split: train [11/09 19:57:53]
+number of training images: 100 [11/09 19:57:58]
+Reading test from metadata.json [11/09 19:57:58]
+read split: test [11/09 19:57:58]
+number of testing images: 800 [11/09 19:58:14]
+Generating random point cloud (100000)... [11/09 19:58:14]
+Loading Training Cameras [11/09 19:58:14]
+Loading Test Cameras [11/09 19:58:17]
+Number of points at initialisation :  100000 [11/09 19:58:21]
+Computing 3D filter [11/09 19:58:23]
+Training progress:   0%|          | 0/30000 [00:00<?, ?it/s]
+Optimizing /kaggle/working/out_armB/ship
+Output folder: /kaggle/working/out_armB/ship [11/09 19:57:53]
+Found metadata.json file, assuming multi scale Blender data set! [11/09 19:57:53]
+Reading train from metadata.json [11/09 19:57:53]
+read split: train [11/09 19:57:53]
+number of training images: 100 [11/09 19:57:59]
+Reading test from metadata.json [11/09 19:57:59]
+read split: test [11/09 19:57:59]
+number of testing images: 800 [11/09 19:58:15]
+Generating random point cloud (100000)... [11/09 19:58:15]
+Loading Training Cameras [11/09 19:58:16]
+Loading Test Cameras [11/09 19:58:18]
+Number of points at initialisation :  100000 [11/09 19:58:22]
+Computing 3D filter [11/09 19:58:24]
+Training progress:   0%|          | 0/30000 [00:00<?, ?it/s]
+Computing 3D filter [11/09 19:58:58]
+Computing 3D filter [11/09 19:59:01]
+Computing 3D filter [11/09 19:59:05]
+Computing 3D filter [11/09 19:59:09]
+Computing 3D filter [11/09 19:59:13]
+Computing 3D filter [11/09 19:59:16]
+Computing 3D filter [11/09 19:59:20]
+Computing 3D filter [11/09 19:59:24]
+Computing 3D filter [11/09 19:59:28]
+Computing 3D filter [11/09 19:59:32]
+Computing 3D filter [11/09 19:59:36]
+Computing 3D filter [11/09 19:59:40]
+Computing 3D filter [11/09 19:59:44]
+Computing 3D filter [11/09 19:59:48]
+Computing 3D filter [11/09 19:59:52]
+Computing 3D filter [11/09 19:59:56]
+Computing 3D filter [11/09 20:00:00]
+Computing 3D filter [11/09 20:00:05]
+Computing 3D filter [11/09 20:00:09]
+Computing 3D filter [11/09 20:00:14]
+Computing 3D filter [11/09 20:00:18]
+Computing 3D filter [11/09 20:00:23]
+Computing 3D filter [11/09 20:00:28]
+Computing 3D filter [11/09 20:00:33]
+Traceback (most recent call last):
+  File "/kaggle/working/armB/train.py", line 270, in <module>
+    training(lp.extract(args), op.extract(args), pp.extract(args), args.test_iterations, args.save_iterations, args.checkpoint_iterations, args.start_checkpoint, args.debug_from)
+  File "/kaggle/working/armB/train.py", line 137, in training
+    loss = (1.0 - opt.lambda_dssim) * Ll1 + opt.lambda_dssim * (1.0 - ssim(image, gt_image))
+                                                                      ^^^^^^^^^^^^^^^^^^^^^
+  File "/kaggle/working/armB/utils/loss_utils.py", line 38, in ssim
+    window = window.cuda(img1.get_device())
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+torch.AcceleratorError: CUDA error: an illegal memory access was encountered
+Search for `cudaErrorIllegalAddress' in https://docs.nvidia.com/cuda/cuda-runtime-api/group__CUDART__TYPES.html for more information.
+CUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.
+For debugging consider passing CUDA_LAUNCH_BLOCKING=1
+Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.
+Traceback (most recent call last):
+  File "/kaggle/src/script.py", line 385, in worker
+    done[key] = run_one(gpu, arm, scene, seed)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/kaggle/src/script.py", line 215, in run_one
+    kc.sh(f"{env} python {entry} -s {src} -m {out} --eval "
+  File "/kaggle/working/armA/tools/kernel_common.py", line 77, in sh
+    raise RuntimeError(f"command failed ({rc}): {cmd}\n--- tail ---\n{out[-3000:]}")
+RuntimeError: command failed (1): OMP_NUM_THREADS=4 CUDA_VISIBLE_DEVICES=0 python train.py -s /kaggle/working/multi-scale/ship -m /kaggle/working/out_armB/ship --eval --white_background --iterations 30000 --test_iterations -1 --port 6209  --kernel_size 0.3 --disable_3D_filter --disable_2D_mip_compensation
+--- tail ---
+        | 2950/30000 [02:06<21:01, 21.44it/s, Loss=0.0484392]
+Training progress:  10%|▉         | 2960/30000 [02:06<21:17, 21.16it/s, Loss=0.0484392]
+Training progress:  10%|▉         | 2960/30000 [02:06<21:17, 21.16it/s, Loss=0.0476880]
+Training progress:  10%|▉         | 2970/30000 [02:06<21:01, 21.42it/s, Loss=0.0476880]
+Training progress:  10%|▉         | 2970/30000 [02:07<21:01, 21.42it/s, Loss=0.0463532]
+Training progress:  10%|▉         | 2980/30000 [02:07<20:52, 21.57it/s, Loss=0.0463532]
+Training progress:  10%|▉         | 2980/30000 [02:07<20:52, 21.57it/s, Loss=0.0435138]
+Training progress:  10%|▉         | 2990/30000 [02:07<20:55, 21.52it/s, Loss=0.0435138]
+Training progress:  10%|▉         | 2990/30000 [02:08<20:55, 21.52it/s, Loss=0.0449502]
+Training progress:  10%|█         | 3000/30000 [02:08<21:01, 21.41it/s, Loss=0.0449502]Computing 3D filter [11/09 19:58:53]
+Computing 3D filter [11/09 19:58:58]
+Computing 3D filter [11/09 19:59:01]
+Computing 3D filter [11/09 19:59:05]
+Computing 3D filter [11/09 19:59:09]
+Computing 3D filter [11/09 19:59:13]
+Computing 3D filter [11/09 19:59:16]
+Computing 3D filter [11/09 19:59:20]
+Computing 3D filter [11/09 19:59:24]
+Computing 3D filter [11/09 19:59:28]
+Computing 3D filter [11/09 19:59:32]
+Computing 3D filter [11/09 19:59:36]
+Computing 3D filter [11/09 19:59:40]
+Computing 3D filter [11/09 19:59:44]
+Computing 3D filter [11/09 19:59:48]
+Computing 3D filter [11/09 19:59:52]
+Computing 3D filter [11/09 19:59:56]
+Computing 3D filter [11/09 20:00:00]
+Computing 3D filter [11/09 20:00:05]
+Computing 3D filter [11/09 20:00:09]
+Computing 3D filter [11/09 20:00:14]
+Computing 3D filter [11/09 20:00:18]
+Computing 3D filter [11/09 20:00:23]
+Computing 3D filter [11/09 20:00:28]
+Computing 3D filter [11/09 20:00:33]
+Traceback (most recent call last):
+  File "/kaggle/working/armB/train.py", line 270, in <module>
+    training(lp.extract(args), op.extract(args), pp.extract(args), args.test_iterations, args.save_iterations, args.checkpoint_iterations, args.start_checkpoint, args.debug_from)
+  File "/kaggle/working/armB/train.py", line 137, in training
+    loss = (1.0 - opt.lambda_dssim) * Ll1 + opt.lambda_dssim * (1.0 - ssim(image, gt_image))
+                                                                      ^^^^^^^^^^^^^^^^^^^^^
+  File "/kaggle/working/armB/utils/loss_utils.py", line 38, in ssim
+    window = window.cuda(img1.get_device())
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+torch.AcceleratorError: CUDA error: an illegal memory access was encountered
+Search for `cudaErrorIllegalAddress' in https://docs.nvidia.com/cuda/cuda-runtime-api/group__CUDART__TYPES.html for more information.
+CUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.
+For debugging consider passing CUDA_LAUNCH_BLOCKING=1
+Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.
+
+
+Training progress:  10%|█         | 3000/30000 [02:09<19:23, 23.20it/s, Loss=0.0449502]
+
++ OMP_NUM_THREADS=4 CUDA_VISIBLE_DEVICES=0 python train.py -s /kaggle/working/multi-scale/ficus -m /kaggle/working/out_armB/ficus --eval --white_background --iterations 30000 --test_iterations -1 --port 6209  --kernel_size 0.3 --disable_3D_filter --disable_2D_mip_compensation   (cwd=/kaggle/working/armB)
+Training progress:  14%|█▍        | 4160/30000 [02:11<15:58, 26.97it/s, Loss=0.0234428]
+Optimizing /kaggle/working/out_armB/ficus
+Output folder: /kaggle/working/out_armB/ficus [11/09 20:00:44]
+Found metadata.json file, assuming multi scale Blender data set! [11/09 20:00:44]
+Reading train from metadata.json [11/09 20:00:44]
+read split: train [11/09 20:00:44]
+number of training images: 100 [11/09 20:00:49]
+Reading test from metadata.json [11/09 20:00:49]
+read split: test [11/09 20:00:49]
+number of testing images: 800 [11/09 20:01:05]
+Generating random point cloud (100000)... [11/09 20:01:05]
+Loading Training Cameras [11/09 20:01:05]
+Loading Test Cameras [11/09 20:01:07]
+Number of points at initialisation :  100000 [11/09 20:01:11]
+Computing 3D filter [11/09 20:01:13]
+Training progress:   0%|          | 0/30000 [00:00<?, ?it/s]
+Training progress:  23%|██▎       | 6950/30000 [04:08<17:06, 22.47it/s, Loss=0.0188404]
+Training progress:  15%|█▌        | 4620/30000 [02:06<13:44, 30.77it/s, Loss=0.0060243]
+Training progress:  32%|███▏      | 9510/30000 [06:15<17:27, 19.56it/s, Loss=0.0173057]
+Training progress:  27%|██▋       | 8110/30000 [04:12<14:29, 25.17it/s, Loss=0.0060363]
+Training progress:  40%|████      | 12050/30000 [08:26<16:45, 17.85it/s, Loss=0.0197887]
+Training progress:  37%|███▋      | 11130/30000 [06:13<13:06, 23.99it/s, Loss=0.0050909]
+Training progress:  48%|████▊     | 14350/30000 [10:29<14:10, 18.41it/s, Loss=0.0159344]
+Training progress:  47%|████▋     | 14120/30000 [08:18<11:35, 22.83it/s, Loss=0.0047558]
+Training progress:  56%|█████▌    | 16650/30000 [12:31<11:31, 19.31it/s, Loss=0.0150991]
+Training progress:  57%|█████▋    | 17110/30000 [10:23<09:16, 23.16it/s, Loss=0.0051221]
+Training progress:  63%|██████▎   | 18950/30000 [14:32<09:30, 19.36it/s, Loss=0.0139164]
+Training progress:  67%|██████▋   | 20100/30000 [12:27<06:42, 24.59it/s, Loss=0.0028308]
+Training progress:  72%|███████▏  | 21480/30000 [16:42<07:10, 19.80it/s, Loss=0.0124504]
+Computing 3D filter [11/09 20:01:38]
+Computing 3D filter [11/09 20:01:40]
+Computing 3D filter [11/09 20:01:42]
+Computing 3D filter [11/09 20:01:44]
+Computing 3D filter [11/09 20:01:46]
+Computing 3D filter [11/09 20:01:49]
+Computing 3D filter [11/09 20:01:51]
+Computing 3D filter [11/09 20:01:53]
+Computing 3D filter [11/09 20:01:55]
+Computing 3D filter [11/09 20:01:57]
+Computing 3D filter [11/09 20:01:59]
+Computing 3D filter [11/09 20:02:02]
+Computing 3D filter [11/09 20:02:04]
+Computing 3D filter [11/09 20:02:06]
+Computing 3D filter [11/09 20:02:09]
+Computing 3D filter [11/09 20:02:11]
+Computing 3D filter [11/09 20:02:13]
+Computing 3D filter [11/09 20:02:16]
+Computing 3D filter [11/09 20:02:18]
+Computing 3D filter [11/09 20:02:21]
+Computing 3D filter [11/09 20:02:24]
+Computing 3D filter [11/09 20:02:26]
+Computing 3D filter [11/09 20:02:29]
+Computing 3D filter [11/09 20:02:32]
+Computing 3D filter [11/09 20:02:34]
+Computing 3D filter [11/09 20:02:37]
+Computing 3D filter [11/09 20:02:40]
+Computing 3D filter [11/09 20:02:43]
+Computing 3D filter [11/09 20:02:46]
+Computing 3D filter [11/09 20:02:49]
+Computing 3D filter [11/09 20:02:52]
+Computing 3D filter [11/09 20:02:54]
+Computing 3D filter [11/09 20:02:57]
+Computing 3D filter [11/09 20:03:00]
+Computing 3D filter [11/09 20:03:03]
+Computing 3D filter [11/09 20:03:07]
+Computing 3D filter [11/09 20:03:10]
+Computing 3D filter [11/09 20:03:13]
+Computing 3D filter [11/09 20:03:16]
+Computing 3D filter [11/09 20:03:19]
+Computing 3D filter [11/09 20:03:22]
+Computing 3D filter [11/09 20:03:25]
+Computing 3D filter [11/09 20:03:29]
+Computing 3D filter [11/09 20:03:32]
+Computing 3D filter [11/09 20:03:35]
+Computing 3D filter [11/09 20:03:38]
+Computing 3D filter [11/09 20:03:42]
+Computing 3D filter [11/09 20:03:45]
+Computing 3D filter [11/09 20:03:49]
+Computing 3D filter [11/09 20:03:52]
+Computing 3D filter [11/09 20:03:55]
+Computing 3D filter [11/09 20:03:59]
+Computing 3D filter [11/09 20:04:02]
+Computing 3D filter [11/09 20:04:06]
+Computing 3D filter [11/09 20:04:09]
+Computing 3D filter [11/09 20:04:13]
+Computing 3D filter [11/09 20:04:16]
+Computing 3D filter [11/09 20:04:20]
+Computing 3D filter [11/09 20:04:23]
+Computing 3D filter [11/09 20:04:27]
+Computing 3D filter [11/09 20:04:31]
+Computing 3D filter [11/09 20:04:34]
+Computing 3D filter [11/09 20:04:38]
+[ITER 7000] Saving Gaussians [11/09 20:04:41]
+Computing 3D filter [11/09 20:04:44]
+Computing 3D filter [11/09 20:04:47]
+Computing 3D filter [11/09 20:04:51]
+Computing 3D filter [11/09 20:04:55]
+Computing 3D filter [11/09 20:04:58]
+Computing 3D filter [11/09 20:05:02]
+Computing 3D filter [11/09 20:05:06]
+Computing 3D filter [11/09 20:05:10]
+Computing 3D filter [11/09 20:05:13]
+Computing 3D filter [11/09 20:05:17]
+Computing 3D filter [11/09 20:05:21]
+Computing 3D filter [11/09 20:05:25]
+Computing 3D filter [11/09 20:05:29]
+Computing 3D filter [11/09 20:05:32]
+Computing 3D filter [11/09 20:05:36]
+Computing 3D filter [11/09 20:05:40]
+Computing 3D filter [11/09 20:05:44]
+Computing 3D filter [11/09 20:05:48]
+Computing 3D filter [11/09 20:05:52]
+Computing 3D filter [11/09 20:05:56]
+Computing 3D filter [11/09 20:06:00]
+Computing 3D filter [11/09 20:06:04]
+Computing 3D filter [11/09 20:06:08]
+Computing 3D filter [11/09 20:06:12]
+Computing 3D filter [11/09 20:06:16]
+Computing 3D filter [11/09 20:06:20]
+Computing 3D filter [11/09 20:06:24]
+Computing 3D filter [11/09 20:06:28]
+Computing 3D filter [11/09 20:06:32]
+Computing 3D filter [11/09 20:06:36]
+Computing 3D filter [11/09 20:06:40]
+Computing 3D filter [11/09 20:06:44]
+Computing 3D filter [11/09 20:06:48]
+Computing 3D filter [11/09 20:06:52]
+Computing 3D filter [11/09 20:06:56]
+Computing 3D filter [11/09 20:07:00]
+Computing 3D filter [11/09 20:07:05]
+Computing 3D filter [11/09 20:07:09]
+Computing 3D filter [11/09 20:07:13]
+Computing 3D filter [11/09 20:07:17]
+Computing 3D filter [11/09 20:07:21]
+Computing 3D filter [11/09 20:07:25]
+Computing 3D filter [11/09 20:07:29]
+Computing 3D filter [11/09 20:07:34]
+Computing 3D filter [11/09 20:07:38]
+Computing 3D filter [11/09 20:07:42]
+Computing 3D filter [11/09 20:07:46]
+Computing 3D filter [11/09 20:07:50]
+Computing 3D filter [11/09 20:07:54]
+Computing 3D filter [11/09 20:07:59]
+Computing 3D filter [11/09 20:08:03]
+Computing 3D filter [11/09 20:08:07]
+Computing 3D filter [11/09 20:08:11]
+Computing 3D filter [11/09 20:08:15]
+Computing 3D filter [11/09 20:08:20]
+Computing 3D filter [11/09 20:08:24]
+Computing 3D filter [11/09 20:08:28]
+Computing 3D filter [11/09 20:08:32]
+Computing 3D filter [11/09 20:08:36]
+Computing 3D filter [11/09 20:08:40]
+Computing 3D filter [11/09 20:08:45]
+Computing 3D filter [11/09 20:08:49]
+Computing 3D filter [11/09 20:08:53]
+Computing 3D filter [11/09 20:08:57]
+Computing 3D filter [11/09 20:09:01]
+Computing 3D filter [11/09 20:09:05]
+Computing 3D filter [11/09 20:09:10]
+Computing 3D filter [11/09 20:09:14]
+Computing 3D filter [11/09 20:09:18]
+Computing 3D filter [11/09 20:09:22]
+Computing 3D filter [11/09 20:09:27]
+Computing 3D filter [11/09 20:09:31]
+Computing 3D filter [11/09 20:09:35]
+Computing 3D filter [11/09 20:09:39]
+Computing 3D filter [11/09 20:09:43]
+Computing 3D filter [11/09 20:09:48]
+Computing 3D filter [11/09 20:09:52]
+Computing 3D filter [11/09 20:09:56]
+Computing 3D filter [11/09 20:10:01]
+Computing 3D filter [11/09 20:10:05]
+Computing 3D filter [11/09 20:10:13]
+Computing 3D filter [11/09 20:10:17]
+Computing 3D filter [11/09 20:10:21]
+Computing 3D filter [11/09 20:10:26]
+Computing 3D filter [11/09 20:10:30]
+Computing 3D filter [11/09 20:10:34]
+Computing 3D filter [11/09 20:10:38]
+Computing 3D filter [11/09 20:10:42]
+Computing 3D filter [11/09 20:10:46]
+Computing 3D filter [11/09 20:10:51]
+Computing 3D filter [11/09 20:10:55]
+Computing 3D filter [11/09 20:10:59]
+Computing 3D filter [11/09 20:11:03]
+Computing 3D filter [11/09 20:11:07]
+Computing 3D filter [11/09 20:11:11]
+Computing 3D filter [11/09 20:11:15]
+Computing 3D filter [11/09 20:11:20]
+Computing 3D filter [11/09 20:11:24]
+Computing 3D filter [11/09 20:11:28]
+Computing 3D filter [11/09 20:11:32]
+Computing 3D filter [11/09 20:11:36]
+Computing 3D filter [11/09 20:11:40]
+Computing 3D filter [11/09 20:11:44]
+Computing 3D filter [11/09 20:11:49]
+Computing 3D filter [11/09 20:11:53]
+Computing 3D filter [11/09 20:11:57]
+Computing 3D filter [11/09 20:12:01]
+Computing 3D filter [11/09 20:12:05]
+Computing 3D filter [11/09 20:12:09]
+Computing 3D filter [11/09 20:12:13]
+Computing 3D filter [11/09 20:12:17]
+Computing 3D filter [11/09 20:12:22]
+Computing 3D filter [11/09 20:12:26]
+Computing 3D filter [11/09 20:12:30]
+Computing 3D filter [11/09 20:12:34]
+Computing 3D filter [11/09 20:12:38]
+Computing 3D filter [11/09 20:12:42]
+Computing 3D filter [11/09 20:12:46]
+Computing 3D filter [11/09 20:12:51]
+Computing 3D filter [11/09 20:12:55]
+Computing 3D filter [11/09 20:12:59]
+Computing 3D filter [11/09 20:13:03]
+Computing 3D filter [11/09 20:13:07]
+Computing 3D filter [11/09 20:13:11]
+Computing 3D filter [11/09 20:13:15]
+Computing 3D filter [11/09 20:13:20]
+Computing 3D filter [11/09 20:13:24]
+Computing 3D filter [11/09 20:13:28]
+Computing 3D filter [11/09 20:13:32]
+Computing 3D filter [11/09 20:13:36]
+Computing 3D filter [11/09 20:13:40]
+Computing 3D filter [11/09 20:13:44]
+Computing 3D filter [11/09 20:13:49]
+Computing 3D filter [11/09 20:13:53]
+Computing 3D filter [11/09 20:13:57]
+Computing 3D filter [11/09 20:14:01]
+Computing 3D filter [11/09 20:14:05]
+Computing 3D filter [11/09 20:14:09]
+Computing 3D filter [11/09 20:14:13]
+Computing 3D filter [11/09 20:14:18]
+Computing 3D filter [11/09 20:14:22]
+Computing 3D filter [11/09 20:14:26]
+Computing 3D filter [11/09 20:14:30]
+Computing 3D filter [11/09 20:14:34]
+Computing 3D filter [11/09 20:14:38]
+Computing 3D filter [11/09 20:14:42]
+Computing 3D filter [11/09 20:14:47]
+Computing 3D filter [11/09 20:14:51]
+Computing 3D filter [11/09 20:14:55]
+Computing 3D filter [11/09 20:14:59]
+Computing 3D filter [11/09 20:15:03]
+Computing 3D filter [11/09 20:15:07]
+Computing 3D filter [11/09 20:15:12]
+Computing 3D filter [11/09 20:15:16]
+Computing 3D filter [11/09 20:15:20]
+Computing 3D filter [11/09 20:15:24]
+Computing 3D filter
+Training progress:  77%|███████▋  | 23090/30000 [14:31<04:41, 24.57it/s, Loss=0.0039039]
+Computing 3D filter [11/09 19:58:53]
+Computing 3D filter [11/09 19:58:55]
+Computing 3D filter [11/09 19:58:57]
+Computing 3D filter [11/09 19:58:59]
+Computing 3D filter [11/09 19:59:02]
+Computing 3D filter [11/09 19:59:04]
+Computing 3D filter [11/09 19:59:06]
+Computing 3D filter [11/09 19:59:09]
+Computing 3D filter [11/09 19:59:11]
+Computing 3D filter [11/09 19:59:14]
+Computing 3D filter [11/09 19:59:16]
+Computing 3D filter [11/09 19:59:19]
+Computing 3D filter [11/09 19:59:21]
+Computing 3D filter [11/09 19:59:24]
+Computing 3D filter [11/09 19:59:27]
+Computing 3D filter [11/09 19:59:30]
+Computing 3D filter [11/09 19:59:32]
+Computing 3D filter [11/09 19:59:35]
+Computing 3D filter [11/09 19:59:38]
+Computing 3D filter [11/09 19:59:41]
+Computing 3D filter [11/09 19:59:44]
+Computing 3D filter [11/09 19:59:47]
+Computing 3D filter [11/09 19:59:51]
+Computing 3D filter [11/09 19:59:54]
+Computing 3D filter [11/09 19:59:57]
+Computing 3D filter [11/09 20:00:01]
+Computing 3D filter [11/09 20:00:04]
+Computing 3D filter [11/09 20:00:07]
+Computing 3D filter [11/09 20:00:11]
+Computing 3D filter [11/09 20:00:14]
+Computing 3D filter [11/09 20:00:18]
+Computing 3D filter [11/09 20:00:21]
+Computing 3D filter [11/09 20:00:25]
+Computing 3D filter [11/09 20:00:29]
+Computing 3D filter [11/09 20:00:33]
+Computing 3D filter [11/09 20:00:36]
+Computing 3D filter [11/09 20:00:40]
+Computing 3D filter [11/09 20:00:44]
+Computing 3D filter [11/09 20:00:48]
+Computing 3D filter [11/09 20:00:52]
+Computing 3D filter [11/09 20:00:56]
+Computing 3D filter [11/09 20:01:00]
+Computing 3D filter [11/09 20:01:04]
+Computing 3D filter [11/09 20:01:08]
+Computing 3D filter [11/09 20:01:12]
+Computing 3D filter [11/09 20:01:16]
+Computing 3D filter [11/09 20:01:20]
+Computing 3D filter [11/09 20:01:24]
+Computing 3D filter [11/09 20:01:29]
+Computing 3D filter [11/09 20:01:33]
+Computing 3D filter [11/09 20:01:37]
+Computing 3D filter [11/09 20:01:42]
+Computing 3D filter [11/09 20:01:46]
+Computing 3D filter [11/09 20:01:50]
+Computing 3D filter [11/09 20:01:55]
+Computing 3D filter [11/09 20:01:59]
+Computing 3D filter [11/09 20:02:04]
+Computing 3D filter [11/09 20:02:08]
+Computing 3D filter [11/09 20:02:12]
+Computing 3D filter [11/09 20:02:17]
+Computing 3D filter [11/09 20:02:21]
+Computing 3D filter [11/09 20:02:25]
+Computing 3D filter [11/09 20:02:30]
+[ITER 7000] Saving Gaussians [11/09 20:02:34]
+Computing 3D filter [11/09 20:02:37]
+Computing 3D filter [11/09 20:02:42]
+Computing 3D filter [11/09 20:02:46]
+Computing 3D filter [11/09 20:02:51]
+Computing 3D filter [11/09 20:02:55]
+Computing 3D filter [11/09 20:03:00]
+Computing 3D filter [11/09 20:03:05]
+Computing 3D filter [11/09 20:03:10]
+Computing 3D filter [11/09 20:03:14]
+Computing 3D filter [11/09 20:03:19]
+Computing 3D filter [11/09 20:03:24]
+Computing 3D filter [11/09 20:03:29]
+Computing 3D filter [11/09 20:03:33]
+Computing 3D filter [11/09 20:03:38]
+Computing 3D filter [11/09 20:03:43]
+Computing 3D filter [11/09 20:03:48]
+Computing 3D filter [11/09 20:03:53]
+Computing 3D filter [11/09 20:03:58]
+Computing 3D filter [11/09 20:04:03]
+Computing 3D filter [11/09 20:04:08]
+Computing 3D filter [11/09 20:04:13]
+Computing 3D filter [11/09 20:04:19]
+Computing 3D filter [11/09 20:04:24]
+Computing 3D filter [11/09 20:04:28]
+Computing 3D filter [11/09 20:04:33]
+Computing 3D filter [11/09 20:04:38]
+Computing 3D filter [11/09 20:04:43]
+Computing 3D filter [11/09 20:04:48]
+Computing 3D filter [11/09 20:04:53]
+Computing 3D filter [11/09 20:04:58]
+Computing 3D filter [11/09 20:05:03]
+Computing 3D filter [11/09 20:05:08]
+Computing 3D filter [11/09 20:05:13]
+Computing 3D filter [11/09 20:05:18]
+Computing 3D filter [11/09 20:05:23]
+Computing 3D filter [11/09 20:05:29]
+Computing 3D filter [11/09 20:05:34]
+Computing 3D filter [11/09 20:05:39]
+Computing 3D filter [11/09 20:05:44]
+Computing 3D filter [11/09 20:05:49]
+Computing 3D filter [11/09 20:05:54]
+Computing 3D filter [11/09 20:06:00]
+Computing 3D filter [11/09 20:06:05]
+Computing 3D filter [11/09 20:06:10]
+Computing 3D filter [11/09 20:06:15]
+Computing 3D filter [11/09 20:06:21]
+Computing 3D filter [11/09 20:06:26]
+Computing 3D filter [11/09 20:06:31]
+Computing 3D filter [11/09 20:06:37]
+Computing 3D filter [11/09 20:06:42]
+Computing 3D filter [11/09 20:06:48]
+Computing 3D filter [11/09 20:06:53]
+Computing 3D filter [11/09 20:06:58]
+Computing 3D filter [11/09 20:07:04]
+Computing 3D filter [11/09 20:07:09]
+Computing 3D filter [11/09 20:07:14]
+Computing 3D filter [11/09 20:07:19]
+Computing 3D filter [11/09 20:07:25]
+Computing 3D filter [11/09 20:07:30]
+Computing 3D filter [11/09 20:07:35]
+Computing 3D filter [11/09 20:07:40]
+Computing 3D filter [11/09 20:07:46]
+Computing 3D filter [11/09 20:07:51]
+Computing 3D filter [11/09 20:07:56]
+Computing 3D filter [11/09 20:08:02]
+Computing 3D filter [11/09 20:08:07]
+Computing 3D filter [11/09 20:08:12]
+Computing 3D filter [11/09 20:08:18]
+Computing 3D filter [11/09 20:08:23]
+Computing 3D filter [11/09 20:08:28]
+Computing 3D filter [11/09 20:08:34]
+Computing 3D filter [11/09 20:08:39]
+Computing 3D filter [11/09 20:08:45]
+Computing 3D filter [11/09 20:08:50]
+Computing 3D filter [11/09 20:08:56]
+Computing 3D filter [11/09 20:09:01]
+Computing 3D filter [11/09 20:09:07]
+Computing 3D filter [11/09 20:09:12]
+Computing 3D filter [11/09 20:09:18]
+Computing 3D filter [11/09 20:09:23]
+Computing 3D filter [11/09 20:09:34]
+Computing 3D filter [11/09 20:09:39]
+Computing 3D filter [11/09 20:09:44]
+Computing 3D filter [11/09 20:09:50]
+Computing 3D filter [11/09 20:09:55]
+Computing 3D filter [11/09 20:10:00]
+Computing 3D filter [11/09 20:10:05]
+Computing 3D filter [11/09 20:10:11]
+Computing 3D filter [11/09 20:10:16]
+Computing 3D filter [11/09 20:10:21]
+Computing 3D filter [11/09 20:10:27]
+Computing 3D filter [11/09 20:10:32]
+Computing 3D filter [11/09 20:10:37]
+Computing 3D filter [11/09 20:10:42]
+Computing 3D filter [11/09 20:10:48]
+Computing 3D filter [11/09 20:10:53]
+Computing 3D filter [11/09 20:10:58]
+Computing 3D filter [11/09 20:11:03]
+Computing 3D filter [11/09 20:11:08]
+Computing 3D filter [11/09 20:11:14]
+Computing 3D filter [11/09 20:11:19]
+Computing 3D filter [11/09 20:11:24]
+Computing 3D filter [11/09 20:11:29]
+Computing 3D filter [11/09 20:11:35]
+Computing 3D filter [11/09 20:11:40]
+Computing 3D filter [11/09 20:11:45]
+Computing 3D filter [11/09 20:11:50]
+Computing 3D filter [11/09 20:11:55]
+Computing 3D filter [11/09 20:12:01]
+Computing 3D filter [11/09 20:12:06]
+Computing 3D filter [11/09 20:12:11]
+Computing 3D filter [11/09 20:12:16]
+Computing 3D filter [11/09 20:12:21]
+Computing 3D filter [11/09 20:12:27]
+Computing 3D filter [11/09 20:12:32]
+Computing 3D filter [11/09 20:12:37]
+Computing 3D filter [11/09 20:12:42]
+Computing 3D filter [11/09 20:12:47]
+Computing 3D filter [11/09 20:12:53]
+Computing 3D filter [11/09 20:12:58]
+Computing 3D filter [11/09 20:13:03]
+Computing 3D filter [11/09 20:13:08]
+Computing 3D filter [11/09 20:13:13]
+Computing 3D filter [11/09 20:13:18]
+Computing 3D filter [11/09 20:13:24]
+Computing 3D filter [11/09 20:13:29]
+Computing 3D filter [11/09 20:13:34]
+Computing 3D filter [11/09 20:13:39]
+Computing 3D filter [11/09 20:13:44]
+Computing 3D filter [11/09 20:13:49]
+Computing 3D filter [11/09 20:13:55]
+Computing 3D filter [11/09 20:14:00]
+Computing 3D filter [11/09 20:14:05]
+Computing 3D filter [11/09 20:14:10]
+Computing 3D filter [11/09 20:14:15]
+Computing 3D filter [11/09 20:14:20]
+Computing 3D filter [11/09 20:14:25]
+Computing 3D filter [11/09 20:14:30]
+Computing 3D filter [11/09 20:14:36]
+Computing 3D filter [11/09 20:14:41]
+Computing 3D filter [11/09 20:14:46]
+Computing 3D filter [11/09 20:14:51]
+Computing 3D filter [11/09 20:14:56]
+Computing 3D filter [11/09 20:15:01]
+Computing 3D filter [11/09 20:15:06]
+Computing 3D filter [11/09 20:15:11]
+Computing 3D filter [11/09 20:15:17]
+Computing 3D filter [11/09 20:15:22]
+Computing 3D filter [11/09 20:15:27]
+Computing 3D filter [11/09 20:15:32]
+Computing 3D filter [11/09 20:15:37]
+Computing 3D filter [11/09 20:15:42]
+Computing 3D filter [11/09 20:15:47]
+Computing 3D filter [11/09 20:15:52]
+Computing 3D filter [11/09 20:15:57]
+Computing 3D filter [11/09 20:16:02]
+Computing 3D filter
+Training progress:  80%|████████  | 24010/30000 [18:51<05:14, 19.06it/s, Loss=0.0150024]
+Training progress:  87%|████████▋ | 26080/30000 [16:35<02:40, 24.49it/s, Loss=0.0030090]
+Training progress:  88%|████████▊ | 26540/30000 [20:58<02:54, 19.82it/s, Loss=0.0127811]
+Training progress:  97%|█████████▋| 29080/30000 [18:38<00:37, 24.56it/s, Loss=0.0038287]
+ [11/09 20:15:28]
+Computing 3D filter [11/09 20:15:32]
+Computing 3D filter [11/09 20:15:36]
+Computing 3D filter [11/09 20:15:40]
+Computing 3D filter [11/09 20:15:45]
+Computing 3D filter [11/09 20:15:49]
+Computing 3D filter [11/09 20:15:53]
+Computing 3D filter [11/09 20:15:57]
+Computing 3D filter [11/09 20:16:01]
+Computing 3D filter [11/09 20:16:05]
+Computing 3D filter [11/09 20:16:09]
+Computing 3D filter [11/09 20:16:14]
+Computing 3D filter [11/09 20:16:18]
+Computing 3D filter [11/09 20:16:22]
+Computing 3D filter [11/09 20:16:26]
+Computing 3D filter [11/09 20:16:30]
+Computing 3D filter [11/09 20:16:34]
+Computing 3D filter [11/09 20:16:38]
+Computing 3D filter [11/09 20:16:42]
+Computing 3D filter [11/09 20:16:47]
+Computing 3D filter [11/09 20:16:51]
+Computing 3D filter [11/09 20:16:55]
+Computing 3D filter [11/09 20:16:59]
+Computing 3D filter [11/09 20:17:03]
+Computing 3D filter [11/09 20:17:07]
+Computing 3D filter [11/09 20:17:11]
+Computing 3D filter [11/09 20:17:16]
+Computing 3D filter [11/09 20:17:20]
+Computing 3D filter [11/09 20:17:24]
+Computing 3D filter [11/09 20:17:28]
+Computing 3D filter [11/09 20:17:32]
+Computing 3D filter [11/09 20:17:36]
+Computing 3D filter [11/09 20:17:40]
+Computing 3D filter [11/09 20:17:45]
+Computing 3D filter [11/09 20:17:49]
+Computing 3D filter [11/09 20:17:53]
+Computing 3D filter [11/09 20:17:57]
+Computing 3D filter [11/09 20:18:01]
+Computing 3D filter [11/09 20:18:05]
+Computing 3D filter [11/09 20:18:09]
+Computing 3D filter [11/09 20:18:13]
+Computing 3D filter [11/09 20:18:18]
+Computing 3D filter [11/09 20:18:22]
+Computing 3D filter [11/09 20:18:26]
+Computing 3D filter [11/09 20:18:30]
+Computing 3D filter [11/09 20:18:34]
+Computing 3D filter [11/09 20:18:38]
+Computing 3D filter [11/09 20:18:42]
+Computing 3D filter [11/09 20:18:47]
+Computing 3D filter [11/09 20:18:51]
+Computing 3D filter [11/09 20:18:55]
+Computing 3D filter [11/09 20:18:59]
+Computing 3D filter [11/09 20:19:03]
+Computing 3D filter [11/09 20:19:07]
+Computing 3D filter [11/09 20:19:11]
+Computing 3D filter [11/09 20:19:16]
+Computing 3D filter [11/09 20:19:20]
+Computing 3D filter [11/09 20:19:24]
+Computing 3D filter [11/09 20:19:28]
+Computing 3D filter [11/09 20:19:32]
+Computing 3D filter [11/09 20:19:36]
+Computing 3D filter [11/09 20:19:40]
+Computing 3D filter [11/09 20:19:45]
+Computing 3D filter [11/09 20:19:49]
+Computing 3D filter [11/09 20:19:53]
+Computing 3D filter [11/09 20:19:57]
+Computing 3D filter [11/09 20:20:01]
+Computing 3D filter [11/09 20:20:05]
+Computing 3D filter [11/09 20:20:09]
+Computing 3D filter [11/09 20:20:13]
+Computing 3D filter [11/09 20:20:18]
+Computing 3D filter [11/09 20:20:22]
+[ITER 30000] Saving Gaussians [11/09 20:20:30]
+Training complete. [11/09 20:20:33]
++ OMP_NUM_THREADS=4 CUDA_VISIBLE_DEVICES=0 python render.py -m /kaggle/working/out_armB/ficus --skip_train    (cwd=/kaggle/working/armB)
+Looking for config file in /kaggle/working/out_armB/ficus/cfg_args
+Config file found: /kaggle/working/out_armB/ficus/cfg_args
+Rendering /kaggle/working/out_armB/ficus
+Loading trained model at iteration 30000 [11/09 20:20:40]
+Found metadata.json file, assuming multi scale Blender data set! [11/09 20:20:40]
+Reading train from metadata.json [11/09 20:20:40]
+read split: train [11/09 20:20:40]
+number of training images: 100 [11/09 20:20:45]
+Reading test from metadata.json [11/09 20:20:45]
+read split: test [11/09 20:20:45]
+number of testing images: 800 [11/09 20:21:01]
+Loading Training Cameras [11/09 20:21:01]
+Loading Test Cameras [11/09 20:21:03]
+Rendering progress:   0%|          | 0/800 [00:00<?, ?it/s]
+Training progress:  97%|█████████▋| 29080/30000 [23:06<00:45, 20.22it/s, Loss=0.0083897]
++ OMP_NUM_THREADS=4 CUDA_VISIBLE_DEVICES=0 python metrics.py -m /kaggle/working/out_armB/ficus   (cwd=/kaggle/working/armB)
+/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:208: UserWarning: The parameter 'pretrained' is deprecated since 0.13 and may be removed in the future, please use 'weights' instead.
+  warnings.warn(
+/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:223: UserWarning: Arguments other than a weight enum or `None` for 'weights' are deprecated since 0.13 and may be removed in the future. The current behavior is equivalent to passing `weights=VGG16_Weights.IMAGENET1K_V1`. You can also use `weights=VGG16_Weights.DEFAULT` to get the most up-to-date weights.
+  warnings.warn(msg)
+Setting up [LPIPS] perceptual loss: trunk [vgg], v[0.1], spatial [off]
+Downloading: "https://download.pytorch.org/models/vgg16-397923af.pth" to /root/.cache/torch/hub/checkpoints/vgg16-397923af.pth
+  0%|          | 0.00/528M [00:00<?, ?B/s]
+Loading model from: /usr/local/lib/python3.12/dist-packages/lpips/weights/v0.1/vgg.pth
+Scene: /kaggle/working/out_armB/ficus
+Method: ours_30000
+ [11/09 20:16:08]
+Computing 3D filter [11/09 20:16:13]
+Computing 3D filter [11/09 20:16:18]
+Computing 3D filter [11/09 20:16:23]
+Computing 3D filter [11/09 20:16:28]
+Computing 3D filter [11/09 20:16:33]
+Computing 3D filter [11/09 20:16:38]
+Computing 3D filter [11/09 20:16:43]
+Computing 3D filter [11/09 20:16:48]
+Computing 3D filter [11/09 20:16:53]
+Computing 3D filter [11/09 20:16:58]
+Computing 3D filter [11/09 20:17:03]
+Computing 3D filter [11/09 20:17:08]
+Computing 3D filter [11/09 20:17:13]
+Computing 3D filter [11/09 20:17:19]
+Computing 3D filter [11/09 20:17:24]
+Computing 3D filter [11/09 20:17:29]
+Computing 3D filter [11/09 20:17:34]
+Computing 3D filter [11/09 20:17:39]
+Computing 3D filter [11/09 20:17:44]
+Computing 3D filter [11/09 20:17:49]
+Computing 3D filter [11/09 20:17:54]
+Computing 3D filter [11/09 20:17:59]
+Computing 3D filter [11/09 20:18:04]
+Computing 3D filter [11/09 20:18:09]
+Computing 3D filter [11/09 20:18:14]
+Computing 3D filter [11/09 20:18:19]
+Computing 3D filter [11/09 20:18:24]
+Computing 3D filter [11/09 20:18:29]
+Computing 3D filter [11/09 20:18:34]
+Computing 3D filter [11/09 20:18:40]
+Computing 3D filter [11/09 20:18:45]
+Computing 3D filter [11/09 20:18:50]
+Computing 3D filter [11/09 20:18:55]
+Computing 3D filter [11/09 20:19:00]
+Computing 3D filter [11/09 20:19:05]
+Computing 3D filter [11/09 20:19:10]
+Computing 3D filter [11/09 20:19:15]
+Computing 3D filter [11/09 20:19:20]
+Computing 3D filter [11/09 20:19:25]
+Computing 3D filter [11/09 20:19:30]
+Computing 3D filter [11/09 20:19:35]
+Computing 3D filter [11/09 20:19:40]
+Computing 3D filter [11/09 20:19:45]
+Computing 3D filter [11/09 20:19:50]
+Computing 3D filter [11/09 20:19:55]
+Computing 3D filter [11/09 20:20:00]
+Computing 3D filter [11/09 20:20:05]
+Computing 3D filter [11/09 20:20:10]
+Computing 3D filter [11/09 20:20:15]
+Computing 3D filter [11/09 20:20:20]
+Computing 3D filter [11/09 20:20:25]
+Computing 3D filter [11/09 20:20:30]
+Computing 3D filter [11/09 20:20:35]
+Computing 3D filter [11/09 20:20:41]
+Computing 3D filter [11/09 20:20:46]
+Computing 3D filter [11/09 20:20:51]
+Computing 3D filter [11/09 20:20:56]
+Computing 3D filter [11/09 20:21:01]
+Computing 3D filter [11/09 20:21:06]
+Computing 3D filter [11/09 20:21:11]
+Computing 3D filter [11/09 20:21:16]
+Computing 3D filter [11/09 20:21:21]
+Computing 3D filter [11/09 20:21:26]
+Computing 3D filter [11/09 20:21:31]
+Computing 3D filter [11/09 20:21:36]
+Computing 3D filter [11/09 20:21:41]
+Computing 3D filter [11/09 20:21:46]
+Computing 3D filter [11/09 20:21:51]
+Computing 3D filter [11/09 20:21:56]
+Computing 3D filter [11/09 20:22:01]
+Computing 3D filter [11/09 20:22:06]
+[ITER 30000] Saving Gaussians [11/09 20:22:16]
+Training complete. [11/09 20:22:20]
++ OMP_NUM_THREADS=4 CUDA_VISIBLE_DEVICES=1 python render.py -m /kaggle/working/out_armB/drums --skip_train    (cwd=/kaggle/working/armB)
+Looking for config file in /kaggle/working/out_armB/drums/cfg_args
+Config file found: /kaggle/working/out_armB/drums/cfg_args
+Rendering /kaggle/working/out_armB/drums
+Loading trained model at iteration 30000 [11/09 20:22:26]
+Found metadata.json file, assuming multi scale Blender data set! [11/09 20:22:26]
+Reading train from metadata.json [11/09 20:22:26]
+read split: train [11/09 20:22:26]
+number of training images: 100 [11/09 20:22:31]
+Reading test from metadata.json [11/09 20:22:31]
+read split: test [11/09 20:22:31]
+number of testing images: 800 [11/09 20:22:46]
+Loading Training Cameras [11/09 20:22:46]
+Loading Test Cameras [11/09 20:22:48]
+Rendering progress:   0%|          | 0/800 [00:00<?, ?it/s]
+  SSIM :    0.9216470
+  PSNR :   26.0577831
+  LPIPS:    0.0541863
+appended 4 rows to /kaggle/working/results/runs.csv
+[B_ficus] done: pooled 26.058 dB, 321864 gaussians, 1200s train, pruned 1588 PNGs, working dir 2139 MB
++ OMP_NUM_THREADS=4 CUDA_VISIBLE_DEVICES=0 python train.py -s /kaggle/working/multi-scale/hotdog -m /kaggle/working/out_armB/hotdog --eval --white_background --iterations 30000 --test_iterations -1 --port 6209  --kernel_size 0.3 --disable_3D_filter --disable_2D_mip_compensation   (cwd=/kaggle/working/armB)
++ OMP_NUM_THREADS=4 CUDA_VISIBLE_DEVICES=1 python metrics.py -m /kaggle/working/out_armB/drums   (cwd=/kaggle/working/armB)
+Optimizing /kaggle/working/out_armB/hotdog
+Output folder: /kaggle/working/out_armB/hotdog [11/09 20:23:19]
+Found metadata.json file, assuming multi scale Blender data set! [11/09 20:23:19]
+Reading train from metadata.json [11/09 20:23:19]
+read split: train [11/09 20:23:19]
+number of training images: 100 [11/09 20:23:24]
+Reading test from metadata.json [11/09 20:23:24]
+read split: test [11/09 20:23:24]
+number of testing images: 800 [11/09 20:23:39]
+Generating random point cloud (100000)... [11/09 20:23:39]
+Loading Training Cameras [11/09 20:23:39]
+Loading Test Cameras [11/09 20:23:41]
+Number of points at initialisation :  100000 [11/09 20:23:46]
+Computing 3D filter [11/09 20:23:47]
+Training progress:   0%|          | 0/30000 [00:00<?, ?it/s]
+/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:208: UserWarning: The parameter 'pretrained' is deprecated since 0.13 and may be removed in the future, please use 'weights' instead.
+  warnings.warn(
+/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:223: UserWarning: Arguments other than a weight enum or `None` for 'weights' are deprecated since 0.13 and may be removed in the future. The current behavior is equivalent to passing `weights=VGG16_Weights.IMAGENET1K_V1`. You can also use `weights=VGG16_Weights.DEFAULT` to get the most up-to-date weights.
+  warnings.warn(msg)
+Setting up [LPIPS] perceptual loss: trunk [vgg], v[0.1], spatial [off]
+Loading model from: /usr/local/lib/python3.12/dist-packages/lpips/weights/v0.1/vgg.pth
+Scene: /kaggle/working/out_armB/drums
+Method: ours_30000
+Metric evaluation progress:   0%|          | 0/800 [00:00<?, ?it/s]
+  SSIM :    0.8504654
+  PSNR :   21.1718254
+  LPIPS:    0.0870811
+appended 4 rows to /kaggle/working/results/runs.csv
+[B_drums] done: pooled 21.172 dB, 400500 gaussians, 1492s train, pruned 1588 PNGs, working dir 2101 MB
++ OMP_NUM_THREADS=4 CUDA_VISIBLE_DEVICES=1 python train.py -s /kaggle/working/multi-scale/lego -m /kaggle/working/out_armB/lego --eval --white_background --iterations 30000 --test_iterations -1 --port 6210  --kernel_size 0.3 --disable_3D_filter --disable_2D_mip_compensation   (cwd=/kaggle/working/armB)
+Optimizing /kaggle/working/out_armB/lego
+Output folder: /kaggle/working/out_armB/lego [11/09 20:25:17]
+Found metadata.json file, assuming multi scale Blender data set! [11/09 20:25:17]
+Reading train from metadata.json [11/09 20:25:17]
+read split: train [11/09 20:25:17]
+number of training images: 100 [11/09 20:25:22]
+Reading test from metadata.json [11/09 20:25:22]
+read split: test [11/09 20:25:22]
+number of testing images: 800 [11/09 20:25:39]
+Generating random point cloud (100000)... [11/09 20:25:39]
+Loading Training Cameras [11/09 20:25:39]
+Loading Test Cameras [11/09 20:25:41]
+Number of points at initialisation :  100000 [11/09 20:25:45]
+Computing 3D filter [11/09 20:25:47]
+Training progress:   0%|          | 0/30000 [00:00<?, ?it/s]
+Training progress:  12%|█▏        | 3690/30000 [02:07<15:55, 27.54it/s, Loss=0.0085528]
+Training progress:  12%|█▏        | 3690/30000 [02:07<17:13, 25.45it/s, Loss=0.0127270]
+Training progress:  22%|██▏       | 6720/30000 [04:09<16:56, 22.89it/s, Loss=0.0069237]
+Training progress:  32%|███▏      | 9510/30000 [06:11<15:40, 21.78it/s, Loss=0.0055760]
+Training progress:  22%|██▏       | 6490/30000 [04:13<18:34, 21.09it/s, Loss=0.0075569]
+Training progress:  41%|████      | 12280/30000 [08:11<13:06, 22.52it/s, Loss=0.0061762]
+Training progress:  29%|██▉       | 8810/30000 [06:14<19:14, 18.35it/s, Loss=0.0058596]
+Training progress:  50%|█████     | 15040/30000 [10:11<10:33, 23.63it/s, Loss=0.0048744]
+Training progress:  37%|███▋      | 11130/30000 [08:18<17:27, 18.02it/s, Loss=0.0051530]
+Training progress:  60%|██████    | 18030/30000 [12:16<08:17, 24.06it/s, Loss=0.0033827]
+Training progress:  45%|████▍     | 13430/30000 [10:26<15:42, 17.59it/s, Loss=0.0048990]
+Training progress:  70%|███████   | 21020/30000 [14:17<06:03, 24.70it/s, Loss=0.0045061]
+Training progress:  52%|█████▏    | 15730/30000 [12:35<13:15, 17.94it/s, Loss=0.0041779]
+Computing 3D filter [11/09 20:24:18]
+Computing 3D filter [11/09 20:24:21]
+Computing 3D filter [11/09 20:24:24]
+Computing 3D filter [11/09 20:24:27]
+Computing 3D filter [11/09 20:24:30]
+Computing 3D filter [11/09 20:24:33]
+Computing 3D filter [11/09 20:24:36]
+Computing 3D filter [11/09 20:24:38]
+Computing 3D filter [11/09 20:24:41]
+Computing 3D filter [11/09 20:24:44]
+Computing 3D filter [11/09 20:24:47]
+Computing 3D filter [11/09 20:24:50]
+Computing 3D filter [11/09 20:24:53]
+Computing 3D filter [11/09 20:24:57]
+Computing 3D filter [11/09 20:25:00]
+Computing 3D filter [11/09 20:25:03]
+Computing 3D filter [11/09 20:25:06]
+Computing 3D filter [11/09 20:25:09]
+Computing 3D filter [11/09 20:25:12]
+Computing 3D filter [11/09 20:25:16]
+Computing 3D filter [11/09 20:25:19]
+Computing 3D filter [11/09 20:25:22]
+Computing 3D filter [11/09 20:25:26]
+Computing 3D filter [11/09 20:25:29]
+Computing 3D filter [11/09 20:25:33]
+Computing 3D filter [11/09 20:25:36]
+Computing 3D filter [11/09 20:25:40]
+Computing 3D filter [11/09 20:25:44]
+Computing 3D filter [11/09 20:25:48]
+Computing 3D filter [11/09 20:25:52]
+Computing 3D filter [11/09 20:25:55]
+Computing 3D filter [11/09 20:25:59]
+Computing 3D filter [11/09 20:26:03]
+Computing 3D filter [11/09 20:26:07]
+Computing 3D filter [11/09 20:26:10]
+Computing 3D filter [11/09 20:26:14]
+Computing 3D filter [11/09 20:26:18]
+Computing 3D filter [11/09 20:26:22]
+Computing 3D filter [11/09 20:26:26]
+Computing 3D filter [11/09 20:26:30]
+Computing 3D filter [11/09 20:26:34]
+Computing 3D filter [11/09 20:26:38]
+Computing 3D filter [11/09 20:26:42]
+Computing 3D filter [11/09 20:26:46]
+Computing 3D filter [11/09 20:26:50]
+Computing 3D filter [11/09 20:26:54]
+Computing 3D filter [11/09 20:26:58]
+Computing 3D filter [11/09 20:27:02]
+Computing 3D filter [11/09 20:27:06]
+Computing 3D filter [11/09 20:27:10]
+Computing 3D filter [11/09 20:27:14]
+Computing 3D filter [11/09 20:27:18]
+Computing 3D filter [11/09 20:27:22]
+Computing 3D filter [11/09 20:27:26]
+Computing 3D filter [11/09 20:27:31]
+Computing 3D filter [11/09 20:27:35]
+Computing 3D filter [11/09 20:27:39]
+Computing 3D filter [11/09 20:27:43]
+Computing 3D filter [11/09 20:27:48]
+Computing 3D filter [11/09 20:27:52]
+Computing 3D filter [11/09 20:27:56]
+Computing 3D filter [11/09 20:28:00]
+Computing 3D filter [11/09 20:28:04]
+[ITER 7000] Saving Gaussians [11/09 20:28:09]
+Computing 3D filter [11/09 20:28:10]
+Computing 3D filter [11/09 20:28:14]
+Computing 3D filter [11/09 20:28:19]
+Computing 3D filter [11/09 20:28:23]
+Computing 3D filter [11/09 20:28:27]
+Computing 3D filter [11/09 20:28:31]
+Computing 3D filter [11/09 20:28:36]
+Computing 3D filter [11/09 20:28:40]
+Computing 3D filter [11/09 20:28:44]
+Computing 3D filter [11/09 20:28:48]
+Computing 3D filter [11/09 20:28:53]
+Computing 3D filter [11/09 20:28:57]
+Computing 3D filter [11/09 20:29:01]
+Computing 3D filter [11/09 20:29:06]
+Computing 3D filter [11/09 20:29:10]
+Computing 3D filter [11/09 20:29:14]
+Computing 3D filter [11/09 20:29:19]
+Computing 3D filter [11/09 20:29:23]
+Computing 3D filter [11/09 20:29:27]
+Computing 3D filter [11/09 20:29:32]
+Computing 3D filter [11/09 20:29:36]
+Computing 3D filter [11/09 20:29:40]
+Computing 3D filter [11/09 20:29:45]
+Computing 3D filter [11/09 20:29:49]
+Computing 3D filter [11/09 20:29:53]
+Computing 3D filter [11/09 20:29:58]
+Computing 3D filter [11/09 20:30:02]
+Computing 3D filter [11/09 20:30:06]
+Computing 3D filter [11/09 20:30:11]
+Computing 3D filter [11/09 20:30:15]
+Computing 3D filter [11/09 20:30:19]
+Computing 3D filter [11/09 20:30:23]
+Computing 3D filter [11/09 20:30:28]
+Computing 3D filter [11/09 20:30:32]
+Computing 3D filter [11/09 20:30:36]
+Computing 3D filter [11/09 20:30:41]
+Computing 3D filter [11/09 20:30:45]
+Computing 3D filter [11/09 20:30:50]
+Computing 3D filter [11/09 20:30:54]
+Computing 3D filter [11/09 20:30:58]
+Computing 3D filter [11/09 20:31:03]
+Computing 3D filter [11/09 20:31:07]
+Computing 3D filter [11/09 20:31:11]
+Computing 3D filter [11/09 20:31:16]
+Computing 3D filter [11/09 20:31:20]
+Computing 3D filter [11/09 20:31:24]
+Computing 3D filter [11/09 20:31:29]
+Computing 3D filter [11/09 20:31:33]
+Computing 3D filter [11/09 20:31:37]
+Computing 3D filter [11/09 20:31:42]
+Computing 3D filter [11/09 20:31:46]
+Computing 3D filter [11/09 20:31:51]
+Computing 3D filter [11/09 20:31:55]
+Computing 3D filter [11/09 20:31:59]
+Computing 3D filter [11/09 20:32:04]
+Computing 3D filter [11/09 20:32:08]
+Computing 3D filter [11/09 20:32:12]
+Computing 3D filter [11/09 20:32:17]
+Computing 3D filter [11/09 20:32:21]
+Computing 3D filter [11/09 20:32:26]
+Computing 3D filter [11/09 20:32:30]
+Computing 3D filter [11/09 20:32:34]
+Computing 3D filter [11/09 20:32:39]
+Computing 3D filter [11/09 20:32:43]
+Computing 3D filter [11/09 20:32:48]
+Computing 3D filter [11/09 20:32:52]
+Computing 3D filter [11/09 20:32:56]
+Computing 3D filter [11/09 20:33:01]
+Computing 3D filter [11/09 20:33:05]
+Computing 3D filter [11/09 20:33:09]
+Computing 3D filter [11/09 20:33:14]
+Computing 3D filter [11/09 20:33:18]
+Computing 3D filter [11/09 20:33:23]
+Computing 3D filter [11/09 20:33:27]
+Computing 3D filter [11/09 20:33:31]
+Computing 3D filter [11/09 20:33:36]
+Computing 3D filter [11/09 20:33:40]
+Computing 3D filter [11/09 20:33:44]
+Computing 3D filter [11/09 20:33:49]
+Computing 3D filter [11/09 20:33:53]
+Computing 3D filter [11/09 20:34:02]
+Computing 3D filter [11/09 20:34:06]
+Computing 3D filter [11/09 20:34:10]
+Computing 3D filter [11/09 20:34:14]
+Computing 3D filter [11/09 20:34:19]
+Computing 3D filter [11/09 20:34:23]
+Computing 3D filter [11/09 20:34:27]
+Computing 3D filter [11/09 20:34:31]
+Computing 3D filter [11/09 20:34:35]
+Computing 3D filter [11/09 20:34:40]
+Computing 3D filter [11/09 20:34:44]
+Computing 3D filter [11/09 20:34:48]
+Computing 3D filter [11/09 20:34:52]
+Computing 3D filter [11/09 20:34:56]
+Computing 3D filter [11/09 20:35:00]
+Computing 3D filter [11/09 20:35:05]
+Computing 3D filter [11/09 20:35:09]
+Computing 3D filter [11/09 20:35:13]
+Computing 3D filter [11/09 20:35:17]
+Computing 3D filter [11/09 20:35:21]
+Computing 3D filter [11/09 20:35:25]
+Computing 3D filter [11/09 20:35:29]
+Computing 3D filter [11/09 20:35:34]
+Computing 3D filter [11/09 20:35:38]
+Computing 3D filter [11/09 20:35:42]
+Computing 3D filter [11/09 20:35:46]
+Computing 3D filter [11/09 20:35:50]
+Computing 3D filter [11/09 20:35:54]
+Computing 3D filter [11/09 20:35:58]
+Computing 3D filter [11/09 20:36:02]
+Computing 3D filter [11/09 20:36:06]
+Computing 3D filter [11/09 20:36:11]
+Computing 3D filter [11/09 20:36:15]
+Computing 3D filter [11/09 20:36:19]
+Computing 3D filter [11/09 20:36:23]
+Computing 3D filter [11/09 20:36:27]
+Computing 3D filter [11/09 20:36:31]
+Computing 3D filter [11/09 20:36:35]
+Computing 3D filter [11/09 20:36:39]
+Computing 3D filter [11/09 20:36:43]
+Computing 3D filter [11/09 20:36:47]
+Computing 3D filter [11/09 20:36:51]
+Computing 3D filter [11/09 20:36:55]
+Computing 3D filter [11/09 20:36:59]
+Computing 3D filter [11/09 20:37:04]
+Computing 3D filter [11/09 20:37:08]
+Computing 3D filter [11/09 20:37:12]
+Computing 3D filter [11/09 20:37:16]
+Computing 3D filter [11/09 20:37:20]
+Computing 3D filter [11/09 20:37:24]
+Computing 3D filter [11/09 20:37:28]
+Computing 3D filter [11/09 20:37:32]
+Computing 3D filter [11/09 20:37:36]
+Computing 3D filter [11/09 20:37:40]
+Computing 3D filter [11/09 20:37:44]
+Computing 3D filter [11/09 20:37:48]
+Computing 3D filter [11/09 20:37:52]
+Computing 3D filter [11/09 20:37:56]
+Computing 3D filter [11/09 20:38:00]
+Computing 3D filter [11/09 20:38:04]
+Computing 3D filter [11/09 20:38:08]
+Computing 3D filter [11/09 20:38:12]
+Computing 3D filter [11/09 20:38:16]
+Computing 3D filter [11/09 20:38:20]
+Computing 3D filter [11/09 20:38:24]
+Computing 3D filter [11/09 20:38:28]
+Computing 3D filter [11/09 20:38:32]
+Computing 3D filter [11/09 20:38:36]
+Computing 3D filter [11/09 20:38:40]
+Computing 3D filter [11/09 20:38:44]
+Computing 3D filter [11/09 20:38:48]
+Computing 3D filter [11/09 20:38:52]
+Computing 3D filter [11/09 20:38:56]
+Computing 3D filter [11/09 20:39:00]
+Computing 3D filter [11/09 20:39:04]
+Computing 3D filter [11/09 20:39:08]
+Computing 3D filter
+Training progress:  81%|████████  | 24240/30000 [16:25<03:51, 24.88it/s, Loss=0.0046108]
+Training progress:  60%|██████    | 18030/30000 [14:41<10:52, 18.33it/s, Loss=0.0041580]
+Training progress:  92%|█████████▏| 27460/30000 [18:32<01:38, 25.84it/s, Loss=0.0039093]
+Training progress:  68%|██████▊   | 20330/30000 [16:46<08:44, 18.44it/s, Loss=0.0041750]
+ [11/09 20:39:12]
+Computing 3D filter [11/09 20:39:16]
+Computing 3D filter [11/09 20:39:20]
+Computing 3D filter [11/09 20:39:24]
+Computing 3D filter [11/09 20:39:28]
+Computing 3D filter [11/09 20:39:32]
+Computing 3D filter [11/09 20:39:36]
+Computing 3D filter [11/09 20:39:40]
+Computing 3D filter [11/09 20:39:44]
+Computing 3D filter [11/09 20:39:48]
+Computing 3D filter [11/09 20:39:52]
+Computing 3D filter [11/09 20:39:56]
+Computing 3D filter [11/09 20:39:59]
+Computing 3D filter [11/09 20:40:03]
+Computing 3D filter [11/09 20:40:07]
+Computing 3D filter [11/09 20:40:11]
+Computing 3D filter [11/09 20:40:15]
+Computing 3D filter [11/09 20:40:19]
+Computing 3D filter [11/09 20:40:23]
+Computing 3D filter [11/09 20:40:27]
+Computing 3D filter [11/09 20:40:31]
+Computing 3D filter [11/09 20:40:35]
+Computing 3D filter [11/09 20:40:39]
+Computing 3D filter [11/09 20:40:43]
+Computing 3D filter [11/09 20:40:47]
+Computing 3D filter [11/09 20:40:51]
+Computing 3D filter [11/09 20:40:55]
+Computing 3D filter [11/09 20:40:59]
+Computing 3D filter [11/09 20:41:03]
+Computing 3D filter [11/09 20:41:07]
+Computing 3D filter [11/09 20:41:11]
+Computing 3D filter [11/09 20:41:15]
+Computing 3D filter [11/09 20:41:18]
+Computing 3D filter [11/09 20:41:22]
+Computing 3D filter [11/09 20:41:26]
+Computing 3D filter [11/09 20:41:30]
+Computing 3D filter [11/09 20:41:34]
+Computing 3D filter [11/09 20:41:38]
+Computing 3D filter [11/09 20:41:42]
+Computing 3D filter [11/09 20:41:46]
+Computing 3D filter [11/09 20:41:50]
+Computing 3D filter [11/09 20:41:54]
+Computing 3D filter [11/09 20:41:58]
+Computing 3D filter [11/09 20:42:02]
+Computing 3D filter [11/09 20:42:06]
+Computing 3D filter [11/09 20:42:10]
+Computing 3D filter [11/09 20:42:13]
+Computing 3D filter [11/09 20:42:17]
+Computing 3D filter [11/09 20:42:21]
+Computing 3D filter [11/09 20:42:25]
+Computing 3D filter [11/09 20:42:29]
+Computing 3D filter [11/09 20:42:33]
+Computing 3D filter [11/09 20:42:37]
+Computing 3D filter [11/09 20:42:41]
+Computing 3D filter [11/09 20:42:45]
+Computing 3D filter [11/09 20:42:49]
+Computing 3D filter [11/09 20:42:53]
+Computing 3D filter [11/09 20:42:56]
+Computing 3D filter [11/09 20:43:00]
+Computing 3D filter [11/09 20:43:04]
+Computing 3D filter [11/09 20:43:08]
+Computing 3D filter [11/09 20:43:12]
+Computing 3D filter [11/09 20:43:16]
+Computing 3D filter [11/09 20:43:20]
+Computing 3D filter [11/09 20:43:24]
+Computing 3D filter [11/09 20:43:28]
+Computing 3D filter [11/09 20:43:32]
+Computing 3D filter [11/09 20:43:36]
+Computing 3D filter [11/09 20:43:39]
+Computing 3D filter [11/09 20:43:43]
+Computing 3D filter [11/09 20:43:47]
+Computing 3D filter [11/09 20:43:51]
+[ITER 30000] Saving Gaussians [11/09 20:43:59]
+Training complete. [11/09 20:44:01]
++ OMP_NUM_THREADS=4 CUDA_VISIBLE_DEVICES=0 python render.py -m /kaggle/working/out_armB/hotdog --skip_train    (cwd=/kaggle/working/armB)
+Computing 3D filter [11/09 20:26:16]
+Computing 3D filter [11/09 20:26:19]
+Computing 3D filter [11/09 20:26:21]
+Computing 3D filter [11/09 20:26:24]
+Computing 3D filter [11/09 20:26:26]
+Computing 3D filter [11/09 20:26:29]
+Computing 3D filter [11/09 20:26:32]
+Computing 3D filter [11/09 20:26:35]
+Computing 3D filter [11/09 20:26:37]
+Computing 3D filter [11/09 20:26:40]
+Computing 3D filter [11/09 20:26:43]
+Computing 3D filter [11/09 20:26:46]
+Computing 3D filter [11/09 20:26:49]
+Computing 3D filter [11/09 20:26:52]
+Computing 3D filter [11/09 20:26:55]
+Computing 3D filter [11/09 20:26:59]
+Computing 3D filter [11/09 20:27:02]
+Computing 3D filter [11/09 20:27:05]
+Computing 3D filter [11/09 20:27:09]
+Computing 3D filter [11/09 20:27:12]
+Computing 3D filter [11/09 20:27:16]
+Computing 3D filter [11/09 20:27:19]
+Computing 3D filter [11/09 20:27:23]
+Computing 3D filter [11/09 20:27:26]
+Computing 3D filter [11/09 20:27:31]
+Computing 3D filter [11/09 20:27:34]
+Computing 3D filter [11/09 20:27:38]
+Computing 3D filter [11/09 20:27:42]
+Computing 3D filter [11/09 20:27:46]
+Computing 3D filter [11/09 20:27:50]
+Computing 3D filter [11/09 20:27:54]
+Computing 3D filter [11/09 20:27:58]
+Computing 3D filter [11/09 20:28:03]
+Computing 3D filter [11/09 20:28:07]
+Computing 3D filter [11/09 20:28:11]
+Computing 3D filter [11/09 20:28:15]
+Computing 3D filter [11/09 20:28:19]
+Computing 3D filter [11/09 20:28:24]
+Computing 3D filter [11/09 20:28:28]
+Computing 3D filter [11/09 20:28:32]
+Computing 3D filter [11/09 20:28:37]
+Computing 3D filter [11/09 20:28:41]
+Computing 3D filter [11/09 20:28:45]
+Computing 3D filter [11/09 20:28:50]
+Computing 3D filter [11/09 20:28:54]
+Computing 3D filter [11/09 20:28:59]
+Computing 3D filter [11/09 20:29:04]
+Computing 3D filter [11/09 20:29:08]
+Computing 3D filter [11/09 20:29:13]
+Computing 3D filter [11/09 20:29:18]
+Computing 3D filter [11/09 20:29:22]
+Computing 3D filter [11/09 20:29:27]
+Computing 3D filter [11/09 20:29:32]
+Computing 3D filter [11/09 20:29:36]
+Computing 3D filter [11/09 20:29:42]
+Computing 3D filter [11/09 20:29:46]
+Computing 3D filter [11/09 20:29:51]
+Computing 3D filter [11/09 20:29:56]
+Computing 3D filter [11/09 20:30:01]
+Computing 3D filter [11/09 20:30:06]
+Computing 3D filter [11/09 20:30:11]
+Computing 3D filter [11/09 20:30:15]
+Computing 3D filter [11/09 20:30:20]
+[ITER 7000] Saving Gaussians [11/09 20:30:25]
+Computing 3D filter [11/09 20:30:28]
+Computing 3D filter [11/09 20:30:33]
+Computing 3D filter [11/09 20:30:38]
+Computing 3D filter [11/09 20:30:43]
+Computing 3D filter [11/09 20:30:48]
+Computing 3D filter [11/09 20:30:53]
+Computing 3D filter [11/09 20:30:58]
+Computing 3D filter [11/09 20:31:03]
+Computing 3D filter [11/09 20:31:09]
+Computing 3D filter [11/09 20:31:14]
+Computing 3D filter [11/09 20:31:19]
+Computing 3D filter [11/09 20:31:24]
+Computing 3D filter [11/09 20:31:29]
+Computing 3D filter [11/09 20:31:34]
+Computing 3D filter [11/09 20:31:39]
+Computing 3D filter [11/09 20:31:45]
+Computing 3D filter [11/09 20:31:50]
+Computing 3D filter [11/09 20:31:55]
+Computing 3D filter [11/09 20:32:00]
+Computing 3D filter [11/09 20:32:05]
+Computing 3D filter [11/09 20:32:11]
+Computing 3D filter [11/09 20:32:16]
+Computing 3D filter [11/09 20:32:21]
+Computing 3D filter [11/09 20:32:27]
+Computing 3D filter [11/09 20:32:32]
+Computing 3D filter [11/09 20:32:37]
+Computing 3D filter [11/09 20:32:43]
+Computing 3D filter [11/09 20:32:48]
+Computing 3D filter [11/09 20:32:53]
+Computing 3D filter [11/09 20:32:58]
+Computing 3D filter [11/09 20:33:04]
+Computing 3D filter [11/09 20:33:09]
+Computing 3D filter [11/09 20:33:14]
+Computing 3D filter [11/09 20:33:20]
+Computing 3D filter [11/09 20:33:25]
+Computing 3D filter [11/09 20:33:31]
+Computing 3D filter [11/09 20:33:36]
+Computing 3D filter [11/09 20:33:41]
+Computing 3D filter [11/09 20:33:47]
+Computing 3D filter [11/09 20:33:52]
+Computing 3D filter [11/09 20:33:58]
+Computing 3D filter [11/09 20:34:03]
+Computing 3D filter [11/09 20:34:09]
+Computing 3D filter [11/09 20:34:14]
+Computing 3D filter [11/09 20:34:20]
+Computing 3D filter [11/09 20:34:25]
+Computing 3D filter [11/09 20:34:31]
+Computing 3D filter [11/09 20:34:36]
+Computing 3D filter [11/09 20:34:42]
+Computing 3D filter [11/09 20:34:47]
+Computing 3D filter [11/09 20:34:53]
+Computing 3D filter [11/09 20:34:59]
+Computing 3D filter [11/09 20:35:04]
+Computing 3D filter [11/09 20:35:10]
+Computing 3D filter [11/09 20:35:15]
+Computing 3D filter [11/09 20:35:21]
+Computing 3D filter [11/09 20:35:27]
+Computing 3D filter [11/09 20:35:32]
+Computing 3D filter [11/09 20:35:38]
+Computing 3D filter [11/09 20:35:43]
+Computing 3D filter [11/09 20:35:49]
+Computing 3D filter [11/09 20:35:55]
+Computing 3D filter [11/09 20:36:00]
+Computing 3D filter [11/09 20:36:06]
+Computing 3D filter [11/09 20:36:11]
+Computing 3D filter [11/09 20:36:17]
+Computing 3D filter [11/09 20:36:22]
+Computing 3D filter [11/09 20:36:28]
+Computing 3D filter [11/09 20:36:34]
+Computing 3D filter [11/09 20:36:39]
+Computing 3D filter [11/09 20:36:45]
+Computing 3D filter [11/09 20:36:51]
+Computing 3D filter [11/09 20:36:56]
+Computing 3D filter [11/09 20:37:02]
+Computing 3D filter [11/09 20:37:07]
+Computing 3D filter [11/09 20:37:13]
+Computing 3D filter [11/09 20:37:19]
+Computing 3D filter [11/09 20:37:24]
+Computing 3D filter [11/09 20:37:30]
+Computing 3D filter [11/09 20:37:36]
+Computing 3D filter [11/09 20:37:47]
+Computing 3D filter [11/09 20:37:52]
+Computing 3D filter [11/09 20:37:58]
+Computing 3D filter [11/09 20:38:04]
+Computing 3D filter [11/09 20:38:09]
+Computing 3D filter [11/09 20:38:15]
+Computing 3D filter [11/09 20:38:20]
+Computing 3D filter [11/09 20:38:26]
+Computing 3D filter [11/09 20:38:31]
+Computing 3D filter [11/09 20:38:37]
+Computing 3D filter [11/09 20:38:42]
+Computing 3D filter [11/09 20:38:48]
+Computing 3D filter [11/09 20:38:53]
+Computing 3D filter [11/09 20:38:59]
+Computing 3D filter [11/09 20:39:04]
+Computing 3D filter [11/09 20:39:10]
+Computing 3D filter [11/09 20:39:15]
+Computing 3D filter [11/09 20:39:21]
+Computing 3D filter [11/09 20:39:26]
+Computing 3D filter [11/09 20:39:32]
+Computing 3D filter [11/09 20:39:37]
+Computing 3D filter [11/09 20:39:43]
+Computing 3D filter [11/09 20:39:48]
+Computing 3D filter [11/09 20:39:54]
+Computing 3D filter [11/09 20:39:59]
+Computing 3D filter [11/09 20:40:05]
+Computing 3D filter [11/09 20:40:10]
+Computing 3D filter [11/09 20:40:16]
+Computing 3D filter [11/09 20:40:21]
+Computing 3D filter [11/09 20:40:26]
+Computing 3D filter [11/09 20:40:32]
+Computing 3D filter [11/09 20:40:37]
+Computing 3D filter [11/09 20:40:43]
+Computing 3D filter [11/09 20:40:48]
+Computing 3D filter [11/09 20:40:54]
+Computing 3D filter [11/09 20:40:59]
+Computing 3D filter [11/09 20:41:05]
+Computing 3D filter [11/09 20:41:10]
+Computing 3D filter [11/09 20:41:15]
+Computing 3D filter [11/09 20:41:21]
+Computing 3D filter [11/09 20:41:26]
+Computing 3D filter [11/09 20:41:32]
+Computing 3D filter [11/09 20:41:37]
+Looking for config file in /kaggle/working/out_armB/hotdog/cfg_args
+Config file found: /kaggle/working/out_armB/hotdog/cfg_args
+Rendering /kaggle/working/out_armB/hotdog
+Loading trained model at iteration 30000 [11/09 20:44:07]
+Found metadata.json file, assuming multi scale Blender data set! [11/09 20:44:07]
+Reading train from metadata.json [11/09 20:44:07]
+read split: train [11/09 20:44:07]
+number of training images: 100 [11/09 20:44:12]
+Reading test from metadata.json [11/09 20:44:12]
+read split: test [11/09 20:44:12]
+number of testing images: 800 [11/09 20:44:26]
+Loading Training Cameras [11/09 20:44:26]
+Loading Test Cameras [11/09 20:44:28]
+Rendering progress:   0%|          | 0/800 [00:00<?, ?it/s]
+Computing 3D filter [11/09 20:41:42]
+Computing 3D filter [11/09 20:41:48]
+Computing 3D filter [11/09 20:41:53]
+Computing 3D filter [11/09 20:41:59]
+Computing 3D filter [11/09 20:42:04]
+Computing 3D filter [11/09 20:42:09]
+Computing 3D filter [11/09 20:42:15]
+Computing 3D filter [11/09 20:42:20]
+Computing 3D filter [11/09 20:42:25]
+Computing 3D filter [11/09 20:42:31]
+Computing 3D filter [11/09 20:42:36]
+Computing 3D filter [11/09 20:42:42]
+Computing 3D filter [11/09 20:42:47]
+Computing 3D filter [11/09 20:42:52]
+Computing 3D filter [11/09 20:42:58]
+Computing 3D filter [11/09 20:43:03]
+Computing 3D filter [11/09 20:43:08]
+Computing 3D filter [11/09 20:43:14]
+Computing 3D filter [11/09 20:43:19]
+Computing 3D filter [11/09 20:43:24]
+Computing 3D filter [11/09 20:43:30]
+Computing 3D filter [11/09 20:43:35]
+Computing 3D filter [11/09 20:43:40]
+Computing 3D filter [11/09 20:43:46]
+Computing 3D filter [11/09 20:43:51]
+Computing 3D filter [11/09 20:43:56]
+Computing 3D filter [11/09 20:44:02]
+Computing 3D filter [11/09 20:44:07]
+Computing 3D filter [11/09 20:44:12]
+Computing 3D filter [11/09 20:44:18]
+Computing 3D filter [11/09 20:44:23]
+Computing 3D filter [11/09 20:44:28]
+Computing 3D filter [11/09 20:44:34]
+Computing 3D filter
+Training progress:  76%|███████▌  | 22700/30000 [18:53<06:21, 19.15it/s, Loss=0.0040426]
++ OMP_NUM_THREADS=4 CUDA_VISIBLE_DEVICES=0 python metrics.py -m /kaggle/working/out_armB/hotdog   (cwd=/kaggle/working/armB)
+/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:208: UserWarning: The parameter 'pretrained' is deprecated since 0.13 and may be removed in the future, please use 'weights' instead.
+  warnings.warn(
+/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:223: UserWarning: Arguments other than a weight enum or `None` for 'weights' are deprecated since 0.13 and may be removed in the future. The current behavior is equivalent to passing `weights=VGG16_Weights.IMAGENET1K_V1`. You can also use `weights=VGG16_Weights.DEFAULT` to get the most up-to-date weights.
+  warnings.warn(msg)
+Setting up [LPIPS] perceptual loss: trunk [vgg], v[0.1], spatial [off]
+Loading model from: /usr/local/lib/python3.12/dist-packages/lpips/weights/v0.1/vgg.pth
+Scene: /kaggle/working/out_armB/hotdog
+Method: ours_30000
+Metric evaluation progress:   0%|          | 0/800 [00:00<?, ?it/s]
+  SSIM :    0.9295444
+  PSNR :   28.7818680
+  LPIPS:    0.0340120
+appended 4 rows to /kaggle/working/results/runs.csv
+[B_hotdog] done: pooled 28.782 dB, 173676 gaussians, 1253s train, pruned 1588 PNGs, working dir 2265 MB
++ OMP_NUM_THREADS=4 CUDA_VISIBLE_DEVICES=0 python train.py -s /kaggle/working/multi-scale/materials -m /kaggle/working/out_armB/materials --eval --white_background --iterations 30000 --test_iterations -1 --port 6209  --kernel_size 0.3 --disable_3D_filter --disable_2D_mip_compensation   (cwd=/kaggle/working/armB)
+Training progress:  83%|████████▎ | 24930/30000 [20:51<04:30, 18.73it/s, Loss=0.0052177]
+Optimizing /kaggle/working/out_armB/materials
+Output folder: /kaggle/working/out_armB/materials [11/09 20:46:51]
+Found metadata.json file, assuming multi scale Blender data set! [11/09 20:46:51]
+Reading train from metadata.json [11/09 20:46:51]
+read split: train [11/09 20:46:51]
+number of training images: 100 [11/09 20:46:56]
+Reading test from metadata.json [11/09 20:46:56]
+read split: test [11/09 20:46:56]
+number of testing images: 800 [11/09 20:47:12]
+Generating random point cloud (100000)... [11/09 20:47:12]
+Loading Training Cameras [11/09 20:47:12]
+Loading Test Cameras [11/09 20:47:14]
+Number of points at initialisation :  100000 [11/09 20:47:18]
+Computing 3D filter [11/09 20:47:20]
+Training progress:   0%|          | 0/30000 [00:00<?, ?it/s]
+Training progress:  91%|█████████ | 27230/30000 [22:52<02:25, 18.98it/s, Loss=0.0039179]
+Training progress:  14%|█▍        | 4160/30000 [02:08<14:51, 28.99it/s, Loss=0.0158499]
+Training progress:  98%|█████████▊| 29540/30000 [24:53<00:24, 18.90it/s, Loss=0.0036849]
+ [11/09 20:44:39]
+Computing 3D filter [11/09 20:44:45]
+Computing 3D filter [11/09 20:44:50]
+Computing 3D filter [11/09 20:44:55]
+Computing 3D filter [11/09 20:45:00]
+Computing 3D filter [11/09 20:45:06]
+Computing 3D filter [11/09 20:45:11]
+Computing 3D filter [11/09 20:45:16]
+Computing 3D filter [11/09 20:45:22]
+Computing 3D filter [11/09 20:45:27]
+Computing 3D filter [11/09 20:45:32]
+Computing 3D filter [11/09 20:45:38]
+Computing 3D filter [11/09 20:45:43]
+Computing 3D filter [11/09 20:45:48]
+Computing 3D filter [11/09 20:45:53]
+Computing 3D filter [11/09 20:45:59]
+Computing 3D filter [11/09 20:46:04]
+Computing 3D filter [11/09 20:46:09]
+Computing 3D filter [11/09 20:46:15]
+Computing 3D filter [11/09 20:46:20]
+Computing 3D filter [11/09 20:46:25]
+Computing 3D filter [11/09 20:46:30]
+Computing 3D filter [11/09 20:46:36]
+Computing 3D filter [11/09 20:46:41]
+Computing 3D filter [11/09 20:46:46]
+Computing 3D filter [11/09 20:46:52]
+Computing 3D filter [11/09 20:46:57]
+Computing 3D filter [11/09 20:47:02]
+Computing 3D filter [11/09 20:47:07]
+Computing 3D filter [11/09 20:47:13]
+Computing 3D filter [11/09 20:47:18]
+Computing 3D filter [11/09 20:47:23]
+Computing 3D filter [11/09 20:47:29]
+Computing 3D filter [11/09 20:47:34]
+Computing 3D filter [11/09 20:47:39]
+Computing 3D filter [11/09 20:47:45]
+Computing 3D filter [11/09 20:47:50]
+Computing 3D filter [11/09 20:47:55]
+Computing 3D filter [11/09 20:48:00]
+Computing 3D filter [11/09 20:48:06]
+Computing 3D filter [11/09 20:48:11]
+Computing 3D filter [11/09 20:48:16]
+Computing 3D filter [11/09 20:48:21]
+Computing 3D filter [11/09 20:48:27]
+Computing 3D filter [11/09 20:48:32]
+Computing 3D filter [11/09 20:48:37]
+Computing 3D filter [11/09 20:48:43]
+Computing 3D filter [11/09 20:48:48]
+Computing 3D filter [11/09 20:48:53]
+Computing 3D filter [11/09 20:48:58]
+Computing 3D filter [11/09 20:49:04]
+Computing 3D filter [11/09 20:49:09]
+Computing 3D filter [11/09 20:49:14]
+Computing 3D filter [11/09 20:49:19]
+Computing 3D filter [11/09 20:49:24]
+Computing 3D filter [11/09 20:49:30]
+Computing 3D filter [11/09 20:49:35]
+Computing 3D filter [11/09 20:49:40]
+Computing 3D filter [11/09 20:49:45]
+Computing 3D filter [11/09 20:49:51]
+Computing 3D filter [11/09 20:49:56]
+Computing 3D filter [11/09 20:50:01]
+Computing 3D filter [11/09 20:50:06]
+Computing 3D filter [11/09 20:50:12]
+Computing 3D filter [11/09 20:50:17]
+Computing 3D filter [11/09 20:50:22]
+Computing 3D filter [11/09 20:50:27]
+Computing 3D filter [11/09 20:50:33]
+Computing 3D filter [11/09 20:50:38]
+Computing 3D filter [11/09 20:50:43]
+Computing 3D filter [11/09 20:50:48]
+Computing 3D filter [11/09 20:50:54]
+[ITER 30000] Saving Gaussians [11/09 20:51:04]
+Training complete. [11/09 20:51:08]
++ OMP_NUM_THREADS=4 CUDA_VISIBLE_DEVICES=1 python render.py -m /kaggle/working/out_armB/lego --skip_train    (cwd=/kaggle/working/armB)
+Training progress:  24%|██▍       | 7180/30000 [04:11<16:14, 23.42it/s, Loss=0.0140407]
+Looking for config file in /kaggle/working/out_armB/lego/cfg_args
+Config file found: /kaggle/working/out_armB/lego/cfg_args
+Rendering /kaggle/working/out_armB/lego
+Loading trained model at iteration 30000 [11/09 20:51:14]
+Found metadata.json file, assuming multi scale Blender data set! [11/09 20:51:14]
+Reading train from metadata.json [11/09 20:51:14]
+read split: train [11/09 20:51:14]
+number of training images: 100 [11/09 20:51:20]
+Reading test from metadata.json [11/09 20:51:20]
+read split: test [11/09 20:51:20]
+number of testing images: 800 [11/09 20:51:37]
+Loading Training Cameras [11/09 20:51:37]
+Loading Test Cameras [11/09 20:51:39]
+Rendering progress:   0%|          | 0/800 [00:00<?, ?it/s]
++ OMP_NUM_THREADS=4 CUDA_VISIBLE_DEVICES=1 python metrics.py -m /kaggle/working/out_armB/lego   (cwd=/kaggle/working/armB)
+/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:208: UserWarning: The parameter 'pretrained' is deprecated since 0.13 and may be removed in the future, please use 'weights' instead.
+  warnings.warn(
+/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:223: UserWarning: Arguments other than a weight enum or `None` for 'weights' are deprecated since 0.13 and may be removed in the future. The current behavior is equivalent to passing `weights=VGG16_Weights.IMAGENET1K_V1`. You can also use `weights=VGG16_Weights.DEFAULT` to get the most up-to-date weights.
+  warnings.warn(msg)
+Setting up [LPIPS] perceptual loss: trunk [vgg], v[0.1], spatial [off]
+Loading model from: /usr/local/lib/python3.12/dist-packages/lpips/weights/v0.1/vgg.pth
+Scene: /kaggle/working/out_armB/lego
+Method: ours_30000
+Metric evaluation progress:   0%|          | 0/800 [00:00<?, ?it/s]
+Training progress:  33%|███▎      | 9980/30000 [06:19<15:35, 21.39it/s, Loss=0.0114700]
+  SSIM :    0.8815382
+  PSNR :   25.4162254
+  LPIPS:    0.0645635
+appended 4 rows to /kaggle/working/results/runs.csv
+[B_lego] done: pooled 25.416 dB, 370017 gaussians, 1563s train, pruned 1588 PNGs, working dir 2421 MB
++ OMP_NUM_THREADS=4 CUDA_VISIBLE_DEVICES=1 python train.py -s /kaggle/working/multi-scale/mic -m /kaggle/working/out_armB/mic --eval --white_background --iterations 30000 --test_iterations -1 --port 6210  --kernel_size 0.3 --disable_3D_filter --disable_2D_mip_compensation   (cwd=/kaggle/working/armB)
+Optimizing /kaggle/working/out_armB/mic
+Output folder: /kaggle/working/out_armB/mic [11/09 20:54:12]
+Found metadata.json file, assuming multi scale Blender data set! [11/09 20:54:12]
+Reading train from metadata.json [11/09 20:54:12]
+read split: train [11/09 20:54:12]
+number of training images: 100 [11/09 20:54:17]
+Reading test from metadata.json [11/09 20:54:17]
+read split: test [11/09 20:54:17]
+number of testing images: 800 [11/09 20:54:32]
+Generating random point cloud (100000)... [11/09 20:54:32]
+Loading Training Cameras [11/09 20:54:33]
+Loading Test Cameras [11/09 20:54:35]
+Number of points at initialisation :  100000 [11/09 20:54:39]
+Computing 3D filter [11/09 20:54:41]
+Training progress:   0%|          | 0/30000 [00:00<?, ?it/s]
+Training progress:  42%|████▏     | 12510/30000 [08:20<14:47, 19.70it/s, Loss=0.0088683]
+Training progress:  15%|█▍        | 4390/30000 [02:07<14:15, 29.93it/s, Loss=0.0077508]
+Training progress:  50%|█████     | 15040/30000 [10:23<11:33, 21.57it/s, Loss=0.0075760]
+Training progress:  25%|██▍       | 7420/30000 [04:08<16:28, 22.84it/s, Loss=0.0059109]
+Training progress:  59%|█████▉    | 17800/30000 [12:29<09:04, 22.39it/s, Loss=0.0086023]
+Training progress:  34%|███▍      | 10210/30000 [06:18<16:52, 19.55it/s, Loss=0.0049530]
+Training progress:  69%|██████▊   | 20560/30000 [14:32<06:55, 22.72it/s, Loss=0.0052167]
+Training progress:  42%|████▏     | 12740/30000 [08:26<14:36, 19.70it/s, Loss=0.0039184]
+Computing 3D filter [11/09 20:47:49]
+Computing 3D filter [11/09 20:47:51]
+Computing 3D filter [11/09 20:47:53]
+Computing 3D filter [11/09 20:47:55]
+Computing 3D filter [11/09 20:47:58]
+Computing 3D filter [11/09 20:48:00]
+Computing 3D filter [11/09 20:48:03]
+Computing 3D filter [11/09 20:48:05]
+Computing 3D filter [11/09 20:48:08]
+Computing 3D filter [11/09 20:48:10]
+Computing 3D filter [11/09 20:48:13]
+Computing 3D filter [11/09 20:48:15]
+Computing 3D filter [11/09 20:48:18]
+Computing 3D filter [11/09 20:48:21]
+Computing 3D filter [11/09 20:48:23]
+Computing 3D filter [11/09 20:48:26]
+Computing 3D filter [11/09 20:48:29]
+Computing 3D filter [11/09 20:48:32]
+Computing 3D filter [11/09 20:48:35]
+Computing 3D filter [11/09 20:48:37]
+Computing 3D filter [11/09 20:48:40]
+Computing 3D filter [11/09 20:48:43]
+Computing 3D filter [11/09 20:48:46]
+Computing 3D filter [11/09 20:48:49]
+Computing 3D filter [11/09 20:48:53]
+Computing 3D filter [11/09 20:48:56]
+Computing 3D filter [11/09 20:48:59]
+Computing 3D filter [11/09 20:49:03]
+Computing 3D filter [11/09 20:49:06]
+Computing 3D filter [11/09 20:49:09]
+Computing 3D filter [11/09 20:49:13]
+Computing 3D filter [11/09 20:49:16]
+Computing 3D filter [11/09 20:49:19]
+Computing 3D filter [11/09 20:49:23]
+Computing 3D filter [11/09 20:49:26]
+Computing 3D filter [11/09 20:49:30]
+Computing 3D filter [11/09 20:49:34]
+Computing 3D filter [11/09 20:49:37]
+Computing 3D filter [11/09 20:49:41]
+Computing 3D filter [11/09 20:49:44]
+Computing 3D filter [11/09 20:49:48]
+Computing 3D filter [11/09 20:49:52]
+Computing 3D filter [11/09 20:49:56]
+Computing 3D filter [11/09 20:49:59]
+Computing 3D filter [11/09 20:50:03]
+Computing 3D filter [11/09 20:50:07]
+Computing 3D filter [11/09 20:50:11]
+Computing 3D filter [11/09 20:50:15]
+Computing 3D filter [11/09 20:50:19]
+Computing 3D filter [11/09 20:50:23]
+Computing 3D filter [11/09 20:50:27]
+Computing 3D filter [11/09 20:50:31]
+Computing 3D filter [11/09 20:50:35]
+Computing 3D filter [11/09 20:50:39]
+Computing 3D filter [11/09 20:50:43]
+Computing 3D filter [11/09 20:50:47]
+Computing 3D filter [11/09 20:50:51]
+Computing 3D filter [11/09 20:50:56]
+Computing 3D filter [11/09 20:51:00]
+Computing 3D filter [11/09 20:51:04]
+Computing 3D filter [11/09 20:51:08]
+Computing 3D filter [11/09 20:51:12]
+Computing 3D filter [11/09 20:51:16]
+[ITER 7000] Saving Gaussians [11/09 20:51:21]
+Computing 3D filter [11/09 20:51:23]
+Computing 3D filter [11/09 20:51:28]
+Computing 3D filter [11/09 20:51:32]
+Computing 3D filter [11/09 20:51:36]
+Computing 3D filter [11/09 20:51:41]
+Computing 3D filter [11/09 20:51:45]
+Computing 3D filter [11/09 20:51:50]
+Computing 3D filter [11/09 20:51:54]
+Computing 3D filter [11/09 20:51:59]
+Computing 3D filter [11/09 20:52:03]
+Computing 3D filter [11/09 20:52:08]
+Computing 3D filter [11/09 20:52:12]
+Computing 3D filter [11/09 20:52:17]
+Computing 3D filter [11/09 20:52:21]
+Computing 3D filter [11/09 20:52:26]
+Computing 3D filter [11/09 20:52:30]
+Computing 3D filter [11/09 20:52:35]
+Computing 3D filter [11/09 20:52:40]
+Computing 3D filter [11/09 20:52:44]
+Computing 3D filter [11/09 20:52:49]
+Computing 3D filter [11/09 20:52:53]
+Computing 3D filter [11/09 20:52:58]
+Computing 3D filter [11/09 20:53:03]
+Computing 3D filter [11/09 20:53:08]
+Computing 3D filter [11/09 20:53:12]
+Computing 3D filter [11/09 20:53:17]
+Computing 3D filter [11/09 20:53:22]
+Computing 3D filter [11/09 20:53:26]
+Computing 3D filter [11/09 20:53:31]
+Computing 3D filter [11/09 20:53:36]
+Computing 3D filter [11/09 20:53:40]
+Computing 3D filter [11/09 20:53:45]
+Computing 3D filter [11/09 20:53:50]
+Computing 3D filter [11/09 20:53:54]
+Computing 3D filter [11/09 20:53:59]
+Computing 3D filter [11/09 20:54:04]
+Computing 3D filter [11/09 20:54:09]
+Computing 3D filter [11/09 20:54:13]
+Computing 3D filter [11/09 20:54:18]
+Computing 3D filter [11/09 20:54:23]
+Computing 3D filter [11/09 20:54:28]
+Computing 3D filter [11/09 20:54:33]
+Computing 3D filter [11/09 20:54:37]
+Computing 3D filter [11/09 20:54:42]
+Computing 3D filter [11/09 20:54:47]
+Computing 3D filter [11/09 20:54:52]
+Computing 3D filter [11/09 20:54:57]
+Computing 3D filter [11/09 20:55:01]
+Computing 3D filter [11/09 20:55:06]
+Computing 3D filter [11/09 20:55:11]
+Computing 3D filter [11/09 20:55:16]
+Computing 3D filter [11/09 20:55:21]
+Computing 3D filter [11/09 20:55:26]
+Computing 3D filter [11/09 20:55:31]
+Computing 3D filter [11/09 20:55:36]
+Computing 3D filter [11/09 20:55:40]
+Computing 3D filter [11/09 20:55:45]
+Computing 3D filter [11/09 20:55:50]
+Computing 3D filter [11/09 20:55:55]
+Computing 3D filter [11/09 20:56:00]
+Computing 3D filter [11/09 20:56:05]
+Computing 3D filter [11/09 20:56:10]
+Computing 3D filter [11/09 20:56:14]
+Computing 3D filter [11/09 20:56:19]
+Computing 3D filter [11/09 20:56:24]
+Computing 3D filter [11/09 20:56:29]
+Computing 3D filter [11/09 20:56:34]
+Computing 3D filter [11/09 20:56:38]
+Computing 3D filter [11/09 20:56:43]
+Computing 3D filter [11/09 20:56:48]
+Computing 3D filter [11/09 20:56:53]
+Computing 3D filter [11/09 20:56:58]
+Computing 3D filter [11/09 20:57:03]
+Computing 3D filter [11/09 20:57:08]
+Computing 3D filter [11/09 20:57:13]
+Computing 3D filter [11/09 20:57:17]
+Computing 3D filter [11/09 20:57:22]
+Computing 3D filter [11/09 20:57:27]
+Computing 3D filter [11/09 20:57:32]
+Computing 3D filter [11/09 20:57:37]
+Computing 3D filter [11/09 20:57:46]
+Computing 3D filter [11/09 20:57:51]
+Computing 3D filter [11/09 20:57:55]
+Computing 3D filter [11/09 20:58:00]
+Computing 3D filter [11/09 20:58:05]
+Computing 3D filter [11/09 20:58:09]
+Computing 3D filter [11/09 20:58:14]
+Computing 3D filter [11/09 20:58:18]
+Computing 3D filter [11/09 20:58:23]
+Computing 3D filter [11/09 20:58:28]
+Computing 3D filter [11/09 20:58:32]
+Computing 3D filter [11/09 20:58:37]
+Computing 3D filter [11/09 20:58:41]
+Computing 3D filter [11/09 20:58:46]
+Computing 3D filter [11/09 20:58:50]
+Computing 3D filter [11/09 20:58:55]
+Computing 3D filter [11/09 20:59:00]
+Computing 3D filter [11/09 20:59:04]
+Computing 3D filter [11/09 20:59:09]
+Computing 3D filter [11/09 20:59:13]
+Computing 3D filter [11/09 20:59:18]
+Computing 3D filter [11/09 20:59:22]
+Computing 3D filter [11/09 20:59:27]
+Computing 3D filter [11/09 20:59:31]
+Computing 3D filter [11/09 20:59:36]
+Computing 3D filter [11/09 20:59:40]
+Computing 3D filter [11/09 20:59:45]
+Computing 3D filter [11/09 20:59:49]
+Computing 3D filter [11/09 20:59:54]
+Computing 3D filter [11/09 20:59:58]
+Computing 3D filter [11/09 21:00:03]
+Computing 3D filter [11/09 21:00:07]
+Computing 3D filter [11/09 21:00:12]
+Computing 3D filter [11/09 21:00:16]
+Computing 3D filter [11/09 21:00:21]
+Computing 3D filter [11/09 21:00:25]
+Computing 3D filter [11/09 21:00:30]
+Computing 3D filter [11/09 21:00:34]
+Computing 3D filter [11/09 21:00:39]
+Computing 3D filter [11/09 21:00:43]
+Computing 3D filter [11/09 21:00:48]
+Computing 3D filter [11/09 21:00:52]
+Computing 3D filter [11/09 21:00:57]
+Computing 3D filter [11/09 21:01:01]
+Computing 3D filter [11/09 21:01:06]
+Computing 3D filter [11/09 21:01:10]
+Computing 3D filter [11/09 21:01:14]
+Computing 3D filter [11/09 21:01:19]
+Computing 3D filter [11/09 21:01:23]
+Computing 3D filter [11/09 21:01:28]
+Computing 3D filter [11/09 21:01:32]
+Computing 3D filter [11/09 21:01:37]
+Computing 3D filter [11/09 21:01:41]
+Computing 3D filter [11/09 21:01:46]
+Computing 3D filter [11/09 21:01:50]
+Computing 3D filter [11/09 21:01:54]
+Computing 3D filter [11/09 21:01:59]
+Computing 3D filter [11/09 21:02:03]
+Computing 3D filter [11/09 21:02:08]
+Computing 3D filter [11/09 21:02:12]
+Computing 3D filter [11/09 21:02:16]
+Computing 3D filter [11/09 21:02:21]
+Computing 3D filter [11/09 21:02:25]
+Computing 3D filter [11/09 21:02:30]
+Computing 3D filter [11/09 21:02:34]
+Computing 3D filter [11/09 21:02:38]
+Computing 3D filter [11/09 21:02:43]
+Computing 3D filter [11/09 21:02:47]
+Computing 3D filter [11/09 21:02:52]
+Computing 3D filter [11/09 21:02:56]
+Computing 3D filter [11/09 21:03:00]
+Computing 3D filter [11/09 21:03:05]
+Computing 3D filter [11/09 21:03:09]
+Computing 3D filter [11/09 21:03:14]
+Computing 3D filter [11/09 21:03:18]
+Computing 3D filter [11/09 21:03:22]
+Computing 3D filter
+Training progress:  78%|███████▊  | 23320/30000 [16:34<04:59, 22.33it/s, Loss=0.0048380]
+Training progress:  51%|█████     | 15270/30000 [10:37<12:31, 19.60it/s, Loss=0.0035479]
+Training progress:  88%|████████▊ | 26310/30000 [18:43<02:44, 22.47it/s, Loss=0.0043617]
+Training progress:  59%|█████▉    | 17800/30000 [12:47<10:08, 20.04it/s, Loss=0.0031987]
+Training progress:  98%|█████████▊| 29300/30000 [20:52<00:29, 23.59it/s, Loss=0.0041425]
+ [11/09 21:03:27]
+Computing 3D filter [11/09 21:03:31]
+Computing 3D filter [11/09 21:03:35]
+Computing 3D filter [11/09 21:03:40]
+Computing 3D filter [11/09 21:03:44]
+Computing 3D filter [11/09 21:03:48]
+Computing 3D filter [11/09 21:03:53]
+Computing 3D filter [11/09 21:03:57]
+Computing 3D filter [11/09 21:04:02]
+Computing 3D filter [11/09 21:04:06]
+Computing 3D filter [11/09 21:04:10]
+Computing 3D filter [11/09 21:04:15]
+Computing 3D filter [11/09 21:04:19]
+Computing 3D filter [11/09 21:04:23]
+Computing 3D filter [11/09 21:04:28]
+Computing 3D filter [11/09 21:04:32]
+Computing 3D filter [11/09 21:04:36]
+Computing 3D filter [11/09 21:04:41]
+Computing 3D filter [11/09 21:04:45]
+Computing 3D filter [11/09 21:04:49]
+Computing 3D filter [11/09 21:04:54]
+Computing 3D filter [11/09 21:04:58]
+Computing 3D filter [11/09 21:05:02]
+Computing 3D filter [11/09 21:05:07]
+Computing 3D filter [11/09 21:05:11]
+Computing 3D filter [11/09 21:05:15]
+Computing 3D filter [11/09 21:05:20]
+Computing 3D filter [11/09 21:05:24]
+Computing 3D filter [11/09 21:05:28]
+Computing 3D filter [11/09 21:05:33]
+Computing 3D filter [11/09 21:05:37]
+Computing 3D filter [11/09 21:05:41]
+Computing 3D filter [11/09 21:05:45]
+Computing 3D filter [11/09 21:05:50]
+Computing 3D filter [11/09 21:05:54]
+Computing 3D filter [11/09 21:05:58]
+Computing 3D filter [11/09 21:06:03]
+Computing 3D filter [11/09 21:06:07]
+Computing 3D filter [11/09 21:06:11]
+Computing 3D filter [11/09 21:06:16]
+Computing 3D filter [11/09 21:06:20]
+Computing 3D filter [11/09 21:06:24]
+Computing 3D filter [11/09 21:06:29]
+Computing 3D filter [11/09 21:06:33]
+Computing 3D filter [11/09 21:06:37]
+Computing 3D filter [11/09 21:06:42]
+Computing 3D filter [11/09 21:06:46]
+Computing 3D filter [11/09 21:06:50]
+Computing 3D filter [11/09 21:06:54]
+Computing 3D filter [11/09 21:06:59]
+Computing 3D filter [11/09 21:07:03]
+Computing 3D filter [11/09 21:07:07]
+Computing 3D filter [11/09 21:07:12]
+Computing 3D filter [11/09 21:07:16]
+Computing 3D filter [11/09 21:07:20]
+Computing 3D filter [11/09 21:07:25]
+Computing 3D filter [11/09 21:07:29]
+Computing 3D filter [11/09 21:07:33]
+Computing 3D filter [11/09 21:07:37]
+Computing 3D filter [11/09 21:07:42]
+Computing 3D filter [11/09 21:07:46]
+Computing 3D filter [11/09 21:07:50]
+Computing 3D filter [11/09 21:07:55]
+Computing 3D filter [11/09 21:07:59]
+Computing 3D filter [11/09 21:08:03]
+Computing 3D filter [11/09 21:08:08]
+Computing 3D filter [11/09 21:08:12]
+Computing 3D filter [11/09 21:08:16]
+Computing 3D filter [11/09 21:08:20]
+Computing 3D filter [11/09 21:08:25]
+Computing 3D filter [11/09 21:08:29]
+Computing 3D filter [11/09 21:08:33]
+[ITER 30000] Saving Gaussians [11/09 21:08:42]
+Training complete. [11/09 21:08:45]
++ OMP_NUM_THREADS=4 CUDA_VISIBLE_DEVICES=0 python render.py -m /kaggle/working/out_armB/materials --skip_train    (cwd=/kaggle/working/armB)
+Looking for config file in /kaggle/working/out_armB/materials/cfg_args
+Config file found: /kaggle/working/out_armB/materials/cfg_args
+Rendering /kaggle/working/out_armB/materials
+Loading trained model at iteration 30000 [11/09 21:08:52]
+Found metadata.json file, assuming multi scale Blender data set! [11/09 21:08:52]
+Reading train from metadata.json [11/09 21:08:52]
+read split: train [11/09 21:08:52]
+number of training images: 100 [11/09 21:08:57]
+Reading test from metadata.json [11/09 21:08:57]
+read split: test [11/09 21:08:57]
+number of testing images: 800 [11/09 21:09:13]
+Loading Training Cameras [11/09 21:09:13]
+Loading Test Cameras [11/09 21:09:14]
+Rendering progress:   0%|          | 0/800 [00:00<?, ?it/s]
+Training progress:  68%|██████▊   | 20330/30000 [14:54<08:10, 19.71it/s, Loss=0.0023589]
++ OMP_NUM_THREADS=4 CUDA_VISIBLE_DEVICES=0 python metrics.py -m /kaggle/working/out_armB/materials   (cwd=/kaggle/working/armB)
+/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:208: UserWarning: The parameter 'pretrained' is deprecated since 0.13 and may be removed in the future, please use 'weights' instead.
+  warnings.warn(
+/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:223: UserWarning: Arguments other than a weight enum or `None` for 'weights' are deprecated since 0.13 and may be removed in the future. The current behavior is equivalent to passing `weights=VGG16_Weights.IMAGENET1K_V1`. You can also use `weights=VGG16_Weights.DEFAULT` to get the most up-to-date weights.
+  warnings.warn(msg)
+Setting up [LPIPS] perceptual loss: trunk [vgg], v[0.1], spatial [off]
+Loading model from: /usr/local/lib/python3.12/dist-packages/lpips/weights/v0.1/vgg.pth
+Scene: /kaggle/working/out_armB/materials
+Method: ours_30000
+Metric evaluation progress:   0%|          | 0/800 [00:00<?, ?it/s]
+Computing 3D filter [11/09 20:55:07]
+Computing 3D filter [11/09 20:55:09]
+Computing 3D filter [11/09 20:55:11]
+Computing 3D filter [11/09 20:55:13]
+Computing 3D filter [11/09 20:55:15]
+Computing 3D filter [11/09 20:55:17]
+Computing 3D filter [11/09 20:55:19]
+Computing 3D filter [11/09 20:55:22]
+Computing 3D filter [11/09 20:55:24]
+Computing 3D filter [11/09 20:55:26]
+Computing 3D filter [11/09 20:55:29]
+Computing 3D filter [11/09 20:55:31]
+Computing 3D filter [11/09 20:55:33]
+Computing 3D filter [11/09 20:55:36]
+Computing 3D filter [11/09 20:55:38]
+Computing 3D filter [11/09 20:55:41]
+Computing 3D filter [11/09 20:55:44]
+Computing 3D filter [11/09 20:55:46]
+Computing 3D filter [11/09 20:55:49]
+Computing 3D filter [11/09 20:55:52]
+Computing 3D filter [11/09 20:55:54]
+Computing 3D filter [11/09 20:55:57]
+Computing 3D filter [11/09 20:56:00]
+Computing 3D filter [11/09 20:56:03]
+Computing 3D filter [11/09 20:56:06]
+Computing 3D filter [11/09 20:56:09]
+Computing 3D filter [11/09 20:56:12]
+Computing 3D filter [11/09 20:56:15]
+Computing 3D filter [11/09 20:56:18]
+Computing 3D filter [11/09 20:56:22]
+Computing 3D filter [11/09 20:56:25]
+Computing 3D filter [11/09 20:56:28]
+Computing 3D filter [11/09 20:56:31]
+Computing 3D filter [11/09 20:56:35]
+Computing 3D filter [11/09 20:56:38]
+Computing 3D filter [11/09 20:56:41]
+Computing 3D filter [11/09 20:56:45]
+Computing 3D filter [11/09 20:56:48]
+Computing 3D filter [11/09 20:56:52]
+Computing 3D filter [11/09 20:56:55]
+Computing 3D filter [11/09 20:56:59]
+Computing 3D filter [11/09 20:57:02]
+Computing 3D filter [11/09 20:57:06]
+Computing 3D filter [11/09 20:57:10]
+Computing 3D filter [11/09 20:57:13]
+Computing 3D filter [11/09 20:57:17]
+Computing 3D filter [11/09 20:57:21]
+Computing 3D filter [11/09 20:57:25]
+Computing 3D filter [11/09 20:57:29]
+Computing 3D filter [11/09 20:57:32]
+Computing 3D filter [11/09 20:57:36]
+Computing 3D filter [11/09 20:57:40]
+Computing 3D filter [11/09 20:57:44]
+Computing 3D filter [11/09 20:57:48]
+Computing 3D filter [11/09 20:57:53]
+Computing 3D filter [11/09 20:57:57]
+Computing 3D filter [11/09 20:58:01]
+Computing 3D filter [11/09 20:58:04]
+Computing 3D filter [11/09 20:58:08]
+Computing 3D filter [11/09 20:58:13]
+Computing 3D filter [11/09 20:58:17]
+Computing 3D filter [11/09 20:58:21]
+Computing 3D filter [11/09 20:58:25]
+[ITER 7000] Saving Gaussians [11/09 20:58:29]
+Computing 3D filter [11/09 20:58:31]
+Computing 3D filter [11/09 20:58:36]
+Computing 3D filter [11/09 20:58:40]
+Computing 3D filter [11/09 20:58:44]
+Computing 3D filter [11/09 20:58:48]
+Computing 3D filter [11/09 20:58:52]
+Computing 3D filter [11/09 20:58:57]
+Computing 3D filter [11/09 20:59:01]
+Computing 3D filter [11/09 20:59:06]
+Computing 3D filter [11/09 20:59:10]
+Computing 3D filter [11/09 20:59:15]
+Computing 3D filter [11/09 20:59:19]
+Computing 3D filter [11/09 20:59:24]
+Computing 3D filter [11/09 20:59:28]
+Computing 3D filter [11/09 20:59:33]
+Computing 3D filter [11/09 20:59:37]
+Computing 3D filter [11/09 20:59:42]
+Computing 3D filter [11/09 20:59:47]
+Computing 3D filter [11/09 20:59:52]
+Computing 3D filter [11/09 20:59:56]
+Computing 3D filter [11/09 21:00:01]
+Computing 3D filter [11/09 21:00:06]
+Computing 3D filter [11/09 21:00:11]
+Computing 3D filter [11/09 21:00:16]
+Computing 3D filter [11/09 21:00:20]
+Computing 3D filter [11/09 21:00:25]
+Computing 3D filter [11/09 21:00:30]
+Computing 3D filter [11/09 21:00:35]
+Computing 3D filter [11/09 21:00:39]
+Computing 3D filter [11/09 21:00:44]
+Computing 3D filter [11/09 21:00:49]
+Computing 3D filter [11/09 21:00:54]
+Computing 3D filter [11/09 21:00:58]
+Computing 3D filter [11/09 21:01:03]
+Computing 3D filter [11/09 21:01:08]
+Computing 3D filter [11/09 21:01:13]
+Computing 3D filter [11/09 21:01:18]
+Computing 3D filter [11/09 21:01:23]
+Computing 3D filter [11/09 21:01:28]
+Computing 3D filter [11/09 21:01:33]
+Computing 3D filter [11/09 21:01:38]
+Computing 3D filter [11/09 21:01:43]
+Computing 3D filter [11/09 21:01:48]
+Computing 3D filter [11/09 21:01:53]
+Computing 3D filter [11/09 21:01:58]
+Computing 3D filter [11/09 21:02:03]
+Computing 3D filter [11/09 21:02:09]
+Computing 3D filter [11/09 21:02:14]
+Computing 3D filter [11/09 21:02:19]
+Computing 3D filter [11/09 21:02:24]
+Computing 3D filter [11/09 21:02:29]
+Computing 3D filter [11/09 21:02:35]
+Computing 3D filter [11/09 21:02:40]
+Computing 3D filter [11/09 21:02:45]
+Computing 3D filter [11/09 21:02:50]
+Computing 3D filter [11/09 21:02:55]
+Computing 3D filter [11/09 21:03:00]
+Computing 3D filter [11/09 21:03:05]
+Computing 3D filter [11/09 21:03:10]
+Computing 3D filter [11/09 21:03:15]
+Computing 3D filter [11/09 21:03:21]
+Computing 3D filter [11/09 21:03:26]
+Computing 3D filter [11/09 21:03:31]
+Computing 3D filter [11/09 21:03:36]
+Computing 3D filter [11/09 21:03:41]
+Computing 3D filter [11/09 21:03:46]
+Computing 3D filter [11/09 21:03:51]
+Computing 3D filter [11/09 21:03:57]
+Computing 3D filter [11/09 21:04:02]
+Computing 3D filter [11/09 21:04:07]
+Computing 3D filter [11/09 21:04:12]
+Computing 3D filter [11/09 21:04:18]
+Computing 3D filter [11/09 21:04:23]
+Computing 3D filter [11/09 21:04:28]
+Computing 3D filter [11/09 21:04:33]
+Computing 3D filter [11/09 21:04:38]
+Computing 3D filter [11/09 21:04:44]
+Computing 3D filter [11/09 21:04:49]
+Computing 3D filter [11/09 21:04:54]
+Computing 3D filter [11/09 21:04:59]
+Computing 3D filter [11/09 21:05:10]
+Computing 3D filter [11/09 21:05:15]
+Computing 3D filter [11/09 21:05:20]
+Computing 3D filter [11/09 21:05:25]
+Computing 3D filter [11/09 21:05:30]
+Computing 3D filter [11/09 21:05:35]
+Computing 3D filter [11/09 21:05:40]
+Computing 3D filter [11/09 21:05:46]
+Computing 3D filter [11/09 21:05:51]
+Computing 3D filter [11/09 21:05:56]
+Computing 3D filter [11/09 21:06:01]
+Computing 3D filter [11/09 21:06:06]
+Computing 3D filter [11/09 21:06:11]
+Computing 3D filter [11/09 21:06:16]
+Computing 3D filter [11/09 21:06:21]
+Computing 3D filter [11/09 21:06:27]
+Computing 3D filter [11/09 21:06:32]
+Computing 3D filter [11/09 21:06:37]
+Computing 3D filter [11/09 21:06:42]
+Computing 3D filter [11/09 21:06:47]
+Computing 3D filter [11/09 21:06:52]
+Computing 3D filter [11/09 21:06:57]
+Computing 3D filter [11/09 21:07:02]
+Computing 3D filter [11/09 21:07:07]
+Computing 3D filter [11/09 21:07:12]
+Computing 3D filter [11/09 21:07:17]
+Computing 3D filter [11/09 21:07:23]
+Computing 3D filter [11/09 21:07:28]
+Computing 3D filter [11/09 21:07:33]
+Computing 3D filter [11/09 21:07:38]
+Computing 3D filter [11/09 21:07:43]
+Computing 3D filter [11/09 21:07:48]
+Computing 3D filter [11/09 21:07:53]
+Computing 3D filter [11/09 21:07:58]
+Computing 3D filter [11/09 21:08:03]
+Computing 3D filter [11/09 21:08:08]
+Computing 3D filter [11/09 21:08:13]
+Computing 3D filter [11/09 21:08:18]
+Computing 3D filter [11/09 21:08:23]
+Computing 3D filter [11/09 21:08:28]
+Computing 3D filter [11/09 21:08:33]
+Computing 3D filter [11/09 21:08:38]
+Computing 3D filter [11/09 21:08:43]
+Computing 3D filter [11/09 21:08:48]
+  SSIM :    0.8811127
+  PSNR :   23.0808392
+  LPIPS:    0.0560152
+appended 4 rows to /kaggle/working/results/runs.csv
+[B_materials] done: pooled 23.081 dB, 324540 gaussians, 1326s train, pruned 1588 PNGs, working dir 2567 MB
++ OMP_NUM_THREADS=4 CUDA_VISIBLE_DEVICES=0 python train.py -s /kaggle/working/multi-scale/chair -m /kaggle/working/out_armB/chair --eval --white_background --iterations 30000 --test_iterations -1 --port 6209  --kernel_size 0.3 --disable_3D_filter --disable_2D_mip_compensation   (cwd=/kaggle/working/armB)
+Computing 3D filter [11/09 21:08:53]
+Computing 3D filter [11/09 21:08:58]
+Computing 3D filter [11/09 21:09:03]
+Computing 3D filter [11/09 21:09:08]
+Computing 3D filter [11/09 21:09:13]
+Computing 3D filter [11/09 21:09:19]
+Computing 3D filter [11/09 21:09:24]
+Computing 3D filter [11/09 21:09:29]
+Computing 3D filter [11/09 21:09:34]
+Computing 3D filter [11/09 21:09:39]
+Computing 3D filter [11/09 21:09:44]
+Computing 3D filter [11/09 21:09:49]
+Computing 3D filter [11/09 21:09:54]
+Computing 3D filter [11/09 21:09:59]
+Computing 3D filter [11/09 21:10:04]
+Computing 3D filter [11/09 21:10:09]
+Computing 3D filter [11/09 21:10:14]
+Computing 3D filter [11/09 21:10:19]
+Computing 3D filter [11/09 21:10:24]
+Computing 3D filter [11/09 21:10:29]
+Computing 3D filter [11/09 21:10:34]
+Computing 3D filter [11/09 21:10:38]
+Computing 3D filter [11/09 21:10:43]
+Computing 3D filter [11/09 21:10:48]
+Computing 3D filter [11/09 21:10:53]
+Computing 3D filter [11/09 21:10:58]
+Computing 3D filter [11/09 21:11:03]
+Computing 3D filter [11/09 21:11:08]
+Computing 3D filter [11/09 21:11:13]
+Computing 3D filter [11/09 21:11:18]
+Computing 3D filter [11/09 21:11:23]
+Computing 3D filter [11/09 21:11:28]
+Computing 3D filter
+Training progress:  76%|███████▌  | 22860/30000 [17:00<05:50, 20.35it/s, Loss=0.0026253]
+Optimizing /kaggle/working/out_armB/chair
+Output folder: /kaggle/working/out_armB/chair [11/09 21:11:43]
+Found metadata.json file, assuming multi scale Blender data set! [11/09 21:11:43]
+Reading train from metadata.json [11/09 21:11:43]
+read split: train [11/09 21:11:43]
+number of training images: 100 [11/09 21:11:48]
+Reading test from metadata.json [11/09 21:11:48]
+read split: test [11/09 21:11:48]
+number of testing images: 800 [11/09 21:12:03]
+Generating random point cloud (100000)... [11/09 21:12:03]
+Loading Training Cameras [11/09 21:12:03]
+Loading Test Cameras [11/09 21:12:05]
+Number of points at initialisation :  100000 [11/09 21:12:09]
+Computing 3D filter [11/09 21:12:11]
+Training progress:   0%|          | 0/30000 [00:00<?, ?it/s]
+Training progress:  85%|████████▍ | 25390/30000 [19:04<03:41, 20.79it/s, Loss=0.0022995]
+Training progress:  14%|█▍        | 4160/30000 [02:07<15:24, 27.94it/s, Loss=0.0112472]
+Training progress:  93%|█████████▎| 27920/30000 [21:07<01:42, 20.26it/s, Loss=0.0022783]
+Training progress:  23%|██▎       | 6950/30000 [04:03<16:56, 22.67it/s, Loss=0.0050054]
+ [11/09 21:11:33]
+Computing 3D filter [11/09 21:11:38]
+Computing 3D filter [11/09 21:11:43]
+Computing 3D filter [11/09 21:11:48]
+Computing 3D filter [11/09 21:11:53]
+Computing 3D filter [11/09 21:11:57]
+Computing 3D filter [11/09 21:12:02]
+Computing 3D filter [11/09 21:12:07]
+Computing 3D filter [11/09 21:12:12]
+Computing 3D filter [11/09 21:12:17]
+Computing 3D filter [11/09 21:12:22]
+Computing 3D filter [11/09 21:12:27]
+Computing 3D filter [11/09 21:12:32]
+Computing 3D filter [11/09 21:12:37]
+Computing 3D filter [11/09 21:12:42]
+Computing 3D filter [11/09 21:12:47]
+Computing 3D filter [11/09 21:12:52]
+Computing 3D filter [11/09 21:12:56]
+Computing 3D filter [11/09 21:13:01]
+Computing 3D filter [11/09 21:13:06]
+Computing 3D filter [11/09 21:13:11]
+Computing 3D filter [11/09 21:13:16]
+Computing 3D filter [11/09 21:13:21]
+Computing 3D filter [11/09 21:13:26]
+Computing 3D filter [11/09 21:13:31]
+Computing 3D filter [11/09 21:13:36]
+Computing 3D filter [11/09 21:13:41]
+Computing 3D filter [11/09 21:13:46]
+Computing 3D filter [11/09 21:13:50]
+Computing 3D filter [11/09 21:13:55]
+Computing 3D filter [11/09 21:14:00]
+Computing 3D filter [11/09 21:14:05]
+Computing 3D filter [11/09 21:14:10]
+Computing 3D filter [11/09 21:14:15]
+Computing 3D filter [11/09 21:14:20]
+Computing 3D filter [11/09 21:14:25]
+Computing 3D filter [11/09 21:14:29]
+Computing 3D filter [11/09 21:14:34]
+Computing 3D filter [11/09 21:14:39]
+Computing 3D filter [11/09 21:14:44]
+Computing 3D filter [11/09 21:14:49]
+Computing 3D filter [11/09 21:14:54]
+Computing 3D filter [11/09 21:14:59]
+Computing 3D filter [11/09 21:15:03]
+Computing 3D filter [11/09 21:15:08]
+Computing 3D filter [11/09 21:15:13]
+Computing 3D filter [11/09 21:15:18]
+Computing 3D filter [11/09 21:15:23]
+Computing 3D filter [11/09 21:15:28]
+Computing 3D filter [11/09 21:15:33]
+Computing 3D filter [11/09 21:15:37]
+Computing 3D filter [11/09 21:15:42]
+Computing 3D filter [11/09 21:15:47]
+Computing 3D filter [11/09 21:15:52]
+Computing 3D filter [11/09 21:15:57]
+Computing 3D filter [11/09 21:16:02]
+Computing 3D filter [11/09 21:16:06]
+Computing 3D filter [11/09 21:16:11]
+Computing 3D filter [11/09 21:16:16]
+Computing 3D filter [11/09 21:16:21]
+Computing 3D filter [11/09 21:16:26]
+Computing 3D filter [11/09 21:16:31]
+Computing 3D filter [11/09 21:16:35]
+Computing 3D filter [11/09 21:16:40]
+Computing 3D filter [11/09 21:16:45]
+Computing 3D filter [11/09 21:16:50]
+Computing 3D filter [11/09 21:16:55]
+Computing 3D filter [11/09 21:17:00]
+Computing 3D filter [11/09 21:17:04]
+Computing 3D filter [11/09 21:17:09]
+Computing 3D filter [11/09 21:17:14]
+Computing 3D filter [11/09 21:17:19]
+[ITER 30000] Saving Gaussians [11/09 21:17:28]
+Training complete. [11/09 21:17:32]
++ OMP_NUM_THREADS=4 CUDA_VISIBLE_DEVICES=1 python render.py -m /kaggle/working/out_armB/mic --skip_train    (cwd=/kaggle/working/armB)
+Looking for config file in /kaggle/working/out_armB/mic/cfg_args
+Config file found: /kaggle/working/out_armB/mic/cfg_args
+Rendering /kaggle/working/out_armB/mic
+Loading trained model at iteration 30000 [11/09 21:17:38]
+Found metadata.json file, assuming multi scale Blender data set! [11/09 21:17:38]
+Reading train from metadata.json [11/09 21:17:38]
+read split: train [11/09 21:17:38]
+number of training images: 100 [11/09 21:17:43]
+Reading test from metadata.json [11/09 21:17:43]
+read split: test [11/09 21:17:43]
+number of testing images: 800 [11/09 21:17:58]
+Loading Training Cameras [11/09 21:17:58]
+Loading Test Cameras [11/09 21:18:00]
+Rendering progress:   0%|          | 0/800 [00:00<?, ?it/s]
+Training progress:  32%|███▏      | 9510/30000 [06:07<16:45, 20.37it/s, Loss=0.0047879]
++ OMP_NUM_THREADS=4 CUDA_VISIBLE_DEVICES=1 python metrics.py -m /kaggle/working/out_armB/mic   (cwd=/kaggle/working/armB)
+/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:208: UserWarning: The parameter 'pretrained' is deprecated since 0.13 and may be removed in the future, please use 'weights' instead.
+  warnings.warn(
+/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:223: UserWarning: Arguments other than a weight enum or `None` for 'weights' are deprecated since 0.13 and may be removed in the future. The current behavior is equivalent to passing `weights=VGG16_Weights.IMAGENET1K_V1`. You can also use `weights=VGG16_Weights.DEFAULT` to get the most up-to-date weights.
+  warnings.warn(msg)
+Setting up [LPIPS] perceptual loss: trunk [vgg], v[0.1], spatial [off]
+Loading model from: /usr/local/lib/python3.12/dist-packages/lpips/weights/v0.1/vgg.pth
+Scene: /kaggle/working/out_armB/mic
+Method: ours_30000
+Metric evaluation progress:   0%|          | 0/800 [00:00<?, ?it/s]
+  SSIM :    0.9093884
+  PSNR :   24.3817596
+  LPIPS:    0.0460464
+appended 4 rows to /kaggle/working/results/runs.csv
+[B_mic] done: pooled 24.382 dB, 345886 gaussians, 1411s train, pruned 1588 PNGs, working dir 2724 MB
+Training progress:  40%|████      | 12050/30000 [08:08<15:26, 19.37it/s, Loss=0.0079918]
+Training progress:  49%|████▊     | 14580/30000 [10:09<12:12, 21.05it/s, Loss=0.0052605]
+Training progress:  58%|█████▊    | 17340/30000 [12:19<09:49, 21.49it/s, Loss=0.0048113]
+Training progress:  67%|██████▋   | 20100/30000 [14:25<07:21, 22.43it/s, Loss=0.0035475]
+Computing 3D filter [11/09 21:12:38]
+Computing 3D filter [11/09 21:12:41]
+Computing 3D filter [11/09 21:12:43]
+Computing 3D filter [11/09 21:12:45]
+Computing 3D filter [11/09 21:12:48]
+Computing 3D filter [11/09 21:12:50]
+Computing 3D filter [11/09 21:12:52]
+Computing 3D filter [11/09 21:12:55]
+Computing 3D filter [11/09 21:12:57]
+Computing 3D filter [11/09 21:13:00]
+Computing 3D filter [11/09 21:13:02]
+Computing 3D filter [11/09 21:13:05]
+Computing 3D filter [11/09 21:13:07]
+Computing 3D filter [11/09 21:13:10]
+Computing 3D filter [11/09 21:13:13]
+Computing 3D filter [11/09 21:13:15]
+Computing 3D filter [11/09 21:13:18]
+Computing 3D filter [11/09 21:13:21]
+Computing 3D filter [11/09 21:13:24]
+Computing 3D filter [11/09 21:13:27]
+Computing 3D filter [11/09 21:13:30]
+Computing 3D filter [11/09 21:13:33]
+Computing 3D filter [11/09 21:13:36]
+Computing 3D filter [11/09 21:13:39]
+Computing 3D filter [11/09 21:13:42]
+Computing 3D filter [11/09 21:13:46]
+Computing 3D filter [11/09 21:13:49]
+Computing 3D filter [11/09 21:13:52]
+Computing 3D filter [11/09 21:13:55]
+Computing 3D filter [11/09 21:13:59]
+Computing 3D filter [11/09 21:14:02]
+Computing 3D filter [11/09 21:14:06]
+Computing 3D filter [11/09 21:14:09]
+Computing 3D filter [11/09 21:14:13]
+Computing 3D filter [11/09 21:14:16]
+Computing 3D filter [11/09 21:14:20]
+Computing 3D filter [11/09 21:14:24]
+Computing 3D filter [11/09 21:14:27]
+Computing 3D filter [11/09 21:14:31]
+Computing 3D filter [11/09 21:14:35]
+Computing 3D filter [11/09 21:14:39]
+Computing 3D filter [11/09 21:14:43]
+Computing 3D filter [11/09 21:14:47]
+Computing 3D filter [11/09 21:14:51]
+Computing 3D filter [11/09 21:14:55]
+Computing 3D filter [11/09 21:14:59]
+Computing 3D filter [11/09 21:15:03]
+Computing 3D filter [11/09 21:15:07]
+Computing 3D filter [11/09 21:15:11]
+Computing 3D filter [11/09 21:15:16]
+Computing 3D filter [11/09 21:15:20]
+Computing 3D filter [11/09 21:15:24]
+Computing 3D filter [11/09 21:15:29]
+Computing 3D filter [11/09 21:15:33]
+Computing 3D filter [11/09 21:15:38]
+Computing 3D filter [11/09 21:15:42]
+Computing 3D filter [11/09 21:15:46]
+Computing 3D filter [11/09 21:15:50]
+Computing 3D filter [11/09 21:15:55]
+Computing 3D filter [11/09 21:15:59]
+Computing 3D filter [11/09 21:16:03]
+Computing 3D filter [11/09 21:16:07]
+Computing 3D filter [11/09 21:16:12]
+[ITER 7000] Saving Gaussians [11/09 21:16:16]
+Computing 3D filter [11/09 21:16:19]
+Computing 3D filter [11/09 21:16:23]
+Computing 3D filter [11/09 21:16:28]
+Computing 3D filter [11/09 21:16:32]
+Computing 3D filter [11/09 21:16:37]
+Computing 3D filter [11/09 21:16:42]
+Computing 3D filter [11/09 21:16:46]
+Computing 3D filter [11/09 21:16:51]
+Computing 3D filter [11/09 21:16:55]
+Computing 3D filter [11/09 21:17:00]
+Computing 3D filter [11/09 21:17:05]
+Computing 3D filter [11/09 21:17:10]
+Computing 3D filter [11/09 21:17:14]
+Computing 3D filter [11/09 21:17:19]
+Computing 3D filter [11/09 21:17:24]
+Computing 3D filter [11/09 21:17:29]
+Computing 3D filter [11/09 21:17:34]
+Computing 3D filter [11/09 21:17:39]
+Computing 3D filter [11/09 21:17:44]
+Computing 3D filter [11/09 21:17:48]
+Computing 3D filter [11/09 21:17:54]
+Computing 3D filter [11/09 21:17:59]
+Computing 3D filter [11/09 21:18:03]
+Computing 3D filter [11/09 21:18:08]
+Computing 3D filter [11/09 21:18:13]
+Computing 3D filter [11/09 21:18:17]
+Computing 3D filter [11/09 21:18:22]
+Computing 3D filter [11/09 21:18:27]
+Computing 3D filter [11/09 21:18:31]
+Computing 3D filter [11/09 21:18:36]
+Computing 3D filter [11/09 21:18:41]
+Computing 3D filter [11/09 21:18:45]
+Computing 3D filter [11/09 21:18:50]
+Computing 3D filter [11/09 21:18:55]
+Computing 3D filter [11/09 21:19:00]
+Computing 3D filter [11/09 21:19:04]
+Computing 3D filter [11/09 21:19:09]
+Computing 3D filter [11/09 21:19:14]
+Computing 3D filter [11/09 21:19:19]
+Computing 3D filter [11/09 21:19:24]
+Computing 3D filter [11/09 21:19:28]
+Computing 3D filter [11/09 21:19:33]
+Computing 3D filter [11/09 21:19:38]
+Computing 3D filter [11/09 21:19:43]
+Computing 3D filter [11/09 21:19:48]
+Computing 3D filter [11/09 21:19:53]
+Computing 3D filter [11/09 21:19:58]
+Computing 3D filter [11/09 21:20:03]
+Computing 3D filter [11/09 21:20:08]
+Computing 3D filter [11/09 21:20:12]
+Computing 3D filter [11/09 21:20:17]
+Computing 3D filter [11/09 21:20:22]
+Computing 3D filter [11/09 21:20:27]
+Computing 3D filter [11/09 21:20:32]
+Computing 3D filter [11/09 21:20:37]
+Computing 3D filter [11/09 21:20:41]
+Computing 3D filter [11/09 21:20:46]
+Computing 3D filter [11/09 21:20:51]
+Computing 3D filter [11/09 21:20:55]
+Computing 3D filter [11/09 21:21:00]
+Computing 3D filter [11/09 21:21:05]
+Computing 3D filter [11/09 21:21:10]
+Computing 3D filter [11/09 21:21:14]
+Computing 3D filter [11/09 21:21:19]
+Computing 3D filter [11/09 21:21:24]
+Computing 3D filter [11/09 21:21:29]
+Computing 3D filter [11/09 21:21:33]
+Computing 3D filter [11/09 21:21:38]
+Computing 3D filter [11/09 21:21:43]
+Computing 3D filter [11/09 21:21:48]
+Computing 3D filter [11/09 21:21:52]
+Computing 3D filter [11/09 21:21:57]
+Computing 3D filter [11/09 21:22:02]
+Computing 3D filter [11/09 21:22:07]
+Computing 3D filter [11/09 21:22:12]
+Computing 3D filter [11/09 21:22:16]
+Computing 3D filter [11/09 21:22:21]
+Computing 3D filter [11/09 21:22:26]
+Computing 3D filter [11/09 21:22:31]
+Computing 3D filter [11/09 21:22:36]
+Computing 3D filter [11/09 21:22:45]
+Computing 3D filter [11/09 21:22:50]
+Computing 3D filter [11/09 21:22:55]
+Computing 3D filter [11/09 21:22:59]
+Computing 3D filter [11/09 21:23:04]
+Computing 3D filter [11/09 21:23:09]
+Computing 3D filter [11/09 21:23:13]
+Computing 3D filter [11/09 21:23:18]
+Computing 3D filter [11/09 21:23:23]
+Computing 3D filter [11/09 21:23:28]
+Computing 3D filter [11/09 21:23:32]
+Computing 3D filter [11/09 21:23:37]
+Computing 3D filter [11/09 21:23:42]
+Computing 3D filter [11/09 21:23:46]
+Computing 3D filter [11/09 21:23:51]
+Computing 3D filter [11/09 21:23:56]
+Computing 3D filter [11/09 21:24:00]
+Computing 3D filter [11/09 21:24:05]
+Computing 3D filter [11/09 21:24:09]
+Computing 3D filter [11/09 21:24:14]
+Computing 3D filter [11/09 21:24:19]
+Computing 3D filter [11/09 21:24:23]
+Computing 3D filter [11/09 21:24:28]
+Computing 3D filter [11/09 21:24:33]
+Computing 3D filter [11/09 21:24:37]
+Computing 3D filter [11/09 21:24:42]
+Computing 3D filter [11/09 21:24:46]
+Computing 3D filter [11/09 21:24:51]
+Computing 3D filter [11/09 21:24:56]
+Computing 3D filter [11/09 21:25:00]
+Computing 3D filter [11/09 21:25:05]
+Computing 3D filter [11/09 21:25:09]
+Computing 3D filter [11/09 21:25:14]
+Computing 3D filter [11/09 21:25:19]
+Computing 3D filter [11/09 21:25:23]
+Computing 3D filter [11/09 21:25:28]
+Computing 3D filter [11/09 21:25:32]
+Computing 3D filter [11/09 21:25:37]
+Computing 3D filter [11/09 21:25:42]
+Computing 3D filter [11/09 21:25:46]
+Computing 3D filter [11/09 21:25:51]
+Computing 3D filter [11/09 21:25:55]
+Computing 3D filter [11/09 21:26:00]
+Computing 3D filter [11/09 21:26:04]
+Computing 3D filter [11/09 21:26:09]
+Computing 3D filter [11/09 21:26:13]
+Computing 3D filter [11/09 21:26:18]
+Computing 3D filter [11/09 21:26:22]
+Computing 3D filter [11/09 21:26:27]
+Computing 3D filter [11/09 21:26:32]
+Computing 3D filter [11/09 21:26:36]
+Computing 3D filter [11/09 21:26:41]
+Computing 3D filter [11/09 21:26:45]
+Computing 3D filter [11/09 21:26:50]
+Computing 3D filter [11/09 21:26:54]
+Computing 3D filter [11/09 21:26:59]
+Computing 3D filter [11/09 21:27:03]
+Computing 3D filter [11/09 21:27:08]
+Computing 3D filter [11/09 21:27:12]
+Computing 3D filter [11/09 21:27:17]
+Computing 3D filter [11/09 21:27:21]
+Computing 3D filter [11/09 21:27:26]
+Computing 3D filter [11/09 21:27:30]
+Computing 3D filter [11/09 21:27:35]
+Computing 3D filter [11/09 21:27:39]
+Computing 3D filter [11/09 21:27:44]
+Computing 3D filter [11/09 21:27:48]
+Computing 3D filter [11/09 21:27:53]
+Computing 3D filter [11/09 21:27:57]
+Computing 3D filter [11/09 21:28:02]
+Computing 3D filter [11/09 21:28:06]
+Computing 3D filter [11/09 21:28:11]
+Computing 3D filter [11/09 21:28:15]
+Computing 3D filter [11/09 21:28:19]
+Computing 3D filter [11/09 21:28:24]
+Computing 3D filter [11/09 21:28:28]
+Computing 3D filter
+Training progress:  76%|███████▌  | 22860/30000 [16:29<05:14, 22.73it/s, Loss=0.0032013]
+Computing 3D filter [11/09 21:28:37]
+Computing 3D filter [11/09 21:28:42]
+Computing 3D filter [11/09 21:28:46]
+Computing 3D filter [11/09 21:28:51]
+Computing 3D filter [11/09 21:28:55]
+Computing 3D filter [11/09 21:29:00]
+Computing 3D filter [11/09 21:29:04]
+Computing 3D filter [11/09 21:29:08]
+Computing 3D filter [11/09 21:29:13]
+Computing 3D filter [11/09 21:29:17]
+Computing 3D filter [11/09 21:29:22]
+Computing 3D filter [11/09 21:29:26]
+Computing 3D filter [11/09 21:29:31]
+Traceback (most recent call last):
+  File "/kaggle/working/armB/train.py", line 270, in <module>
+Traceback (most recent call last):
+    training(lp.extract(args), op.extract(args), pp.extract(args), args.test_iterations, args.save_iterations, args.checkpoint_iterations, args.start_checkpoint, args.debug_from)
+  File "/kaggle/working/armB/train.py", line 137, in training
+    loss = (1.0 - opt.lambda_dssim) * Ll1 + opt.lambda_dssim * (1.0 - ssim(image, gt_image))
+                                                                      ^^^^^^^^^^^^^^^^^^^^^
+  File "/kaggle/working/armB/utils/loss_utils.py", line 38, in ssim
+    window = window.cuda(img1.get_device())
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+torch.AcceleratorError: CUDA error: an illegal memory access was encountered
+Search for `cudaErrorIllegalAddress' in https://docs.nvidia.com/cuda/cuda-runtime-api/group__CUDART__TYPES.html for more information.
+CUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.
+For debugging consider passing CUDA_LAUNCH_BLOCKING=1
+Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.
+  File "/kaggle/src/script.py", line 385, in worker
+    done[key] = run_one(gpu, arm, scene, seed)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/kaggle/src/script.py", line 215, in run_one
+    kc.sh(f"{env} python {entry} -s {src} -m {out} --eval "
+  File "/kaggle/working/armA/tools/kernel_common.py", line 77, in sh
+    raise RuntimeError(f"command failed ({rc}): {cmd}\n--- tail ---\n{out[-3000:]}")
+RuntimeError: command failed (1): OMP_NUM_THREADS=4 CUDA_VISIBLE_DEVICES=0 python train.py -s /kaggle/working/multi-scale/chair -m /kaggle/working/out_armB/chair --eval --white_background --iterations 30000 --test_iterations -1 --port 6209  --kernel_size 0.3 --disable_3D_filter --disable_2D_mip_compensation
+--- tail ---
+4:28, 22.29it/s, Loss=0.0031324]
+Training progress:  80%|████████  | 24020/30000 [17:20<04:28, 22.29it/s, Loss=0.0024730]
+Training progress:  80%|████████  | 24030/30000 [17:20<04:24, 22.61it/s, Loss=0.0024730]
+Training progress:  80%|████████  | 24030/30000 [17:21<04:24, 22.61it/s, Loss=0.0031423]
+Training progress:  80%|████████  | 24040/30000 [17:21<04:22, 22.73it/s, Loss=0.0031423]
+Training progress:  80%|████████  | 24040/30000 [17:21<04:22, 22.73it/s, Loss=0.0046587]
+Training progress:  80%|████████  | 24050/30000 [17:21<04:21, 22.73it/s, Loss=0.0046587]
+Training progress:  80%|████████  | 24050/30000 [17:22<04:21, 22.73it/s, Loss=0.0032251]
+Training progress:  80%|████████  | 24060/30000 [17:22<04:22, 22.65it/s, Loss=0.0032251]
+Training progress:  80%|████████  | 24060/30000 [17:22<04:22, 22.65it/s, Loss=0.0040232]
+Training progress:  80%|████████  | 24070/30000 [17:22<04:22, 22.60it/s, Loss=0.0040232]
+Training progress:  80%|████████  | 24070/30000 [17:23<04:22, 22.60it/s, Loss=0.0042834]
+Training progress:  80%|████████  | 24080/30000 [17:23<04:21, 22.62it/s, Loss=0.0042834]
+Training progress:  80%|████████  | 24080/30000 [17:23<04:21, 22.62it/s, Loss=0.0038439]
+Training progress:  80%|████████  | 24090/30000 [17:23<04:18, 22.83it/s, Loss=0.0038439] [11/09 21:28:33]
+Computing 3D filter [11/09 21:28:37]
+Computing 3D filter [11/09 21:28:42]
+Computing 3D filter [11/09 21:28:46]
+Computing 3D filter [11/09 21:28:51]
+Computing 3D filter [11/09 21:28:55]
+Computing 3D filter [11/09 21:29:00]
+Computing 3D filter [11/09 21:29:04]
+Computing 3D filter [11/09 21:29:08]
+Computing 3D filter [11/09 21:29:13]
+Computing 3D filter [11/09 21:29:17]
+Computing 3D filter [11/09 21:29:22]
+Computing 3D filter [11/09 21:29:26]
+Computing 3D filter [11/09 21:29:31]
+Traceback (most recent call last):
+  File "/kaggle/working/armB/train.py", line 270, in <module>
+    training(lp.extract(args), op.extract(args), pp.extract(args), args.test_iterations, args.save_iterations, args.checkpoint_iterations, args.start_checkpoint, args.debug_from)
+  File "/kaggle/working/armB/train.py", line 137, in training
+    loss = (1.0 - opt.lambda_dssim) * Ll1 + opt.lambda_dssim * (1.0 - ssim(image, gt_image))
+                                                                      ^^^^^^^^^^^^^^^^^^^^^
+  File "/kaggle/working/armB/utils/loss_utils.py", line 38, in ssim
+    window = window.cuda(img1.get_device())
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+torch.AcceleratorError: CUDA error: an illegal memory access was encountered
+Search for `cudaErrorIllegalAddress' in https://docs.nvidia.com/cuda/cuda-runtime-api/group__CUDART__TYPES.html for more information.
+CUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.
+For debugging consider passing CUDA_LAUNCH_BLOCKING=1
+Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.
+
+
+Training progress:  80%|████████  | 24090/30000 [17:24<04:16, 23.07it/s, Loss=0.0038439]
+
+working dir after prune: 944 MB
+completed 6/16 jobs; failed: ['B/ship', 'B/chair']
+R1_SUMMARY_JSON={"rung": "C2", "protocol": "STMT", "load_allres": false, "seeds": [0], "scenes": ["ship", "drums", "ficus", "hotdog", "lego", "materials", "mic", "chair"], "iterations": 30000, "gpu": "Tesla T4", "n_gpu": 2, "torch": "2.10.0+cu128", "cuda": "12.8", "open3d": true, "armA_commit": "a77201ee6c60a7fa4d8442e92112bc115538a373", "armB_commit": "de7cb44c168b1cc901d7b7974153604bda1007bd", "convert_seconds": 755.4539971351624, "done": {"B/ficus": {"split": {"1x": {"PSNR": 34.86782477378845, "SSIM": 0.9872244024276733, "LPIPS": 0.011625052834860981, "n": 200}, "1/2": {"PSNR": 28.008348417282104, "SSIM": 0.9691253641247749, "LPIPS": 0.022588914530351757, "n": 200}, "1/4": {"PSNR": 22.12799201011658, "SSIM": 0.9048623245954514, "LPIPS": 0.06716549288481474, "n": 200}, "1/8": {"PSNR": 19.226967401504517, "SSIM": 0.82537557721138, "LPIPS": 0.11536557711660862, "n": 200}}, "stats": {"train_seconds": 1200.241201877594, "peak_vram_mb": 6193, "iters_per_second": 24.994975970721203, "render_seconds": 80.89714336395264, "n_rendered": 800, "render_fps": 9.889100736237815, "n_gaussians": 321864, "filter_3D_max": 0.0, "model_mb": 81.111284, "metrics_seconds": 73.03527474403381, "pooled_psnr": 26.057783126831055}}, "B/drums": {"split": {"1x": {"PSNR": 26.16058611869812, "SSIM": 0.9545136073231697, "LPIPS": 0.036469736350700256, "n": 200}, "1/2": {"PSNR": 23.471452140808104, "SSIM": 0.9248477992415428, "LPIPS": 0.04390110257081688, "n": 200}, "1/4": {"PSNR": 19.21493907928467, "SSIM": 0.8322768065333367, "LPIPS": 0.09226524919271469, "n": 200}, "1/8": {"PSNR": 15.840323791503906, "SSIM": 0.6902235862612724, "LPIPS": 0.17568815931677817, "n": 200}}, "stats": {"train_seconds": 1492.4267115592957, "peak_vram_mb": 5889, "iters_per_second": 20.10148958581412, "render_seconds": 90.42137408256531, "n_rendered": 800, "render_fps": 8.847465636493274, "n_gaussians": 400500, "filter_3D_max": 0.0, "model_mb": 100.927556, "metrics_seconds": 74.47174596786499, "pooled_psnr": 21.171825408935547}}, "B/hotdog": {"split": {"1x": {"PSNR": 37.73050204277038, "SSIM": 0.9857396727800369, "LPIPS": 0.018551291711628438, "n": 200}, "1/2": {"PSNR": 31.208911094665527, "SSIM": 0.973798858821392, "LPIPS": 0.016454351572319864, "n": 200}, "1/4": {"PSNR": 25.155509777069092, "SSIM": 0.9227127394080162, "LPIPS": 0.033250573566183446, "n": 200}, "1/8": {"PSNR": 21.032551889419555, "SSIM": 0.8359267061948776, "LPIPS": 0.06779174890369177, "n": 200}}, "stats": {"train_seconds": 1253.0081202983856, "peak_vram_mb": 4021, "iters_per_second": 23.94238274597609, "render_seconds": 90.23453402519226, "n_rendered": 800, "render_fps": 8.86578524112122, "n_gaussians": 173676, "filter_3D_max": 0.0, "model_mb": 43.767908, "metrics_seconds": 68.72623920440674, "pooled_psnr": 28.78186798095703}}, "B/lego": {"split": {"1x": {"PSNR": 36.00297033309936, "SSIM": 0.9839323571324349, "LPIPS": 0.013811696448829024, "n": 200}, "1/2": {"PSNR": 27.026815843582153, "SSIM": 0.9511766040325165, "LPIPS": 0.029792105350643396, "n": 200}, "1/4": {"PSNR": 21.167512273788454, "SSIM": 0.8510755324363708, "LPIPS": 0.08046974515542388, "n": 200}, "1/8": {"PSNR": 17.46760418891907, "SSIM": 0.7399683067202568, "LPIPS": 0.1341802815720439, "n": 200}}, "stats": {"train_seconds": 1562.944804430008, "peak_vram_mb": 4975, "iters_per_second": 19.194535798684672, "render_seconds": 100.87000775337219, "n_rendered": 800, "render_fps": 7.930999687796248, "n_gaussians": 370017, "filter_3D_max": 0.0, "model_mb": 93.24584, "metrics_seconds": 71.46188926696777, "pooled_psnr": 25.41622543334961}}, "B/materials": {"split": {"1x": {"PSNR": 30.139909286499023, "SSIM": 0.9613001823425293, "LPIPS": 0.03292384479660541, "n": 200}, "1/2": {"PSNR": 25.945835447311403, "SSIM": 0.9472995918989181, "LPIPS": 0.025658792220056056, "n": 200}, "1/4": {"PSNR": 20.17083020210266, "SSIM": 0.8667365166544915, "LPIPS": 0.05867436945438385, "n": 200}, "1/8": {"PSNR": 16.066784286499022, "SSIM": 0.7491147127747536, "LPIPS": 0.10680386427789927, "n": 200}}, "stats": {"train_seconds": 1325.5808174610138, "peak_vram_mb": 4829, "iters_per_second": 22.63158881362005, "render_seconds": 95.8696985244751, "n_rendered": 800, "render_fps": 8.344659598525427, "n_gaussians": 324540, "filter_3D_max": 0.0, "model_mb": 81.785636, "metrics_seconds": 69.72170376777649, "pooled_psnr": 23.080839157104492}}, "B/mic": {"split": {"1x": {"PSNR": 35.33588203430176, "SSIM": 0.9915894368290901, "LPIPS": 0.005913892380194738, "n": 200}, "1/2": {"PSNR": 26.65596654891968, "SSIM": 0.9687528723478317, "LPIPS": 0.013422819799743593, "n": 200}, "1/4": {"PSNR": 20.036517210006714, "SSIM": 0.8977593100070953, "LPIPS": 0.0491620022431016, "n": 200}, "1/8": {"PSNR": 15.498675646781921, "SSIM": 0.779452396929264, "LPIPS": 0.11568703722208738, "n": 200}}, "stats": {"train_seconds": 1411.193232536316, "peak_vram_mb": 4967, "iters_per_second": 21.258605347817223, "render_seconds": 80.08224606513977, "n_rendered": 800, "render_fps": 9.989729800401344, "n_gaussians": 345886, "filter_3D_max": 0.0, "model_mb": 87.164828, "metrics_seconds": 68.92523741722107, "pooled_psnr": 24.381759643554688}}}, "failed": {"B/ship": "RuntimeError: command failed (1): OMP_NUM_THREADS=4 CUDA_VISIBLE_DEVICES=0 python train.py -s /kaggle/working/multi-scale/ship -m /kaggle/working/out_armB/ship --eval --white_background --iterations 30000 --test_iterations -1 --port 6209  --kernel_size 0.3 --disable_3D_filter --disable_2D_mip_compensation\n--- tail ---\n        | 2950/30000 [02:06<21:01, 21.44it/s, Loss=0.0484392]\nTraining progress:  10%|\u2589         | 2960/30000 [02:06<21:17, 21.16it/s, Loss=0.0484392]\nTraining progress:  10%|\u2589         | 2960/30000 [02:06<21:17, 21.16it/s, Loss=0.0476880]\nTraining progress:  10%|\u2589         | 2970/3", "B/chair": "RuntimeError: command failed (1): OMP_NUM_THREADS=4 CUDA_VISIBLE_DEVICES=0 python train.py -s /kaggle/working/multi-scale/chair -m /kaggle/working/out_armB/chair --eval --white_background --iterations 30000 --test_iterations -1 --port 6209  --kernel_size 0.3 --disable_3D_filter --disable_2D_mip_compensation\n--- tail ---\n4:28, 22.29it/s, Loss=0.0031324]\nTraining progress:  80%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588  | 24020/30000 [17:20<04:28, 22.29it/s, Loss=0.0024730]\nTraining progress:  80%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588  | 24030/30000 [17:20<04:24, 22.61it/s, Loss=0.0024730]\nTraining progress:  80%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588  | 24030/30000 [17:21<04:24, 22.61"}, "session_seconds": 6511.018730401993, "gpu_hours_used": 1.8086163141992357, "complete": false, "filter_3D_max": {"B/ficus": 0.0, "B/drums": 0.0, "B/hotdog": 0.0, "B/lego": 0.0, "B/materials": 0.0, "B/mic": 0.0}, "armB_all_zero": true, "armA_all_nonzero": true}
+2 job(s) failed — see the table above.
 /usr/local/lib/python3.12/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\|'
   cells[i][c] = re.sub('\\\\\|', '|', cell)
 /usr/local/lib/python3.12/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\_'
   text = re.sub(r'_', '\_', text) # Escape underscores in display text
 [NbConvertApp] Converting notebook __script__.ipynb to html
-[NbConvertApp] Writing 364908 bytes to __results__.html
+[NbConvertApp] Writing 365508 bytes to __results__.html

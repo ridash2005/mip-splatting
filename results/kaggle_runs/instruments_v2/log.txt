@@ -1,0 +1,23 @@
+[{"stream_name":"stdout","time":5.454653094,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 43.3/43.3 kB 2.9 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":7.774541722,"data":"mounted inputs: ['nerf-synthetic-dataset', 'btp-r1-arma-ckpt']\n"}
+,{"stream_name":"stdout","time":19.086890719,"data":"found 8 point clouds\n"}
+,{"stream_name":"stdout","time":19.08692829,"data":"   /kaggle/input/btp-r1-arma-ckpt/out_armA/chair/point_cloud/iteration_30000/point_cloud.ply\n"}
+,{"stream_name":"stdout","time":19.086934315,"data":"   /kaggle/input/btp-r1-arma-ckpt/out_armA/drums/point_cloud/iteration_30000/point_cloud.ply\n"}
+,{"stream_name":"stdout","time":19.086956574,"data":"   /kaggle/input/btp-r1-arma-ckpt/out_armA/ficus/point_cloud/iteration_30000/point_cloud.ply\n"}
+,{"stream_name":"stdout","time":19.086960767,"data":"   /kaggle/input/btp-r1-arma-ckpt/out_armA/hotdog/point_cloud/iteration_30000/point_cloud.ply\n"}
+,{"stream_name":"stdout","time":22.972658759,"data":"found camera JSON for 8/8 scenes\n"}
+,{"stream_name":"stdout","time":28.647540746,"data":"[A/chair/full] n_cam=100 span=178.7deg | I-1 exceeds floor   0.0% (worst)   0.0% (all) | I-2 sigmaD/sigmaL   1.17x (pred   1.00x) | 4s\n"}
+,{"stream_name":"stdout","time":29.850066484,"data":"[A/chair/arc] n_cam= 20 span= 81.3deg | I-1 exceeds floor 100.0% (worst)   0.0% (all) | I-2 sigmaD/sigmaL   2.21x (pred   1.53x) | 1s\n"}
+,{"stream_name":"stdout","time":30.397734391,"data":"[A/chair/cone] n_cam=  3 span= 29.5deg | I-1 exceeds floor 100.0% (worst) 100.0% (all) | I-2 sigmaD/sigmaL   5.35x (pred   3.93x) | 1s\n"}
+,{"stream_name":"stderr","time":30.398437836,"data":"Traceback (most recent call last):\n"}
+,{"stream_name":"stderr","time":30.398473293,"data":"  File \"/kaggle/src/script.py\", line 102, in \u003cmodule\u003e\n"}
+,{"stream_name":"stderr","time":30.39859904,"data":"    sub = spec[proto]\n"}
+,{"stream_name":"stderr","time":30.398979015,"data":"          ~~~~^^^^^^^\n"}
+,{"stream_name":"stderr","time":30.398997139,"data":"KeyError: 'pencil'\n"}
+,{"stream_name":"stderr","time":32.536482643,"data":"/usr/local/lib/python3.12/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":32.536511786,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":32.780354316,"data":"/usr/local/lib/python3.12/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":32.780395679,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":33.513937801,"data":"[NbConvertApp] Converting notebook __script__.ipynb to html\n"}
+,{"stream_name":"stderr","time":34.742188905,"data":"[NbConvertApp] Writing 320701 bytes to __results__.html\n"}
+]

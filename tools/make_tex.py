@@ -126,10 +126,29 @@ def placeholder(label, caption, note=None):
         r"\end{table}", ""])
 
 
+def matched(rows, arms=("A", "B")):
+    """Restrict to the scenes every listed arm has, and say which they are.
+
+    A gap column between a six-scene arm and an eight-scene one is not a gap; it
+    is the difference between two sets of objects. Runs do fail -- C2 lost two
+    scenes to a CUDA fault -- so this has to be enforced rather than assumed.
+    """
+    per = {}
+    for r in rows:
+        if r.get("arm") in arms:
+            per.setdefault(r["arm"], set()).add(r["scene"])
+    present = [a for a in arms if per.get(a)]
+    if not present:
+        return [], set()
+    common = set.intersection(*(per[a] for a in present))
+    return [r for r in rows if r.get("scene") in common], common
+
+
 def scale_table(rows, protocol, label, caption):
     """The headline table: published target beside our measurement, per scale."""
+    rows, common = matched(rows)
     acc = by_arm_scale(rows)
-    scenes = sorted({r["scene"] for r in rows})
+    scenes = sorted(common)
     pub = PUBLISHED[protocol]
     L = [r"\begin{table}[htbp]", r"  \centering",
          r"  \caption{" + caption + "}", r"  \label{tab:" + label + "}",
@@ -506,6 +525,32 @@ CONFIG_KEY = ("dataset", "scene", "method", "arm", "train_scale", "test_scale",
               "iterations", "load_allres", "kernel_size", "seed")
 
 
+def _run_spans(summaries_dir="results/kaggle_runs"):
+    """Median realised span per protocol, from the runs that produced the PSNR.
+
+    The instruments are a separate session and their protocol definitions can
+    lag the runner's -- they did: `cone` was re-defined from a 20-degree wedge to
+    a tenth of the cameras, which lands at 36-54 degrees, and the chapter was
+    quoting conditioning measured on the first beside PSNR measured on the
+    second. Taking the span from the session that trained the model makes the
+    row self-consistent by construction.
+    """
+    out = {}
+    for d, _, files in os.walk(summaries_dir):
+        for fn in files:
+            if fn not in ("summary.json", "method_summary.json"):
+                continue
+            try:
+                s = json.load(open(os.path.join(d, fn)))
+            except Exception:
+                continue
+            for key, job in (s.get("done") or {}).items():
+                parts = key.split("/")
+                if len(parts) == 3 and job.get("span_deg"):
+                    out.setdefault(parts[2], []).append(float(job["span_deg"]))
+    return {k: sorted(v)[len(v) // 2] for k, v in out.items() if v}
+
+
 def _b1_diagnostics(summaries_dir="results/kaggle_runs"):
     """frac_above_floor and mean_anisotropy per protocol, from the runs' own JSON.
 
@@ -558,6 +603,7 @@ def stress_table(rows, inst, label, caption, sigma=SIGMA_FALLBACK):
         acc.setdefault(proto, {}).setdefault(r["method"], {}) \
            .setdefault((r["scene"], r["test_scale"]), []).append(float(r["psnr"]))
     bp = (inst or {}).get("by_protocol", {})
+    spans = _run_spans()
     diag = _b1_diagnostics()
     L = [r"\begin{table}[htbp]", r"  \centering",
          r"  \caption{" + caption + "}", r"  \label{tab:" + label + "}",
@@ -577,8 +623,15 @@ def stress_table(rows, inst, label, caption, sigma=SIGMA_FALLBACK):
         b1 = [x for k in keys for x in b1_d[k]]
         delta = mean(paired) if paired else None
         v = bp.get(proto) or {}
-        aniso = v.get("median_sigma_ratio_measured")
-        span = v.get("median_span_deg")
+        span = spans.get(proto) or v.get("median_span_deg")
+        # I-2's anisotropy belongs to this row only if the instruments measured
+        # the same capture. When the two spans disagree by more than a couple of
+        # degrees they are different protocols under one name, and the cell is
+        # left empty rather than filled from the wrong one.
+        aniso = None
+        if v.get("median_span_deg") and span:
+            if abs(v["median_span_deg"] - span) <= 2.0:
+                aniso = v.get("median_sigma_ratio_measured")
         dg = diag.get(proto) or {}
         L.append("    " + " & ".join([
             PROTO_LABEL[proto],
@@ -690,6 +743,7 @@ def g2_table(rows, label, caption):
            and r.get("iterations") == "30000"
            and r.get("load_allres") == "False" and r.get("seed") == "0"
            and (r.get("train_scale") == "1x")]
+    sel, _common = matched(sel)
     acc = {}
     for r in sel:
         if r.get("arm") in ("A", "B"):

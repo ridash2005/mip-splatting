@@ -239,14 +239,69 @@ def fetch_log(client, username, slug, out_dir):
     req.user_name = username
     req.kernel_slug = slug
     resp = client.kernels.kernels_api_client.list_kernel_session_output(req)
+
+    # The listing is capped at 500 entries per page and the rung's own
+    # results/ directory sorts after the cloned repository's, so a single page
+    # contains the checkout and none of the measurements. Pages are walked until
+    # the token runs out; `log` is only on the first reply.
+    pages, token = 1, getattr(resp, "next_page_token", "")
+    while token and pages < 40:
+        more = ApiListKernelSessionOutputRequest()
+        more.user_name, more.kernel_slug, more.page_token = username, slug, token
+        r2 = client.kernels.kernels_api_client.list_kernel_session_output(more)
+        resp.files.extend(r2.files or [])
+        token = getattr(r2, "next_page_token", "")
+        pages += 1
+    if pages > 1:
+        print(f"output listing: {len(resp.files)} files over {pages} pages")
+
     os.makedirs(out_dir, exist_ok=True)
     log_path = os.path.join(out_dir, "log.txt")
     with open(log_path, "w", encoding="utf-8") as f:
         f.write(resp.log)
     print(f"wrote {log_path} ({len(resp.log)} bytes)")
     if resp.files:
-        print("output files:", [f_.file_name for f_ in resp.files])
+        print(f"output files: {len(resp.files)}")
     return resp
+
+
+# The rows a rung measured live in its output, not in its log. Without this the
+# summary JSON is all that survives a session, and results/runs.csv -- which
+# every table in the thesis regenerates from -- has to be reconstructed by hand.
+WANTED_OUTPUT = ("runs.csv", "method_summary.json", "b2.json",
+                 "b2_protocols.json", "fps.json", "instruments.json")
+
+
+def fetch_files(log_resp, out_dir, wanted=WANTED_OUTPUT):
+    """Download the small result files a rung writes, by basename.
+
+    Only from the session's OWN results/ directory. The cloned repository is in
+    the output too and carries every previous rung's runs.csv, so matching on the
+    basename alone downloads eight stale files and keeps whichever sorted last --
+    which is the checkout's copy, not the measurement just made.
+    """
+    got = []
+    for f_ in (log_resp.files or []):
+        path = f_.file_name.replace("\\", "/")
+        name = os.path.basename(path)
+        if name not in wanted or not getattr(f_, "url", ""):
+            continue
+        if not path.startswith("results/"):
+            continue
+        dst = os.path.join(out_dir, name)
+        try:
+            r = requests.get(f_.url, timeout=600)
+            r.raise_for_status()
+            with open(dst, "wb") as fh:
+                fh.write(r.content)
+            got.append(f"{name} ({len(r.content)} B)")
+        except Exception as e:                       # a missing file is not fatal
+            print(f"could not fetch {f_.file_name}: {type(e).__name__}: {e}")
+    if got:
+        print("fetched:", ", ".join(got))
+    else:
+        print(f"no result files matched {sorted(wanted)} in the session output")
+    return got
 
 
 WRONG_GPU_MARKER = "_ABORT=WRONG_ACCELERATOR"   # any rung: R0_, R1_, ...
@@ -302,6 +357,7 @@ def run_under(client, username, a):
         # summary are pulled down exactly as they would be after a push.
         status = poll(client, username, a.slug, timeout=a.poll_timeout)
         log_resp = fetch_log(client, username, a.slug, out_dir)
+        fetch_files(log_resp, out_dir)
         save_summary(log_resp, out_dir)
         return 1 if status == KernelWorkerStatus.ERROR else 0
 
@@ -314,6 +370,7 @@ def run_under(client, username, a):
         status = poll(client, username, actual_slug, timeout=a.poll_timeout)
         out_dir = a.out or f"results/kaggle_runs/{actual_slug}"
         log_resp = fetch_log(client, username, actual_slug, out_dir)
+        fetch_files(log_resp, out_dir)
 
         if WRONG_GPU_MARKER in log_resp.log and attempt <= a.retry_wrong_gpu:
             print(f"attempt {attempt}: Kaggle allocated a sub-7.0 GPU; the kernel "

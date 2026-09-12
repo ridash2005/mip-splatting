@@ -1,0 +1,22 @@
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 43.3/43.3 kB 2.9 MB/s eta 0:00:00
+mounted inputs: ['nerf-synthetic-dataset', 'btp-r1-arma-ckpt']
+found 8 point clouds
+   /kaggle/input/btp-r1-arma-ckpt/out_armA/chair/point_cloud/iteration_30000/point_cloud.ply
+   /kaggle/input/btp-r1-arma-ckpt/out_armA/drums/point_cloud/iteration_30000/point_cloud.ply
+   /kaggle/input/btp-r1-arma-ckpt/out_armA/ficus/point_cloud/iteration_30000/point_cloud.ply
+   /kaggle/input/btp-r1-arma-ckpt/out_armA/hotdog/point_cloud/iteration_30000/point_cloud.ply
+found camera JSON for 8/8 scenes
+[A/chair/full] n_cam=100 span=178.7deg | I-1 exceeds floor   0.0% (worst)   0.0% (all) | I-2 sigmaD/sigmaL   1.17x (pred   1.00x) | 4s
+[A/chair/arc] n_cam= 20 span= 81.3deg | I-1 exceeds floor 100.0% (worst)   0.0% (all) | I-2 sigmaD/sigmaL   2.21x (pred   1.53x) | 1s
+[A/chair/cone] n_cam=  3 span= 29.5deg | I-1 exceeds floor 100.0% (worst) 100.0% (all) | I-2 sigmaD/sigmaL   5.35x (pred   3.93x) | 1s
+Traceback (most recent call last):
+  File "/kaggle/src/script.py", line 102, in <module>
+    sub = spec[proto]
+          ~~~~^^^^^^^
+KeyError: 'pencil'
+/usr/local/lib/python3.12/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\|'
+  cells[i][c] = re.sub('\\\\\|', '|', cell)
+/usr/local/lib/python3.12/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\_'
+  text = re.sub(r'_', '\_', text) # Escape underscores in display text
+[NbConvertApp] Converting notebook __script__.ipynb to html
+[NbConvertApp] Writing 320701 bytes to __results__.html

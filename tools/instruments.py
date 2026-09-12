@@ -42,7 +42,8 @@ if hasattr(sys.stdout, "reconfigure"):
 
 # Mip-Splatting's constant. s * sigma_pix = sqrt(0.2) by Proposition 1, so the
 # estimation term and the floor are expressed in the same units by construction.
-SQRT_POINT_TWO = math.sqrt(0.2)
+POINT_TWO = 0.2
+SQRT_POINT_TWO = math.sqrt(POINT_TWO)
 
 
 def load_ply(path):
@@ -163,9 +164,16 @@ def main():
     # does (F6), which is the mixed-camera defect of section 3.3.
     f_k = SQRT_POINT_TWO * np.where(unseen, np.nan, d_min) / focal.max()
 
+    # The estimation term is (s * sigma_pix)^2 / mu_i, and Proposition 1 fixes
+    # (s * sigma_pix)^2 = 0.2 -- the same constant the floor is built from. Both
+    # sides of the comparison below therefore carry it, and dropping it from the
+    # estimation side alone (which this did) inflates that side by a factor of 5,
+    # or sqrt(5) = 2.24 in sigma. scene/fisher_filter.py has always applied it;
+    # this is the over-determination between "s defaults to 1" and
+    # "s * sigma_pix = sqrt(0.2)" that section 4.4 now states explicitly.
     with np.errstate(divide="ignore", invalid="ignore"):
-        est_max = (a.s ** 2) / np.where(lam_min > 0, lam_min, np.nan)   # worst direction
-        est_min = (a.s ** 2) / np.where(lam_max > 0, lam_max, np.nan)   # best direction
+        est_max = (a.s ** 2) * POINT_TWO / np.where(lam_min > 0, lam_min, np.nan)
+        est_min = (a.s ** 2) * POINT_TWO / np.where(lam_max > 0, lam_max, np.nan)
         aniso = np.where(lam_max > 0, lam_min / lam_max, np.nan)        # lambda_3/lambda_1
 
     valid = (~unseen) & np.isfinite(f_k) & np.isfinite(est_max)

@@ -119,9 +119,14 @@ for ply in plys:
 
             unseen = n_seen == 0
             f_k = inst.SQRT_POINT_TWO * np.where(unseen, np.nan, d_min) / focal.max()
+            # (s * sigma_pix)^2 = 0.2 by Proposition 1 -- the same constant the
+            # floor f_k is built from, so both sides of the I-1 comparison carry
+            # it. Omitting it here inflated the estimation term by 5x and made
+            # I-1 disagree with the filter's own training diagnostic on the arc
+            # and the cone.
             with np.errstate(divide="ignore", invalid="ignore"):
-                est_max = 1.0 / np.where(lam_min > 0, lam_min, np.nan)
-                est_min = 1.0 / np.where(lam_max > 0, lam_max, np.nan)
+                est_max = inst.POINT_TWO / np.where(lam_min > 0, lam_min, np.nan)
+                est_min = inst.POINT_TWO / np.where(lam_max > 0, lam_max, np.nan)
                 aniso = np.where(lam_max > 0, lam_min / lam_max, np.nan)
             valid = (~unseen) & np.isfinite(f_k) & np.isfinite(est_max)
             fk2 = f_k[valid] ** 2

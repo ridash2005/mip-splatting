@@ -101,6 +101,25 @@ def main():
        abs(ev[2] - (1000.0 / 4.0) ** 2) < 1e-6 * (1000.0 / 4.0) ** 2,
        f"{ev[2]:.6g} vs {(1000.0/4.0)**2:.6g}")
 
+    # Proposition 1, as a constraint that pins the constant on BOTH sides of I-1.
+    # At one view, on axis, the estimation term must EQUAL Mip-Splatting's floor
+    # -- that identity is what Proposition 1 asserts, and it fixes
+    # (s * sigma_pix)^2 = 0.2. The instrument omitted the 0.2 from the estimation
+    # side while the floor carried it, so the term came out 5x too large and I-1
+    # disagreed with the filter's own training diagnostic on the arc and the cone.
+    # Nothing raised; both numbers looked reasonable.
+    print()
+    import instruments as _inst
+    f, z = 1111.0, 4.0
+    c2w_one = np.array([[[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, z], [0, 0, 0, 1]]],
+                       dtype=float)
+    lam1, d_min1, _, _ = _inst.fisher(np.zeros((1, 3)), c2w_one, np.array([f]))
+    est = _inst.POINT_TWO / lam1[0].max()
+    fk2 = (_inst.SQRT_POINT_TWO * d_min1[0] / f) ** 2
+    ok("Proposition 1: at one view on axis the estimation term IS the floor",
+       abs(est - fk2) <= 1e-9 * fk2,
+       f"{est:.6e} vs {fk2:.6e}; without the 0.2 it would be 5x the floor")
+
     print()
     if failures:
         print(f"{len(failures)} FAILED: " + "; ".join(failures))

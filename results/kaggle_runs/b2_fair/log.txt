@@ -1,0 +1,953 @@
+[{"stream_name":"stdout","time":1.114454325,"data":"Sat Sep 12 10:20:13 2026       \n"}
+,{"stream_name":"stdout","time":1.114542039,"data":"+-----------------------------------------------------------------------------------------+\n"}
+,{"stream_name":"stdout","time":1.114551232,"data":"| NVIDIA-SMI 580.159.04             Driver Version: 580.159.04     CUDA Version: 13.0     |\n"}
+,{"stream_name":"stdout","time":1.114556534,"data":"+-----------------------------------------+------------------------+----------------------+\n"}
+,{"stream_name":"stdout","time":1.114562069,"data":"| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |\n"}
+,{"stream_name":"stdout","time":1.114566369,"data":"| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |\n"}
+,{"stream_name":"stdout","time":1.114571088,"data":"|                                         |                        |               MIG M. |\n"}
+,{"stream_name":"stdout","time":1.114575554,"data":"|=========================================+========================+======================|\n"}
+,{"stream_name":"stdout","time":1.185506518,"data":"|   0  Tesla T4                       Off |   00000000:00:04.0 Off |                    0 |\n"}
+,{"stream_name":"stdout","time":1.185678885,"data":"| N/A   41C    P8             10W /   70W |       0MiB /  15360MiB |      0%      Default |\n"}
+,{"stream_name":"stdout","time":1.185686093,"data":"|                                         |                        |                  N/A |\n"}
+,{"stream_name":"stdout","time":1.185691535,"data":"+-----------------------------------------+------------------------+----------------------+\n"}
+,{"stream_name":"stdout","time":1.185696587,"data":"|   1  Tesla T4                       Off |   00000000:00:05.0 Off |                    0 |\n"}
+,{"stream_name":"stdout","time":1.185702013,"data":"| N/A   35C    P8              9W /   70W |       0MiB /  15360MiB |      0%      Default |\n"}
+,{"stream_name":"stdout","time":1.185707227,"data":"|                                         |                        |                  N/A |\n"}
+,{"stream_name":"stdout","time":1.185712383,"data":"+-----------------------------------------+------------------------+----------------------+\n"}
+,{"stream_name":"stdout","time":1.187043563,"data":"\n"}
+,{"stream_name":"stdout","time":1.187062696,"data":"+-----------------------------------------------------------------------------------------+\n"}
+,{"stream_name":"stdout","time":1.18706907,"data":"| Processes:                                                                              |\n"}
+,{"stream_name":"stdout","time":1.187074651,"data":"|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |\n"}
+,{"stream_name":"stdout","time":1.187227815,"data":"|        ID   ID                                                               Usage      |\n"}
+,{"stream_name":"stdout","time":1.187382464,"data":"|=========================================================================================|\n"}
+,{"stream_name":"stdout","time":1.18872786,"data":"|  No running processes found                                                             |\n"}
+,{"stream_name":"stdout","time":1.1887464030000001,"data":"+-----------------------------------------------------------------------------------------+\n"}
+,{"stream_name":"stdout","time":8.259163283,"data":"torch 2.10.0+cu128 cap (7, 5) Tesla T4 x2\n"}
+,{"stream_name":"stderr","time":8.301724633,"data":"Cloning into '/kaggle/working/repo'...\n"}
+,{"stream_name":"stdout","time":10.092439063,"data":"+ pip install -q ninja gputil lpips plyfile opencv-python\n"}
+,{"stream_name":"stdout","time":17.158854685,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 43.3/43.3 kB 1.5 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":17.158916255,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 53.8/53.8 kB 2.8 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":17.159065997,"data":"+ pip install -q open3d\n"}
+,{"stream_name":"stdout","time":35.473946167,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 447.7/447.7 MB 3.7 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":35.473997686,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 8.9/8.9 MB 107.5 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":41.223491665,"data":"applied build fix: added #include \u003ccfloat\u003e to /kaggle/working/repo/submodules/simple-knn/simple_knn.cu\n"}
+,{"stream_name":"stdout","time":41.223593843,"data":"+ pip install -v /kaggle/working/repo/submodules/diff-gaussian-rasterization\n"}
+,{"stream_name":"stdout","time":60.402423772,"data":"Using pip 24.1.2 from /usr/local/lib/python3.12/dist-packages/pip (python 3.12)\n"}
+,{"stream_name":"stdout","time":60.402673056,"data":"Processing ./repo/submodules/diff-gaussian-rasterization\n"}
+,{"stream_name":"stdout","time":60.402900916,"data":"  Preparing metadata (setup.py): started\n"}
+,{"stream_name":"stdout","time":60.403103588,"data":"  Running command python setup.py egg_info\n"}
+,{"stream_name":"stdout","time":60.403324124,"data":"  running egg_info\n"}
+,{"stream_name":"stdout","time":60.403569724,"data":"  creating /tmp/pip-pip-egg-info-xv7mz2jn/diff_gaussian_rasterization.egg-info\n"}
+,{"stream_name":"stdout","time":60.40379288,"data":"  writing /tmp/pip-pip-egg-info-xv7mz2jn/diff_gaussian_rasterization.egg-info/PKG-INFO\n"}
+,{"stream_name":"stdout","time":60.403995505,"data":"  writing dependency_links to /tmp/pip-pip-egg-info-xv7mz2jn/diff_gaussian_rasterization.egg-info/dependency_links.txt\n"}
+,{"stream_name":"stdout","time":60.404224396,"data":"  writing top-level names to /tmp/pip-pip-egg-info-xv7mz2jn/diff_gaussian_rasterization.egg-info/top_level.txt\n"}
+,{"stream_name":"stdout","time":60.404426664,"data":"  writing manifest file '/tmp/pip-pip-egg-info-xv7mz2jn/diff_gaussian_rasterization.egg-info/SOURCES.txt'\n"}
+,{"stream_name":"stdout","time":60.404678068,"data":"  reading manifest file '/tmp/pip-pip-egg-info-xv7mz2jn/diff_gaussian_rasterization.egg-info/SOURCES.txt'\n"}
+,{"stream_name":"stdout","time":60.404919376,"data":"  adding license file 'LICENSE.md'\n"}
+,{"stream_name":"stdout","time":60.405142964,"data":"  writing manifest file '/tmp/pip-pip-egg-info-xv7mz2jn/diff_gaussian_rasterization.egg-info/SOURCES.txt'\n"}
+,{"stream_name":"stdout","time":60.405591145,"data":"  Preparing metadata (setup.py): finished with status 'done'\n"}
+,{"stream_name":"stdout","time":60.405606613,"data":"Building wheels for collected packages: diff_gaussian_rasterization\n"}
+,{"stream_name":"stdout","time":60.405611809,"data":"  Building wheel for diff_gaussian_rasterization (setup.py): started\n"}
+,{"stream_name":"stdout","time":60.405616752,"data":"  Running command python setup.py bdist_wheel\n"}
+,{"stream_name":"stdout","time":60.405621061,"data":"  running bdist_wheel\n"}
+,{"stream_name":"stdout","time":60.405625622,"data":"  running build\n"}
+,{"stream_name":"stdout","time":60.405629759,"data":"  running build_py\n"}
+,{"stream_name":"stdout","time":60.405634175,"data":"  creating build/lib.linux-x86_64-cpython-312/diff_gaussian_rasterization\n"}
+,{"stream_name":"stdout","time":60.405649292,"data":"  copying diff_gaussian_rasterization/__init__.py -\u003e build/lib.linux-x86_64-cpython-312/diff_gaussian_rasterization\n"}
+,{"stream_name":"stdout","time":60.405653334,"data":"  running build_ext\n"}
+,{"stream_name":"stdout","time":60.405656499,"data":"  W0912 10:21:01.535000 106 torch/utils/cpp_extension.py:535] There are no x86_64-linux-gnu-g++ version bounds defined for CUDA version 12.8\n"}
+,{"stream_name":"stdout","time":60.405659894,"data":"  building 'diff_gaussian_rasterization._C' extension\n"}
+,{"stream_name":"stdout","time":60.405663234,"data":"  creating /kaggle/working/repo/submodules/diff-gaussian-rasterization/build/temp.linux-x86_64-cpython-312/cuda_rasterizer\n"}
+,{"stream_name":"stdout","time":60.405667566,"data":"  [1/5] /usr/local/cuda/bin/nvcc --generate-dependencies-with-compile --dependency-output /kaggle/working/repo/submodules/diff-gaussian-rasterization/build/temp.linux-x86_64-cpython-312/cuda_rasterizer/forward.o.d -I/usr/local/lib/python3.12/dist-packages/torch/include -I/usr/local/lib/python3.12/dist-packages/torch/include/torch/csrc/api/include -I/usr/local/cuda/include -I/usr/include/python3.12 -c -c /kaggle/working/repo/submodules/diff-gaussian-rasterization/cuda_rasterizer/forward.cu -o /kaggle/working/repo/submodules/diff-gaussian-rasterization/build/temp.linux-x86_64-cpython-312/cuda_rasterizer/forward.o -D__CUDA_NO_HALF_OPERATORS__ -D__CUDA_NO_HALF_CONVERSIONS__ -D__CUDA_NO_BFLOAT16_CONVERSIONS__ -D__CUDA_NO_HALF2_OPERATORS__ --expt-relaxed-constexpr --compiler-options ''\"'\"'-fPIC'\"'\"'' -I/kaggle/working/repo/submodules/diff-gaussian-rasterization/third_party/glm/ -DTORCH_API_INCLUDE_EXTENSION_H -DTORCH_EXTENSION_NAME=_C -gencode=arch=compute_75,code=sm_75 -std=c++17\n"}
+,{"stream_name":"stdout","time":60.405679239,"data":"  /kaggle/working/repo/submodules/diff-gaussian-rasterization/cuda_rasterizer/auxiliary.h(151): warning #177-D: variable \"p_proj\" was declared but never referenced\n"}
+,{"stream_name":"stdout","time":60.405684144,"data":"     float3 p_proj = { p_hom.x * p_w, p_hom.y * p_w, p_hom.z * p_w };\n"}
+,{"stream_name":"stdout","time":60.405687619,"data":"            ^\n"}
+,{"stream_name":"stdout","time":60.405690801,"data":"  Remark: The warnings can be suppressed with \"-diag-suppress \u003cwarning-number\u003e\"\n"}
+,{"stream_name":"stdout","time":120.384836641,"data":"  [2/5] /usr/local/cuda/bin/nvcc --generate-dependencies-with-compile --dependency-output /kaggle/working/repo/submodules/diff-gaussian-rasterization/build/temp.linux-x86_64-cpython-312/cuda_rasterizer/backward.o.d -I/usr/local/lib/python3.12/dist-packages/torch/include -I/usr/local/lib/python3.12/dist-packages/torch/include/torch/csrc/api/include -I/usr/local/cuda/include -I/usr/include/python3.12 -c -c /kaggle/working/repo/submodules/diff-gaussian-rasterization/cuda_rasterizer/backward.cu -o /kaggle/working/repo/submodules/diff-gaussian-rasterization/build/temp.linux-x86_64-cpython-312/cuda_rasterizer/backward.o -D__CUDA_NO_HALF_OPERATORS__ -D__CUDA_NO_HALF_CONVERSIONS__ -D__CUDA_NO_BFLOAT16_CONVERSIONS__ -D__CUDA_NO_HALF2_OPERATORS__ --expt-relaxed-constexpr --compiler-options ''\"'\"'-fPIC'\"'\"'' -I/kaggle/working/repo/submodules/diff-gaussian-rasterization/third_party/glm/ -DTORCH_API_INCLUDE_EXTENSION_H -DTORCH_EXTENSION_NAME=_C -gencode=arch=compute_75,code=sm_75 -std=c++17\n"}
+,{"stream_name":"stdout","time":120.384945396,"data":"  /kaggle/working/repo/submodules/diff-gaussian-rasterization/cuda_rasterizer/auxiliary.h(151): warning #177-D: variable \"p_proj\" was declared but never referenced\n"}
+,{"stream_name":"stdout","time":120.384952195,"data":"     float3 p_proj = { p_hom.x * p_w, p_hom.y * p_w, p_hom.z * p_w };\n"}
+,{"stream_name":"stdout","time":120.384957758,"data":"            ^\n"}
+,{"stream_name":"stdout","time":120.384962134,"data":"  Remark: The warnings can be suppressed with \"-diag-suppress \u003cwarning-number\u003e\"\n"}
+,{"stream_name":"stdout","time":120.384978757,"data":"  [3/5] /usr/local/cuda/bin/nvcc --generate-dependencies-with-compile --dependency-output /kaggle/working/repo/submodules/diff-gaussian-rasterization/build/temp.linux-x86_64-cpython-312/cuda_rasterizer/rasterizer_impl.o.d -I/usr/local/lib/python3.12/dist-packages/torch/include -I/usr/local/lib/python3.12/dist-packages/torch/include/torch/csrc/api/include -I/usr/local/cuda/include -I/usr/include/python3.12 -c -c /kaggle/working/repo/submodules/diff-gaussian-rasterization/cuda_rasterizer/rasterizer_impl.cu -o /kaggle/working/repo/submodules/diff-gaussian-rasterization/build/temp.linux-x86_64-cpython-312/cuda_rasterizer/rasterizer_impl.o -D__CUDA_NO_HALF_OPERATORS__ -D__CUDA_NO_HALF_CONVERSIONS__ -D__CUDA_NO_BFLOAT16_CONVERSIONS__ -D__CUDA_NO_HALF2_OPERATORS__ --expt-relaxed-constexpr --compiler-options ''\"'\"'-fPIC'\"'\"'' -I/kaggle/working/repo/submodules/diff-gaussian-rasterization/third_party/glm/ -DTORCH_API_INCLUDE_EXTENSION_H -DTORCH_EXTENSION_NAME=_C -gencode=arch=compute_75,code=sm_75 -std=c++17\n"}
+,{"stream_name":"stdout","time":120.384995533,"data":"  /kaggle/working/repo/submodules/diff-gaussian-rasterization/cuda_rasterizer/auxiliary.h(151): warning #177-D: variable \"p_proj\" was declared but never referenced\n"}
+,{"stream_name":"stdout","time":120.385032898,"data":"     float3 p_proj = { p_hom.x * p_w, p_hom.y * p_w, p_hom.z * p_w };\n"}
+,{"stream_name":"stdout","time":120.385042073,"data":"            ^\n"}
+,{"stream_name":"stdout","time":120.385050127,"data":"  Remark: The warnings can be suppressed with \"-diag-suppress \u003cwarning-number\u003e\"\n"}
+,{"stream_name":"stdout","time":120.385053205,"data":"  [4/5] c++ -MMD -MF /kaggle/working/repo/submodules/diff-gaussian-rasterization/build/temp.linux-x86_64-cpython-312/ext.o.d -fno-strict-overflow -Wsign-compare -DNDEBUG -g -O2 -Wall -g -fstack-protector-strong -Wformat -Werror=format-security -g -fwrapv -O2 -fPIC -I/usr/local/lib/python3.12/dist-packages/torch/include -I/usr/local/lib/python3.12/dist-packages/torch/include/torch/csrc/api/include -I/usr/local/cuda/include -I/usr/include/python3.12 -c -c /kaggle/working/repo/submodules/diff-gaussian-rasterization/ext.cpp -o /kaggle/working/repo/submodules/diff-gaussian-rasterization/build/temp.linux-x86_64-cpython-312/ext.o -DTORCH_API_INCLUDE_EXTENSION_H -DTORCH_EXTENSION_NAME=_C -std=c++17\n"}
+,{"stream_name":"stdout","time":120.385056805,"data":"  [5/5] /usr/local/cuda/bin/nvcc --generate-dependencies-with-compile --dependency-output /kaggle/working/repo/submodules/diff-gaussian-rasterization/build/temp.linux-x86_64-cpython-312/rasterize_points.o.d -I/usr/local/lib/python3.12/dist-packages/torch/include -I/usr/local/lib/python3.12/dist-packages/torch/include/torch/csrc/api/include -I/usr/local/cuda/include -I/usr/include/python3.12 -c -c /kaggle/working/repo/submodules/diff-gaussian-rasterization/rasterize_points.cu -o /kaggle/working/repo/submodules/diff-gaussian-rasterization/build/temp.linux-x86_64-cpython-312/rasterize_points.o -D__CUDA_NO_HALF_OPERATORS__ -D__CUDA_NO_HALF_CONVERSIONS__ -D__CUDA_NO_BFLOAT16_CONVERSIONS__ -D__CUDA_NO_HALF2_OPERATORS__ --expt-relaxed-constexpr --compiler-options ''\"'\"'-fPIC'\"'\"'' -I/kaggle/working/repo/submodules/diff-gaussian-rasterization/third_party/glm/ -DTORCH_API_INCLUDE_EXTENSION_H -DTORCH_EXTENSION_NAME=_C -gencode=arch=compute_75,code=sm_75 -std=c++17\n"}
+,{"stream_name":"stdout","time":120.38506155,"data":"  /kaggle/working/repo/submodules/diff-gaussian-rasterization/rasterize_points.cu: In function ‘std::tuple\u003cint, at::Tensor, at::Tensor, at::Tensor, at::Tensor, at::Tensor\u003e RasterizeGaussiansCUDA(const at::Tensor\u0026, const at::Tensor\u0026, const at::Tensor\u0026, const at::Tensor\u0026, const at::Tensor\u0026, const at::Tensor\u0026, float, const at::Tensor\u0026, const at::Tensor\u0026, const at::Tensor\u0026, float, float, float, const at::Tensor\u0026, int, int, const at::Tensor\u0026, int, const at::Tensor\u0026, bool, bool)’:\n"}
+,{"stream_name":"stdout","time":120.397861768,"data":"  /kaggle/working/repo/submodules/diff-gaussian-rasterization/rasterize_points.cu:91:140: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data\u003cT\u003e() is deprecated. Please use Tensor.data_ptr\u003cT\u003e() instead. [-Wdeprecated-declarations]\n"}
+,{"stream_name":"stdout","time":120.397886802,"data":"     91 |           rendered = CudaRasterizer::Rasterizer::forward(\n"}
+,{"stream_name":"stdout","time":120.397891554,"data":"        |                                                                                                                                            ^\n"}
+,{"stream_name":"stdout","time":120.397895687,"data":"  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here\n"}
+,{"stream_name":"stdout","time":120.397899264,"data":"    251 |   T * data() const {\n"}
+,{"stream_name":"stdout","time":120.397902906,"data":"        | ^ ~~\n"}
+,{"stream_name":"stdout","time":120.398038049,"data":"  /kaggle/working/repo/submodules/diff-gaussian-rasterization/rasterize_points.cu:91:186: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data\u003cT\u003e() is deprecated. Please use Tensor.data_ptr\u003cT\u003e() instead. [-Wdeprecated-declarations]\n"}
+,{"stream_name":"stdout","time":120.398055919,"data":"     91 |           rendered = CudaRasterizer::Rasterizer::forward(\n"}
+,{"stream_name":"stdout","time":120.398198855,"data":"        |                                                                                                                                                                                          ^\n"}
+,{"stream_name":"stdout","time":120.398210076,"data":"  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here\n"}
+,{"stream_name":"stdout","time":120.398214372,"data":"    251 |   T * data() const {\n"}
+,{"stream_name":"stdout","time":120.398217699,"data":"        | ^ ~~\n"}
+,{"stream_name":"stdout","time":120.398363186,"data":"  /kaggle/working/repo/submodules/diff-gaussian-rasterization/rasterize_points.cu:91:264: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data\u003cT\u003e() is deprecated. Please use Tensor.data_ptr\u003cT\u003e() instead. [-Wdeprecated-declarations]\n"}
+,{"stream_name":"stdout","time":120.398376133,"data":"     91 |           rendered = CudaRasterizer::Rasterizer::forward(\n"}
+,{"stream_name":"stdout","time":120.398380041,"data":"        |                                                                                                                                                                                                                                                                        ^\n"}
+,{"stream_name":"stdout","time":120.398384374,"data":"  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here\n"}
+,{"stream_name":"stdout","time":120.398388283,"data":"    251 |   T * data() const {\n"}
+,{"stream_name":"stdout","time":120.39839177,"data":"        | ^ ~~\n"}
+,{"stream_name":"stdout","time":120.398432468,"data":"  /kaggle/working/repo/submodules/diff-gaussian-rasterization/rasterize_points.cu:91:304: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data\u003cT\u003e() is deprecated. Please use Tensor.data_ptr\u003cT\u003e() instead. [-Wdeprecated-declarations]\n"}
+,{"stream_name":"stdout","time":120.398496128,"data":"     91 |           rendered = CudaRasterizer::Rasterizer::forward(\n"}
+,{"stream_name":"stdout","time":120.398621843,"data":"        |                                                                                                                                                                                                                                                                                                                ^\n"}
+,{"stream_name":"stdout","time":120.398642111,"data":"  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here\n"}
+,{"stream_name":"stdout","time":120.398646771,"data":"    251 |   T * data() const {\n"}
+,{"stream_name":"stdout","time":120.398650406,"data":"        | ^ ~~\n"}
+,{"stream_name":"stdout","time":120.398662913,"data":"  /kaggle/working/repo/submodules/diff-gaussian-rasterization/rasterize_points.cu:91:455: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data\u003cT\u003e() is deprecated. Please use Tensor.data_ptr\u003cT\u003e() instead. [-Wdeprecated-declarations]\n"}
+,{"stream_name":"stdout","time":120.398686884,"data":"     91 |           rendered = CudaRasterizer::Rasterizer::forward(\n"}
+,{"stream_name":"stdout","time":120.398721271,"data":"        |                                                                                                                                                                                                                                                                                                                                                                                                                                                                       ^\n"}
+,{"stream_name":"stdout","time":120.398728236,"data":"  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here\n"}
+,{"stream_name":"stdout","time":120.398732097,"data":"    251 |   T * data() const {\n"}
+,{"stream_name":"stdout","time":120.398735938,"data":"        | ^ ~~\n"}
+,{"stream_name":"stdout","time":120.39878792,"data":"  /kaggle/working/repo/submodules/diff-gaussian-rasterization/rasterize_points.cu:91:498: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data\u003cT\u003e() is deprecated. Please use Tensor.data_ptr\u003cT\u003e() instead. [-Wdeprecated-declarations]\n"}
+,{"stream_name":"stdout","time":120.398865933,"data":"     91 |           rendered = CudaRasterizer::Rasterizer::forward(\n"}
+,{"stream_name":"stdout","time":120.412060847,"data":"        |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  ^\n"}
+,{"stream_name":"stdout","time":120.412079519,"data":"  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here\n"}
+,{"stream_name":"stdout","time":120.412111753,"data":"    251 |   T * data() const {\n"}
+,{"stream_name":"stdout","time":120.412117052,"data":"        | ^ ~~\n"}
+,{"stream_name":"stdout","time":120.412137429,"data":"  /kaggle/working/repo/submodules/diff-gaussian-rasterization/rasterize_points.cu:91:541: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data\u003cT\u003e() is deprecated. Please use Tensor.data_ptr\u003cT\u003e() instead. [-Wdeprecated-declarations]\n"}
+,{"stream_name":"stdout","time":120.412164246,"data":"     91 |           rendered = CudaRasterizer::Rasterizer::forward(\n"}
+,{"stream_name":"stdout","time":120.41232337,"data":"        |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             ^\n"}
+,{"stream_name":"stdout","time":120.412428966,"data":"  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here\n"}
+,{"stream_name":"stdout","time":120.412440321,"data":"    251 |   T * data() const {\n"}
+,{"stream_name":"stdout","time":120.412444535,"data":"        | ^ ~~\n"}
+,{"stream_name":"stdout","time":120.41244791,"data":"  /kaggle/working/repo/submodules/diff-gaussian-rasterization/rasterize_points.cu:91:580: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data\u003cT\u003e() is deprecated. Please use Tensor.data_ptr\u003cT\u003e() instead. [-Wdeprecated-declarations]\n"}
+,{"stream_name":"stdout","time":120.412453491,"data":"     91 |           rendered = CudaRasterizer::Rasterizer::forward(\n"}
+,{"stream_name":"stdout","time":120.412505508,"data":"        |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    ^\n"}
+,{"stream_name":"stdout","time":120.4125733,"data":"  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here\n"}
+,{"stream_name":"stdout","time":120.412632363,"data":"    251 |   T * data() const {\n"}
+,{"stream_name":"stdout","time":120.412698282,"data":"        | ^ ~~\n"}
+,{"stream_name":"stdout","time":120.412770912,"data":"  /kaggle/working/repo/submodules/diff-gaussian-rasterization/rasterize_points.cu:91:661: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data\u003cT\u003e() is deprecated. Please use Tensor.data_ptr\u003cT\u003e() instead. [-Wdeprecated-declarations]\n"}
+,{"stream_name":"stdout","time":120.412787199,"data":"     91 |           rendered = CudaRasterizer::Rasterizer::forward(\n"}
+,{"stream_name":"stdout","time":120.41293454,"data":"        |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     ^\n"}
+,{"stream_name":"stdout","time":120.412945129,"data":"  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here\n"}
+,{"stream_name":"stdout","time":120.41294958,"data":"    251 |   T * data() const {\n"}
+,{"stream_name":"stdout","time":120.412953309,"data":"        | ^ ~~\n"}
+,{"stream_name":"stdout","time":120.412964092,"data":"  /kaggle/working/repo/submodules/diff-gaussian-rasterization/rasterize_points.cu:91:716: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data\u003cT\u003e() is deprecated. Please use Tensor.data_ptr\u003cT\u003e() instead. [-Wdeprecated-declarations]\n"}
+,{"stream_name":"stdout","time":120.412979651,"data":"     91 |           rendered = CudaRasterizer::Rasterizer::forward(\n"}
+,{"stream_name":"stdout","time":120.421206939,"data":"        |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            ^\n"}
+,{"stream_name":"stdout","time":120.421223994,"data":"  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here\n"}
+,{"stream_name":"stdout","time":120.421228237,"data":"    251 |   T * data() const {\n"}
+,{"stream_name":"stdout","time":120.421231812,"data":"        | ^ ~~\n"}
+,{"stream_name":"stdout","time":120.421360359,"data":"  /kaggle/working/repo/submodules/diff-gaussian-rasterization/rasterize_points.cu:91:752: warning: ‘T* at::Tensor::data() const [with T = int]’ is deprecated: Tensor.data\u003cT\u003e() is deprecated. Please use Tensor.data_ptr\u003cT\u003e() instead. [-Wdeprecated-declarations]\n"}
+,{"stream_name":"stdout","time":120.421370715,"data":"     91 |           rendered = CudaRasterizer::Rasterizer::forward(\n"}
+,{"stream_name":"stdout","time":120.421505165,"data":"        |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                ^\n"}
+,{"stream_name":"stdout","time":120.421649304,"data":"  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here\n"}
+,{"stream_name":"stdout","time":120.421657568,"data":"    251 |   T * data() const {\n"}
+,{"stream_name":"stdout","time":120.42166273,"data":"        | ^ ~~\n"}
+,{"stream_name":"stdout","time":120.421803585,"data":"  /kaggle/working/repo/submodules/diff-gaussian-rasterization/rasterize_points.cu: In function ‘std::tuple\u003cat::Tensor, at::Tensor, at::Tensor, at::Tensor, at::Tensor, at::Tensor, at::Tensor, at::Tensor\u003e RasterizeGaussiansBackwardCUDA(const at::Tensor\u0026, const at::Tensor\u0026, const at::Tensor\u0026, const at::Tensor\u0026, const at::Tensor\u0026, const at::Tensor\u0026, float, const at::Tensor\u0026, const at::Tensor\u0026, const at::Tensor\u0026, float, float, float, const at::Tensor\u0026, const at::Tensor\u0026, const at::Tensor\u0026, int, const at::Tensor\u0026, const at::Tensor\u0026, int, const at::Tensor\u0026, const at::Tensor\u0026, bool)’:\n"}
+,{"stream_name":"stdout","time":120.421973511,"data":"  /kaggle/working/repo/submodules/diff-gaussian-rasterization/rasterize_points.cu:169:101: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data\u003cT\u003e() is deprecated. Please use Tensor.data_ptr\u003cT\u003e() instead. [-Wdeprecated-declarations]\n"}
+,{"stream_name":"stdout","time":120.422019125,"data":"    169 |           CudaRasterizer::Rasterizer::backward(P, degree, M, R,\n"}
+,{"stream_name":"stdout","time":120.422024926,"data":"        |                                                              ~~                                     ^\n"}
+,{"stream_name":"stdout","time":120.422028782,"data":"  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here\n"}
+,{"stream_name":"stdout","time":120.422058125,"data":"    251 |   T * data() const {\n"}
+,{"stream_name":"stdout","time":120.422262901,"data":"        | ^ ~~\n"}
+,{"stream_name":"stdout","time":120.422567333,"data":"  /kaggle/working/repo/submodules/diff-gaussian-rasterization/rasterize_points.cu:169:147: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data\u003cT\u003e() is deprecated. Please use Tensor.data_ptr\u003cT\u003e() instead. [-Wdeprecated-declarations]\n"}
+,{"stream_name":"stdout","time":120.422578508,"data":"    169 |           CudaRasterizer::Rasterizer::backward(P, degree, M, R,\n"}
+,{"stream_name":"stdout","time":120.422582756,"data":"        |                                                                                                                                                   ^\n"}
+,{"stream_name":"stdout","time":120.422586598,"data":"  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here\n"}
+,{"stream_name":"stdout","time":120.422590287,"data":"    251 |   T * data() const {\n"}
+,{"stream_name":"stdout","time":120.42259397,"data":"        | ^ ~~\n"}
+,{"stream_name":"stdout","time":120.431208749,"data":"  /kaggle/working/repo/submodules/diff-gaussian-rasterization/rasterize_points.cu:169:182: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data\u003cT\u003e() is deprecated. Please use Tensor.data_ptr\u003cT\u003e() instead. [-Wdeprecated-declarations]\n"}
+,{"stream_name":"stdout","time":120.4312252,"data":"    169 |           CudaRasterizer::Rasterizer::backward(P, degree, M, R,\n"}
+,{"stream_name":"stdout","time":120.431295666,"data":"        |                                                                                                                                                                                      ^\n"}
+,{"stream_name":"stdout","time":120.431303232,"data":"  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here\n"}
+,{"stream_name":"stdout","time":120.431307168,"data":"    251 |   T * data() const {\n"}
+,{"stream_name":"stdout","time":120.431310517,"data":"        | ^ ~~\n"}
+,{"stream_name":"stdout","time":120.431315678,"data":"  /kaggle/working/repo/submodules/diff-gaussian-rasterization/rasterize_points.cu:169:221: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data\u003cT\u003e() is deprecated. Please use Tensor.data_ptr\u003cT\u003e() instead. [-Wdeprecated-declarations]\n"}
+,{"stream_name":"stdout","time":120.431421339,"data":"    169 |           CudaRasterizer::Rasterizer::backward(P, degree, M, R,\n"}
+,{"stream_name":"stdout","time":120.431482447,"data":"        |                                                                                                                                                                                                                             ^\n"}
+,{"stream_name":"stdout","time":120.43160082,"data":"  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here\n"}
+,{"stream_name":"stdout","time":120.431614018,"data":"    251 |   T * data() const {\n"}
+,{"stream_name":"stdout","time":120.431617605,"data":"        | ^ ~~\n"}
+,{"stream_name":"stdout","time":120.431627587,"data":"  /kaggle/working/repo/submodules/diff-gaussian-rasterization/rasterize_points.cu:169:342: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data\u003cT\u003e() is deprecated. Please use Tensor.data_ptr\u003cT\u003e() instead. [-Wdeprecated-declarations]\n"}
+,{"stream_name":"stdout","time":120.431711624,"data":"    169 |           CudaRasterizer::Rasterizer::backward(P, degree, M, R,\n"}
+,{"stream_name":"stdout","time":120.431750615,"data":"        |                                                                                                                                                                                                                                                                                                                                                      ^\n"}
+,{"stream_name":"stdout","time":120.431858869,"data":"  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here\n"}
+,{"stream_name":"stdout","time":120.431864212,"data":"    251 |   T * data() const {\n"}
+,{"stream_name":"stdout","time":120.431867738,"data":"        | ^ ~~\n"}
+,{"stream_name":"stdout","time":120.431916609,"data":"  /kaggle/working/repo/submodules/diff-gaussian-rasterization/rasterize_points.cu:169:385: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data\u003cT\u003e() is deprecated. Please use Tensor.data_ptr\u003cT\u003e() instead. [-Wdeprecated-declarations]\n"}
+,{"stream_name":"stdout","time":120.431976679,"data":"    169 |           CudaRasterizer::Rasterizer::backward(P, degree, M, R,\n"}
+,{"stream_name":"stdout","time":120.432058255,"data":"        |                                                                                                                                                                                                                                                                                                                                                                                                 ^\n"}
+,{"stream_name":"stdout","time":120.432103713,"data":"  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here\n"}
+,{"stream_name":"stdout","time":120.432209264,"data":"    251 |   T * data() const {\n"}
+,{"stream_name":"stdout","time":120.432214203,"data":"        | ^ ~~\n"}
+,{"stream_name":"stdout","time":120.432267193,"data":"  /kaggle/working/repo/submodules/diff-gaussian-rasterization/rasterize_points.cu:169:428: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data\u003cT\u003e() is deprecated. Please use Tensor.data_ptr\u003cT\u003e() instead. [-Wdeprecated-declarations]\n"}
+,{"stream_name":"stdout","time":120.432447368,"data":"    169 |           CudaRasterizer::Rasterizer::backward(P, degree, M, R,\n"}
+,{"stream_name":"stdout","time":120.432453835,"data":"        |                                                                                                                                                                                                                                                                                                                                                                                                                                            ^\n"}
+,{"stream_name":"stdout","time":120.432458859,"data":"  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here\n"}
+,{"stream_name":"stdout","time":120.432462741,"data":"    251 |   T * data() const {\n"}
+,{"stream_name":"stdout","time":120.432472009,"data":"        | ^ ~~\n"}
+,{"stream_name":"stdout","time":120.44514763,"data":"  /kaggle/working/repo/submodules/diff-gaussian-rasterization/rasterize_points.cu:169:467: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data\u003cT\u003e() is deprecated. Please use Tensor.data_ptr\u003cT\u003e() instead. [-Wdeprecated-declarations]\n"}
+,{"stream_name":"stdout","time":120.445165621,"data":"    169 |           CudaRasterizer::Rasterizer::backward(P, degree, M, R,\n"}
+,{"stream_name":"stdout","time":120.44517012,"data":"        |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   ^\n"}
+,{"stream_name":"stdout","time":120.445175364,"data":"  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here\n"}
+,{"stream_name":"stdout","time":120.445179151,"data":"    251 |   T * data() const {\n"}
+,{"stream_name":"stdout","time":120.445182604,"data":"        | ^ ~~\n"}
+,{"stream_name":"stdout","time":120.445312378,"data":"  /kaggle/working/repo/submodules/diff-gaussian-rasterization/rasterize_points.cu:169:548: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data\u003cT\u003e() is deprecated. Please use Tensor.data_ptr\u003cT\u003e() instead. [-Wdeprecated-declarations]\n"}
+,{"stream_name":"stdout","time":120.445323536,"data":"    169 |           CudaRasterizer::Rasterizer::backward(P, degree, M, R,\n"}
+,{"stream_name":"stdout","time":120.445670267,"data":"        |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    ^\n"}
+,{"stream_name":"stdout","time":120.445680786,"data":"  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here\n"}
+,{"stream_name":"stdout","time":120.445684402,"data":"    251 |   T * data() const {\n"}
+,{"stream_name":"stdout","time":120.445687554,"data":"        | ^ ~~\n"}
+,{"stream_name":"stdout","time":120.445690715,"data":"  /kaggle/working/repo/submodules/diff-gaussian-rasterization/rasterize_points.cu:169:584: warning: ‘T* at::Tensor::data() const [with T = int]’ is deprecated: Tensor.data\u003cT\u003e() is deprecated. Please use Tensor.data_ptr\u003cT\u003e() instead. [-Wdeprecated-declarations]\n"}
+,{"stream_name":"stdout","time":120.44569501,"data":"    169 |           CudaRasterizer::Rasterizer::backward(P, degree, M, R,\n"}
+,{"stream_name":"stdout","time":120.445698457,"data":"        |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        ^\n"}
+,{"stream_name":"stdout","time":120.445712163,"data":"  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here\n"}
+,{"stream_name":"stdout","time":120.4457156,"data":"    251 |   T * data() const {\n"}
+,{"stream_name":"stdout","time":120.445718613,"data":"        | ^ ~~\n"}
+,{"stream_name":"stdout","time":120.445722434,"data":"  /kaggle/working/repo/submodules/diff-gaussian-rasterization/rasterize_points.cu:169:829: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data\u003cT\u003e() is deprecated. Please use Tensor.data_ptr\u003cT\u003e() instead. [-Wdeprecated-declarations]\n"}
+,{"stream_name":"stdout","time":120.445726644,"data":"    169 |           CudaRasterizer::Rasterizer::backward(P, degree, M, R,\n"}
+,{"stream_name":"stdout","time":120.445729923,"data":"        |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             ^\n"}
+,{"stream_name":"stdout","time":120.4635706,"data":"  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here\n"}
+,{"stream_name":"stdout","time":120.463586022,"data":"    251 |   T * data() const {\n"}
+,{"stream_name":"stdout","time":120.463590577,"data":"        | ^ ~~\n"}
+,{"stream_name":"stdout","time":120.463594539,"data":"  /kaggle/working/repo/submodules/diff-gaussian-rasterization/rasterize_points.cu:169:873: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data\u003cT\u003e() is deprecated. Please use Tensor.data_ptr\u003cT\u003e() instead. [-Wdeprecated-declarations]\n"}
+,{"stream_name":"stdout","time":120.4635997,"data":"    169 |           CudaRasterizer::Rasterizer::backward(P, degree, M, R,\n"}
+,{"stream_name":"stdout","time":120.463878763,"data":"        |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         ^\n"}
+,{"stream_name":"stdout","time":120.463892564,"data":"  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here\n"}
+,{"stream_name":"stdout","time":120.463897137,"data":"    251 |   T * data() const {\n"}
+,{"stream_name":"stdout","time":120.46390085,"data":"        | ^ ~~\n"}
+,{"stream_name":"stdout","time":120.463904416,"data":"  /kaggle/working/repo/submodules/diff-gaussian-rasterization/rasterize_points.cu:169:915: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data\u003cT\u003e() is deprecated. Please use Tensor.data_ptr\u003cT\u003e() instead. [-Wdeprecated-declarations]\n"}
+,{"stream_name":"stdout","time":120.463994351,"data":"    169 |           CudaRasterizer::Rasterizer::backward(P, degree, M, R,\n"}
+,{"stream_name":"stdout","time":120.464007875,"data":"        |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   ^\n"}
+,{"stream_name":"stdout","time":120.464015155,"data":"  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here\n"}
+,{"stream_name":"stdout","time":120.464082706,"data":"    251 |   T * data() const {\n"}
+,{"stream_name":"stdout","time":120.464091859,"data":"        | ^ ~~\n"}
+,{"stream_name":"stdout","time":120.464096003,"data":"  /kaggle/working/repo/submodules/diff-gaussian-rasterization/rasterize_points.cu:169:959: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data\u003cT\u003e() is deprecated. Please use Tensor.data_ptr\u003cT\u003e() instead. [-Wdeprecated-declarations]\n"}
+,{"stream_name":"stdout","time":120.464100913,"data":"    169 |           CudaRasterizer::Rasterizer::backward(P, degree, M, R,\n"}
+,{"stream_name":"stdout","time":120.486642377,"data":"        |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               ^\n"}
+,{"stream_name":"stdout","time":120.486666939,"data":"  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here\n"}
+,{"stream_name":"stdout","time":120.486671228,"data":"    251 |   T * data() const {\n"}
+,{"stream_name":"stdout","time":120.486693172,"data":"        | ^ ~~\n"}
+,{"stream_name":"stdout","time":120.486739326,"data":"  /kaggle/working/repo/submodules/diff-gaussian-rasterization/rasterize_points.cu:169:1002: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data\u003cT\u003e() is deprecated. Please use Tensor.data_ptr\u003cT\u003e() instead. [-Wdeprecated-declarations]\n"}
+,{"stream_name":"stdout","time":120.486757744,"data":"    169 |           CudaRasterizer::Rasterizer::backward(P, degree, M, R,\n"}
+,{"stream_name":"stdout","time":120.486761807,"data":"        |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          ^\n"}
+,{"stream_name":"stdout","time":120.486768269,"data":"  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here\n"}
+,{"stream_name":"stdout","time":120.486772445,"data":"    251 |   T * data() const {\n"}
+,{"stream_name":"stdout","time":120.486776332,"data":"        | ^ ~~\n"}
+,{"stream_name":"stdout","time":120.486921178,"data":"  /kaggle/working/repo/submodules/diff-gaussian-rasterization/rasterize_points.cu:169:1046: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data\u003cT\u003e() is deprecated. Please use Tensor.data_ptr\u003cT\u003e() instead. [-Wdeprecated-declarations]\n"}
+,{"stream_name":"stdout","time":120.48693,"data":"    169 |           CudaRasterizer::Rasterizer::backward(P, degree, M, R,\n"}
+,{"stream_name":"stdout","time":120.486934094,"data":"        |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      ^\n"}
+,{"stream_name":"stdout","time":120.486941593,"data":"  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here\n"}
+,{"stream_name":"stdout","time":120.486945567,"data":"    251 |   T * data() const {\n"}
+,{"stream_name":"stdout","time":120.486948968,"data":"        | ^ ~~\n"}
+,{"stream_name":"stdout","time":120.486952526,"data":"  /kaggle/working/repo/submodules/diff-gaussian-rasterization/rasterize_points.cu:169:1088: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data\u003cT\u003e() is deprecated. Please use Tensor.data_ptr\u003cT\u003e() instead. [-Wdeprecated-declarations]\n"}
+,{"stream_name":"stdout","time":120.486956846,"data":"    169 |           CudaRasterizer::Rasterizer::backward(P, degree, M, R,\n"}
+,{"stream_name":"stdout","time":120.504767487,"data":"        |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                ^\n"}
+,{"stream_name":"stdout","time":120.504915312,"data":"  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here\n"}
+,{"stream_name":"stdout","time":120.50492454,"data":"    251 |   T * data() const {\n"}
+,{"stream_name":"stdout","time":120.504929447,"data":"        | ^ ~~\n"}
+,{"stream_name":"stdout","time":120.504933575,"data":"  /kaggle/working/repo/submodules/diff-gaussian-rasterization/rasterize_points.cu:169:1127: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data\u003cT\u003e() is deprecated. Please use Tensor.data_ptr\u003cT\u003e() instead. [-Wdeprecated-declarations]\n"}
+,{"stream_name":"stdout","time":120.504939504,"data":"    169 |           CudaRasterizer::Rasterizer::backward(P, degree, M, R,\n"}
+,{"stream_name":"stdout","time":120.504946931,"data":"        |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       ^\n"}
+,{"stream_name":"stdout","time":120.50495526,"data":"  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here\n"}
+,{"stream_name":"stdout","time":120.504960625,"data":"    251 |   T * data() const {\n"}
+,{"stream_name":"stdout","time":120.50496464,"data":"        | ^ ~~\n"}
+,{"stream_name":"stdout","time":120.504968594,"data":"  /kaggle/working/repo/submodules/diff-gaussian-rasterization/rasterize_points.cu:169:1170: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data\u003cT\u003e() is deprecated. Please use Tensor.data_ptr\u003cT\u003e() instead. [-Wdeprecated-declarations]\n"}
+,{"stream_name":"stdout","time":120.504973178,"data":"    169 |           CudaRasterizer::Rasterizer::backward(P, degree, M, R,\n"}
+,{"stream_name":"stdout","time":120.505042761,"data":"        |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  ^\n"}
+,{"stream_name":"stdout","time":120.505050652,"data":"  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here\n"}
+,{"stream_name":"stdout","time":120.505054174,"data":"    251 |   T * data() const {\n"}
+,{"stream_name":"stdout","time":120.521282092,"data":"        | ^ ~~\n"}
+,{"stream_name":"stdout","time":120.521478997,"data":"  /kaggle/working/repo/submodules/diff-gaussian-rasterization/rasterize_points.cu:169:1216: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data\u003cT\u003e() is deprecated. Please use Tensor.data_ptr\u003cT\u003e() instead. [-Wdeprecated-declarations]\n"}
+,{"stream_name":"stdout","time":120.521489609,"data":"    169 |           CudaRasterizer::Rasterizer::backward(P, degree, M, R,\n"}
+,{"stream_name":"stdout","time":120.521494127,"data":"        |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                ^\n"}
+,{"stream_name":"stdout","time":120.521502378,"data":"  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here\n"}
+,{"stream_name":"stdout","time":120.521509217,"data":"    251 |   T * data() const {\n"}
+,{"stream_name":"stdout","time":120.521513197,"data":"        | ^ ~~\n"}
+,{"stream_name":"stdout","time":120.521516788,"data":"  /kaggle/working/repo/submodules/diff-gaussian-rasterization/rasterize_points.cu: In function ‘at::Tensor markVisible(at::Tensor\u0026, at::Tensor\u0026, at::Tensor\u0026)’:\n"}
+,{"stream_name":"stdout","time":120.521522879,"data":"  /kaggle/working/repo/submodules/diff-gaussian-rasterization/rasterize_points.cu:217:87: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data\u003cT\u003e() is deprecated. Please use Tensor.data_ptr\u003cT\u003e() instead. [-Wdeprecated-declarations]\n"}
+,{"stream_name":"stdout","time":120.521622373,"data":"    217 |         CudaRasterizer::Rasterizer::markVisible(P,\n"}
+,{"stream_name":"stdout","time":120.521627725,"data":"        |                                                                                       ^\n"}
+,{"stream_name":"stdout","time":120.521631162,"data":"  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here\n"}
+,{"stream_name":"stdout","time":120.521635118,"data":"    251 |   T * data() const {\n"}
+,{"stream_name":"stdout","time":120.521638355,"data":"        | ^ ~~\n"}
+,{"stream_name":"stdout","time":120.521642723,"data":"  /kaggle/working/repo/submodules/diff-gaussian-rasterization/rasterize_points.cu:217:130: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data\u003cT\u003e() is deprecated. Please use Tensor.data_ptr\u003cT\u003e() instead. [-Wdeprecated-declarations]\n"}
+,{"stream_name":"stdout","time":120.52164693,"data":"    217 |         CudaRasterizer::Rasterizer::markVisible(P,\n"}
+,{"stream_name":"stdout","time":120.52165027,"data":"        |                                                                                                                                  ^\n"}
+,{"stream_name":"stdout","time":120.521653949,"data":"  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here\n"}
+,{"stream_name":"stdout","time":120.521657679,"data":"    251 |   T * data() const {\n"}
+,{"stream_name":"stdout","time":120.521682974,"data":"        | ^ ~~\n"}
+,{"stream_name":"stdout","time":120.521686284,"data":"  /kaggle/working/repo/submodules/diff-gaussian-rasterization/rasterize_points.cu:217:173: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data\u003cT\u003e() is deprecated. Please use Tensor.data_ptr\u003cT\u003e() instead. [-Wdeprecated-declarations]\n"}
+,{"stream_name":"stdout","time":120.521690549,"data":"    217 |         CudaRasterizer::Rasterizer::markVisible(P,\n"}
+,{"stream_name":"stdout","time":120.521694073,"data":"        |                                                                                                                                                                             ^\n"}
+,{"stream_name":"stdout","time":120.52169772,"data":"  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here\n"}
+,{"stream_name":"stdout","time":120.521701253,"data":"    251 |   T * data() const {\n"}
+,{"stream_name":"stdout","time":120.521704466,"data":"        | ^ ~~\n"}
+,{"stream_name":"stdout","time":120.521707692,"data":"  /kaggle/working/repo/submodules/diff-gaussian-rasterization/rasterize_points.cu:217:212: warning: ‘T* at::Tensor::data() const [with T = bool]’ is deprecated: Tensor.data\u003cT\u003e() is deprecated. Please use Tensor.data_ptr\u003cT\u003e() instead. [-Wdeprecated-declarations]\n"}
+,{"stream_name":"stdout","time":120.521711752,"data":"    217 |         CudaRasterizer::Rasterizer::markVisible(P,\n"}
+,{"stream_name":"stdout","time":122.560520833,"data":"        |                                                                                                                                                                                                                    ^\n"}
+,{"stream_name":"stdout","time":122.560569493,"data":"  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here\n"}
+,{"stream_name":"stdout","time":122.560575275,"data":"    251 |   T * data() const {\n"}
+,{"stream_name":"stdout","time":122.560604326,"data":"        | ^ ~~\n"}
+,{"stream_name":"stdout","time":122.560609831,"data":"  x86_64-linux-gnu-g++ -fno-strict-overflow -Wsign-compare -DNDEBUG -g -O2 -Wall -g -fstack-protector-strong -Wformat -Werror=format-security -g -fwrapv -O2 -shared -Wl,-O1 -Wl,-Bsymbolic-functions -Wl,-Bsymbolic-functions -g -fwrapv -O2 /kaggle/working/repo/submodules/diff-gaussian-rasterization/build/temp.linux-x86_64-cpython-312/cuda_rasterizer/backward.o /kaggle/working/repo/submodules/diff-gaussian-rasterization/build/temp.linux-x86_64-cpython-312/cuda_rasterizer/forward.o /kaggle/working/repo/submodules/diff-gaussian-rasterization/build/temp.linux-x86_64-cpython-312/cuda_rasterizer/rasterizer_impl.o /kaggle/working/repo/submodules/diff-gaussian-rasterization/build/temp.linux-x86_64-cpython-312/ext.o /kaggle/working/repo/submodules/diff-gaussian-rasterization/build/temp.linux-x86_64-cpython-312/rasterize_points.o -L/usr/local/lib/python3.12/dist-packages/torch/lib -L/usr/local/cuda/lib64 -L/usr/lib/x86_64-linux-gnu -lc10 -ltorch -ltorch_cpu -ltorch_python -lcudart -lc10_cuda -ltorch_cuda -o build/lib.linux-x86_64-cpython-312/diff_gaussian_rasterization/_C.cpython-312-x86_64-linux-gnu.so\n"}
+,{"stream_name":"stdout","time":122.560618143,"data":"  /usr/local/lib/python3.12/dist-packages/setuptools/_distutils/cmd.py:90: SetuptoolsDeprecationWarning: setup.py install is deprecated.\n"}
+,{"stream_name":"stdout","time":122.560623272,"data":"  !!\n"}
+,{"stream_name":"stdout","time":122.561020767,"data":"          ********************************************************************************\n"}
+,{"stream_name":"stdout","time":122.561039376,"data":"          Please avoid running ``setup.py`` directly.\n"}
+,{"stream_name":"stdout","time":122.561048853,"data":"          Instead, use pypa/build, pypa/installer or other\n"}
+,{"stream_name":"stdout","time":122.561075223,"data":"          standards-based tools.\n"}
+,{"stream_name":"stdout","time":122.56108007,"data":"          This deprecation is overdue, please update your project and remove deprecated\n"}
+,{"stream_name":"stdout","time":122.561084859,"data":"          calls to avoid build errors in the future.\n"}
+,{"stream_name":"stdout","time":122.561089418,"data":"          See https://blog.ganssle.io/articles/2021/10/setup-py-deprecated.html for details.\n"}
+,{"stream_name":"stdout","time":122.561095075,"data":"          ********************************************************************************\n"}
+,{"stream_name":"stdout","time":122.56109917,"data":"  !!\n"}
+,{"stream_name":"stdout","time":122.561103433,"data":"    self.initialize_options()\n"}
+,{"stream_name":"stdout","time":122.561108103,"data":"  installing to build/bdist.linux-x86_64/wheel\n"}
+,{"stream_name":"stdout","time":122.561112162,"data":"  running install\n"}
+,{"stream_name":"stdout","time":122.56113131,"data":"  running install_lib\n"}
+,{"stream_name":"stdout","time":122.561137415,"data":"  creating build/bdist.linux-x86_64/wheel\n"}
+,{"stream_name":"stdout","time":122.561145289,"data":"  creating build/bdist.linux-x86_64/wheel/diff_gaussian_rasterization\n"}
+,{"stream_name":"stdout","time":122.561148449,"data":"  copying build/lib.linux-x86_64-cpython-312/diff_gaussian_rasterization/__init__.py -\u003e build/bdist.linux-x86_64/wheel/./diff_gaussian_rasterization\n"}
+,{"stream_name":"stdout","time":122.56115195,"data":"  copying build/lib.linux-x86_64-cpython-312/diff_gaussian_rasterization/_C.cpython-312-x86_64-linux-gnu.so -\u003e build/bdist.linux-x86_64/wheel/./diff_gaussian_rasterization\n"}
+,{"stream_name":"stdout","time":122.561155166,"data":"  running install_egg_info\n"}
+,{"stream_name":"stdout","time":122.561157904,"data":"  running egg_info\n"}
+,{"stream_name":"stdout","time":122.561170147,"data":"  writing diff_gaussian_rasterization.egg-info/PKG-INFO\n"}
+,{"stream_name":"stdout","time":122.561173082,"data":"  writing dependency_links to diff_gaussian_rasterization.egg-info/dependency_links.txt\n"}
+,{"stream_name":"stdout","time":122.561175882,"data":"  writing top-level names to diff_gaussian_rasterization.egg-info/top_level.txt\n"}
+,{"stream_name":"stdout","time":122.561178707,"data":"  reading manifest file 'diff_gaussian_rasterization.egg-info/SOURCES.txt'\n"}
+,{"stream_name":"stdout","time":122.561181444,"data":"  adding license file 'LICENSE.md'\n"}
+,{"stream_name":"stdout","time":122.561184091,"data":"  writing manifest file 'diff_gaussian_rasterization.egg-info/SOURCES.txt'\n"}
+,{"stream_name":"stdout","time":122.561186815,"data":"  Copying diff_gaussian_rasterization.egg-info to build/bdist.linux-x86_64/wheel/./diff_gaussian_rasterization-0.0.0-py3.12.egg-info\n"}
+,{"stream_name":"stdout","time":122.561189779,"data":"  running install_scripts\n"}
+,{"stream_name":"stdout","time":122.561192431,"data":"  creating build/bdist.linux-x86_64/wheel/diff_gaussian_rasterization-0.0.0.dist-info/WHEEL\n"}
+,{"stream_name":"stdout","time":122.561195219,"data":"  creating '/tmp/pip-wheel-lumxgm4n/diff_gaussian_rasterization-0.0.0-cp312-cp312-linux_x86_64.whl' and adding 'build/bdist.linux-x86_64/wheel' to it\n"}
+,{"stream_name":"stdout","time":122.56119811,"data":"  adding 'diff_gaussian_rasterization/_C.cpython-312-x86_64-linux-gnu.so'\n"}
+,{"stream_name":"stdout","time":122.561202231,"data":"  adding 'diff_gaussian_rasterization/__init__.py'\n"}
+,{"stream_name":"stdout","time":122.561204999,"data":"  adding 'diff_gaussian_rasterization-0.0.0.dist-info/licenses/LICENSE.md'\n"}
+,{"stream_name":"stdout","time":122.561207746,"data":"  adding 'diff_gaussian_rasterization-0.0.0.dist-info/METADATA'\n"}
+,{"stream_name":"stdout","time":122.561210458,"data":"  adding 'diff_gaussian_rasterization-0.0.0.dist-info/WHEEL'\n"}
+,{"stream_name":"stdout","time":122.56121323,"data":"  adding 'diff_gaussian_rasterization-0.0.0.dist-info/top_level.txt'\n"}
+,{"stream_name":"stdout","time":122.56121599,"data":"  adding 'diff_gaussian_rasterization-0.0.0.dist-info/RECORD'\n"}
+,{"stream_name":"stdout","time":122.561218716,"data":"  removing build/bdist.linux-x86_64/wheel\n"}
+,{"stream_name":"stdout","time":124.825462278,"data":"  Building wheel for diff_gaussian_rasterization (setup.py): finished with status 'done'\n"}
+,{"stream_name":"stdout","time":124.825491875,"data":"  Created wheel for diff_gaussian_rasterization: filename=diff_gaussian_rasterization-0.0.0-cp312-cp312-linux_x86_64.whl size=3594743 sha256=55e68c1670397031dd7023591170c2e10d52ae3454e6f5984c11f520f2dca442\n"}
+,{"stream_name":"stdout","time":124.825498674,"data":"  Stored in directory: /root/.cache/pip/wheels/ab/06/f2/7a6285c344bab1d62d8cbe8cafc04c596a579b9f9e5ddb562e\n"}
+,{"stream_name":"stdout","time":124.825502461,"data":"Successfully built diff_gaussian_rasterization\n"}
+,{"stream_name":"stdout","time":124.825506226,"data":"Installing collected packages: diff_gaussian_rasterization\n"}
+,{"stream_name":"stdout","time":124.825510097,"data":"Successfully installed diff_gaussian_rasterization-0.0.0\n"}
+,{"stream_name":"stdout","time":124.825729924,"data":"+ pip install -v /kaggle/working/repo/submodules/simple-knn\n"}
+,{"stream_name":"stdout","time":196.661931101,"data":"Using pip 24.1.2 from /usr/local/lib/python3.12/dist-packages/pip (python 3.12)\n"}
+,{"stream_name":"stdout","time":196.661966399,"data":"Processing ./repo/submodules/simple-knn\n"}
+,{"stream_name":"stdout","time":196.661972437,"data":"  Preparing metadata (setup.py): started\n"}
+,{"stream_name":"stdout","time":196.661977384,"data":"  Running command python setup.py egg_info\n"}
+,{"stream_name":"stdout","time":196.661990749,"data":"  running egg_info\n"}
+,{"stream_name":"stdout","time":196.661994316,"data":"  creating /tmp/pip-pip-egg-info-ijda8fer/simple_knn.egg-info\n"}
+,{"stream_name":"stdout","time":196.661997935,"data":"  writing /tmp/pip-pip-egg-info-ijda8fer/simple_knn.egg-info/PKG-INFO\n"}
+,{"stream_name":"stdout","time":196.66200156,"data":"  writing dependency_links to /tmp/pip-pip-egg-info-ijda8fer/simple_knn.egg-info/dependency_links.txt\n"}
+,{"stream_name":"stdout","time":196.662005514,"data":"  writing top-level names to /tmp/pip-pip-egg-info-ijda8fer/simple_knn.egg-info/top_level.txt\n"}
+,{"stream_name":"stdout","time":196.662009171,"data":"  writing manifest file '/tmp/pip-pip-egg-info-ijda8fer/simple_knn.egg-info/SOURCES.txt'\n"}
+,{"stream_name":"stdout","time":196.662012544,"data":"  reading manifest file '/tmp/pip-pip-egg-info-ijda8fer/simple_knn.egg-info/SOURCES.txt'\n"}
+,{"stream_name":"stdout","time":196.662016074,"data":"  writing manifest file '/tmp/pip-pip-egg-info-ijda8fer/simple_knn.egg-info/SOURCES.txt'\n"}
+,{"stream_name":"stdout","time":196.662019739,"data":"  Preparing metadata (setup.py): finished with status 'done'\n"}
+,{"stream_name":"stdout","time":196.662023243,"data":"Building wheels for collected packages: simple_knn\n"}
+,{"stream_name":"stdout","time":196.662026694,"data":"  Building wheel for simple_knn (setup.py): started\n"}
+,{"stream_name":"stdout","time":196.662030072,"data":"  Running command python setup.py bdist_wheel\n"}
+,{"stream_name":"stdout","time":196.662033411,"data":"  running bdist_wheel\n"}
+,{"stream_name":"stdout","time":196.662036788,"data":"  running build\n"}
+,{"stream_name":"stdout","time":196.662040146,"data":"  running build_ext\n"}
+,{"stream_name":"stdout","time":196.662133728,"data":"  W0912 10:22:23.404000 224 torch/utils/cpp_extension.py:535] There are no x86_64-linux-gnu-g++ version bounds defined for CUDA version 12.8\n"}
+,{"stream_name":"stdout","time":196.662173638,"data":"  building 'simple_knn._C' extension\n"}
+,{"stream_name":"stdout","time":196.662177866,"data":"  creating /kaggle/working/repo/submodules/simple-knn/build/temp.linux-x86_64-cpython-312\n"}
+,{"stream_name":"stdout","time":196.662186213,"data":"  [1/3] /usr/local/cuda/bin/nvcc --generate-dependencies-with-compile --dependency-output /kaggle/working/repo/submodules/simple-knn/build/temp.linux-x86_64-cpython-312/simple_knn.o.d -I/usr/local/lib/python3.12/dist-packages/torch/include -I/usr/local/lib/python3.12/dist-packages/torch/include/torch/csrc/api/include -I/usr/local/cuda/include -I/usr/include/python3.12 -c -c /kaggle/working/repo/submodules/simple-knn/simple_knn.cu -o /kaggle/working/repo/submodules/simple-knn/build/temp.linux-x86_64-cpython-312/simple_knn.o -D__CUDA_NO_HALF_OPERATORS__ -D__CUDA_NO_HALF_CONVERSIONS__ -D__CUDA_NO_BFLOAT16_CONVERSIONS__ -D__CUDA_NO_HALF2_OPERATORS__ --expt-relaxed-constexpr --compiler-options ''\"'\"'-fPIC'\"'\"'' -DTORCH_API_INCLUDE_EXTENSION_H -DTORCH_EXTENSION_NAME=_C -gencode=arch=compute_75,code=sm_75 -std=c++17\n"}
+,{"stream_name":"stdout","time":196.662196214,"data":"  /kaggle/working/repo/submodules/simple-knn/simple_knn.cu:24: warning: \"__CUDACC__\" redefined\n"}
+,{"stream_name":"stdout","time":196.662199981,"data":"     24 | #define __CUDACC__\n"}
+,{"stream_name":"stdout","time":196.662203461,"data":"        |\n"}
+,{"stream_name":"stdout","time":196.662206774,"data":"  \u003ccommand-line\u003e: note: this is the location of the previous definition\n"}
+,{"stream_name":"stdout","time":196.662211053,"data":"  /kaggle/working/repo/submodules/simple-knn/simple_knn.cu:24: warning: \"__CUDACC__\" redefined\n"}
+,{"stream_name":"stdout","time":196.662215558,"data":"     24 | #define __CUDACC__\n"}
+,{"stream_name":"stdout","time":196.662226763,"data":"        |\n"}
+,{"stream_name":"stdout","time":196.662230304,"data":"  \u003ccommand-line\u003e: note: this is the location of the previous definition\n"}
+,{"stream_name":"stdout","time":196.662270004,"data":"  [2/3] c++ -MMD -MF /kaggle/working/repo/submodules/simple-knn/build/temp.linux-x86_64-cpython-312/ext.o.d -fno-strict-overflow -Wsign-compare -DNDEBUG -g -O2 -Wall -g -fstack-protector-strong -Wformat -Werror=format-security -g -fwrapv -O2 -fPIC -I/usr/local/lib/python3.12/dist-packages/torch/include -I/usr/local/lib/python3.12/dist-packages/torch/include/torch/csrc/api/include -I/usr/local/cuda/include -I/usr/include/python3.12 -c -c /kaggle/working/repo/submodules/simple-knn/ext.cpp -o /kaggle/working/repo/submodules/simple-knn/build/temp.linux-x86_64-cpython-312/ext.o -DTORCH_API_INCLUDE_EXTENSION_H -DTORCH_EXTENSION_NAME=_C -std=c++17\n"}
+,{"stream_name":"stdout","time":196.66230084,"data":"  [3/3] /usr/local/cuda/bin/nvcc --generate-dependencies-with-compile --dependency-output /kaggle/working/repo/submodules/simple-knn/build/temp.linux-x86_64-cpython-312/spatial.o.d -I/usr/local/lib/python3.12/dist-packages/torch/include -I/usr/local/lib/python3.12/dist-packages/torch/include/torch/csrc/api/include -I/usr/local/cuda/include -I/usr/include/python3.12 -c -c /kaggle/working/repo/submodules/simple-knn/spatial.cu -o /kaggle/working/repo/submodules/simple-knn/build/temp.linux-x86_64-cpython-312/spatial.o -D__CUDA_NO_HALF_OPERATORS__ -D__CUDA_NO_HALF_CONVERSIONS__ -D__CUDA_NO_BFLOAT16_CONVERSIONS__ -D__CUDA_NO_HALF2_OPERATORS__ --expt-relaxed-constexpr --compiler-options ''\"'\"'-fPIC'\"'\"'' -DTORCH_API_INCLUDE_EXTENSION_H -DTORCH_EXTENSION_NAME=_C -gencode=arch=compute_75,code=sm_75 -std=c++17\n"}
+,{"stream_name":"stdout","time":198.243344201,"data":"  /kaggle/working/repo/submodules/simple-knn/spatial.cu: In function ‘at::Tensor distCUDA2(const at::Tensor\u0026)’:\n"}
+,{"stream_name":"stdout","time":198.243371759,"data":"  /kaggle/working/repo/submodules/simple-knn/spatial.cu:23:64: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data\u003cT\u003e() is deprecated. Please use Tensor.data_ptr\u003cT\u003e() instead. [-Wdeprecated-declarations]\n"}
+,{"stream_name":"stdout","time":198.243377811,"data":"     23 |   SimpleKNN::knn(P, (float3*)points.contiguous().data\u003cfloat\u003e(), means.contiguous().data\u003cfloat\u003e());\n"}
+,{"stream_name":"stdout","time":198.243381973,"data":"        |                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~\n"}
+,{"stream_name":"stdout","time":198.243385792,"data":"  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here\n"}
+,{"stream_name":"stdout","time":198.243389604,"data":"    251 |   T * data() const {\n"}
+,{"stream_name":"stdout","time":198.243502897,"data":"        | ^ ~~\n"}
+,{"stream_name":"stdout","time":198.243535799,"data":"  /kaggle/working/repo/submodules/simple-knn/spatial.cu:23:102: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data\u003cT\u003e() is deprecated. Please use Tensor.data_ptr\u003cT\u003e() instead. [-Wdeprecated-declarations]\n"}
+,{"stream_name":"stdout","time":198.243543352,"data":"     23 |   SimpleKNN::knn(P, (float3*)points.contiguous().data\u003cfloat\u003e(), means.contiguous().data\u003cfloat\u003e());\n"}
+,{"stream_name":"stdout","time":198.243561327,"data":"        |                                                                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   ^\n"}
+,{"stream_name":"stdout","time":198.243565202,"data":"  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here\n"}
+,{"stream_name":"stdout","time":198.243568977,"data":"    251 |   T * data() const {\n"}
+,{"stream_name":"stdout","time":198.243584887,"data":"        | ^ ~~\n"}
+,{"stream_name":"stdout","time":198.24358916,"data":"  creating build/lib.linux-x86_64-cpython-312/simple_knn\n"}
+,{"stream_name":"stdout","time":198.243598923,"data":"  x86_64-linux-gnu-g++ -fno-strict-overflow -Wsign-compare -DNDEBUG -g -O2 -Wall -g -fstack-protector-strong -Wformat -Werror=format-security -g -fwrapv -O2 -shared -Wl,-O1 -Wl,-Bsymbolic-functions -Wl,-Bsymbolic-functions -g -fwrapv -O2 /kaggle/working/repo/submodules/simple-knn/build/temp.linux-x86_64-cpython-312/ext.o /kaggle/working/repo/submodules/simple-knn/build/temp.linux-x86_64-cpython-312/simple_knn.o /kaggle/working/repo/submodules/simple-knn/build/temp.linux-x86_64-cpython-312/spatial.o -L/usr/local/lib/python3.12/dist-packages/torch/lib -L/usr/local/cuda/lib64 -L/usr/lib/x86_64-linux-gnu -lc10 -ltorch -ltorch_cpu -ltorch_python -lcudart -lc10_cuda -ltorch_cuda -o build/lib.linux-x86_64-cpython-312/simple_knn/_C.cpython-312-x86_64-linux-gnu.so\n"}
+,{"stream_name":"stdout","time":198.243654095,"data":"  /usr/local/lib/python3.12/dist-packages/setuptools/_distutils/cmd.py:90: SetuptoolsDeprecationWarning: setup.py install is deprecated.\n"}
+,{"stream_name":"stdout","time":198.243987843,"data":"  !!\n"}
+,{"stream_name":"stdout","time":198.243999509,"data":"          ********************************************************************************\n"}
+,{"stream_name":"stdout","time":198.244004081,"data":"          Please avoid running ``setup.py`` directly.\n"}
+,{"stream_name":"stdout","time":198.244008173,"data":"          Instead, use pypa/build, pypa/installer or other\n"}
+,{"stream_name":"stdout","time":198.244012106,"data":"          standards-based tools.\n"}
+,{"stream_name":"stdout","time":198.244016406,"data":"          This deprecation is overdue, please update your project and remove deprecated\n"}
+,{"stream_name":"stdout","time":198.244020097,"data":"          calls to avoid build errors in the future.\n"}
+,{"stream_name":"stdout","time":198.24402364,"data":"          See https://blog.ganssle.io/articles/2021/10/setup-py-deprecated.html for details.\n"}
+,{"stream_name":"stdout","time":198.244027164,"data":"          ********************************************************************************\n"}
+,{"stream_name":"stdout","time":198.244030631,"data":"  !!\n"}
+,{"stream_name":"stdout","time":198.244033921,"data":"    self.initialize_options()\n"}
+,{"stream_name":"stdout","time":198.244037477,"data":"  installing to build/bdist.linux-x86_64/wheel\n"}
+,{"stream_name":"stdout","time":198.244041396,"data":"  running install\n"}
+,{"stream_name":"stdout","time":198.244045476,"data":"  running install_lib\n"}
+,{"stream_name":"stdout","time":198.244049578,"data":"  creating build/bdist.linux-x86_64/wheel\n"}
+,{"stream_name":"stdout","time":198.244053753,"data":"  creating build/bdist.linux-x86_64/wheel/simple_knn\n"}
+,{"stream_name":"stdout","time":198.244057313,"data":"  copying build/lib.linux-x86_64-cpython-312/simple_knn/_C.cpython-312-x86_64-linux-gnu.so -\u003e build/bdist.linux-x86_64/wheel/./simple_knn\n"}
+,{"stream_name":"stdout","time":198.244061235,"data":"  running install_egg_info\n"}
+,{"stream_name":"stdout","time":198.244064535,"data":"  running egg_info\n"}
+,{"stream_name":"stdout","time":198.244068213,"data":"  creating simple_knn.egg-info\n"}
+,{"stream_name":"stdout","time":198.244071604,"data":"  writing simple_knn.egg-info/PKG-INFO\n"}
+,{"stream_name":"stdout","time":198.244075111,"data":"  writing dependency_links to simple_knn.egg-info/dependency_links.txt\n"}
+,{"stream_name":"stdout","time":198.244078541,"data":"  writing top-level names to simple_knn.egg-info/top_level.txt\n"}
+,{"stream_name":"stdout","time":198.244081953,"data":"  writing manifest file 'simple_knn.egg-info/SOURCES.txt'\n"}
+,{"stream_name":"stdout","time":198.244095042,"data":"  reading manifest file 'simple_knn.egg-info/SOURCES.txt'\n"}
+,{"stream_name":"stdout","time":198.244100273,"data":"  writing manifest file 'simple_knn.egg-info/SOURCES.txt'\n"}
+,{"stream_name":"stdout","time":198.244107656,"data":"  Copying simple_knn.egg-info to build/bdist.linux-x86_64/wheel/./simple_knn-0.0.0-py3.12.egg-info\n"}
+,{"stream_name":"stdout","time":198.244110141,"data":"  running install_scripts\n"}
+,{"stream_name":"stdout","time":198.244112808,"data":"  creating build/bdist.linux-x86_64/wheel/simple_knn-0.0.0.dist-info/WHEEL\n"}
+,{"stream_name":"stdout","time":198.244115416,"data":"  creating '/tmp/pip-wheel-edc60q1r/simple_knn-0.0.0-cp312-cp312-linux_x86_64.whl' and adding 'build/bdist.linux-x86_64/wheel' to it\n"}
+,{"stream_name":"stdout","time":198.244118262,"data":"  adding 'simple_knn/_C.cpython-312-x86_64-linux-gnu.so'\n"}
+,{"stream_name":"stdout","time":198.244121748,"data":"  adding 'simple_knn-0.0.0.dist-info/METADATA'\n"}
+,{"stream_name":"stdout","time":198.244138966,"data":"  adding 'simple_knn-0.0.0.dist-info/WHEEL'\n"}
+,{"stream_name":"stdout","time":198.244142987,"data":"  adding 'simple_knn-0.0.0.dist-info/top_level.txt'\n"}
+,{"stream_name":"stdout","time":200.838404248,"data":"  adding 'simple_knn-0.0.0.dist-info/RECORD'\n"}
+,{"stream_name":"stdout","time":200.838441083,"data":"  removing build/bdist.linux-x86_64/wheel\n"}
+,{"stream_name":"stdout","time":200.838446009,"data":"  Building wheel for simple_knn (setup.py): finished with status 'done'\n"}
+,{"stream_name":"stdout","time":200.838449674,"data":"  Created wheel for simple_knn: filename=simple_knn-0.0.0-cp312-cp312-linux_x86_64.whl size=3393880 sha256=2f4c28b679c0268b5e2ed9736ad55402c567124c1f2912fb5c823ce351a98f8e\n"}
+,{"stream_name":"stdout","time":200.838459299,"data":"  Stored in directory: /root/.cache/pip/wheels/cb/b9/33/81960efda1471685833da4d25d613aa16a636d6e999b651d86\n"}
+,{"stream_name":"stdout","time":200.838463394,"data":"Successfully built simple_knn\n"}
+,{"stream_name":"stdout","time":200.838467123,"data":"Installing collected packages: simple_knn\n"}
+,{"stream_name":"stdout","time":200.838470334,"data":"Successfully installed simple_knn-0.0.0\n"}
+,{"stream_name":"stdout","time":211.672574812,"data":"+ python /kaggle/working/repo/convert_blender_data.py --blender_dir /kaggle/input/datasets/nguyenhung1903/nerf-synthetic-dataset/nerf_synthetic --object_name lego --out_dir /kaggle/working/multi-scale\n"}
+,{"stream_name":"stdout","time":313.774230836,"data":"['/kaggle/input/datasets/nguyenhung1903/nerf-synthetic-dataset/nerf_synthetic/lego']\n"}
+,{"stream_name":"stdout","time":313.774308067,"data":"Converting from /kaggle/input/datasets/nguyenhung1903/nerf-synthetic-dataset/nerf_synthetic/lego to /kaggle/working/multi-scale/lego\n"}
+,{"stream_name":"stdout","time":313.774317453,"data":"Split train\n"}
+,{"stream_name":"stdout","time":313.774322937,"data":"Loading imgs\n"}
+,{"stream_name":"stdout","time":313.774327791,"data":"Loaded all images, shape is (100, 800, 800, 4)\n"}
+,{"stream_name":"stdout","time":313.774333113,"data":"Saving images\n"}
+,{"stream_name":"stdout","time":313.774338355,"data":"Split val\n"}
+,{"stream_name":"stdout","time":313.774344097,"data":"Loading imgs\n"}
+,{"stream_name":"stdout","time":313.774349801,"data":"Loaded all images, shape is (100, 800, 800, 4)\n"}
+,{"stream_name":"stdout","time":313.774355255,"data":"Saving images\n"}
+,{"stream_name":"stdout","time":313.774360842,"data":"Split test\n"}
+,{"stream_name":"stdout","time":313.774366331,"data":"Loading imgs\n"}
+,{"stream_name":"stdout","time":313.774372088,"data":"Loaded all images, shape is (200, 800, 800, 4)\n"}
+,{"stream_name":"stdout","time":313.774389068,"data":"Saving images\n"}
+,{"stream_name":"stdout","time":313.774393143,"data":"train file_path \u003cclass 'list'\u003e (400,)\n"}
+,{"stream_name":"stdout","time":313.774397703,"data":"train cam2world \u003cclass 'list'\u003e (400, 4, 4)\n"}
+,{"stream_name":"stdout","time":313.77440184,"data":"train width \u003cclass 'list'\u003e (400,)\n"}
+,{"stream_name":"stdout","time":313.77440614,"data":"train height \u003cclass 'list'\u003e (400,)\n"}
+,{"stream_name":"stdout","time":313.774416652,"data":"train focal \u003cclass 'list'\u003e (400,)\n"}
+,{"stream_name":"stdout","time":313.77442135,"data":"train label \u003cclass 'list'\u003e (400,)\n"}
+,{"stream_name":"stdout","time":313.774425605,"data":"train near \u003cclass 'list'\u003e (400,)\n"}
+,{"stream_name":"stdout","time":313.774430056,"data":"train far \u003cclass 'list'\u003e (400,)\n"}
+,{"stream_name":"stdout","time":313.774434684,"data":"train lossmult \u003cclass 'list'\u003e (400,)\n"}
+,{"stream_name":"stdout","time":313.774439028,"data":"train pix2cam \u003cclass 'list'\u003e (400, 3, 3)\n"}
+,{"stream_name":"stdout","time":313.774443207,"data":"val file_path \u003cclass 'list'\u003e (400,)\n"}
+,{"stream_name":"stdout","time":313.774447721,"data":"val cam2world \u003cclass 'list'\u003e (400, 4, 4)\n"}
+,{"stream_name":"stdout","time":313.774452375,"data":"val width \u003cclass 'list'\u003e (400,)\n"}
+,{"stream_name":"stdout","time":313.774456648,"data":"val height \u003cclass 'list'\u003e (400,)\n"}
+,{"stream_name":"stdout","time":313.77446137,"data":"val focal \u003cclass 'list'\u003e (400,)\n"}
+,{"stream_name":"stdout","time":313.774465702,"data":"val label \u003cclass 'list'\u003e (400,)\n"}
+,{"stream_name":"stdout","time":313.7744695,"data":"val near \u003cclass 'list'\u003e (400,)\n"}
+,{"stream_name":"stdout","time":313.774474095,"data":"val far \u003cclass 'list'\u003e (400,)\n"}
+,{"stream_name":"stdout","time":313.774480981,"data":"val lossmult \u003cclass 'list'\u003e (400,)\n"}
+,{"stream_name":"stdout","time":313.7744853,"data":"val pix2cam \u003cclass 'list'\u003e (400, 3, 3)\n"}
+,{"stream_name":"stdout","time":313.774489385,"data":"test file_path \u003cclass 'list'\u003e (800,)\n"}
+,{"stream_name":"stdout","time":313.774493384,"data":"test cam2world \u003cclass 'list'\u003e (800, 4, 4)\n"}
+,{"stream_name":"stdout","time":313.774497453,"data":"test width \u003cclass 'list'\u003e (800,)\n"}
+,{"stream_name":"stdout","time":313.774501752,"data":"test height \u003cclass 'list'\u003e (800,)\n"}
+,{"stream_name":"stdout","time":313.774506136,"data":"test focal \u003cclass 'list'\u003e (800,)\n"}
+,{"stream_name":"stdout","time":313.77451596,"data":"test label \u003cclass 'list'\u003e (800,)\n"}
+,{"stream_name":"stdout","time":313.774520519,"data":"test near \u003cclass 'list'\u003e (800,)\n"}
+,{"stream_name":"stdout","time":313.77452465,"data":"test far \u003cclass 'list'\u003e (800,)\n"}
+,{"stream_name":"stdout","time":313.774528189,"data":"test lossmult \u003cclass 'list'\u003e (800,)\n"}
+,{"stream_name":"stdout","time":313.774532999,"data":"test pix2cam \u003cclass 'list'\u003e (800, 3, 3)\n"}
+,{"stream_name":"stdout","time":313.774850964,"data":"+ python /kaggle/working/repo/convert_blender_data.py --blender_dir /kaggle/input/datasets/nguyenhung1903/nerf-synthetic-dataset/nerf_synthetic --object_name chair --out_dir /kaggle/working/multi-scale\n"}
+,{"stream_name":"stdout","time":392.296639192,"data":"['/kaggle/input/datasets/nguyenhung1903/nerf-synthetic-dataset/nerf_synthetic/chair']\n"}
+,{"stream_name":"stdout","time":392.296699159,"data":"Converting from /kaggle/input/datasets/nguyenhung1903/nerf-synthetic-dataset/nerf_synthetic/chair to /kaggle/working/multi-scale/chair\n"}
+,{"stream_name":"stdout","time":392.296719835,"data":"Split train\n"}
+,{"stream_name":"stdout","time":392.296725206,"data":"Loading imgs\n"}
+,{"stream_name":"stdout","time":392.296729545,"data":"Loaded all images, shape is (100, 800, 800, 4)\n"}
+,{"stream_name":"stdout","time":392.296734143,"data":"Saving images\n"}
+,{"stream_name":"stdout","time":392.296738212,"data":"Split val\n"}
+,{"stream_name":"stdout","time":392.29674249,"data":"Loading imgs\n"}
+,{"stream_name":"stdout","time":392.296746866,"data":"Loaded all images, shape is (100, 800, 800, 4)\n"}
+,{"stream_name":"stdout","time":392.296751046,"data":"Saving images\n"}
+,{"stream_name":"stdout","time":392.296755316,"data":"Split test\n"}
+,{"stream_name":"stdout","time":392.296759636,"data":"Loading imgs\n"}
+,{"stream_name":"stdout","time":392.296763778,"data":"Loaded all images, shape is (200, 800, 800, 4)\n"}
+,{"stream_name":"stdout","time":392.296768141,"data":"Saving images\n"}
+,{"stream_name":"stdout","time":392.296772614,"data":"train file_path \u003cclass 'list'\u003e (400,)\n"}
+,{"stream_name":"stdout","time":392.296778026,"data":"train cam2world \u003cclass 'list'\u003e (400, 4, 4)\n"}
+,{"stream_name":"stdout","time":392.296782526,"data":"train width \u003cclass 'list'\u003e (400,)\n"}
+,{"stream_name":"stdout","time":392.296787003,"data":"train height \u003cclass 'list'\u003e (400,)\n"}
+,{"stream_name":"stdout","time":392.296791142,"data":"train focal \u003cclass 'list'\u003e (400,)\n"}
+,{"stream_name":"stdout","time":392.296794643,"data":"train label \u003cclass 'list'\u003e (400,)\n"}
+,{"stream_name":"stdout","time":392.296798728,"data":"train near \u003cclass 'list'\u003e (400,)\n"}
+,{"stream_name":"stdout","time":392.296817099,"data":"train far \u003cclass 'list'\u003e (400,)\n"}
+,{"stream_name":"stdout","time":392.296821728,"data":"train lossmult \u003cclass 'list'\u003e (400,)\n"}
+,{"stream_name":"stdout","time":392.296826514,"data":"train pix2cam \u003cclass 'list'\u003e (400, 3, 3)\n"}
+,{"stream_name":"stdout","time":392.296831136,"data":"val file_path \u003cclass 'list'\u003e (400,)\n"}
+,{"stream_name":"stdout","time":392.296835133,"data":"val cam2world \u003cclass 'list'\u003e (400, 4, 4)\n"}
+,{"stream_name":"stdout","time":392.296839204,"data":"val width \u003cclass 'list'\u003e (400,)\n"}
+,{"stream_name":"stdout","time":392.296842961,"data":"val height \u003cclass 'list'\u003e (400,)\n"}
+,{"stream_name":"stdout","time":392.296846183,"data":"val focal \u003cclass 'list'\u003e (400,)\n"}
+,{"stream_name":"stdout","time":392.296850109,"data":"val label \u003cclass 'list'\u003e (400,)\n"}
+,{"stream_name":"stdout","time":392.296853606,"data":"val near \u003cclass 'list'\u003e (400,)\n"}
+,{"stream_name":"stdout","time":392.296857883,"data":"val far \u003cclass 'list'\u003e (400,)\n"}
+,{"stream_name":"stdout","time":392.296862076,"data":"val lossmult \u003cclass 'list'\u003e (400,)\n"}
+,{"stream_name":"stdout","time":392.296866289,"data":"val pix2cam \u003cclass 'list'\u003e (400, 3, 3)\n"}
+,{"stream_name":"stdout","time":392.296869851,"data":"test file_path \u003cclass 'list'\u003e (800,)\n"}
+,{"stream_name":"stdout","time":392.296873936,"data":"test cam2world \u003cclass 'list'\u003e (800, 4, 4)\n"}
+,{"stream_name":"stdout","time":392.296877863,"data":"test width \u003cclass 'list'\u003e (800,)\n"}
+,{"stream_name":"stdout","time":392.296881891,"data":"test height \u003cclass 'list'\u003e (800,)\n"}
+,{"stream_name":"stdout","time":392.296885708,"data":"test focal \u003cclass 'list'\u003e (800,)\n"}
+,{"stream_name":"stdout","time":392.296894725,"data":"test label \u003cclass 'list'\u003e (800,)\n"}
+,{"stream_name":"stdout","time":392.296898996,"data":"test near \u003cclass 'list'\u003e (800,)\n"}
+,{"stream_name":"stdout","time":392.29690247,"data":"test far \u003cclass 'list'\u003e (800,)\n"}
+,{"stream_name":"stdout","time":392.296905879,"data":"test lossmult \u003cclass 'list'\u003e (800,)\n"}
+,{"stream_name":"stdout","time":392.296910534,"data":"test pix2cam \u003cclass 'list'\u003e (800, 3, 3)\n"}
+,{"stream_name":"stdout","time":394.464214192,"data":"found 8 trained models: ['chair', 'drums', 'ficus', 'hotdog', 'lego', 'materials', 'mic', 'ship']\n"}
+,{"stream_name":"stdout","time":395.769599277,"data":"+ OMP_NUM_THREADS=4 python render.py -m /kaggle/working/out/lego_full --skip_train -s /kaggle/working/multi-scale/lego   (cwd=/kaggle/working/repo)\n"}
+,{"stream_name":"stdout","time":440.654325981,"data":"Looking for config file in /kaggle/working/out/lego_full/cfg_args\n"}
+,{"stream_name":"stdout","time":440.654428626,"data":"Config file found: /kaggle/working/out/lego_full/cfg_args\n"}
+,{"stream_name":"stdout","time":440.65443509,"data":"Rendering /kaggle/working/out/lego_full\n"}
+,{"stream_name":"stdout","time":440.654438841,"data":"Loading trained model at iteration 30000 [12/09 10:26:56]\n"}
+,{"stream_name":"stdout","time":440.654442166,"data":"Found metadata.json file, assuming multi scale Blender data set! [12/09 10:26:56]\n"}
+,{"stream_name":"stdout","time":440.654445509,"data":"Reading train from metadata.json [12/09 10:26:56]\n"}
+,{"stream_name":"stdout","time":440.654448826,"data":"read split: train [12/09 10:26:56]\n"}
+,{"stream_name":"stdout","time":440.654451864,"data":"number of training images: 100 [12/09 10:27:00]\n"}
+,{"stream_name":"stdout","time":440.654454871,"data":"Reading test from metadata.json [12/09 10:27:00]\n"}
+,{"stream_name":"stdout","time":440.654457852,"data":"read split: test [12/09 10:27:00]\n"}
+,{"stream_name":"stdout","time":440.654460884,"data":"number of testing images: 800 [12/09 10:27:15]\n"}
+,{"stream_name":"stdout","time":440.654463879,"data":"Generating random point cloud (100000)... [12/09 10:27:15]\n"}
+,{"stream_name":"stdout","time":440.654466956,"data":"Loading Training Cameras [12/09 10:27:15]\n"}
+,{"stream_name":"stdout","time":440.654469987,"data":"Loading Test Cameras [12/09 10:27:17]\n"}
+,{"stream_name":"stdout","time":440.654482496,"data":"Rendering progress:   0%|          | 0/800 [00:00\u003c?, ?it/s]\n"}
+,{"stream_name":"stdout","time":490.095487352,"data":"+ OMP_NUM_THREADS=4 python metrics.py -m /kaggle/working/out/lego_full   (cwd=/kaggle/working/repo)\n"}
+,{"stream_name":"stdout","time":513.825937894,"data":"/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:208: UserWarning: The parameter 'pretrained' is deprecated since 0.13 and may be removed in the future, please use 'weights' instead.\n"}
+,{"stream_name":"stdout","time":513.82598818,"data":"  warnings.warn(\n"}
+,{"stream_name":"stdout","time":513.825994511,"data":"/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:223: UserWarning: Arguments other than a weight enum or `None` for 'weights' are deprecated since 0.13 and may be removed in the future. The current behavior is equivalent to passing `weights=VGG16_Weights.IMAGENET1K_V1`. You can also use `weights=VGG16_Weights.DEFAULT` to get the most up-to-date weights.\n"}
+,{"stream_name":"stdout","time":513.826000808,"data":"  warnings.warn(msg)\n"}
+,{"stream_name":"stdout","time":513.826005931,"data":"Setting up [LPIPS] perceptual loss: trunk [vgg], v[0.1], spatial [off]\n"}
+,{"stream_name":"stdout","time":513.826010977,"data":"Downloading: \"https://download.pytorch.org/models/vgg16-397923af.pth\" to /root/.cache/torch/hub/checkpoints/vgg16-397923af.pth\n"}
+,{"stream_name":"stdout","time":513.826033147,"data":"  0%|          | 0.00/528M [00:00\u003c?, ?B/s]\n"}
+,{"stream_name":"stdout","time":513.826037488,"data":"Loading model from: /usr/local/lib/python3.12/dist-packages/lpips/weights/v0.1/vgg.pth\n"}
+,{"stream_name":"stdout","time":513.826041335,"data":"Scene: /kaggle/working/out/lego_full\n"}
+,{"stream_name":"stdout","time":513.826045017,"data":"Method: ours_30000\n"}
+,{"stream_name":"stdout","time":564.627428597,"data":"  SSIM :    0.9827491\n"}
+,{"stream_name":"stdout","time":564.627465975,"data":"  PSNR :   32.8557358\n"}
+,{"stream_name":"stdout","time":564.62747239,"data":"  LPIPS:    0.0155787\n"}
+,{"stream_name":"stdout","time":564.717862427,"data":"[lego/full] PSNR 32.856 | 73.9 MB\n"}
+,{"stream_name":"stdout","time":564.79231126,"data":"[lego] B2 criterion sees the cone subset: 40 of 400 cameras\n"}
+,{"stream_name":"stdout","time":574.968235914,"data":"+ OMP_NUM_THREADS=4 python render.py -m /kaggle/working/out/lego_b2_0p01 --skip_train -s /kaggle/working/multi-scale/lego   (cwd=/kaggle/working/repo)\n"}
+,{"stream_name":"stdout","time":613.171844857,"data":"Looking for config file in /kaggle/working/out/lego_b2_0p01/cfg_args\n"}
+,{"stream_name":"stdout","time":613.171891711,"data":"Config file found: /kaggle/working/out/lego_b2_0p01/cfg_args\n"}
+,{"stream_name":"stdout","time":613.171898513,"data":"Rendering /kaggle/working/out/lego_b2_0p01\n"}
+,{"stream_name":"stdout","time":613.17190279,"data":"Loading trained model at iteration 30000 [12/09 10:29:50]\n"}
+,{"stream_name":"stdout","time":613.171907361,"data":"Found metadata.json file, assuming multi scale Blender data set! [12/09 10:29:50]\n"}
+,{"stream_name":"stdout","time":613.17191199,"data":"Reading train from metadata.json [12/09 10:29:50]\n"}
+,{"stream_name":"stdout","time":613.171916218,"data":"read split: train [12/09 10:29:50]\n"}
+,{"stream_name":"stdout","time":613.171920885,"data":"number of training images: 100 [12/09 10:29:55]\n"}
+,{"stream_name":"stdout","time":613.171929406,"data":"Reading test from metadata.json [12/09 10:29:55]\n"}
+,{"stream_name":"stdout","time":613.171933983,"data":"read split: test [12/09 10:29:55]\n"}
+,{"stream_name":"stdout","time":613.171937994,"data":"number of testing images: 800 [12/09 10:30:09]\n"}
+,{"stream_name":"stdout","time":613.171942426,"data":"Loading Training Cameras [12/09 10:30:09]\n"}
+,{"stream_name":"stdout","time":613.171946706,"data":"Loading Test Cameras [12/09 10:30:11]\n"}
+,{"stream_name":"stdout","time":613.172040021,"data":"Rendering progress:   0%|          | 0/800 [00:00\u003c?, ?it/s]\n"}
+,{"stream_name":"stdout","time":662.259780666,"data":"+ OMP_NUM_THREADS=4 python metrics.py -m /kaggle/working/out/lego_b2_0p01   (cwd=/kaggle/working/repo)\n"}
+,{"stream_name":"stdout","time":686.640818377,"data":"/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:208: UserWarning: The parameter 'pretrained' is deprecated since 0.13 and may be removed in the future, please use 'weights' instead.\n"}
+,{"stream_name":"stdout","time":686.640888433,"data":"  warnings.warn(\n"}
+,{"stream_name":"stdout","time":686.640897064,"data":"/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:223: UserWarning: Arguments other than a weight enum or `None` for 'weights' are deprecated since 0.13 and may be removed in the future. The current behavior is equivalent to passing `weights=VGG16_Weights.IMAGENET1K_V1`. You can also use `weights=VGG16_Weights.DEFAULT` to get the most up-to-date weights.\n"}
+,{"stream_name":"stdout","time":686.640904388,"data":"  warnings.warn(msg)\n"}
+,{"stream_name":"stdout","time":686.640928049,"data":"Setting up [LPIPS] perceptual loss: trunk [vgg], v[0.1], spatial [off]\n"}
+,{"stream_name":"stdout","time":686.640932617,"data":"Loading model from: /usr/local/lib/python3.12/dist-packages/lpips/weights/v0.1/vgg.pth\n"}
+,{"stream_name":"stdout","time":686.640936111,"data":"Scene: /kaggle/working/out/lego_b2_0p01\n"}
+,{"stream_name":"stdout","time":686.640939401,"data":"Method: ours_30000\n"}
+,{"stream_name":"stdout","time":686.640942748,"data":"Metric evaluation progress:   0%|          | 0/800 [00:00\u003c?, ?it/s]\n"}
+,{"stream_name":"stdout","time":738.541136676,"data":"  SSIM :    0.9747576\n"}
+,{"stream_name":"stdout","time":738.541211009,"data":"  PSNR :   31.2636642\n"}
+,{"stream_name":"stdout","time":738.54121851,"data":"  LPIPS:    0.0230370\n"}
+,{"stream_name":"stdout","time":738.635002787,"data":"[lego/b2/tau0.01] PSNR 31.264 | 73.9 MB | non-DC kept 13.3% | mean l_max 0.66\n"}
+,{"stream_name":"stdout","time":739.32627626,"data":"+ OMP_NUM_THREADS=4 python render.py -m /kaggle/working/out/lego_mag_0p01 --skip_train -s /kaggle/working/multi-scale/lego   (cwd=/kaggle/working/repo)\n"}
+,{"stream_name":"stdout","time":778.213103097,"data":"Looking for config file in /kaggle/working/out/lego_mag_0p01/cfg_args\n"}
+,{"stream_name":"stdout","time":778.213178421,"data":"Config file found: /kaggle/working/out/lego_mag_0p01/cfg_args\n"}
+,{"stream_name":"stdout","time":778.213186602,"data":"Rendering /kaggle/working/out/lego_mag_0p01\n"}
+,{"stream_name":"stdout","time":778.213191713,"data":"Loading trained model at iteration 30000 [12/09 10:32:34]\n"}
+,{"stream_name":"stdout","time":778.213196359,"data":"Found metadata.json file, assuming multi scale Blender data set! [12/09 10:32:34]\n"}
+,{"stream_name":"stdout","time":778.213201104,"data":"Reading train from metadata.json [12/09 10:32:34]\n"}
+,{"stream_name":"stdout","time":778.21320562,"data":"read split: train [12/09 10:32:34]\n"}
+,{"stream_name":"stdout","time":778.213216124,"data":"number of training images: 100 [12/09 10:32:39]\n"}
+,{"stream_name":"stdout","time":778.213233542,"data":"Reading test from metadata.json [12/09 10:32:39]\n"}
+,{"stream_name":"stdout","time":778.213238755,"data":"read split: test [12/09 10:32:39]\n"}
+,{"stream_name":"stdout","time":778.213243522,"data":"number of testing images: 800 [12/09 10:32:54]\n"}
+,{"stream_name":"stdout","time":778.213248939,"data":"Loading Training Cameras [12/09 10:32:54]\n"}
+,{"stream_name":"stdout","time":778.213265605,"data":"Loading Test Cameras [12/09 10:32:56]\n"}
+,{"stream_name":"stdout","time":778.213275466,"data":"Rendering progress:   0%|          | 0/800 [00:00\u003c?, ?it/s]\n"}
+,{"stream_name":"stdout","time":827.323340853,"data":"+ OMP_NUM_THREADS=4 python metrics.py -m /kaggle/working/out/lego_mag_0p01   (cwd=/kaggle/working/repo)\n"}
+,{"stream_name":"stdout","time":852.252601812,"data":"/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:208: UserWarning: The parameter 'pretrained' is deprecated since 0.13 and may be removed in the future, please use 'weights' instead.\n"}
+,{"stream_name":"stdout","time":852.252657751,"data":"  warnings.warn(\n"}
+,{"stream_name":"stdout","time":852.252664557,"data":"/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:223: UserWarning: Arguments other than a weight enum or `None` for 'weights' are deprecated since 0.13 and may be removed in the future. The current behavior is equivalent to passing `weights=VGG16_Weights.IMAGENET1K_V1`. You can also use `weights=VGG16_Weights.DEFAULT` to get the most up-to-date weights.\n"}
+,{"stream_name":"stdout","time":852.25267091,"data":"  warnings.warn(msg)\n"}
+,{"stream_name":"stdout","time":852.252675504,"data":"Setting up [LPIPS] perceptual loss: trunk [vgg], v[0.1], spatial [off]\n"}
+,{"stream_name":"stdout","time":852.252695398,"data":"Loading model from: /usr/local/lib/python3.12/dist-packages/lpips/weights/v0.1/vgg.pth\n"}
+,{"stream_name":"stdout","time":852.252699466,"data":"Scene: /kaggle/working/out/lego_mag_0p01\n"}
+,{"stream_name":"stdout","time":852.252703072,"data":"Method: ours_30000\n"}
+,{"stream_name":"stdout","time":852.252706629,"data":"Metric evaluation progress:   0%|          | 0/800 [00:00\u003c?, ?it/s]\n"}
+,{"stream_name":"stdout","time":904.685972044,"data":"  SSIM :    0.9791246\n"}
+,{"stream_name":"stdout","time":904.68603175,"data":"  PSNR :   32.0820236\n"}
+,{"stream_name":"stdout","time":904.686039193,"data":"  LPIPS:    0.0186076\n"}
+,{"stream_name":"stdout","time":904.771193773,"data":"[lego/magnitude/tau0.01] PSNR 32.082 | 73.9 MB | non-DC kept 13.3%\n"}
+,{"stream_name":"stdout","time":905.589153986,"data":"+ OMP_NUM_THREADS=4 python render.py -m /kaggle/working/out/lego_degmag_0p01 --skip_train -s /kaggle/working/multi-scale/lego   (cwd=/kaggle/working/repo)\n"}
+,{"stream_name":"stdout","time":942.885653648,"data":"Looking for config file in /kaggle/working/out/lego_degmag_0p01/cfg_args\n"}
+,{"stream_name":"stdout","time":942.885690218,"data":"Config file found: /kaggle/working/out/lego_degmag_0p01/cfg_args\n"}
+,{"stream_name":"stdout","time":942.885709473,"data":"Rendering /kaggle/working/out/lego_degmag_0p01\n"}
+,{"stream_name":"stdout","time":942.88571534,"data":"Loading trained model at iteration 30000 [12/09 10:35:20]\n"}
+,{"stream_name":"stdout","time":942.885720687,"data":"Found metadata.json file, assuming multi scale Blender data set! [12/09 10:35:20]\n"}
+,{"stream_name":"stdout","time":942.885726214,"data":"Reading train from metadata.json [12/09 10:35:20]\n"}
+,{"stream_name":"stdout","time":942.885731254,"data":"read split: train [12/09 10:35:20]\n"}
+,{"stream_name":"stdout","time":942.885735683,"data":"number of training images: 100 [12/09 10:35:25]\n"}
+,{"stream_name":"stdout","time":942.885740224,"data":"Reading test from metadata.json [12/09 10:35:25]\n"}
+,{"stream_name":"stdout","time":942.885744966,"data":"read split: test [12/09 10:35:25]\n"}
+,{"stream_name":"stdout","time":942.885749285,"data":"number of testing images: 800 [12/09 10:35:39]\n"}
+,{"stream_name":"stdout","time":942.885753753,"data":"Loading Training Cameras [12/09 10:35:39]\n"}
+,{"stream_name":"stdout","time":942.885763136,"data":"Loading Test Cameras [12/09 10:35:41]\n"}
+,{"stream_name":"stdout","time":942.885766321,"data":"Rendering progress:   0%|          | 0/800 [00:00\u003c?, ?it/s]\n"}
+,{"stream_name":"stdout","time":991.979044841,"data":"+ OMP_NUM_THREADS=4 python metrics.py -m /kaggle/working/out/lego_degmag_0p01   (cwd=/kaggle/working/repo)\n"}
+,{"stream_name":"stdout","time":1016.961138872,"data":"/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:208: UserWarning: The parameter 'pretrained' is deprecated since 0.13 and may be removed in the future, please use 'weights' instead.\n"}
+,{"stream_name":"stdout","time":1016.961189502,"data":"  warnings.warn(\n"}
+,{"stream_name":"stdout","time":1016.961197094,"data":"/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:223: UserWarning: Arguments other than a weight enum or `None` for 'weights' are deprecated since 0.13 and may be removed in the future. The current behavior is equivalent to passing `weights=VGG16_Weights.IMAGENET1K_V1`. You can also use `weights=VGG16_Weights.DEFAULT` to get the most up-to-date weights.\n"}
+,{"stream_name":"stdout","time":1016.961204422,"data":"  warnings.warn(msg)\n"}
+,{"stream_name":"stdout","time":1016.961210211,"data":"Setting up [LPIPS] perceptual loss: trunk [vgg], v[0.1], spatial [off]\n"}
+,{"stream_name":"stdout","time":1016.961231232,"data":"Loading model from: /usr/local/lib/python3.12/dist-packages/lpips/weights/v0.1/vgg.pth\n"}
+,{"stream_name":"stdout","time":1016.961236163,"data":"Scene: /kaggle/working/out/lego_degmag_0p01\n"}
+,{"stream_name":"stdout","time":1016.961240977,"data":"Method: ours_30000\n"}
+,{"stream_name":"stdout","time":1016.961298967,"data":"Metric evaluation progress:   0%|          | 0/800 [00:00\u003c?, ?it/s]\n"}
+,{"stream_name":"stdout","time":1069.318509583,"data":"  SSIM :    0.9771677\n"}
+,{"stream_name":"stdout","time":1069.318552701,"data":"  PSNR :   31.6788673\n"}
+,{"stream_name":"stdout","time":1069.318558655,"data":"  LPIPS:    0.0204119\n"}
+,{"stream_name":"stdout","time":1069.404175271,"data":"[lego/degmag/tau0.01] PSNR 31.679 | 73.9 MB | non-DC kept 13.3% | vs B2 -0.415 dB\n"}
+,{"stream_name":"stdout","time":1070.636690176,"data":"+ OMP_NUM_THREADS=4 python render.py -m /kaggle/working/out/chair_full --skip_train -s /kaggle/working/multi-scale/chair   (cwd=/kaggle/working/repo)\n"}
+,{"stream_name":"stdout","time":1106.714991842,"data":"Looking for config file in /kaggle/working/out/chair_full/cfg_args\n"}
+,{"stream_name":"stdout","time":1106.715033039,"data":"Config file found: /kaggle/working/out/chair_full/cfg_args\n"}
+,{"stream_name":"stdout","time":1106.715039342,"data":"Rendering /kaggle/working/out/chair_full\n"}
+,{"stream_name":"stdout","time":1106.715045052,"data":"Loading trained model at iteration 30000 [12/09 10:38:06]\n"}
+,{"stream_name":"stdout","time":1106.715051299,"data":"Found metadata.json file, assuming multi scale Blender data set! [12/09 10:38:06]\n"}
+,{"stream_name":"stdout","time":1106.715057151,"data":"Reading train from metadata.json [12/09 10:38:06]\n"}
+,{"stream_name":"stdout","time":1106.71506261,"data":"read split: train [12/09 10:38:06]\n"}
+,{"stream_name":"stdout","time":1106.715067968,"data":"number of training images: 100 [12/09 10:38:10]\n"}
+,{"stream_name":"stdout","time":1106.715073415,"data":"Reading test from metadata.json [12/09 10:38:10]\n"}
+,{"stream_name":"stdout","time":1106.715078722,"data":"read split: test [12/09 10:38:10]\n"}
+,{"stream_name":"stdout","time":1106.715372587,"data":"number of testing images: 800 [12/09 10:38:23]\n"}
+,{"stream_name":"stdout","time":1106.715411958,"data":"Generating random point cloud (100000)... [12/09 10:38:23]\n"}
+,{"stream_name":"stdout","time":1106.715420455,"data":"Loading Training Cameras [12/09 10:38:24]\n"}
+,{"stream_name":"stdout","time":1106.715425813,"data":"Loading Test Cameras [12/09 10:38:25]\n"}
+,{"stream_name":"stdout","time":1106.715431249,"data":"Rendering progress:   0%|          | 0/800 [00:00\u003c?, ?it/s]\n"}
+,{"stream_name":"stdout","time":1143.573508507,"data":"+ OMP_NUM_THREADS=4 python metrics.py -m /kaggle/working/out/chair_full   (cwd=/kaggle/working/repo)\n"}
+,{"stream_name":"stdout","time":1167.699741022,"data":"/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:208: UserWarning: The parameter 'pretrained' is deprecated since 0.13 and may be removed in the future, please use 'weights' instead.\n"}
+,{"stream_name":"stdout","time":1167.699785549,"data":"  warnings.warn(\n"}
+,{"stream_name":"stdout","time":1167.699791384,"data":"/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:223: UserWarning: Arguments other than a weight enum or `None` for 'weights' are deprecated since 0.13 and may be removed in the future. The current behavior is equivalent to passing `weights=VGG16_Weights.IMAGENET1K_V1`. You can also use `weights=VGG16_Weights.DEFAULT` to get the most up-to-date weights.\n"}
+,{"stream_name":"stdout","time":1167.699797469,"data":"  warnings.warn(msg)\n"}
+,{"stream_name":"stdout","time":1167.699814343,"data":"Setting up [LPIPS] perceptual loss: trunk [vgg], v[0.1], spatial [off]\n"}
+,{"stream_name":"stdout","time":1167.6998181230001,"data":"Loading model from: /usr/local/lib/python3.12/dist-packages/lpips/weights/v0.1/vgg.pth\n"}
+,{"stream_name":"stdout","time":1167.700142383,"data":"Scene: /kaggle/working/out/chair_full\n"}
+,{"stream_name":"stdout","time":1167.700167058,"data":"Method: ours_30000\n"}
+,{"stream_name":"stdout","time":1167.700171893,"data":"Metric evaluation progress:   0%|          | 0/800 [00:00\u003c?, ?it/s]\n"}
+,{"stream_name":"stdout","time":1218.677048737,"data":"  SSIM :    0.9877723\n"}
+,{"stream_name":"stdout","time":1218.677099907,"data":"  PSNR :   35.6125450\n"}
+,{"stream_name":"stdout","time":1218.677105493,"data":"  LPIPS:    0.0132841\n"}
+,{"stream_name":"stdout","time":1218.756626894,"data":"[chair/full] PSNR 35.613 | 67.3 MB\n"}
+,{"stream_name":"stdout","time":1218.809451299,"data":"[chair] B2 criterion sees the cone subset: 40 of 400 cameras\n"}
+,{"stream_name":"stdout","time":1228.590870216,"data":"+ OMP_NUM_THREADS=4 python render.py -m /kaggle/working/out/chair_b2_0p01 --skip_train -s /kaggle/working/multi-scale/chair   (cwd=/kaggle/working/repo)\n"}
+,{"stream_name":"stdout","time":1265.668044535,"data":"Looking for config file in /kaggle/working/out/chair_b2_0p01/cfg_args\n"}
+,{"stream_name":"stdout","time":1265.668081269,"data":"Config file found: /kaggle/working/out/chair_b2_0p01/cfg_args\n"}
+,{"stream_name":"stdout","time":1265.668087776,"data":"Rendering /kaggle/working/out/chair_b2_0p01\n"}
+,{"stream_name":"stdout","time":1265.668092676,"data":"Loading trained model at iteration 30000 [12/09 10:40:44]\n"}
+,{"stream_name":"stdout","time":1265.668097704,"data":"Found metadata.json file, assuming multi scale Blender data set! [12/09 10:40:44]\n"}
+,{"stream_name":"stdout","time":1265.668128196,"data":"Reading train from metadata.json [12/09 10:40:44]\n"}
+,{"stream_name":"stdout","time":1265.668149853,"data":"read split: train [12/09 10:40:44]\n"}
+,{"stream_name":"stdout","time":1265.66815551,"data":"number of training images: 100 [12/09 10:40:48]\n"}
+,{"stream_name":"stdout","time":1265.668160412,"data":"Reading test from metadata.json [12/09 10:40:48]\n"}
+,{"stream_name":"stdout","time":1265.668165338,"data":"read split: test [12/09 10:40:48]\n"}
+,{"stream_name":"stdout","time":1265.668180646,"data":"number of testing images: 800 [12/09 10:41:03]\n"}
+,{"stream_name":"stdout","time":1265.66819105,"data":"Loading Training Cameras [12/09 10:41:03]\n"}
+,{"stream_name":"stdout","time":1265.668195925,"data":"Loading Test Cameras [12/09 10:41:04]\n"}
+,{"stream_name":"stdout","time":1265.668200509,"data":"Rendering progress:   0%|          | 0/800 [00:00\u003c?, ?it/s]\n"}
+,{"stream_name":"stdout","time":1307.127900884,"data":"+ OMP_NUM_THREADS=4 python metrics.py -m /kaggle/working/out/chair_b2_0p01   (cwd=/kaggle/working/repo)\n"}
+,{"stream_name":"stdout","time":1331.860419537,"data":"/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:208: UserWarning: The parameter 'pretrained' is deprecated since 0.13 and may be removed in the future, please use 'weights' instead.\n"}
+,{"stream_name":"stdout","time":1331.860470499,"data":"  warnings.warn(\n"}
+,{"stream_name":"stdout","time":1331.860475953,"data":"/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:223: UserWarning: Arguments other than a weight enum or `None` for 'weights' are deprecated since 0.13 and may be removed in the future. The current behavior is equivalent to passing `weights=VGG16_Weights.IMAGENET1K_V1`. You can also use `weights=VGG16_Weights.DEFAULT` to get the most up-to-date weights.\n"}
+,{"stream_name":"stdout","time":1331.860480108,"data":"  warnings.warn(msg)\n"}
+,{"stream_name":"stdout","time":1331.860517788,"data":"Setting up [LPIPS] perceptual loss: trunk [vgg], v[0.1], spatial [off]\n"}
+,{"stream_name":"stdout","time":1331.860522691,"data":"Loading model from: /usr/local/lib/python3.12/dist-packages/lpips/weights/v0.1/vgg.pth\n"}
+,{"stream_name":"stdout","time":1331.860526441,"data":"Scene: /kaggle/working/out/chair_b2_0p01\n"}
+,{"stream_name":"stdout","time":1331.860529835,"data":"Method: ours_30000\n"}
+,{"stream_name":"stdout","time":1331.860533136,"data":"Metric evaluation progress:   0%|          | 0/800 [00:00\u003c?, ?it/s]\n"}
+,{"stream_name":"stdout","time":1383.475848144,"data":"  SSIM :    0.9786282\n"}
+,{"stream_name":"stdout","time":1383.475883045,"data":"  PSNR :   32.4532013\n"}
+,{"stream_name":"stdout","time":1383.475889935,"data":"  LPIPS:    0.0217022\n"}
+,{"stream_name":"stdout","time":1383.558484912,"data":"[chair/b2/tau0.01] PSNR 32.453 | 67.3 MB | non-DC kept 20.0% | mean l_max 1.00\n"}
+,{"stream_name":"stdout","time":1384.096557795,"data":"+ OMP_NUM_THREADS=4 python render.py -m /kaggle/working/out/chair_mag_0p01 --skip_train -s /kaggle/working/multi-scale/chair   (cwd=/kaggle/working/repo)\n"}
+,{"stream_name":"stdout","time":1420.840366371,"data":"Looking for config file in /kaggle/working/out/chair_mag_0p01/cfg_args\n"}
+,{"stream_name":"stdout","time":1420.840429146,"data":"Config file found: /kaggle/working/out/chair_mag_0p01/cfg_args\n"}
+,{"stream_name":"stdout","time":1420.840438377,"data":"Rendering /kaggle/working/out/chair_mag_0p01\n"}
+,{"stream_name":"stdout","time":1420.840444805,"data":"Loading trained model at iteration 30000 [12/09 10:43:19]\n"}
+,{"stream_name":"stdout","time":1420.840450412,"data":"Found metadata.json file, assuming multi scale Blender data set! [12/09 10:43:19]\n"}
+,{"stream_name":"stdout","time":1420.840455789,"data":"Reading train from metadata.json [12/09 10:43:19]\n"}
+,{"stream_name":"stdout","time":1420.840460883,"data":"read split: train [12/09 10:43:19]\n"}
+,{"stream_name":"stdout","time":1420.840465995,"data":"number of training images: 100 [12/09 10:43:24]\n"}
+,{"stream_name":"stdout","time":1420.840477617,"data":"Reading test from metadata.json [12/09 10:43:24]\n"}
+,{"stream_name":"stdout","time":1420.840481988,"data":"read split: test [12/09 10:43:24]\n"}
+,{"stream_name":"stdout","time":1420.84048548,"data":"number of testing images: 800 [12/09 10:43:38]\n"}
+,{"stream_name":"stdout","time":1420.840489157,"data":"Loading Training Cameras [12/09 10:43:38]\n"}
+,{"stream_name":"stdout","time":1420.840492646,"data":"Loading Test Cameras [12/09 10:43:40]\n"}
+,{"stream_name":"stdout","time":1420.840496149,"data":"Rendering progress:   0%|          | 0/800 [00:00\u003c?, ?it/s]\n"}
+,{"stream_name":"stdout","time":1462.461209307,"data":"+ OMP_NUM_THREADS=4 python metrics.py -m /kaggle/working/out/chair_mag_0p01   (cwd=/kaggle/working/repo)\n"}
+,{"stream_name":"stdout","time":1487.282013346,"data":"/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:208: UserWarning: The parameter 'pretrained' is deprecated since 0.13 and may be removed in the future, please use 'weights' instead.\n"}
+,{"stream_name":"stdout","time":1487.282064569,"data":"  warnings.warn(\n"}
+,{"stream_name":"stdout","time":1487.282071485,"data":"/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:223: UserWarning: Arguments other than a weight enum or `None` for 'weights' are deprecated since 0.13 and may be removed in the future. The current behavior is equivalent to passing `weights=VGG16_Weights.IMAGENET1K_V1`. You can also use `weights=VGG16_Weights.DEFAULT` to get the most up-to-date weights.\n"}
+,{"stream_name":"stdout","time":1487.282078164,"data":"  warnings.warn(msg)\n"}
+,{"stream_name":"stdout","time":1487.28210059,"data":"Setting up [LPIPS] perceptual loss: trunk [vgg], v[0.1], spatial [off]\n"}
+,{"stream_name":"stdout","time":1487.282104936,"data":"Loading model from: /usr/local/lib/python3.12/dist-packages/lpips/weights/v0.1/vgg.pth\n"}
+,{"stream_name":"stdout","time":1487.282109094,"data":"Scene: /kaggle/working/out/chair_mag_0p01\n"}
+,{"stream_name":"stdout","time":1487.282113493,"data":"Method: ours_30000\n"}
+,{"stream_name":"stdout","time":1487.282117482,"data":"Metric evaluation progress:   0%|          | 0/800 [00:00\u003c?, ?it/s]\n"}
+,{"stream_name":"stdout","time":1538.65540941,"data":"  SSIM :    0.9847236\n"}
+,{"stream_name":"stdout","time":1538.655452877,"data":"  PSNR :   34.2686996\n"}
+,{"stream_name":"stdout","time":1538.65547224,"data":"  LPIPS:    0.0160503\n"}
+,{"stream_name":"stdout","time":1538.73483969,"data":"[chair/magnitude/tau0.01] PSNR 34.269 | 67.3 MB | non-DC kept 20.0%\n"}
+,{"stream_name":"stdout","time":1539.501723423,"data":"+ OMP_NUM_THREADS=4 python render.py -m /kaggle/working/out/chair_degmag_0p01 --skip_train -s /kaggle/working/multi-scale/chair   (cwd=/kaggle/working/repo)\n"}
+,{"stream_name":"stdout","time":1576.642068069,"data":"Looking for config file in /kaggle/working/out/chair_degmag_0p01/cfg_args\n"}
+,{"stream_name":"stdout","time":1576.642103735,"data":"Config file found: /kaggle/working/out/chair_degmag_0p01/cfg_args\n"}
+,{"stream_name":"stdout","time":1576.642110268,"data":"Rendering /kaggle/working/out/chair_degmag_0p01\n"}
+,{"stream_name":"stdout","time":1576.642115043,"data":"Loading trained model at iteration 30000 [12/09 10:45:55]\n"}
+,{"stream_name":"stdout","time":1576.642119513,"data":"Found metadata.json file, assuming multi scale Blender data set! [12/09 10:45:55]\n"}
+,{"stream_name":"stdout","time":1576.642124065,"data":"Reading train from metadata.json [12/09 10:45:55]\n"}
+,{"stream_name":"stdout","time":1576.642128439,"data":"read split: train [12/09 10:45:55]\n"}
+,{"stream_name":"stdout","time":1576.642133209,"data":"number of training images: 100 [12/09 10:45:59]\n"}
+,{"stream_name":"stdout","time":1576.642137971,"data":"Reading test from metadata.json [12/09 10:45:59]\n"}
+,{"stream_name":"stdout","time":1576.64214317,"data":"read split: test [12/09 10:45:59]\n"}
+,{"stream_name":"stdout","time":1576.642147695,"data":"number of testing images: 800 [12/09 10:46:14]\n"}
+,{"stream_name":"stdout","time":1576.642151917,"data":"Loading Training Cameras [12/09 10:46:14]\n"}
+,{"stream_name":"stdout","time":1576.642168943,"data":"Loading Test Cameras [12/09 10:46:15]\n"}
+,{"stream_name":"stdout","time":1576.642258873,"data":"Rendering progress:   0%|          | 0/800 [00:00\u003c?, ?it/s]\n"}
+,{"stream_name":"stdout","time":1616.72137317,"data":"+ OMP_NUM_THREADS=4 python metrics.py -m /kaggle/working/out/chair_degmag_0p01   (cwd=/kaggle/working/repo)\n"}
+,{"stream_name":"stdout","time":1642.360827813,"data":"/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:208: UserWarning: The parameter 'pretrained' is deprecated since 0.13 and may be removed in the future, please use 'weights' instead.\n"}
+,{"stream_name":"stdout","time":1642.360882735,"data":"  warnings.warn(\n"}
+,{"stream_name":"stdout","time":1642.360892524,"data":"/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:223: UserWarning: Arguments other than a weight enum or `None` for 'weights' are deprecated since 0.13 and may be removed in the future. The current behavior is equivalent to passing `weights=VGG16_Weights.IMAGENET1K_V1`. You can also use `weights=VGG16_Weights.DEFAULT` to get the most up-to-date weights.\n"}
+,{"stream_name":"stdout","time":1642.360904365,"data":"  warnings.warn(msg)\n"}
+,{"stream_name":"stdout","time":1642.360929173,"data":"Setting up [LPIPS] perceptual loss: trunk [vgg], v[0.1], spatial [off]\n"}
+,{"stream_name":"stdout","time":1642.360932386,"data":"Loading model from: /usr/local/lib/python3.12/dist-packages/lpips/weights/v0.1/vgg.pth\n"}
+,{"stream_name":"stdout","time":1642.360935145,"data":"Scene: /kaggle/working/out/chair_degmag_0p01\n"}
+,{"stream_name":"stdout","time":1642.360937889,"data":"Method: ours_30000\n"}
+,{"stream_name":"stdout","time":1642.36094053,"data":"Metric evaluation progress:   0%|          | 0/800 [00:00\u003c?, ?it/s]\n"}
+,{"stream_name":"stdout","time":1694.293872011,"data":"  SSIM :    0.9810556\n"}
+,{"stream_name":"stdout","time":1694.293913783,"data":"  PSNR :   32.5408821\n"}
+,{"stream_name":"stdout","time":1694.293921707,"data":"  LPIPS:    0.0194133\n"}
+,{"stream_name":"stdout","time":1694.382816248,"data":"[chair/degmag/tau0.01] PSNR 32.541 | 67.3 MB | non-DC kept 20.0% | vs B2 -0.088 dB\n"}
+,{"stream_name":"stdout","time":1694.460325128,"data":"[lego] B2 criterion sees the cone subset: 40 of 400 cameras\n"}
+,{"stream_name":"stdout","time":1706.439447974,"data":"+ OMP_NUM_THREADS=4 python render.py -m /kaggle/working/out/lego_b2_0p003 --skip_train -s /kaggle/working/multi-scale/lego   (cwd=/kaggle/working/repo)\n"}
+,{"stream_name":"stdout","time":1750.236699558,"data":"Looking for config file in /kaggle/working/out/lego_b2_0p003/cfg_args\n"}
+,{"stream_name":"stdout","time":1750.236746125,"data":"Config file found: /kaggle/working/out/lego_b2_0p003/cfg_args\n"}
+,{"stream_name":"stdout","time":1750.236751809,"data":"Rendering /kaggle/working/out/lego_b2_0p003\n"}
+,{"stream_name":"stdout","time":1750.236756366,"data":"Loading trained model at iteration 30000 [12/09 10:48:42]\n"}
+,{"stream_name":"stdout","time":1750.236777709,"data":"Found metadata.json file, assuming multi scale Blender data set! [12/09 10:48:42]\n"}
+,{"stream_name":"stdout","time":1750.236784001,"data":"Reading train from metadata.json [12/09 10:48:42]\n"}
+,{"stream_name":"stdout","time":1750.236789646,"data":"read split: train [12/09 10:48:42]\n"}
+,{"stream_name":"stdout","time":1750.236795746,"data":"number of training images: 100 [12/09 10:48:48]\n"}
+,{"stream_name":"stdout","time":1750.236801419,"data":"Reading test from metadata.json [12/09 10:48:48]\n"}
+,{"stream_name":"stdout","time":1750.236806491,"data":"read split: test [12/09 10:48:48]\n"}
+,{"stream_name":"stdout","time":1750.236811356,"data":"number of testing images: 800 [12/09 10:49:04]\n"}
+,{"stream_name":"stdout","time":1750.236816275,"data":"Loading Training Cameras [12/09 10:49:04]\n"}
+,{"stream_name":"stdout","time":1750.236821186,"data":"Loading Test Cameras [12/09 10:49:06]\n"}
+,{"stream_name":"stdout","time":1750.236832434,"data":"Rendering progress:   0%|          | 0/800 [00:00\u003c?, ?it/s]\n"}
+,{"stream_name":"stdout","time":1804.783483717,"data":"+ OMP_NUM_THREADS=4 python metrics.py -m /kaggle/working/out/lego_b2_0p003   (cwd=/kaggle/working/repo)\n"}
+,{"stream_name":"stdout","time":1831.976603276,"data":"/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:208: UserWarning: The parameter 'pretrained' is deprecated since 0.13 and may be removed in the future, please use 'weights' instead.\n"}
+,{"stream_name":"stdout","time":1831.976664991,"data":"  warnings.warn(\n"}
+,{"stream_name":"stdout","time":1831.976673191,"data":"/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:223: UserWarning: Arguments other than a weight enum or `None` for 'weights' are deprecated since 0.13 and may be removed in the future. The current behavior is equivalent to passing `weights=VGG16_Weights.IMAGENET1K_V1`. You can also use `weights=VGG16_Weights.DEFAULT` to get the most up-to-date weights.\n"}
+,{"stream_name":"stdout","time":1831.976697744,"data":"  warnings.warn(msg)\n"}
+,{"stream_name":"stdout","time":1831.976702376,"data":"Setting up [LPIPS] perceptual loss: trunk [vgg], v[0.1], spatial [off]\n"}
+,{"stream_name":"stdout","time":1831.976707064,"data":"Loading model from: /usr/local/lib/python3.12/dist-packages/lpips/weights/v0.1/vgg.pth\n"}
+,{"stream_name":"stdout","time":1831.976711911,"data":"Scene: /kaggle/working/out/lego_b2_0p003\n"}
+,{"stream_name":"stdout","time":1831.976716189,"data":"Method: ours_30000\n"}
+,{"stream_name":"stdout","time":1831.976720339,"data":"Metric evaluation progress:   0%|          | 0/800 [00:00\u003c?, ?it/s]\n"}
+,{"stream_name":"stdout","time":1884.380703927,"data":"  SSIM :    0.9772955\n"}
+,{"stream_name":"stdout","time":1884.380780099,"data":"  PSNR :   31.6973248\n"}
+,{"stream_name":"stdout","time":1884.380788298,"data":"  LPIPS:    0.0209803\n"}
+,{"stream_name":"stdout","time":1884.478610924,"data":"[lego/b2/tau0.003_sweep] PSNR 31.697 | 73.9 MB | non-DC kept 20.0% | mean l_max 1.00\n"}
+,{"stream_name":"stdout","time":1885.134047857,"data":"+ OMP_NUM_THREADS=4 python render.py -m /kaggle/working/out/lego_mag_0p003 --skip_train -s /kaggle/working/multi-scale/lego   (cwd=/kaggle/working/repo)\n"}
+,{"stream_name":"stdout","time":1927.433318603,"data":"Looking for config file in /kaggle/working/out/lego_mag_0p003/cfg_args\n"}
+,{"stream_name":"stdout","time":1927.433360402,"data":"Config file found: /kaggle/working/out/lego_mag_0p003/cfg_args\n"}
+,{"stream_name":"stdout","time":1927.433367752,"data":"Rendering /kaggle/working/out/lego_mag_0p003\n"}
+,{"stream_name":"stdout","time":1927.433372728,"data":"Loading trained model at iteration 30000 [12/09 10:51:40]\n"}
+,{"stream_name":"stdout","time":1927.433388002,"data":"Found metadata.json file, assuming multi scale Blender data set! [12/09 10:51:40]\n"}
+,{"stream_name":"stdout","time":1927.433394079,"data":"Reading train from metadata.json [12/09 10:51:40]\n"}
+,{"stream_name":"stdout","time":1927.433400022,"data":"read split: train [12/09 10:51:40]\n"}
+,{"stream_name":"stdout","time":1927.43340487,"data":"number of training images: 100 [12/09 10:51:46]\n"}
+,{"stream_name":"stdout","time":1927.433409737,"data":"Reading test from metadata.json [12/09 10:51:46]\n"}
+,{"stream_name":"stdout","time":1927.433414464,"data":"read split: test [12/09 10:51:46]\n"}
+,{"stream_name":"stdout","time":1927.433419109,"data":"number of testing images: 800 [12/09 10:52:02]\n"}
+,{"stream_name":"stdout","time":1927.433535897,"data":"Loading Training Cameras [12/09 10:52:02]\n"}
+,{"stream_name":"stdout","time":1927.43357464,"data":"Loading Test Cameras [12/09 10:52:04]\n"}
+,{"stream_name":"stdout","time":1927.433581574,"data":"Rendering progress:   0%|          | 0/800 [00:00\u003c?, ?it/s]\n"}
+,{"stream_name":"stdout","time":1982.047669473,"data":"+ OMP_NUM_THREADS=4 python metrics.py -m /kaggle/working/out/lego_mag_0p003   (cwd=/kaggle/working/repo)\n"}
+,{"stream_name":"stdout","time":2008.905765594,"data":"/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:208: UserWarning: The parameter 'pretrained' is deprecated since 0.13 and may be removed in the future, please use 'weights' instead.\n"}
+,{"stream_name":"stdout","time":2008.905828005,"data":"  warnings.warn(\n"}
+,{"stream_name":"stdout","time":2008.905836196,"data":"/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:223: UserWarning: Arguments other than a weight enum or `None` for 'weights' are deprecated since 0.13 and may be removed in the future. The current behavior is equivalent to passing `weights=VGG16_Weights.IMAGENET1K_V1`. You can also use `weights=VGG16_Weights.DEFAULT` to get the most up-to-date weights.\n"}
+,{"stream_name":"stdout","time":2008.905843624,"data":"  warnings.warn(msg)\n"}
+,{"stream_name":"stdout","time":2008.905865737,"data":"Setting up [LPIPS] perceptual loss: trunk [vgg], v[0.1], spatial [off]\n"}
+,{"stream_name":"stdout","time":2008.905870563,"data":"Loading model from: /usr/local/lib/python3.12/dist-packages/lpips/weights/v0.1/vgg.pth\n"}
+,{"stream_name":"stdout","time":2008.90587522,"data":"Scene: /kaggle/working/out/lego_mag_0p003\n"}
+,{"stream_name":"stdout","time":2008.905879512,"data":"Method: ours_30000\n"}
+,{"stream_name":"stdout","time":2008.905883784,"data":"Metric evaluation progress:   0%|          | 0/800 [00:00\u003c?, ?it/s]\n"}
+,{"stream_name":"stdout","time":2061.599173476,"data":"  SSIM :    0.9801295\n"}
+,{"stream_name":"stdout","time":2061.59921044,"data":"  PSNR :   32.2950821\n"}
+,{"stream_name":"stdout","time":2061.599216297,"data":"  LPIPS:    0.0176853\n"}
+,{"stream_name":"stdout","time":2061.691615274,"data":"[lego/magnitude/tau0.003_sweep] PSNR 32.295 | 73.9 MB | non-DC kept 20.0%\n"}
+,{"stream_name":"stdout","time":2062.588448725,"data":"+ OMP_NUM_THREADS=4 python render.py -m /kaggle/working/out/lego_degmag_0p003 --skip_train -s /kaggle/working/multi-scale/lego   (cwd=/kaggle/working/repo)\n"}
+,{"stream_name":"stdout","time":2103.701574462,"data":"Looking for config file in /kaggle/working/out/lego_degmag_0p003/cfg_args\n"}
+,{"stream_name":"stdout","time":2103.701640177,"data":"Config file found: /kaggle/working/out/lego_degmag_0p003/cfg_args\n"}
+,{"stream_name":"stdout","time":2103.701648598,"data":"Rendering /kaggle/working/out/lego_degmag_0p003\n"}
+,{"stream_name":"stdout","time":2103.701654327,"data":"Loading trained model at iteration 30000 [12/09 10:54:38]\n"}
+,{"stream_name":"stdout","time":2103.701659396,"data":"Found metadata.json file, assuming multi scale Blender data set! [12/09 10:54:38]\n"}
+,{"stream_name":"stdout","time":2103.701665302,"data":"Reading train from metadata.json [12/09 10:54:38]\n"}
+,{"stream_name":"stdout","time":2103.701671026,"data":"read split: train [12/09 10:54:38]\n"}
+,{"stream_name":"stdout","time":2103.701675878,"data":"number of training images: 100 [12/09 10:54:43]\n"}
+,{"stream_name":"stdout","time":2103.701680863,"data":"Reading test from metadata.json [12/09 10:54:43]\n"}
+,{"stream_name":"stdout","time":2103.701685601,"data":"read split: test [12/09 10:54:43]\n"}
+,{"stream_name":"stdout","time":2103.701690164,"data":"number of testing images: 800 [12/09 10:54:59]\n"}
+,{"stream_name":"stdout","time":2103.701694922,"data":"Loading Training Cameras [12/09 10:54:59]\n"}
+,{"stream_name":"stdout","time":2103.701707258,"data":"Loading Test Cameras [12/09 10:55:00]\n"}
+,{"stream_name":"stdout","time":2103.701711123,"data":"Rendering progress:   0%|          | 0/800 [00:00\u003c?, ?it/s]\n"}
+,{"stream_name":"stdout","time":2157.186970461,"data":"+ OMP_NUM_THREADS=4 python metrics.py -m /kaggle/working/out/lego_degmag_0p003   (cwd=/kaggle/working/repo)\n"}
+,{"stream_name":"stdout","time":2184.256362695,"data":"/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:208: UserWarning: The parameter 'pretrained' is deprecated since 0.13 and may be removed in the future, please use 'weights' instead.\n"}
+,{"stream_name":"stdout","time":2184.256420973,"data":"  warnings.warn(\n"}
+,{"stream_name":"stdout","time":2184.256428387,"data":"/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:223: UserWarning: Arguments other than a weight enum or `None` for 'weights' are deprecated since 0.13 and may be removed in the future. The current behavior is equivalent to passing `weights=VGG16_Weights.IMAGENET1K_V1`. You can also use `weights=VGG16_Weights.DEFAULT` to get the most up-to-date weights.\n"}
+,{"stream_name":"stdout","time":2184.256434774,"data":"  warnings.warn(msg)\n"}
+,{"stream_name":"stdout","time":2184.256458744,"data":"Setting up [LPIPS] perceptual loss: trunk [vgg], v[0.1], spatial [off]\n"}
+,{"stream_name":"stdout","time":2184.256620156,"data":"Loading model from: /usr/local/lib/python3.12/dist-packages/lpips/weights/v0.1/vgg.pth\n"}
+,{"stream_name":"stdout","time":2184.256635281,"data":"Scene: /kaggle/working/out/lego_degmag_0p003\n"}
+,{"stream_name":"stdout","time":2184.25664021,"data":"Method: ours_30000\n"}
+,{"stream_name":"stdout","time":2184.256644431,"data":"Metric evaluation progress:   0%|          | 0/800 [00:00\u003c?, ?it/s]\n"}
+,{"stream_name":"stdout","time":2236.70764249,"data":"  SSIM :    0.9783046\n"}
+,{"stream_name":"stdout","time":2236.707691872,"data":"  PSNR :   31.9099369\n"}
+,{"stream_name":"stdout","time":2236.707699718,"data":"  LPIPS:    0.0193122\n"}
+,{"stream_name":"stdout","time":2236.809754198,"data":"[lego/degmag/tau0.003_sweep] PSNR 31.910 | 73.9 MB | non-DC kept 20.0% | vs B2 -0.213 dB\n"}
+,{"stream_name":"stdout","time":2236.877420554,"data":"[lego] B2 criterion sees the cone subset: 40 of 400 cameras\n"}
+,{"stream_name":"stdout","time":2248.0093328,"data":"+ OMP_NUM_THREADS=4 python render.py -m /kaggle/working/out/lego_b2_0p03 --skip_train -s /kaggle/working/multi-scale/lego   (cwd=/kaggle/working/repo)\n"}
+,{"stream_name":"stdout","time":2289.885980236,"data":"Looking for config file in /kaggle/working/out/lego_b2_0p03/cfg_args\n"}
+,{"stream_name":"stdout","time":2289.886020337,"data":"Config file found: /kaggle/working/out/lego_b2_0p03/cfg_args\n"}
+,{"stream_name":"stdout","time":2289.886027238,"data":"Rendering /kaggle/working/out/lego_b2_0p03\n"}
+,{"stream_name":"stdout","time":2289.886047438,"data":"Loading trained model at iteration 30000 [12/09 10:57:43]\n"}
+,{"stream_name":"stdout","time":2289.886052624,"data":"Found metadata.json file, assuming multi scale Blender data set! [12/09 10:57:43]\n"}
+,{"stream_name":"stdout","time":2289.886056928,"data":"Reading train from metadata.json [12/09 10:57:43]\n"}
+,{"stream_name":"stdout","time":2289.886061149,"data":"read split: train [12/09 10:57:43]\n"}
+,{"stream_name":"stdout","time":2289.886065248,"data":"number of training images: 100 [12/09 10:57:49]\n"}
+,{"stream_name":"stdout","time":2289.886069668,"data":"Reading test from metadata.json [12/09 10:57:49]\n"}
+,{"stream_name":"stdout","time":2289.886074001,"data":"read split: test [12/09 10:57:49]\n"}
+,{"stream_name":"stdout","time":2289.88607859,"data":"number of testing images: 800 [12/09 10:58:05]\n"}
+,{"stream_name":"stdout","time":2289.886083213,"data":"Loading Training Cameras [12/09 10:58:05]\n"}
+,{"stream_name":"stdout","time":2289.886088216,"data":"Loading Test Cameras [12/09 10:58:06]\n"}
+,{"stream_name":"stdout","time":2289.886093202,"data":"Rendering progress:   0%|          | 0/800 [00:00\u003c?, ?it/s]\n"}
+,{"stream_name":"stdout","time":2343.087731564,"data":"+ OMP_NUM_THREADS=4 python metrics.py -m /kaggle/working/out/lego_b2_0p03   (cwd=/kaggle/working/repo)\n"}
+,{"stream_name":"stdout","time":2369.524198642,"data":"/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:208: UserWarning: The parameter 'pretrained' is deprecated since 0.13 and may be removed in the future, please use 'weights' instead.\n"}
+,{"stream_name":"stdout","time":2369.524297014,"data":"  warnings.warn(\n"}
+,{"stream_name":"stdout","time":2369.524309647,"data":"/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:223: UserWarning: Arguments other than a weight enum or `None` for 'weights' are deprecated since 0.13 and may be removed in the future. The current behavior is equivalent to passing `weights=VGG16_Weights.IMAGENET1K_V1`. You can also use `weights=VGG16_Weights.DEFAULT` to get the most up-to-date weights.\n"}
+,{"stream_name":"stdout","time":2369.52433866,"data":"  warnings.warn(msg)\n"}
+,{"stream_name":"stdout","time":2369.524343607,"data":"Setting up [LPIPS] perceptual loss: trunk [vgg], v[0.1], spatial [off]\n"}
+,{"stream_name":"stdout","time":2369.524348102,"data":"Loading model from: /usr/local/lib/python3.12/dist-packages/lpips/weights/v0.1/vgg.pth\n"}
+,{"stream_name":"stdout","time":2369.524353091,"data":"Scene: /kaggle/working/out/lego_b2_0p03\n"}
+,{"stream_name":"stdout","time":2369.524357459,"data":"Method: ours_30000\n"}
+,{"stream_name":"stdout","time":2369.52436205,"data":"Metric evaluation progress:   0%|          | 0/800 [00:00\u003c?, ?it/s]\n"}
+,{"stream_name":"stdout","time":2421.984547475,"data":"  SSIM :    0.9708053\n"}
+,{"stream_name":"stdout","time":2421.984584157,"data":"  PSNR :   30.5662136\n"}
+,{"stream_name":"stdout","time":2421.984590518,"data":"  LPIPS:    0.0262604\n"}
+,{"stream_name":"stdout","time":2422.075944981,"data":"[lego/b2/tau0.03_sweep] PSNR 30.566 | 73.9 MB | non-DC kept 0.0% | mean l_max 0.00\n"}
+,{"stream_name":"stdout","time":2422.641900836,"data":"+ OMP_NUM_THREADS=4 python render.py -m /kaggle/working/out/lego_mag_0p03 --skip_train -s /kaggle/working/multi-scale/lego   (cwd=/kaggle/working/repo)\n"}
+,{"stream_name":"stdout","time":2463.642220384,"data":"Looking for config file in /kaggle/working/out/lego_mag_0p03/cfg_args\n"}
+,{"stream_name":"stdout","time":2463.6422862,"data":"Config file found: /kaggle/working/out/lego_mag_0p03/cfg_args\n"}
+,{"stream_name":"stdout","time":2463.642297884,"data":"Rendering /kaggle/working/out/lego_mag_0p03\n"}
+,{"stream_name":"stdout","time":2463.642303279,"data":"Loading trained model at iteration 30000 [12/09 11:00:38]\n"}
+,{"stream_name":"stdout","time":2463.642308421,"data":"Found metadata.json file, assuming multi scale Blender data set! [12/09 11:00:38]\n"}
+,{"stream_name":"stdout","time":2463.642313247,"data":"Reading train from metadata.json [12/09 11:00:38]\n"}
+,{"stream_name":"stdout","time":2463.64231807,"data":"read split: train [12/09 11:00:38]\n"}
+,{"stream_name":"stdout","time":2463.642323111,"data":"number of training images: 100 [12/09 11:00:43]\n"}
+,{"stream_name":"stdout","time":2463.642328414,"data":"Reading test from metadata.json [12/09 11:00:43]\n"}
+,{"stream_name":"stdout","time":2463.642333315,"data":"read split: test [12/09 11:00:43]\n"}
+,{"stream_name":"stdout","time":2463.642337561,"data":"number of testing images: 800 [12/09 11:00:59]\n"}
+,{"stream_name":"stdout","time":2463.642342195,"data":"Loading Training Cameras [12/09 11:00:59]\n"}
+,{"stream_name":"stdout","time":2463.642347624,"data":"Loading Test Cameras [12/09 11:01:00]\n"}
+,{"stream_name":"stdout","time":2463.642450942,"data":"Rendering progress:   0%|          | 0/800 [00:00\u003c?, ?it/s]\n"}
+,{"stream_name":"stdout","time":2516.236091468,"data":"+ OMP_NUM_THREADS=4 python metrics.py -m /kaggle/working/out/lego_mag_0p03   (cwd=/kaggle/working/repo)\n"}
+,{"stream_name":"stdout","time":2542.725437636,"data":"/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:208: UserWarning: The parameter 'pretrained' is deprecated since 0.13 and may be removed in the future, please use 'weights' instead.\n"}
+,{"stream_name":"stdout","time":2542.725496145,"data":"  warnings.warn(\n"}
+,{"stream_name":"stdout","time":2542.725503282,"data":"/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:223: UserWarning: Arguments other than a weight enum or `None` for 'weights' are deprecated since 0.13 and may be removed in the future. The current behavior is equivalent to passing `weights=VGG16_Weights.IMAGENET1K_V1`. You can also use `weights=VGG16_Weights.DEFAULT` to get the most up-to-date weights.\n"}
+,{"stream_name":"stdout","time":2542.725526353,"data":"  warnings.warn(msg)\n"}
+,{"stream_name":"stdout","time":2542.725918178,"data":"Setting up [LPIPS] perceptual loss: trunk [vgg], v[0.1], spatial [off]\n"}
+,{"stream_name":"stdout","time":2542.725950379,"data":"Loading model from: /usr/local/lib/python3.12/dist-packages/lpips/weights/v0.1/vgg.pth\n"}
+,{"stream_name":"stdout","time":2542.725956319,"data":"Scene: /kaggle/working/out/lego_mag_0p03\n"}
+,{"stream_name":"stdout","time":2542.725960924,"data":"Method: ours_30000\n"}
+,{"stream_name":"stdout","time":2542.725965331,"data":"Metric evaluation progress:   0%|          | 0/800 [00:00\u003c?, ?it/s]\n"}
+,{"stream_name":"stdout","time":2595.026465007,"data":"  SSIM :    0.9708053\n"}
+,{"stream_name":"stdout","time":2595.026514204,"data":"  PSNR :   30.5662136\n"}
+,{"stream_name":"stdout","time":2595.02651927,"data":"  LPIPS:    0.0262604\n"}
+,{"stream_name":"stdout","time":2595.114573078,"data":"[lego/magnitude/tau0.03_sweep] PSNR 30.566 | 73.9 MB | non-DC kept 0.0%\n"}
+,{"stream_name":"stdout","time":2595.916582449,"data":"+ OMP_NUM_THREADS=4 python render.py -m /kaggle/working/out/lego_degmag_0p03 --skip_train -s /kaggle/working/multi-scale/lego   (cwd=/kaggle/working/repo)\n"}
+,{"stream_name":"stdout","time":2636.096767987,"data":"Looking for config file in /kaggle/working/out/lego_degmag_0p03/cfg_args\n"}
+,{"stream_name":"stdout","time":2636.096806835,"data":"Config file found: /kaggle/working/out/lego_degmag_0p03/cfg_args\n"}
+,{"stream_name":"stdout","time":2636.096813446,"data":"Rendering /kaggle/working/out/lego_degmag_0p03\n"}
+,{"stream_name":"stdout","time":2636.096818528,"data":"Loading trained model at iteration 30000 [12/09 11:03:31]\n"}
+,{"stream_name":"stdout","time":2636.096823627,"data":"Found metadata.json file, assuming multi scale Blender data set! [12/09 11:03:31]\n"}
+,{"stream_name":"stdout","time":2636.096828755,"data":"Reading train from metadata.json [12/09 11:03:31]\n"}
+,{"stream_name":"stdout","time":2636.096833626,"data":"read split: train [12/09 11:03:31]\n"}
+,{"stream_name":"stdout","time":2636.096839164,"data":"number of training images: 100 [12/09 11:03:36]\n"}
+,{"stream_name":"stdout","time":2636.09684397,"data":"Reading test from metadata.json [12/09 11:03:36]\n"}
+,{"stream_name":"stdout","time":2636.097128099,"data":"read split: test [12/09 11:03:36]\n"}
+,{"stream_name":"stdout","time":2636.097151863,"data":"number of testing images: 800 [12/09 11:03:51]\n"}
+,{"stream_name":"stdout","time":2636.097157537,"data":"Loading Training Cameras [12/09 11:03:51]\n"}
+,{"stream_name":"stdout","time":2636.097161223,"data":"Loading Test Cameras [12/09 11:03:53]\n"}
+,{"stream_name":"stdout","time":2636.097182914,"data":"Rendering progress:   0%|          | 0/800 [00:00\u003c?, ?it/s]\n"}
+,{"stream_name":"stdout","time":2687.644041777,"data":"+ OMP_NUM_THREADS=4 python metrics.py -m /kaggle/working/out/lego_degmag_0p03   (cwd=/kaggle/working/repo)\n"}
+,{"stream_name":"stdout","time":2713.529142419,"data":"/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:208: UserWarning: The parameter 'pretrained' is deprecated since 0.13 and may be removed in the future, please use 'weights' instead.\n"}
+,{"stream_name":"stdout","time":2713.529201642,"data":"  warnings.warn(\n"}
+,{"stream_name":"stdout","time":2713.529208367,"data":"/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:223: UserWarning: Arguments other than a weight enum or `None` for 'weights' are deprecated since 0.13 and may be removed in the future. The current behavior is equivalent to passing `weights=VGG16_Weights.IMAGENET1K_V1`. You can also use `weights=VGG16_Weights.DEFAULT` to get the most up-to-date weights.\n"}
+,{"stream_name":"stdout","time":2713.529229765,"data":"  warnings.warn(msg)\n"}
+,{"stream_name":"stdout","time":2713.529233746,"data":"Setting up [LPIPS] perceptual loss: trunk [vgg], v[0.1], spatial [off]\n"}
+,{"stream_name":"stdout","time":2713.529237551,"data":"Loading model from: /usr/local/lib/python3.12/dist-packages/lpips/weights/v0.1/vgg.pth\n"}
+,{"stream_name":"stdout","time":2713.529260047,"data":"Scene: /kaggle/working/out/lego_degmag_0p03\n"}
+,{"stream_name":"stdout","time":2713.529264689,"data":"Method: ours_30000\n"}
+,{"stream_name":"stdout","time":2713.529270337,"data":"Metric evaluation progress:   0%|          | 0/800 [00:00\u003c?, ?it/s]\n"}
+,{"stream_name":"stdout","time":2765.989317656,"data":"  SSIM :    0.9708053\n"}
+,{"stream_name":"stdout","time":2765.989370236,"data":"  PSNR :   30.5662136\n"}
+,{"stream_name":"stdout","time":2765.989387691,"data":"  LPIPS:    0.0262604\n"}
+,{"stream_name":"stdout","time":2766.079922386,"data":"[lego/degmag/tau0.03_sweep] PSNR 30.566 | 73.9 MB | non-DC kept 0.0% | vs B2 +0.000 dB\n"}
+,{"stream_name":"stdout","time":2849.250765494,"data":"[b2-proto] lego/full n_cam=400 span=179deg retained=100.0%\n"}
+,{"stream_name":"stdout","time":2871.863845975,"data":"[b2-proto] lego/arc n_cam=100 span=93deg retained=44.6%\n"}
+,{"stream_name":"stdout","time":2881.846839884,"data":"[b2-proto] lego/cone n_cam=40 span=41deg retained=13.3%\n"}
+,{"stream_name":"stdout","time":2885.433580663,"data":"[b2-proto] lego/pencil n_cam=8 span=9deg retained=0.0%\n"}
+,{"stream_name":"stdout","time":2965.712357147,"data":"[b2-proto] lego/mixed n_cam=400 span=179deg retained=100.0%\n"}
+,{"stream_name":"stdout","time":3007.467397942,"data":"[b2-proto] lego/grazing n_cam=200 span=157deg retained=100.0%\n"}
+,{"stream_name":"stdout","time":3080.109103657,"data":"[b2-proto] chair/full n_cam=400 span=179deg retained=100.0%\n"}
+,{"stream_name":"stdout","time":3099.592731486,"data":"[b2-proto] chair/arc n_cam=100 span=95deg retained=53.3%\n"}
+,{"stream_name":"stdout","time":3108.390707868,"data":"[b2-proto] chair/cone n_cam=40 span=54deg retained=20.0%\n"}
+,{"stream_name":"stdout","time":3110.870283168,"data":"[b2-proto] chair/pencil n_cam=4 span=0deg retained=0.0%\n"}
+,{"stream_name":"stdout","time":3181.390089227,"data":"[b2-proto] chair/mixed n_cam=400 span=179deg retained=100.0%\n"}
+,{"stream_name":"stdout","time":3218.001283098,"data":"[b2-proto] chair/grazing n_cam=200 span=164deg retained=100.0%\n"}
+,{"stream_name":"stdout","time":3218.194521423,"data":"done 14, failed []\n"}
+,{"stream_name":"stdout","time":3218.194955082,"data":"R8_SUMMARY_JSON={\"rung\": \"R8F\", \"iterations\": 30000, \"scenes\": [\"lego\", \"chair\"], \"taus\": [0.01], \"protocol\": \"cone\", \"sweep_scene\": \"lego\", \"sweep_taus\": [0.003, 0.03], \"commit\": \"998c5863890da837e7d1c148bf0a4d63c42efb5f\", \"gpu\": \"Tesla T4\", \"results\": {\"lego/full\": {\"PSNR\": 32.855735778808594, \"SSIM\": 0.9827491044998169, \"LPIPS\": 0.015578709542751312, \"model_mb\": 73.931048, \"retained\": 1.0, \"per_scale\": {\"1x\": 35.881837615966795, \"1/2\": 35.4345465183258, \"1/4\": 31.845805292129516, \"1/8\": 28.26075119972229}}, \"lego/b2/tau0.01\": {\"PSNR\": 31.26366424560547, \"SSIM\": 0.9747576117515564, \"LPIPS\": 0.023036962375044823, \"model_mb\": 73.931048, \"retained\": 0.1329920135255359, \"per_scale\": {\"1x\": 32.98979479789734, \"1/2\": 33.08102146148681, \"1/4\": 30.99267720222473, \"1/8\": 27.99116008758545}, \"tau\": 0.01, \"mean_l_max\": 0.6649600676276797, \"l_max_hist\": {\"0\": 98291, \"1\": 195080, \"2\": 0, \"3\": 0}, \"mean_views\": 40.0}, \"lego/magnitude/tau0.01\": {\"PSNR\": 32.08202362060547, \"SSIM\": 0.9791246056556702, \"LPIPS\": 0.01860763505101204, \"model_mb\": 73.931048, \"retained\": 0.1329920135255359, \"per_scale\": {\"1x\": 34.48217345237732, \"1/2\": 34.29343752861023, \"1/4\": 31.43732804298401, \"1/8\": 28.115150299072265}, \"matched_to_tau\": 0.01}, \"lego/degmag/tau0.01\": {\"PSNR\": 31.67886734008789, \"SSIM\": 0.9771677255630493, \"LPIPS\": 0.020411908626556396, \"model_mb\": 73.931048, \"retained\": 0.1329924680126302, \"per_scale\": {\"1x\": 33.752002696990964, \"1/2\": 33.71015892028809, \"1/4\": 31.21618468284607, \"1/8\": 28.037117652893066}, \"matched_to_tau\": 0.01}, \"chair/full\": {\"PSNR\": 35.612545013427734, \"SSIM\": 0.9877723455429077, \"LPIPS\": 0.013284076005220413, \"model_mb\": 67.332932, \"retained\": 1.0, \"per_scale\": {\"1x\": 35.94803554534912, \"1/2\": 37.896539821624756, \"1/4\": 36.11901521682739, \"1/8\": 32.486580476760864}}, \"chair/b2/tau0.01\": {\"PSNR\": 32.45320129394531, \"SSIM\": 0.9786282181739807, \"LPIPS\": 0.021702175959944725, \"model_mb\": 67.332932, \"retained\": 0.2, \"per_scale\": {\"1x\": 32.13175647735596, \"1/2\": 33.25200945854187, \"1/4\": 33.10802720069885, \"1/8\": 31.32100793838501}, \"tau\": 0.01, \"mean_l_max\": 1.0, \"l_max_hist\": {\"0\": 0, \"1\": 267188, \"2\": 0, \"3\": 0}, \"mean_views\": 40.0}, \"chair/magnitude/tau0.01\": {\"PSNR\": 34.268699645996094, \"SSIM\": 0.9847235679626465, \"LPIPS\": 0.01605033129453659, \"model_mb\": 67.332932, \"retained\": 0.2, \"per_scale\": {\"1x\": 34.26190580368042, \"1/2\": 35.63875919342041, \"1/4\": 34.86322275161743, \"1/8\": 32.31091501235962}, \"matched_to_tau\": 0.01}, \"chair/degmag/tau0.01\": {\"PSNR\": 32.5408821105957, \"SSIM\": 0.9810556173324585, \"LPIPS\": 0.019413340836763382, \"model_mb\": 67.332932, \"retained\": 0.19999925146338907, \"per_scale\": {\"1x\": 32.343158378601075, \"1/2\": 33.32555310249329, \"1/4\": 33.078951301574705, \"1/8\": 31.415863256454468}, \"matched_to_tau\": 0.01}, \"lego/b2/tau0.003_sweep\": {\"PSNR\": 31.697324752807617, \"SSIM\": 0.9772955179214478, \"LPIPS\": 0.020980315282940865, \"model_mb\": 73.931048, \"retained\": 0.2, \"per_scale\": {\"1x\": 33.6834389591217, \"1/2\": 33.72805304527283, \"1/4\": 31.28836667060852, \"1/8\": 28.089443340301514}, \"tau\": 0.003, \"mean_l_max\": 1.0, \"l_max_hist\": {\"0\": 0, \"1\": 293371, \"2\": 0, \"3\": 0}, \"mean_views\": 40.0}, \"lego/magnitude/tau0.003_sweep\": {\"PSNR\": 32.295082092285156, \"SSIM\": 0.9801295399665833, \"LPIPS\": 0.017685312777757645, \"model_mb\": 73.931048, \"retained\": 0.2, \"per_scale\": {\"1x\": 34.86436709403992, \"1/2\": 34.60732778549195, \"1/4\": 31.553893299102782, \"1/8\": 28.154726648330687}, \"matched_to_tau\": 0.003}, \"lego/degmag/tau0.003_sweep\": {\"PSNR\": 31.909936904907227, \"SSIM\": 0.9783046245574951, \"LPIPS\": 0.01931215450167656, \"model_mb\": 73.931048, \"retained\": 0.1999986365387172, \"per_scale\": {\"1x\": 34.1384259223938, \"1/2\": 34.04976516723633, \"1/4\": 31.36130100250244, \"1/8\": 28.090256509780883}, \"matched_to_tau\": 0.003}, \"lego/b2/tau0.03_sweep\": {\"PSNR\": 30.566213607788086, \"SSIM\": 0.9708053469657898, \"LPIPS\": 0.026260409504175186, \"model_mb\": 73.931048, \"retained\": 0.0, \"per_scale\": {\"1x\": 31.93275990486145, \"1/2\": 32.074847021102904, \"1/4\": 30.46688726425171, \"1/8\": 27.790364694595336}, \"tau\": 0.03, \"mean_l_max\": 0.0, \"l_max_hist\": {\"0\": 293371, \"1\": 0, \"2\": 0, \"3\": 0}, \"mean_views\": 40.0}, \"lego/magnitude/tau0.03_sweep\": {\"PSNR\": 30.566213607788086, \"SSIM\": 0.9708053469657898, \"LPIPS\": 0.026260409504175186, \"model_mb\": 73.931048, \"retained\": 0.0, \"per_scale\": {\"1x\": 31.93275990486145, \"1/2\": 32.074847021102904, \"1/4\": 30.46688726425171, \"1/8\": 27.790364694595336}, \"matched_to_tau\": 0.03}, \"lego/degmag/tau0.03_sweep\": {\"PSNR\": 30.566213607788086, \"SSIM\": 0.9708053469657898, \"LPIPS\": 0.026260409504175186, \"model_mb\": 73.931048, \"retained\": 0.0, \"per_scale\": {\"1x\": 31.93275990486145, \"1/2\": 32.074847021102904, \"1/4\": 30.46688726425171, \"1/8\": 27.790364694595336}, \"matched_to_tau\": 0.03}}, \"failed\": {}, \"protocols\": {\"lego/full\": {\"scene\": \"lego\", \"protocol\": \"full\", \"criterion\": \"cond\", \"n_cameras\": 400, \"span_deg\": 178.97687028487118, \"mean_l_max\": 3.0, \"non_dc_retained\": 1.0, \"l_max_hist\": {\"0\": 0, \"1\": 0, \"2\": 0, \"3\": 293371}, \"mean_views\": 400.0}, \"lego/arc\": {\"scene\": \"lego\", \"protocol\": \"arc\", \"criterion\": \"cond\", \"n_cameras\": 100, \"span_deg\": 92.86431085102389, \"mean_l_max\": 1.7303448534449553, \"non_dc_retained\": 0.4459738692645149, \"l_max_hist\": {\"0\": 0, \"1\": 84666, \"2\": 203148, \"3\": 5557}, \"mean_views\": 100.0}, \"lego/cone\": {\"scene\": \"lego\", \"protocol\": \"cone\", \"criterion\": \"cond\", \"n_cameras\": 40, \"span_deg\": 41.061415694657235, \"mean_l_max\": 0.6649600676276797, \"non_dc_retained\": 0.1329920135255359, \"l_max_hist\": {\"0\": 98291, \"1\": 195080, \"2\": 0, \"3\": 0}, \"mean_views\": 40.0}, \"lego/pencil\": {\"scene\": \"lego\", \"protocol\": \"pencil\", \"criterion\": \"cond\", \"n_cameras\": 8, \"span_deg\": 8.649923185428671, \"mean_l_max\": 0.0, \"non_dc_retained\": 0.0, \"l_max_hist\": {\"0\": 293371, \"1\": 0, \"2\": 0, \"3\": 0}, \"mean_views\": 8.0}, \"lego/mixed\": {\"scene\": \"lego\", \"protocol\": \"mixed\", \"criterion\": \"cond\", \"n_cameras\": 400, \"span_deg\": 178.97687028487118, \"mean_l_max\": 3.0, \"non_dc_retained\": 1.0, \"l_max_hist\": {\"0\": 0, \"1\": 0, \"2\": 0, \"3\": 293371}, \"mean_views\": 400.0}, \"lego/grazing\": {\"scene\": \"lego\", \"protocol\": \"grazing\", \"criterion\": \"cond\", \"n_cameras\": 200, \"span_deg\": 156.79402241963555, \"mean_l_max\": 3.0, \"non_dc_retained\": 1.0, \"l_max_hist\": {\"0\": 0, \"1\": 0, \"2\": 0, \"3\": 293371}, \"mean_views\": 200.0}, \"chair/full\": {\"scene\": \"chair\", \"protocol\": \"full\", \"criterion\": \"cond\", \"n_cameras\": 400, \"span_deg\": 178.6578806541832, \"mean_l_max\": 3.0, \"non_dc_retained\": 1.0, \"l_max_hist\": {\"0\": 0, \"1\": 0, \"2\": 0, \"3\": 267188}, \"mean_views\": 400.0}, \"chair/arc\": {\"scene\": \"chair\", \"protocol\": \"arc\", \"criterion\": \"cond\", \"n_cameras\": 100, \"span_deg\": 95.22338371305824, \"mean_l_max\": 2.0, \"non_dc_retained\": 0.5333333333333333, \"l_max_hist\": {\"0\": 0, \"1\": 0, \"2\": 267188, \"3\": 0}, \"mean_views\": 100.0}, \"chair/cone\": {\"scene\": \"chair\", \"protocol\": \"cone\", \"criterion\": \"cond\", \"n_cameras\": 40, \"span_deg\": 53.662493548881926, \"mean_l_max\": 1.0, \"non_dc_retained\": 0.2, \"l_max_hist\": {\"0\": 0, \"1\": 267188, \"2\": 0, \"3\": 0}, \"mean_views\": 40.0}, \"chair/pencil\": {\"scene\": \"chair\", \"protocol\": \"pencil\", \"criterion\": \"cond\", \"n_cameras\": 4, \"span_deg\": 0.0, \"mean_l_max\": 0.0, \"non_dc_retained\": 0.0, \"l_max_hist\": {\"0\": 267188, \"1\": 0, \"2\": 0, \"3\": 0}, \"mean_views\": 4.0}, \"chair/mixed\": {\"scene\": \"chair\", \"protocol\": \"mixed\", \"criterion\": \"cond\", \"n_cameras\": 400, \"span_deg\": 178.6578806541832, \"mean_l_max\": 3.0, \"non_dc_retained\": 1.0, \"l_max_hist\": {\"0\": 0, \"1\": 0, \"2\": 0, \"3\": 267188}, \"mean_views\": 400.0}, \"chair/grazing\": {\"scene\": \"chair\", \"protocol\": \"grazing\", \"criterion\": \"cond\", \"n_cameras\": 200, \"span_deg\": 163.73725371633498, \"mean_l_max\": 3.0, \"non_dc_retained\": 1.0, \"l_max_hist\": {\"0\": 0, \"1\": 0, \"2\": 0, \"3\": 267188}, \"mean_views\": 200.0}}, \"session_seconds\": 3216.9648344516754, \"gpu_hours_used\": 0.8936013433668348}\n"}
+,{"stream_name":"stderr","time":3221.249433552,"data":"/usr/local/lib/python3.12/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":3221.249500427,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":3221.547669309,"data":"/usr/local/lib/python3.12/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":3221.547724396,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":3222.229117832,"data":"[NbConvertApp] Converting notebook __script__.ipynb to html\n"}
+,{"stream_name":"stderr","time":3223.112883276,"data":"[NbConvertApp] Writing 369704 bytes to __results__.html\n"}
+]

@@ -121,6 +121,37 @@ def audit_cells(rows):
     return bad
 
 
+def pick_instruments(summaries_dir):
+    """The instrument run the tables should quote, chosen rather than stumbled on.
+
+    Several instrument sessions exist -- one per protocol definition, one per
+    correction -- and walking the tree takes whichever sorts last, which is not
+    the same as the current one. Prefer the run covering the most protocols,
+    then the most scenes. The earlier sessions stay on disk: instruments/ has
+    five protocols and the pre-correction arc and cone definitions, and a deck
+    built by taking the first match presented one-sided arc at 80 deg / 2.28x
+    against the thesis's 95 deg / 2.47x, with the pencil -- the only protocol
+    that produces a result -- missing entirely.
+    """
+    inst = {}
+    for d, _, files in os.walk(summaries_dir):
+        for fn_ in files:
+            if fn_ != "summary.json" or "instrument" not in d.replace("\\", "/"):
+                continue
+            try:
+                cand = json.load(open(os.path.join(d, fn_)))
+            except Exception:
+                continue
+            if not cand.get("by_protocol"):
+                continue
+            bp_new, bp_old = cand["by_protocol"], (inst.get("by_protocol") or {})
+            score = lambda bp: (len(bp), max((v.get("n_scenes", 0)
+                                              for v in bp.values()), default=0))
+            if score(bp_new) >= score(bp_old):
+                inst = cand
+    return inst
+
+
 def load_probe(runs_path, name):
     """The rows of one probe, which load() deliberately does not return.
 
@@ -1710,29 +1741,7 @@ def main():
                              or s.get("all_checks_pass_or_skip") or s.get("complete")):
                     summaries[rung] = s
 
-    inst = {}
-    for d, _, files in os.walk(a.summaries):
-        for fn_ in files:
-            if fn_ == "summary.json" and "instrument" in d.replace("\\", "/"):
-                try:
-                    cand = json.load(open(os.path.join(d, fn_)))
-                except Exception:
-                    continue
-                # Prefer the run covering the most protocols, then the most
-                # scenes. Several instrument sessions exist -- one per protocol
-                # definition and one per correction -- and walking the tree takes
-                # whichever sorts last, which is not the same as the current one.
-                if cand.get("by_protocol"):
-                    bp_new = cand["by_protocol"]
-                    bp_old = inst.get("by_protocol") or {}
-                    score_new = (len(bp_new),
-                                 max((v.get("n_scenes", 0) for v in bp_new.values()),
-                                     default=0))
-                    score_old = (len(bp_old),
-                                 max((v.get("n_scenes", 0) for v in bp_old.values()),
-                                     default=0))
-                    if score_new >= score_old:
-                        inst = cand
+    inst = pick_instruments(a.summaries)
 
     # seed=0 for the headline tables. R5 adds seeds 1 and 2 for two scenes only,
     # so including them would silently weight the 8-scene mean toward lego and
@@ -1773,7 +1782,17 @@ def main():
                 cand = json.load(open(os.path.join(d, fn_)))
             except Exception:
                 continue
-            if cand.get("protocol") and cand.get("protocol") != "full"                     and cand.get("results"):
+            if not (cand.get("protocol") and cand.get("protocol") != "full"
+                    and cand.get("results")):
+                continue
+            # Chosen, not stumbled on: two non-full B2 sessions exist and only
+            # the later one carries the degree-blocked magnitude control, which
+            # is the whole point of the table. Prefer a run that has it, then
+            # the one with more evaluated configurations.
+            def _score(c):
+                r = c.get("results") or {}
+                return (any("/degmag/" in k for k in r), len(r))
+            if _score(cand) >= _score(b2c):
                 b2c = cand
 
     b2 = {}

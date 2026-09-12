@@ -198,9 +198,22 @@ def table(s, x, y, w, rows, col_w, size=13, head=True):
 
 
 # --------------------------------------------------------------- the slides
+_WORD = {1: "One", 2: "Two", 3: "Three", 4: "Four", 5: "Five", 6: "Six",
+         7: "Seven", 8: "Eight"}
+
+
 def build(prs, D):
     mac, rows, summ = D["macros"], D["runs"], D["summaries"]
-    inst = first(summ, lambda s: s.get("by_protocol"))
+    # Chosen, not stumbled on. first() took whichever summary the walk reached
+    # first, which was the five-protocol session run against the pre-correction
+    # arc and cone definitions: the deck showed one-sided arc at 80 deg / 2.28x
+    # where the thesis shows 94 deg / 2.10x, marked arc and cone as 100% above
+    # floor where the thesis has 0% and 100%, and omitted the narrow pencil --
+    # the one protocol in the suite that produces a result. Same selector as
+    # make_tex, so the deck and the thesis cannot quote different instruments.
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    import make_tex as mt
+    inst = mt.pick_instruments(D["summaries_dir"])
     bp = inst.get("by_protocol", {})
     fps = first(summ, lambda s: s.get("rung") == "C9" and s.get("results"))
     geo = D["geometry"]
@@ -345,12 +358,17 @@ def build(prs, D):
          "Both arms share the dataloader, the metrics, the LPIPS backbone and the "
          "densification, so the gap between them is the method and not the "
          "plumbing.", size=15, colour=INK_2, spacing=1.35)
+    PROT_LABEL = (("full", "full orbit"), ("grazing", "grazing"),
+                  ("mixed", "mixed focal"), ("arc", "one-sided arc"),
+                  ("cone", "low-parallax cone"), ("pencil", "narrow pencil"))
+    n_prot = sum(1 for k, _ in PROT_LABEL if bp.get(k))
     text(s, Inches(7.0), Inches(1.95), Inches(5.6), Inches(0.4),
-         "Five capture protocols", size=18, bold=True, colour=S1)
-    prot_rows = [["protocol", "span", "\u03c3_D/\u03c3_L", "above floor"]]
-    for k, label in (("full", "full orbit"), ("grazing", "grazing"),
-                     ("mixed", "mixed focal"), ("arc", "one-sided arc"),
-                     ("cone", "low-parallax cone")):
+         f"{_WORD.get(n_prot, n_prot)} capture protocols",
+         size=18, bold=True, colour=S1)
+    prot_rows = [["protocol", "span", "σ_D/σ_L", "above floor"]]
+    for k, label in PROT_LABEL:
+        if not bp.get(k):
+            continue
         v = bp.get(k) or {}
         prot_rows.append([
             label,
@@ -575,6 +593,7 @@ def main():
         "macros": macros(os.path.join(ROOT, "thesis", "generated", "measured.tex")),
         "runs": runs(os.path.join(ROOT, a.runs)),
         "summaries": summaries(os.path.join(ROOT, a.summaries)),
+        "summaries_dir": os.path.join(ROOT, a.summaries),
         "geometry": (json.load(open(os.path.join(ROOT, "results", "geometry",
                                                  "claims.json")))
                      if os.path.exists(os.path.join(ROOT, "results", "geometry",

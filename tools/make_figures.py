@@ -638,9 +638,11 @@ def fig_stress(out):
     # Inside the axes, always. Placed at 3*sigma it lands outside the limits the
     # moment sigma is large, and bbox_inches="tight" then stretches the figure to
     # contain it -- which produced a 15000-pixel-wide panel.
-    ax.text(min(3 * sigma, lim * 0.92), len(protos) - 0.35,
-            f"  ±3σ = ±{3*sigma:.3f} dB",
-            fontsize=6.8, color=MUTED, va="center", ha="right")
+    # In axes fractions, at the top. Data coordinates put it level with the last
+    # protocol's row, where it sat on top of the tick labels and the axis title.
+    ax.text(0.985, 0.985, f"±3σ = ±{3*sigma:.3f} dB",
+            transform=ax.transAxes, fontsize=6.8, color=MUTED,
+            va="top", ha="right")
     _clean(ax, ygrid=False); ax.xaxis.grid(True)
     _save(fig, out, "fig7-stress-delta")
 
@@ -844,17 +846,26 @@ def fig_b2(out):
         return
 
     import numpy as np
-    fig, ax = plt.subplots(figsize=(5.2, 2.9))
+    # Wider, and the tick labels broken at the space: at six protocols
+    # "mixed focal", "one-sided arc", "low-parallax cone" and "narrow
+    # pencil" ran into one another as a single unreadable line.
+    fig, ax = plt.subplots(figsize=(6.4, 3.1))
     x = np.arange(len(rows))
-    ax.bar(x, [r[1] * 100 for r in rows], width=0.55, color=S1, zorder=3)
+    ax.bar(x, [r[1] * 100 for r in rows], width=0.66, color=S1, zorder=3)
     for i, r in enumerate(rows):
         ax.annotate(f"{r[1]*100:.1f}%", (i, r[1] * 100), xytext=(0, 3),
                     textcoords="offset points", fontsize=7.0, color=INK, ha="center")
         if r[2] is not None:
-            ax.annotate(f"$\\ell_{{max}}$ = {r[2]:.2f}", (i, 2.5), fontsize=6.7,
-                        color=MUTED, ha="center", va="bottom", zorder=5)
-    ax.set_xticks(x); ax.set_xticklabels([r[0] for r in rows], fontsize=7.2)
-    ax.set_ylim(0, 112)
+            # White over the bar, muted grey over the background: this sits
+            # at y=8, which is inside a 100% bar and outside a 0% one.
+            over = (r[1] * 100) > 14
+            ax.annotate(f"$\ell_{{max}}$={r[2]:.2f}", (i, 8.0), fontsize=6.0,
+                        color=(SURFACE if over else MUTED),
+                        ha="center", va="bottom", zorder=5)
+    ax.set_xticks(x)
+    ax.set_xticklabels([r[0].replace(" ", chr(10), 1) for r in rows],
+                       fontsize=7.2)
+    ax.set_ylim(0, 118)
     ax.set_ylabel("non-DC SH coefficients retained (%)", fontsize=7.5)
     ax.set_title("B2 keeps degree 3 where the views support it, and not otherwise",
                  fontsize=8.0, loc="left", pad=8)

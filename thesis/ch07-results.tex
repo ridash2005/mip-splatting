@@ -991,13 +991,15 @@ the same size and differ only in which coefficients survive.
 \input{generated/table-b2-matched}
 
 \keybox{B2, as specified, is worse than the trivial baseline}{%
-On every configuration where both methods actually prune, magnitude pruning wins:
-by $0.60$ and $0.82$\,dB on \texttt{lego} and by $1.82$\,dB on \texttt{chair}.
+On every configuration where both methods actually prune, magnitude pruning
+wins. Against the free control it wins by $0.60$ and $0.82$\,dB on \texttt{lego}
+and by $1.82$\,dB on \texttt{chair}; against the \emph{fair} control below, by
+$0.21$ and $0.42$\,dB on \texttt{lego} and by $0.09$\,dB on \texttt{chair}.
 Chapter~\ref{ch:method2} states the standard this was to be held to --- ``a
 criterion that cannot beat magnitude pruning at matched size is not worth the
-machinery'' --- and by that standard the criterion fails. The row at $0\,\%$ is
-both methods discarding everything and agreeing by definition; it is not
-evidence either way.}
+machinery'' --- and by that standard the criterion fails, on the fair comparison
+as well as the unfair one. The row at $0\,\%$ is both methods discarding
+everything and agreeing by definition; it is not evidence either way.}
 
 \paragraph{Why, and what survives.} Identifiability and importance are different
 quantities, and the metric rewards the second. A coefficient can be badly
@@ -1006,12 +1008,34 @@ primitive; zeroing it costs more PSNR than zeroing a well-determined coefficient
 that happens to be tiny. Magnitude pruning optimises directly for what PSNR
 measures, and B2 optimises for something else and is then scored on PSNR.
 
-There is a second, more mundane asymmetry, and it should be ruled in rather than
-out: B2 masks whole \emph{degrees}, so it removes coefficients in blocks of
-$2\ell+1$, while magnitude pruning selects individual coefficients within the
-same budget. Finer granularity at matched size is an advantage independent of the
-criterion, and this experiment does not separate the two effects. A degree-blocked
-magnitude control would, and has not been run.
+\paragraph{Most of the first answer was the wrong comparison.} There is a second
+asymmetry in the free control, and it is not small: B2 masks whole
+\emph{degrees}, removing coefficients in blocks of $2\ell+1$ nested from the top
+down, while free magnitude pruning ranks individual coefficients and keeps the
+largest anywhere. At the same budget that is strictly more freedom, so a loss
+against it is evidence about the \emph{structure} of the mask and not about the
+criterion --- and the criterion is what is on trial. The first version of this
+section noted the confound and left it, which was the right thing to notice and
+the wrong place to stop.
+
+The control that separates them is magnitude pruning restricted to B2's own
+nested degrees: same structure, same budget, and the only remaining difference
+is what the two rank by. It is the \emph{blocked} column of
+Table~\ref{tab:btwomatched}, and it moves the answer a long way. On
+\texttt{chair}, where the free control had beaten B2 by $1.82$\,dB, the fair one
+beats it by $0.09$ --- inside the seed spread of $\seedSigma$\,dB, so on that
+scene the criterion is not distinguishable from magnitude at all. Something like
+$95\,\%$ of what looked like a verdict on identifiability was a verdict on block
+structure.
+
+What does not change is the direction. On \texttt{lego} the fair control still
+wins by $0.21$ and $0.42$\,dB, two and four times the seed spread, at both
+budgets where anything is pruned. So the honest statement is narrower and
+firmer than the one it replaces: at matched structure and matched budget,
+ranking spherical-harmonic coefficients by how well the capture determines them
+is worse than ranking them by how large they are --- by a fifth of a decibel
+rather than by two decibels, on one scene of two, and not by enough on the other
+to call.
 
 What survives is narrower than what was claimed. The criterion still does what
 \S\ref{sec:b2scale} says it does --- it responds gradually to the conditioning,

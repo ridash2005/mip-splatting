@@ -41,7 +41,15 @@ PROTOCOLS = ["full", "arc", "cone", "pencil", "mixed", "grazing"]
 SESSION_START = time.time()
 os.makedirs(RESULTS, exist_ok=True)
 
-subprocess.run(f"git clone -q {REPO} {WORK}/repo", shell=True, check=True)
+# Pinned to the SAME branch kaggle/method_eval.py trains on. Cloning the default
+# branch instead is how the instruments and the stress suite came to describe
+# different captures: `main` still carries the width-based `arc` and `cone`
+# (20 cameras at 81 degrees, 3 at 30), while method-b1-b2 sizes them by camera
+# count (25 at 93, 10 at 54). Both are defensible protocols; pairing conditioning
+# measured on one with PSNR measured on the other is not, and nothing in either
+# kernel could have noticed, because each was self-consistent.
+BRANCH = "method-b1-b2"
+subprocess.run(f"git clone -q -b {BRANCH} {REPO} {WORK}/repo", shell=True, check=True)
 sys.path.insert(0, f"{WORK}/repo/tools")
 subprocess.run("pip install -q plyfile", shell=True, check=True)
 

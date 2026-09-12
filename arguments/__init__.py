@@ -55,6 +55,26 @@ class ModelParams(ParamGroup):
         self.data_device = "cuda"
         self.eval = False
         self._kernel_size = 0.1
+        # --- baseline switches: which published method this checkout IS ---
+        # Arm B. Zeroes the 3D smoothing filter, which with --kernel_size 0.3 is
+        # 3DGS's band-limit semantics exactly (Proposition 2). train.py,
+        # render.py and gaussian_model.py all read it; it was dropped from this
+        # file, and only this file, when the C1 flag below was added, so every
+        # arm-B run on this branch aborted at argument parsing.
+        self.disable_3D_filter = False
+        # C1. Vanilla 3DGS dilates the 2D covariance by a fixed 0.3 and applies
+        # NO opacity compensation; Mip-Splatting compensates by
+        # rho = sqrt(det(Sigma') / det(Sigma' + kI)). With this set AND
+        # --kernel_size 0.3, the rasteriser reproduces 3DGS exactly. Off by
+        # default, so arm A is untouched.
+        self.disable_2D_mip_compensation = False
+        # --- method switches: what this project adds on top ---
+        # Both groups live here together deliberately. They were added on
+        # different branches and the merge conflicted on exactly this block;
+        # resolving it by keeping one side is what silently removed
+        # disable_3D_filter once already. Every flag here defaults to False or
+        # to the baseline value, so a checkout with all of them present and
+        # none of them passed is shipped Mip-Splatting.
         self.use_fisher_filter = False   # B1
         self.fisher_s = 1.0
         self.fisher_beta = 0.01

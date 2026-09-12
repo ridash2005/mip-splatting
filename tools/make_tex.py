@@ -69,7 +69,26 @@ def load(runs_path):
         return []
     with open(runs_path, newline="") as f:
         return [r for r in csv.DictReader(f)
-                if r.get("psnr") and "SUPERSEDED" not in (r.get("notes") or "")]
+                if r.get("psnr") and "SUPERSEDED" not in (r.get("notes") or "")
+                and "PROBE=" not in (r.get("notes") or "")]
+
+
+def load_probe(runs_path, name):
+    """The rows of one probe, which load() deliberately does not return.
+
+    A probe re-measures a configuration that already has rows, changing one
+    thing that the config key does not record -- the L1 probe changes the
+    upstream commit and nothing else. Those rows are measurements and stay in
+    the file, but averaging them into the table they were built to be compared
+    against would destroy the comparison. So they are tagged at the source
+    (blender_rung's PROBE setting), dropped by load(), and read back only here.
+    """
+    if not os.path.exists(runs_path):
+        return []
+    with open(runs_path, newline="") as f:
+        return [r for r in csv.DictReader(f)
+                if r.get("psnr") and f"PROBE={name}" in (r.get("notes") or "")
+                and "SUPERSEDED" not in (r.get("notes") or "")]
 
 
 def select(rows, *, iterations, load_allres, dataset="blender", seed=None,
@@ -715,11 +734,17 @@ def stress_table(rows, inst, label, caption, sigma=SIGMA_FALLBACK):
 
 
 def load_all(runs_path):
-    """Every measured row, superseded ones included. Only C1 wants this."""
+    """Every measured row, superseded ones included. Only C1 wants this.
+
+    Probe rows are still excluded: C1 pairs a superseded row with the row that
+    replaced it, and a probe replaces nothing -- it is a third measurement of
+    the same config key, and would pair against the wrong partner.
+    """
     if not os.path.exists(runs_path):
         return []
     with open(runs_path, newline="") as f:
-        return [r for r in csv.DictReader(f) if r.get("psnr")]
+        return [r for r in csv.DictReader(f)
+                if r.get("psnr") and "PROBE=" not in (r.get("notes") or "")]
 
 
 def c1_table(all_rows, c1, label, caption):
@@ -1180,11 +1205,75 @@ def b2_table(b2, label, caption):
 
 
 
+def pregof_table(rows, probe, label, caption):
+    """Does GOF densification account for the offset above the published table?
+
+    Arm A reproduces above its published figure, and Chapter 7 has been
+    ASSERTING that the difference is densification: the checkout every rung was
+    run on carries "add GOF densification", which landed after the Mip-Splatting
+    paper's table was produced. That is a testable claim and it had never been
+    tested. This table tests it: same scenes, same data, same seed, same
+    iterations, arm A on both sides, and the only difference is 45 lines --
+    43 in scene/gaussian_model.py and 2 in train.py -- separating the probe's
+    checkout from the one the record was measured on.
+
+    The prediction is specific, which is what makes it falsifiable: if the
+    assertion holds, the probe column should sit at the published figure and the
+    post-GOF column above it. If the probe sits where the record does, the
+    offset is something else and Chapter 7 has to stop naming a cause.
+    """
+    pub = PUBLISHED["STMT"]["A"]
+    cur = select(rows, iterations=30000, load_allres="False", seed=0)
+    cur = [r for r in cur if r.get("arm") == "A"]
+    have = {r["scene"] for r in probe}
+    if not have:
+        return placeholder(label, caption,
+                           "the pre-GOF probe has not run, so the cause of the "
+                           "offset is asserted and not measured.")
+    # Matched on scenes, or the two columns are means over different sets and
+    # the difference between them is partly the scene list.
+    cur = [r for r in cur if r["scene"] in have]
+    L = [r"\begin{table}[htbp]", r"  \centering",
+         r"  \caption{" + caption + "}", r"  \label{tab:" + label + "}",
+         r"  \small", r"  \begin{tabular}{lrrrrr}", r"    \toprule",
+         r"    test scale & published & pre-GOF & post-GOF & "
+         r"pre $-$ pub. & post $-$ pre \\", r"    \midrule"]
+    for i, sc in enumerate(SCALES):
+        a = mean([float(r["psnr"]) for r in probe if r["test_scale"] == sc])
+        b = mean([float(r["psnr"]) for r in cur if r["test_scale"] == sc])
+        L.append("    " + " & ".join([
+            sc, f"{pub[i]:.2f}", fmt(a), fmt(b),
+            fmt(a - pub[i], "{:+.2f}") if a is not None else NOT_MEASURED,
+            (r"\textbf{" + f"{b - a:+.2f}" + "}")
+            if (a is not None and b is not None) else NOT_MEASURED,
+        ]) + r" \\")
+    L += [r"    \bottomrule", r"  \end{tabular}",
+          r"  \par\vspace{2pt}\footnotesize Arm A (Mip-Splatting) on both "
+          r"measured columns, single-scale train, seed 0, "
+          + str(len(have)) + r" scenes, restricted to the scenes the probe ran "
+          r"so the two means are over the same set. \emph{pre-GOF} is upstream "
+          r"commit \texttt{1ecf7d5}, the last before ``add GOF densification''; "
+          r"\emph{post-GOF} is the checkout every other table in this chapter "
+          r"was measured on. The final column is the effect of that one change, "
+          r"and it is the quantity Chapter~\ref{ch:results} names as the "
+          r"explanation for the offset from the published column.",
+          r"\end{table}", ""]
+    return "\n".join(L)
+
+
 def b2_matched_table(b2c, label, caption):
     """B2 against magnitude pruning at matched size, where both actually prune.
 
     This is the comparison Table 4 exists to make and cannot make on a full
     orbit, where the criterion retains everything and both rows are the control.
+
+    Two controls, because the first one on its own was not a fair test. Free
+    magnitude pruning ranks individual coefficients and keeps the largest; B2
+    masks NESTED WHOLE DEGREES. At the same budget the free control has strictly
+    more freedom, so B2 losing to it says something about the structure, not
+    about the criterion -- and the criterion is what is on trial. The blocked
+    control carries B2's structure and B2's budget and differs only in what it
+    ranks by, which is the like-for-like comparison.
     """
     res = (b2c or {}).get("results") or {}
     rows_ = []
@@ -1196,8 +1285,10 @@ def b2_matched_table(b2c, label, caption):
         full = res.get(f"{scene}/full")
         if not mag or not full:
             continue
+        deg = res.get(f"{scene}/degmag/{tail}")   # absent on runs predating it
         rows_.append((scene, tail.replace("tau", "").replace("_sweep", ""),
-                      v.get("retained", 0.0), full["PSNR"], v["PSNR"], mag["PSNR"]))
+                      v.get("retained", 0.0), full["PSNR"], v["PSNR"],
+                      mag["PSNR"], (deg or {}).get("PSNR")))
     if not rows_:
         return placeholder(label, caption,
                            "B2 has not been evaluated on a capture where it "
@@ -1205,27 +1296,40 @@ def b2_matched_table(b2c, label, caption):
     rows_.sort(key=lambda t: (t[0], -t[2]))
     L = [r"\begin{table}[htbp]", r"  \centering",
          r"  \caption{" + caption + "}", r"  \label{tab:" + label + "}",
-         r"  \small", r"  \begin{tabular}{llrrrrr}", r"    \toprule",
-         r"    scene & $\tau$ & kept & control & B2 & magnitude"
-         r" & $\Delta$ (B2 $-$ mag.) \\", r"    \midrule"]
-    deltas = []
-    for scene, tau, kept, full, b2v, magv in rows_:
+         r"  \small", r"  \begin{tabular}{llrrrrrrr}", r"    \toprule",
+         r"    & & & & & \multicolumn{2}{c}{magnitude} "
+         r"& \multicolumn{2}{c}{$\Delta$ (B2 $-$ magnitude)} \\",
+         r"    \cmidrule(lr){6-7}\cmidrule(lr){8-9}",
+         r"    scene & $\tau$ & kept & control & B2 & free & blocked"
+         r" & free & blocked \\", r"    \midrule"]
+    deltas, fair = [], []
+    for scene, tau, kept, full, b2v, magv, degv in rows_:
         d = b2v - magv
+        dd = (b2v - degv) if degv is not None else None
         if kept > 0:
             deltas.append(d)
+            if dd is not None:
+                fair.append(dd)
         L.append("    " + " & ".join([
-            r"\texttt{" + scene + "}", tau, f"{kept * 100:.1f}\\%",
+            r"\texttt{" + scene + "}", tau, f"{kept * 100:.1f}\%",
             f"{full:.3f}", f"{b2v:.3f}", f"{magv:.3f}",
-            (r"\textbf{" + f"{d:+.3f}" + "}"),
+            (f"{degv:.3f}" if degv is not None else NOT_MEASURED),
+            f"{d:+.3f}",
+            (r"\textbf{" + f"{dd:+.3f}" + "}") if dd is not None else NOT_MEASURED,
         ]) + r" \\")
     L += [r"    \bottomrule", r"  \end{tabular}",
           r"  \par\vspace{2pt}\footnotesize PSNR over the whole test set; only "
-          r"the capture the \emph{criterion} reads is restricted. Magnitude "
-          r"pruning is matched to the exact fraction B2 retained, so the two "
-          r"models are the same size and differ only in \emph{which} "
-          r"coefficients they keep. A row at $0\,\%$ kept is both methods "
-          r"discarding every non-DC coefficient, where they coincide by "
-          r"definition.",
+          r"the capture the \emph{criterion} reads is restricted. Both controls "
+          r"are matched to the exact fraction B2 retained, so every model in a "
+          r"row has the same number of coefficients and they differ only in "
+          r"\emph{which} ones. \emph{free} ranks individual coefficients, which "
+          r"B2 cannot do, so that column is an upper bound on what any "
+          r"magnitude rule could reach at this budget rather than a like-for-"
+          r"like control. \emph{blocked} restricts magnitude pruning to the "
+          r"nested whole degrees B2 masks: same structure, same budget, "
+          r"different criterion. The bolded $\Delta$ is that comparison. A row "
+          r"at $0\,\%$ kept is every method discarding every non-DC "
+          r"coefficient, where they coincide by definition.",
           r"\end{table}", ""]
     return "\n".join(L)
 
@@ -1657,6 +1761,10 @@ def main():
         "table-b2-protocols.tex": b2_protocol_table(
             b2proto, b2sweep, "btwoproto",
             r"B2 --- the identifiability criterion across capture protocols."),
+        "table-pregof.tex": pregof_table(
+            rows, load_probe(a.runs, "pregof"), "pregof",
+            r"L1 probe --- does GOF densification account for arm A's offset "
+            r"from its published figure?"),
         "table-b2-matched.tex": b2_matched_table(b2c, "btwomatched",
             r"B2 against magnitude pruning at matched model size, on a capture "
             r"where the criterion actually masks."),

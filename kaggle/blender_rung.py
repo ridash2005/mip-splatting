@@ -50,6 +50,11 @@ SEEDS = [0]                # R5 sweeps these; see tools/seeded_train.py.
                            # anchors to the R1/R2 numbers rather than redrawing.
 SCENES = ["ship", "drums", "ficus", "hotdog", "lego", "materials", "mic", "chair"]
 ITERS = 30000
+ARM_A_BRANCH = "main"                   # L1 probe: "pre-gof-baseline" is the
+                                       # last commit before GOF densification
+                                       # landed, which is the configuration
+                                       # Mip-Splatting's published table was
+                                       # produced at. Both arms move together.
 ARM_B_BRANCH = "arm-b-3dgs-baseline"   # "arm-b-3dgs-vanilla" drops the 2D Mip
                                        # opacity compensation as well (C1). The
                                        # branch decides what arm B *is*, so it
@@ -57,6 +62,18 @@ ARM_B_BRANCH = "arm-b-3dgs-baseline"   # "arm-b-3dgs-vanilla" drops the 2D Mip
 ARM_B_EXTRA = ""                       # "--disable_2D_mip_compensation" with
                                        # the vanilla branch; the flag exists
                                        # nowhere else and would be rejected.
+PROBE = ""                             # non-empty marks every row this run
+                                       # writes as a PROBE: measured, kept, and
+                                       # deliberately held out of the standard
+                                       # tables, because it shares its config
+                                       # key with them and differs only in a
+                                       # commit. Without it the L1 probe's rows
+                                       # would average into Table 1 silently.
+TRAIN_ENV_EXTRA = ""                   # extra env for train.py only, e.g.
+                                       # "CUDA_LAUNCH_BLOCKING=1" so an async
+                                       # CUDA fault is reported at the kernel
+                                       # that raised it instead of at whatever
+                                       # torch call next touched the device.
 ARMS_ENABLED = ["A", "B"]              # narrow to save quota when only one arm
                                        # is in question.
 # -----------------------------------------------------------------------------
@@ -83,10 +100,20 @@ if cap < (7, 0):
     raise SystemExit(f"ABORT: {gpu_name} has compute capability {cap}, below 7.0 (F15).")
 
 # ============================================================ clone + build
-subprocess.run(f"git clone --recursive -b main {REPO} {WORK}/armA", shell=True, check=True)
+subprocess.run(f"git clone --recursive -b {ARM_A_BRANCH} {REPO} {WORK}/armA",
+               shell=True, check=True)
 subprocess.run(f"git clone --recursive -b {ARM_B_BRANCH} {REPO} {WORK}/armB",
                shell=True, check=True)
-sys.path.insert(0, f"{WORK}/armA/tools")
+
+# The harness -- kernel_common, split_by_scale -- is this project's, not
+# Mip-Splatting's, and lives under tools/ on main. Normally arm A *is* main and
+# supplies it. The L1 probe points arm A at an upstream commit that predates
+# this project entirely and has no tools/ directory, so the harness is cloned
+# separately rather than taken from whatever arm A happens to be.
+HARNESS = f"{WORK}/armA" if ARM_A_BRANCH == "main" else f"{WORK}/harness"
+if HARNESS != f"{WORK}/armA":
+    subprocess.run(f"git clone --depth 1 -b main {REPO} {HARNESS}", shell=True, check=True)
+sys.path.insert(0, f"{HARNESS}/tools")
 import kernel_common as kc          # noqa: E402
 import split_by_scale as sbs        # noqa: E402
 
@@ -175,7 +202,7 @@ t0 = time.time()
 for scene in SCENES:
     if os.path.exists(f"{WORK}/multi-scale/{scene}/metadata.json"):
         continue
-    kc.sh(f"python {WORK}/armA/convert_blender_data.py --blender_dir {blender_dir} "
+    kc.sh(f"python {HARNESS}/convert_blender_data.py --blender_dir {blender_dir} "
           f"--object_name {scene} --out_dir {WORK}/multi-scale",
           logdir=LOGDIR, log_name="convert")
 convert_seconds = time.time() - t0
@@ -202,6 +229,8 @@ def run_one(gpu, arm, scene, seed):
     out = f"{WORK}/out_arm{arm}/{scene}{suffix}"
     tag = f"{arm}_{scene}{suffix}"
     env = f"OMP_NUM_THREADS=4 CUDA_VISIBLE_DEVICES={gpu}"
+    if TRAIN_ENV_EXTRA:
+        env += f" {TRAIN_ENV_EXTRA}"
     if seed:
         env += f" BTP_SEED={seed} BTP_KEEP_INIT=1"
     entry = "tools/seeded_train.py" if seed else "train.py"
@@ -268,7 +297,8 @@ def run_one(gpu, arm, scene, seed):
         "render_fps": f"{st['render_fps']:.3f}" if st["render_fps"] else "",
         "gpu_model": gpu_name, "platform": "kaggle", "level_claimed": "L1",
         "notes": f"{RUNG} Blender {'MTMT' if LOAD_ALLRES else 'STMT'}, {ITERS} iters, "
-                 f"{len(SCENES)}-scene sweep, seed {seed}",
+                 f"{len(SCENES)}-scene sweep, seed {seed}"
+                 + (f", PROBE={PROBE}" if PROBE else ""),
     })
     removed = kc.prune_renders(out, METHOD, keep=KEEP_QUALITATIVE)
     print(f"[{tag}] done: pooled {pooled:.3f} dB, {st['n_gaussians']} gaussians, "

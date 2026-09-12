@@ -37,6 +37,8 @@ def render_set(model_path, name, iteration, views, gaussians, pipeline, backgrou
 def render_sets(dataset : ModelParams, iteration : int, pipeline : PipelineParams, skip_train : bool, skip_test : bool):
     with torch.no_grad():
         gaussians = GaussianModel(dataset.sh_degree)
+        gaussians._disable_3D_filter = dataset.disable_3D_filter
+        gaussians._disable_2D_mip_compensation = dataset.disable_2D_mip_compensation
         scene = Scene(dataset, gaussians, load_iteration=iteration, shuffle=False)
         gaussians.use_fisher_filter = getattr(dataset, "use_fisher_filter", False)
         if gaussians.use_fisher_filter:

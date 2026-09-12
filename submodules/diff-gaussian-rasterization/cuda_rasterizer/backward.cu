@@ -148,6 +148,7 @@ __global__ void computeCov2DCUDA(int P,
 	const float h_x, float h_y,
 	const float tan_fovx, float tan_fovy,
 	const float kernel_size,
+	const bool mip_compensation,
 	const float* view_matrix,
 	const float* dL_dconics,
 	float3* dL_dmeans,
@@ -201,7 +202,7 @@ __global__ void computeCov2DCUDA(int P,
 	const float det_0 = max(1e-6, cov2D[0][0] * cov2D[1][1] - cov2D[0][1] * cov2D[0][1]);
 	const float det_1 = max(1e-6, (cov2D[0][0] + kernel_size) * (cov2D[1][1] + kernel_size) - cov2D[0][1] * cov2D[0][1]);
 	// sqrt here
-	const float coef = sqrt(det_0 / (det_1+1e-6) + 1e-6);
+	const float coef = mip_compensation ? sqrt(det_0 / (det_1+1e-6) + 1e-6) : 1.0f;
 
 	// update the gradient of alpha and save the gradient of dalpha_dcoef
 	// we need opacity as input
@@ -235,7 +236,11 @@ __global__ void computeCov2DCUDA(int P,
 		dL_dc = denom2inv * (-a * a * dL_dconic.z + 2 * a * b * dL_dconic.y + (denom - a * c) * dL_dconic.x);
 		dL_db = denom2inv * 2 * (b * c * dL_dconic.x - (denom + 2 * b * b) * dL_dconic.y + a * b * dL_dconic.z);
 
-		if (det_0 <= 1e-6 || det_1 <= 1e-6){
+		if (!mip_compensation) {
+			// Vanilla 3DGS: alpha is not modulated by the dilation, so there is
+			// no gradient path from opacity through the 2D covariance, and
+			// dL_dopacity passes through unchanged.
+		} else if (det_0 <= 1e-6 || det_1 <= 1e-6){
 			dL_dopacity[idx] = 0;
 		} else {
 			// Gradiends of alpha respect to conv due to low pass filter
@@ -622,6 +627,7 @@ void BACKWARD::preprocess(
 	const float focal_x, float focal_y,
 	const float tan_fovx, float tan_fovy,
 	const float kernel_size,
+	const bool mip_compensation,
 	const glm::vec3* campos,
 	const float3* dL_dmean2D,
 	const float* dL_dconic,
@@ -648,6 +654,7 @@ void BACKWARD::preprocess(
 		tan_fovx,
 		tan_fovy,
 		kernel_size,
+		mip_compensation,
 		viewmatrix,
 		dL_dconic,
 		(float3*)dL_dmean3D,

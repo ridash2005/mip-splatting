@@ -454,9 +454,10 @@ def fig_anisotropy_curve(out):
 # Each returns without writing anything if its measurement does not exist yet: a
 # figure is a claim, and an empty panel is preferable to an invented one.
 
-PROTO_ORDER = ["full", "grazing", "mixed", "arc", "cone"]
+PROTO_ORDER = ["full", "grazing", "mixed", "arc", "cone", "pencil"]
 PROTO_LABEL = {"full": "full orbit", "grazing": "grazing", "mixed": "mixed focal",
-               "arc": "one-sided arc", "cone": "low-parallax cone"}
+               "arc": "one-sided arc", "cone": "low-parallax cone",
+               "pencil": "narrow pencil"}
 
 
 def _placeholder_panel(out, name, msg):

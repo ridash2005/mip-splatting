@@ -324,9 +324,13 @@ def tex_escape(s):
 
 
 PROTO_LABEL = {"full": "full orbit", "arc": "one-sided arc",
-               "cone": "low-parallax cone", "mixed": "mixed focal",
-               "grazing": "grazing"}
-PROTO_ORDER = ["full", "arc", "cone", "mixed", "grazing"]
+               "cone": "low-parallax cone", "pencil": "narrow pencil",
+               "mixed": "mixed focal", "grazing": "grazing"}
+# Ordered by conditioning, best first. A protocol missing from this list is
+# silently dropped from every table and figure, which is how `pencil` -- the one
+# protocol that reaches the regime -- would have vanished from the results it was
+# added to produce.
+PROTO_ORDER = ["full", "grazing", "mixed", "arc", "cone", "pencil"]
 
 
 def instruments_table(inst, label, caption):
@@ -799,9 +803,12 @@ PROTO_SELECTION = {
     "arc": ("contiguous azimuthal wedge",
             "the anisotropic regime: the floor binds in some directions and not "
             "in others."),
-    "cone": ("tightest angular cluster",
-             "the largest predicted gain, and the only protocol where the floor "
-             "is exceeded in every direction."),
+    "cone": ("tightest angular cluster, a tenth of the cameras",
+             "a degraded but trainable capture. As built it lands at 36--54$^\circ$, "
+             "where the floor still binds."),
+    "pencil": ("every camera within a $20^\circ$ wedge",
+               "the regime itself: the narrowest capture the suite contains, and "
+               "the only one where the estimation term exceeds the floor."),
 }
 
 

@@ -16,17 +16,60 @@
   "cuda": "12.8",
   "open3d": true,
   "armA_commit": "a77201ee6c60a7fa4d8442e92112bc115538a373",
-  "armB_commit": "de7cb44c168b1cc901d7b7974153604bda1007bd",
-  "convert_seconds": 228.82791948318481,
-  "done": {},
-  "failed": {
-    "B/ship": "RuntimeError: command failed (1): OMP_NUM_THREADS=4 CUDA_VISIBLE_DEVICES=0 python train.py -s /kaggle/working/multi-scale/ship -m /kaggle/working/out_armB/ship --eval --white_background --iterations 30000 --test_iterations -1 --port 6209  --kernel_size 0.3 --disable_3D_filter --disable_2D_mip_compensation\n--- tail ---\ng 3D filter [12/09 01:55:13]\nComputing 3D filter [12/09 01:55:19]\nComputing 3D filter [12/09 01:55:26]\nComputing 3D filter [12/09 01:55:32]\nComputing 3D filter [12/09 01:55:38]\nComputing 3D filter [12/09 01:55:45]\nComputing 3D filter [12/09 01:55:51]\nComputing 3D filter [12/09 01",
-    "B/chair": "RuntimeError: command failed (1): OMP_NUM_THREADS=4 CUDA_VISIBLE_DEVICES=1 python train.py -s /kaggle/working/multi-scale/chair -m /kaggle/working/out_armB/chair --eval --white_background --iterations 30000 --test_iterations -1 --port 6210  --kernel_size 0.3 --disable_3D_filter --disable_2D_mip_compensation\n--- tail ---\n\nComputing 3D filter [12/09 02:08:08]\nComputing 3D filter [12/09 02:08:13]\nComputing 3D filter [12/09 02:08:17]\nComputing 3D filter [12/09 02:08:22]\nComputing 3D filter [12/09 02:08:26]\nComputing 3D filter [12/09 02:08:31]\nComputing 3D filter [12/09 02:08:35]\nComputing 3D filte"
+  "armB_commit": "061a9084e00ce8aaec5783df32b047b2b7178084",
+  "convert_seconds": 231.33757400512695,
+  "done": {
+    "B/chair": {
+      "split": {
+        "1x": {
+          "PSNR": 35.31837923049927,
+          "SSIM": 0.9856246447563172,
+          "LPIPS": 0.012893818852026015,
+          "n": 200
+        },
+        "1/2": {
+          "PSNR": 29.240477628707886,
+          "SSIM": 0.9643091568350792,
+          "LPIPS": 0.022060906714759767,
+          "n": 200
+        },
+        "1/4": {
+          "PSNR": 24.39010145187378,
+          "SSIM": 0.913395528793335,
+          "LPIPS": 0.04390421592630446,
+          "n": 200
+        },
+        "1/8": {
+          "PSNR": 21.13504319190979,
+          "SSIM": 0.8321693769097328,
+          "LPIPS": 0.08393646638840437,
+          "n": 200
+        }
+      },
+      "stats": {
+        "train_seconds": 1412.0014219284058,
+        "peak_vram_mb": 5621,
+        "iters_per_second": 21.24643752768198,
+        "render_seconds": 85.63587069511414,
+        "n_rendered": 800,
+        "render_fps": 9.341879676195587,
+        "n_gaussians": 326405,
+        "filter_3D_max": 0.0,
+        "model_mb": 82.255616,
+        "metrics_seconds": 79.26182007789612,
+        "pooled_psnr": 27.5210018157959
+      }
+    }
   },
-  "session_seconds": 1731.8077247142792,
-  "gpu_hours_used": 0.4810577015744315,
+  "failed": {
+    "B/ship": "RuntimeError: command failed (1): OMP_NUM_THREADS=4 CUDA_VISIBLE_DEVICES=0 python train.py -s /kaggle/working/multi-scale/ship -m /kaggle/working/out_armB/ship --eval --white_background --iterations 30000 --test_iterations -1 --port 6209  --kernel_size 0.3 --disable_3D_filter --disable_2D_mip_compensation\n--- tail ---\n [12/09 02:30:58]\nComputing 3D filter [12/09 02:31:05]\nComputing 3D filter [12/09 02:31:12]\nComputing 3D filter [12/09 02:31:19]\nComputing 3D filter [12/09 02:31:26]\nComputing 3D filter [12/09 02:31:33]\nComputing 3D filter [12/09 02:31:40]\nComputing 3D filter [12/09 02:31:47]\nCom"
+  },
+  "session_seconds": 2041.5391628742218,
+  "gpu_hours_used": 0.5670942120419609,
   "complete": false,
-  "filter_3D_max": {},
+  "filter_3D_max": {
+    "B/chair": 0.0
+  },
   "armB_all_zero": true,
   "armA_all_nonzero": true
 }

@@ -754,16 +754,35 @@ implementation and why Equation~\eqref{eq:lmax} should be restated in that form.
 This is a change to the method that only measurement could have produced, and it
 is recorded as such rather than folded silently into the derivation.
 
-\paragraph{What is not measured here.}
+\subsection*{Table 4 --- rendered, and what it can and cannot show}
 
 \input{generated/table-b2}
 
-The PSNR and model-size columns Table~\ref{tab:b2} calls for need a render and a
-metrics pass over the masked models. The weekly GPU quota was exhausted before those could run
-(\S\ref{sec:budget}), and they are left empty. The memory result additionally
-needs variable-length SH storage, which \S\ref{ch:plan} schedules for Spring:
-masking coefficients to zero does not shrink a fixed-width PLY, so no
-model-size saving is claimed from these numbers.
+Every cell in that table is identical across the three rows, and that is the
+result rather than a failure to produce one. On the standard benchmark the
+criterion retains $100\,\%$ of non-DC coefficients, so the masked model
+\emph{is} the control --- the same file, scored through the same render and
+metrics path --- and magnitude pruning matched to the same fraction prunes
+nothing either. The $\tau$ sweep says the same thing from another direction:
+between $\tau = 0.003$ and $\tau = 0.1$, a factor of thirty, nothing on a full
+orbit changes.
+
+\keybox{the comparison this table was built for cannot happen here}{%
+Table~\ref{tab:b2} exists to ask whether identifiability masking beats magnitude
+pruning \emph{at matched model size}. That question has no content when the
+criterion prunes nothing: both rows keep everything, so both score identically,
+and the table cannot distinguish a good criterion from a bad one. The comparison
+needs a capture where B2 actually masks --- the protocol sweep above, where the
+retained fraction falls to $62\,\%$ on the arc and $25\,\%$ on the cone --- and
+those models have not been rendered. Reporting the three equal rows as evidence
+that B2 matches magnitude pruning would be exactly the error this chapter warns
+about elsewhere: a condition tested where it was constrained to be satisfied.}
+
+\paragraph{No memory saving is claimed.} Model size does not move either, and
+cannot: masking coefficients to zero leaves a fixed-width PLY the same size on
+disk. Realising the saving needs variable-length SH storage, which
+Chapter~\ref{ch:plan} schedules for Spring. The $74.8$\,MB in all three rows is
+the same file written three times.
 
 \section{What these results do and do not establish}
 They establish a control. Both baselines now exist as this project's own

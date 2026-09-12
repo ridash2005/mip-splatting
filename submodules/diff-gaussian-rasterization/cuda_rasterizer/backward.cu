@@ -236,12 +236,18 @@ __global__ void computeCov2DCUDA(int P,
 		dL_dc = denom2inv * (-a * a * dL_dconic.z + 2 * a * b * dL_dconic.y + (denom - a * c) * dL_dconic.x);
 		dL_db = denom2inv * 2 * (b * c * dL_dconic.x - (denom + 2 * b * b) * dL_dconic.y + a * b * dL_dconic.z);
 
-		if (!mip_compensation) {
+		// The degeneracy guard first, and unconditionally, because the FORWARD
+		// applies it unconditionally: a primitive whose projected covariance is
+		// singular gets coef = 0 there whether or not the compensation is on.
+		// Zeroing the forward contribution while letting a gradient flow back to
+		// its opacity is not a consistent pair, and `ship` died in
+		// loss.backward() with an illegal memory access until these matched.
+		if (det_0 <= 1e-6 || det_1 <= 1e-6){
+			dL_dopacity[idx] = 0;
+		} else if (!mip_compensation) {
 			// Vanilla 3DGS: alpha is not modulated by the dilation, so there is
 			// no gradient path from opacity through the 2D covariance, and
 			// dL_dopacity passes through unchanged.
-		} else if (det_0 <= 1e-6 || det_1 <= 1e-6){
-			dL_dopacity[idx] = 0;
 		} else {
 			// Gradiends of alpha respect to conv due to low pass filter
 			dL_da += dcoef_da;

@@ -851,6 +851,27 @@ def load_all(runs_path):
                 if r.get("psnr") and "PROBE=" not in (r.get("notes") or "")]
 
 
+def c1_baseline(all_rows, scene, iterations):
+    """C1's left column: arm B WITH the 2D opacity compensation.
+
+    Those rows are the ones C2 superseded -- that is what C1 exists to compare
+    against -- so they must be read from the unfiltered record and the marked
+    ones preferred. The macro block used to read the filtered rows instead,
+    which silently returned the vanilla column on both sides and made
+    \cOneCollapse 0.00 dB while the table beside it showed 6.64. Three
+    sentences of Chapter 7 quote that macro, and one of them argues that the two
+    columns differ a lot.
+    """
+    cand = [r for r in all_rows
+            if r.get("scene") == scene and r.get("arm") == "B"
+            and r.get("dataset") == "blender" and r.get("seed") == "0"
+            and r.get("iterations") == str(iterations)
+            and r.get("load_allres") == "False"
+            and r.get("train_scale") == "1x"]
+    marked = [r for r in cand if "SUPERSEDED" in (r.get("notes") or "")]
+    return {r["test_scale"]: float(r["psnr"]) for r in (marked or cand)}
+
+
 def c1_table(all_rows, c1, label, caption):
     """C1: the same arm and scene with and without the 2D opacity compensation.
 
@@ -865,16 +886,9 @@ def c1_table(all_rows, c1, label, caption):
             new[k] = v.get("PSNR")
     if not new:
         return placeholder(label, caption, "C1 has not been run.")
-    cand = [r for r in all_rows
-            if r.get("scene") == scene and r.get("arm") == "B"
-            and r.get("dataset") == "blender" and r.get("seed") == "0"
-            and r.get("iterations") == str(c1.get("iterations", 30000))
-            and r.get("load_allres") == "False"
-            and r.get("train_scale") == "1x"]
     # Once C2 has landed the compensated rows are the marked ones; before that
     # they are the only ones. Both cases select the same measurement.
-    marked = [r for r in cand if "SUPERSEDED" in (r.get("notes") or "")]
-    old = {r["test_scale"]: float(r["psnr"]) for r in (marked or cand)}
+    old = c1_baseline(all_rows, scene, c1.get("iterations", 30000))
 
     pub = PUBLISHED["STMT"]["B"]
     L = [r"\begin{table}[htbp]", r"  \centering",
@@ -1497,7 +1511,8 @@ def b2_protocol_table(proto, sweep, label, caption):
 
 
 # ------------------------------------------------------------------- macros
-def macros(rows, summaries, inst=None, raw=None, b2c_for_macros=None):
+def macros(rows, summaries, inst=None, raw=None, b2c_for_macros=None,
+           all_rows_for_macros=None):
     """Inline numbers, as \\newcommand. Undefined data yields a visible marker."""
     M = {}
 
@@ -1664,15 +1679,8 @@ def macros(rows, summaries, inst=None, raw=None, b2c_for_macros=None):
         for k, v in (job.get("split") or {}).items():
             c1new[k] = v.get("PSNR")
     c1scene = (c1.get("scenes") or [None])[0]
-    c1old = {}
-    if c1scene:
-        for r in rows:
-            if (r.get("scene") == c1scene and r.get("arm") == "B"
-                    and r.get("dataset") == "blender" and r.get("seed") == "0"
-                    and r.get("iterations") == "30000"
-                    and r.get("load_allres") == "False"
-                    and r.get("train_scale") == "1x"):
-                c1old[r["test_scale"]] = float(r["psnr"])
+    c1old = (c1_baseline(all_rows_for_macros or rows, c1scene, 30000)
+             if c1scene else {})
     for sc, nm in zip(SCALES, ("Full", "Half", "Quarter", "Eighth")):
         put("cOne" + nm, c1new.get(sc))
         put("cOneBase" + nm, c1old.get(sc))
@@ -1942,7 +1950,8 @@ def main():
             r"capture protocols of \S\ref{sec:stress}. Computed from trained "
             r"point clouds and camera geometry; no retraining."),
         "measured.tex": macros(rows, summaries, inst, raw=raw,
-                               b2c_for_macros=b2c),
+                               b2c_for_macros=b2c,
+                               all_rows_for_macros=load_all(a.runs)),
     }
     for name, body in written.items():
         with open(os.path.join(a.out, name), "w", encoding="utf-8") as f:

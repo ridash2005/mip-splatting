@@ -1,0 +1,1716 @@
+Fri Sep 11 23:50:44 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 580.159.04             Driver Version: 580.159.04     CUDA Version: 13.0     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  Tesla T4                       Off |   00000000:00:04.0 Off |                    0 |
+| N/A   38C    P8              9W /   70W |       0MiB /  15360MiB |      0%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+|   1  Tesla T4                       Off |   00000000:00:05.0 Off |                    0 |
+| N/A   39C    P8              9W /   70W |       0MiB /  15360MiB |      0%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+torch 2.10.0+cu128 cap (7, 5) Tesla T4 x2
+Cloning into '/kaggle/working/repo'...
++ pip install -q ninja gputil lpips plyfile opencv-python
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 43.3/43.3 kB 2.3 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 53.8/53.8 kB 3.6 MB/s eta 0:00:00
++ pip install -q open3d
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 447.7/447.7 MB 3.9 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 8.9/8.9 MB 119.5 MB/s eta 0:00:00
+applied build fix: added #include <cfloat> to /kaggle/working/repo/submodules/simple-knn/simple_knn.cu
++ pip install -v /kaggle/working/repo/submodules/diff-gaussian-rasterization
+Using pip 24.1.2 from /usr/local/lib/python3.12/dist-packages/pip (python 3.12)
+Processing ./repo/submodules/diff-gaussian-rasterization
+  Preparing metadata (setup.py): started
+  Running command python setup.py egg_info
+  running egg_info
+  creating /tmp/pip-pip-egg-info-n3oez1e4/diff_gaussian_rasterization.egg-info
+  writing /tmp/pip-pip-egg-info-n3oez1e4/diff_gaussian_rasterization.egg-info/PKG-INFO
+  writing dependency_links to /tmp/pip-pip-egg-info-n3oez1e4/diff_gaussian_rasterization.egg-info/dependency_links.txt
+  writing top-level names to /tmp/pip-pip-egg-info-n3oez1e4/diff_gaussian_rasterization.egg-info/top_level.txt
+  writing manifest file '/tmp/pip-pip-egg-info-n3oez1e4/diff_gaussian_rasterization.egg-info/SOURCES.txt'
+  reading manifest file '/tmp/pip-pip-egg-info-n3oez1e4/diff_gaussian_rasterization.egg-info/SOURCES.txt'
+  adding license file 'LICENSE.md'
+  writing manifest file '/tmp/pip-pip-egg-info-n3oez1e4/diff_gaussian_rasterization.egg-info/SOURCES.txt'
+  Preparing metadata (setup.py): finished with status 'done'
+Building wheels for collected packages: diff_gaussian_rasterization
+  Building wheel for diff_gaussian_rasterization (setup.py): started
+  Running command python setup.py bdist_wheel
+  running bdist_wheel
+  running build
+  running build_py
+  creating build/lib.linux-x86_64-cpython-312/diff_gaussian_rasterization
+  copying diff_gaussian_rasterization/__init__.py -> build/lib.linux-x86_64-cpython-312/diff_gaussian_rasterization
+  running build_ext
+  W0911 23:51:31.522000 107 torch/utils/cpp_extension.py:535] There are no x86_64-linux-gnu-g++ version bounds defined for CUDA version 12.8
+  building 'diff_gaussian_rasterization._C' extension
+  creating /kaggle/working/repo/submodules/diff-gaussian-rasterization/build/temp.linux-x86_64-cpython-312/cuda_rasterizer
+  [1/5] /usr/local/cuda/bin/nvcc --generate-dependencies-with-compile --dependency-output /kaggle/working/repo/submodules/diff-gaussian-rasterization/build/temp.linux-x86_64-cpython-312/cuda_rasterizer/forward.o.d -I/usr/local/lib/python3.12/dist-packages/torch/include -I/usr/local/lib/python3.12/dist-packages/torch/include/torch/csrc/api/include -I/usr/local/cuda/include -I/usr/include/python3.12 -c -c /kaggle/working/repo/submodules/diff-gaussian-rasterization/cuda_rasterizer/forward.cu -o /kaggle/working/repo/submodules/diff-gaussian-rasterization/build/temp.linux-x86_64-cpython-312/cuda_rasterizer/forward.o -D__CUDA_NO_HALF_OPERATORS__ -D__CUDA_NO_HALF_CONVERSIONS__ -D__CUDA_NO_BFLOAT16_CONVERSIONS__ -D__CUDA_NO_HALF2_OPERATORS__ --expt-relaxed-constexpr --compiler-options ''"'"'-fPIC'"'"'' -I/kaggle/working/repo/submodules/diff-gaussian-rasterization/third_party/glm/ -DTORCH_API_INCLUDE_EXTENSION_H -DTORCH_EXTENSION_NAME=_C -gencode=arch=compute_75,code=sm_75 -std=c++17
+  /kaggle/working/repo/submodules/diff-gaussian-rasterization/cuda_rasterizer/auxiliary.h(151): warning #177-D: variable "p_proj" was declared but never referenced
+     float3 p_proj = { p_hom.x * p_w, p_hom.y * p_w, p_hom.z * p_w };
+            ^
+  Remark: The warnings can be suppressed with "-diag-suppress <warning-number>"
+  [2/5] /usr/local/cuda/bin/nvcc --generate-dependencies-with-compile --dependency-output /kaggle/working/repo/submodules/diff-gaussian-rasterization/build/temp.linux-x86_64-cpython-312/cuda_rasterizer/backward.o.d -I/usr/local/lib/python3.12/dist-packages/torch/include -I/usr/local/lib/python3.12/dist-packages/torch/include/torch/csrc/api/include -I/usr/local/cuda/include -I/usr/include/python3.12 -c -c /kaggle/working/repo/submodules/diff-gaussian-rasterization/cuda_rasterizer/backward.cu -o /kaggle/working/repo/submodules/diff-gaussian-rasterization/build/temp.linux-x86_64-cpython-312/cuda_rasterizer/backward.o -D__CUDA_NO_HALF_OPERATORS__ -D__CUDA_NO_HALF_CONVERSIONS__ -D__CUDA_NO_BFLOAT16_CONVERSIONS__ -D__CUDA_NO_HALF2_OPERATORS__ --expt-relaxed-constexpr --compiler-options ''"'"'-fPIC'"'"'' -I/kaggle/working/repo/submodules/diff-gaussian-rasterization/third_party/glm/ -DTORCH_API_INCLUDE_EXTENSION_H -DTORCH_EXTENSION_NAME=_C -gencode=arch=compute_75,code=sm_75 -std=c++17
+  /kaggle/working/repo/submodules/diff-gaussian-rasterization/cuda_rasterizer/auxiliary.h(151): warning #177-D: variable "p_proj" was declared but never referenced
+     float3 p_proj = { p_hom.x * p_w, p_hom.y * p_w, p_hom.z * p_w };
+            ^
+  Remark: The warnings can be suppressed with "-diag-suppress <warning-number>"
+  [3/5] /usr/local/cuda/bin/nvcc --generate-dependencies-with-compile --dependency-output /kaggle/working/repo/submodules/diff-gaussian-rasterization/build/temp.linux-x86_64-cpython-312/cuda_rasterizer/rasterizer_impl.o.d -I/usr/local/lib/python3.12/dist-packages/torch/include -I/usr/local/lib/python3.12/dist-packages/torch/include/torch/csrc/api/include -I/usr/local/cuda/include -I/usr/include/python3.12 -c -c /kaggle/working/repo/submodules/diff-gaussian-rasterization/cuda_rasterizer/rasterizer_impl.cu -o /kaggle/working/repo/submodules/diff-gaussian-rasterization/build/temp.linux-x86_64-cpython-312/cuda_rasterizer/rasterizer_impl.o -D__CUDA_NO_HALF_OPERATORS__ -D__CUDA_NO_HALF_CONVERSIONS__ -D__CUDA_NO_BFLOAT16_CONVERSIONS__ -D__CUDA_NO_HALF2_OPERATORS__ --expt-relaxed-constexpr --compiler-options ''"'"'-fPIC'"'"'' -I/kaggle/working/repo/submodules/diff-gaussian-rasterization/third_party/glm/ -DTORCH_API_INCLUDE_EXTENSION_H -DTORCH_EXTENSION_NAME=_C -gencode=arch=compute_75,code=sm_75 -std=c++17
+  /kaggle/working/repo/submodules/diff-gaussian-rasterization/cuda_rasterizer/auxiliary.h(151): warning #177-D: variable "p_proj" was declared but never referenced
+     float3 p_proj = { p_hom.x * p_w, p_hom.y * p_w, p_hom.z * p_w };
+            ^
+  Remark: The warnings can be suppressed with "-diag-suppress <warning-number>"
+  [4/5] c++ -MMD -MF /kaggle/working/repo/submodules/diff-gaussian-rasterization/build/temp.linux-x86_64-cpython-312/ext.o.d -fno-strict-overflow -Wsign-compare -DNDEBUG -g -O2 -Wall -g -fstack-protector-strong -Wformat -Werror=format-security -g -fwrapv -O2 -fPIC -I/usr/local/lib/python3.12/dist-packages/torch/include -I/usr/local/lib/python3.12/dist-packages/torch/include/torch/csrc/api/include -I/usr/local/cuda/include -I/usr/include/python3.12 -c -c /kaggle/working/repo/submodules/diff-gaussian-rasterization/ext.cpp -o /kaggle/working/repo/submodules/diff-gaussian-rasterization/build/temp.linux-x86_64-cpython-312/ext.o -DTORCH_API_INCLUDE_EXTENSION_H -DTORCH_EXTENSION_NAME=_C -std=c++17
+  [5/5] /usr/local/cuda/bin/nvcc --generate-dependencies-with-compile --dependency-output /kaggle/working/repo/submodules/diff-gaussian-rasterization/build/temp.linux-x86_64-cpython-312/rasterize_points.o.d -I/usr/local/lib/python3.12/dist-packages/torch/include -I/usr/local/lib/python3.12/dist-packages/torch/include/torch/csrc/api/include -I/usr/local/cuda/include -I/usr/include/python3.12 -c -c /kaggle/working/repo/submodules/diff-gaussian-rasterization/rasterize_points.cu -o /kaggle/working/repo/submodules/diff-gaussian-rasterization/build/temp.linux-x86_64-cpython-312/rasterize_points.o -D__CUDA_NO_HALF_OPERATORS__ -D__CUDA_NO_HALF_CONVERSIONS__ -D__CUDA_NO_BFLOAT16_CONVERSIONS__ -D__CUDA_NO_HALF2_OPERATORS__ --expt-relaxed-constexpr --compiler-options ''"'"'-fPIC'"'"'' -I/kaggle/working/repo/submodules/diff-gaussian-rasterization/third_party/glm/ -DTORCH_API_INCLUDE_EXTENSION_H -DTORCH_EXTENSION_NAME=_C -gencode=arch=compute_75,code=sm_75 -std=c++17
+  /kaggle/working/repo/submodules/diff-gaussian-rasterization/rasterize_points.cu: In function ‘std::tuple<int, at::Tensor, at::Tensor, at::Tensor, at::Tensor, at::Tensor> RasterizeGaussiansCUDA(const at::Tensor&, const at::Tensor&, const at::Tensor&, const at::Tensor&, const at::Tensor&, const at::Tensor&, float, const at::Tensor&, const at::Tensor&, const at::Tensor&, float, float, float, const at::Tensor&, int, int, const at::Tensor&, int, const at::Tensor&, bool, bool)’:
+  /kaggle/working/repo/submodules/diff-gaussian-rasterization/rasterize_points.cu:91:140: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data<T>() is deprecated. Please use Tensor.data_ptr<T>() instead. [-Wdeprecated-declarations]
+     91 |           rendered = CudaRasterizer::Rasterizer::forward(
+        |                                                                                                                                            ^
+  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here
+    251 |   T * data() const {
+        | ^ ~~
+  /kaggle/working/repo/submodules/diff-gaussian-rasterization/rasterize_points.cu:91:186: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data<T>() is deprecated. Please use Tensor.data_ptr<T>() instead. [-Wdeprecated-declarations]
+     91 |           rendered = CudaRasterizer::Rasterizer::forward(
+        |                                                                                                                                                                                          ^
+  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here
+    251 |   T * data() const {
+        | ^ ~~
+  /kaggle/working/repo/submodules/diff-gaussian-rasterization/rasterize_points.cu:91:264: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data<T>() is deprecated. Please use Tensor.data_ptr<T>() instead. [-Wdeprecated-declarations]
+     91 |           rendered = CudaRasterizer::Rasterizer::forward(
+        |                                                                                                                                                                                                                                                                        ^
+  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here
+    251 |   T * data() const {
+        | ^ ~~
+  /kaggle/working/repo/submodules/diff-gaussian-rasterization/rasterize_points.cu:91:304: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data<T>() is deprecated. Please use Tensor.data_ptr<T>() instead. [-Wdeprecated-declarations]
+     91 |           rendered = CudaRasterizer::Rasterizer::forward(
+        |                                                                                                                                                                                                                                                                                                                ^
+  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here
+    251 |   T * data() const {
+        | ^ ~~
+  /kaggle/working/repo/submodules/diff-gaussian-rasterization/rasterize_points.cu:91:455: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data<T>() is deprecated. Please use Tensor.data_ptr<T>() instead. [-Wdeprecated-declarations]
+     91 |           rendered = CudaRasterizer::Rasterizer::forward(
+        |                                                                                                                                                                                                                                                                                                                                                                                                                                                                       ^
+  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here
+    251 |   T * data() const {
+        | ^ ~~
+  /kaggle/working/repo/submodules/diff-gaussian-rasterization/rasterize_points.cu:91:498: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data<T>() is deprecated. Please use Tensor.data_ptr<T>() instead. [-Wdeprecated-declarations]
+     91 |           rendered = CudaRasterizer::Rasterizer::forward(
+        |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  ^
+  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here
+    251 |   T * data() const {
+        | ^ ~~
+  /kaggle/working/repo/submodules/diff-gaussian-rasterization/rasterize_points.cu:91:541: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data<T>() is deprecated. Please use Tensor.data_ptr<T>() instead. [-Wdeprecated-declarations]
+     91 |           rendered = CudaRasterizer::Rasterizer::forward(
+        |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             ^
+  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here
+    251 |   T * data() const {
+        | ^ ~~
+  /kaggle/working/repo/submodules/diff-gaussian-rasterization/rasterize_points.cu:91:580: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data<T>() is deprecated. Please use Tensor.data_ptr<T>() instead. [-Wdeprecated-declarations]
+     91 |           rendered = CudaRasterizer::Rasterizer::forward(
+        |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    ^
+  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here
+    251 |   T * data() const {
+        | ^ ~~
+  /kaggle/working/repo/submodules/diff-gaussian-rasterization/rasterize_points.cu:91:661: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data<T>() is deprecated. Please use Tensor.data_ptr<T>() instead. [-Wdeprecated-declarations]
+     91 |           rendered = CudaRasterizer::Rasterizer::forward(
+        |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     ^
+  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here
+    251 |   T * data() const {
+        | ^ ~~
+  /kaggle/working/repo/submodules/diff-gaussian-rasterization/rasterize_points.cu:91:716: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data<T>() is deprecated. Please use Tensor.data_ptr<T>() instead. [-Wdeprecated-declarations]
+     91 |           rendered = CudaRasterizer::Rasterizer::forward(
+        |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            ^
+  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here
+    251 |   T * data() const {
+        | ^ ~~
+  /kaggle/working/repo/submodules/diff-gaussian-rasterization/rasterize_points.cu:91:752: warning: ‘T* at::Tensor::data() const [with T = int]’ is deprecated: Tensor.data<T>() is deprecated. Please use Tensor.data_ptr<T>() instead. [-Wdeprecated-declarations]
+     91 |           rendered = CudaRasterizer::Rasterizer::forward(
+        |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                ^
+  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here
+    251 |   T * data() const {
+        | ^ ~~
+  /kaggle/working/repo/submodules/diff-gaussian-rasterization/rasterize_points.cu: In function ‘std::tuple<at::Tensor, at::Tensor, at::Tensor, at::Tensor, at::Tensor, at::Tensor, at::Tensor, at::Tensor> RasterizeGaussiansBackwardCUDA(const at::Tensor&, const at::Tensor&, const at::Tensor&, const at::Tensor&, const at::Tensor&, const at::Tensor&, float, const at::Tensor&, const at::Tensor&, const at::Tensor&, float, float, float, const at::Tensor&, const at::Tensor&, const at::Tensor&, int, const at::Tensor&, const at::Tensor&, int, const at::Tensor&, const at::Tensor&, bool)’:
+  /kaggle/working/repo/submodules/diff-gaussian-rasterization/rasterize_points.cu:169:101: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data<T>() is deprecated. Please use Tensor.data_ptr<T>() instead. [-Wdeprecated-declarations]
+    169 |           CudaRasterizer::Rasterizer::backward(P, degree, M, R,
+        |                                                              ~~                                     ^
+  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here
+    251 |   T * data() const {
+        | ^ ~~
+  /kaggle/working/repo/submodules/diff-gaussian-rasterization/rasterize_points.cu:169:147: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data<T>() is deprecated. Please use Tensor.data_ptr<T>() instead. [-Wdeprecated-declarations]
+    169 |           CudaRasterizer::Rasterizer::backward(P, degree, M, R,
+        |                                                                                                                                                   ^
+  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here
+    251 |   T * data() const {
+        | ^ ~~
+  /kaggle/working/repo/submodules/diff-gaussian-rasterization/rasterize_points.cu:169:182: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data<T>() is deprecated. Please use Tensor.data_ptr<T>() instead. [-Wdeprecated-declarations]
+    169 |           CudaRasterizer::Rasterizer::backward(P, degree, M, R,
+        |                                                                                                                                                                                      ^
+  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here
+    251 |   T * data() const {
+        | ^ ~~
+  /kaggle/working/repo/submodules/diff-gaussian-rasterization/rasterize_points.cu:169:221: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data<T>() is deprecated. Please use Tensor.data_ptr<T>() instead. [-Wdeprecated-declarations]
+    169 |           CudaRasterizer::Rasterizer::backward(P, degree, M, R,
+        |                                                                                                                                                                                                                             ^
+  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here
+    251 |   T * data() const {
+        | ^ ~~
+  /kaggle/working/repo/submodules/diff-gaussian-rasterization/rasterize_points.cu:169:342: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data<T>() is deprecated. Please use Tensor.data_ptr<T>() instead. [-Wdeprecated-declarations]
+    169 |           CudaRasterizer::Rasterizer::backward(P, degree, M, R,
+        |                                                                                                                                                                                                                                                                                                                                                      ^
+  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here
+    251 |   T * data() const {
+        | ^ ~~
+  /kaggle/working/repo/submodules/diff-gaussian-rasterization/rasterize_points.cu:169:385: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data<T>() is deprecated. Please use Tensor.data_ptr<T>() instead. [-Wdeprecated-declarations]
+    169 |           CudaRasterizer::Rasterizer::backward(P, degree, M, R,
+        |                                                                                                                                                                                                                                                                                                                                                                                                 ^
+  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here
+    251 |   T * data() const {
+        | ^ ~~
+  /kaggle/working/repo/submodules/diff-gaussian-rasterization/rasterize_points.cu:169:428: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data<T>() is deprecated. Please use Tensor.data_ptr<T>() instead. [-Wdeprecated-declarations]
+    169 |           CudaRasterizer::Rasterizer::backward(P, degree, M, R,
+        |                                                                                                                                                                                                                                                                                                                                                                                                                                            ^
+  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here
+    251 |   T * data() const {
+        | ^ ~~
+  /kaggle/working/repo/submodules/diff-gaussian-rasterization/rasterize_points.cu:169:467: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data<T>() is deprecated. Please use Tensor.data_ptr<T>() instead. [-Wdeprecated-declarations]
+    169 |           CudaRasterizer::Rasterizer::backward(P, degree, M, R,
+        |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   ^
+  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here
+    251 |   T * data() const {
+        | ^ ~~
+  /kaggle/working/repo/submodules/diff-gaussian-rasterization/rasterize_points.cu:169:548: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data<T>() is deprecated. Please use Tensor.data_ptr<T>() instead. [-Wdeprecated-declarations]
+    169 |           CudaRasterizer::Rasterizer::backward(P, degree, M, R,
+        |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    ^
+  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here
+    251 |   T * data() const {
+        | ^ ~~
+  /kaggle/working/repo/submodules/diff-gaussian-rasterization/rasterize_points.cu:169:584: warning: ‘T* at::Tensor::data() const [with T = int]’ is deprecated: Tensor.data<T>() is deprecated. Please use Tensor.data_ptr<T>() instead. [-Wdeprecated-declarations]
+    169 |           CudaRasterizer::Rasterizer::backward(P, degree, M, R,
+        |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        ^
+  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here
+    251 |   T * data() const {
+        | ^ ~~
+  /kaggle/working/repo/submodules/diff-gaussian-rasterization/rasterize_points.cu:169:829: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data<T>() is deprecated. Please use Tensor.data_ptr<T>() instead. [-Wdeprecated-declarations]
+    169 |           CudaRasterizer::Rasterizer::backward(P, degree, M, R,
+        |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             ^
+  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here
+    251 |   T * data() const {
+        | ^ ~~
+  /kaggle/working/repo/submodules/diff-gaussian-rasterization/rasterize_points.cu:169:873: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data<T>() is deprecated. Please use Tensor.data_ptr<T>() instead. [-Wdeprecated-declarations]
+    169 |           CudaRasterizer::Rasterizer::backward(P, degree, M, R,
+        |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         ^
+  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here
+    251 |   T * data() const {
+        | ^ ~~
+  /kaggle/working/repo/submodules/diff-gaussian-rasterization/rasterize_points.cu:169:915: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data<T>() is deprecated. Please use Tensor.data_ptr<T>() instead. [-Wdeprecated-declarations]
+    169 |           CudaRasterizer::Rasterizer::backward(P, degree, M, R,
+        |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   ^
+  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here
+    251 |   T * data() const {
+        | ^ ~~
+  /kaggle/working/repo/submodules/diff-gaussian-rasterization/rasterize_points.cu:169:959: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data<T>() is deprecated. Please use Tensor.data_ptr<T>() instead. [-Wdeprecated-declarations]
+    169 |           CudaRasterizer::Rasterizer::backward(P, degree, M, R,
+        |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               ^
+  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here
+    251 |   T * data() const {
+        | ^ ~~
+  /kaggle/working/repo/submodules/diff-gaussian-rasterization/rasterize_points.cu:169:1002: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data<T>() is deprecated. Please use Tensor.data_ptr<T>() instead. [-Wdeprecated-declarations]
+    169 |           CudaRasterizer::Rasterizer::backward(P, degree, M, R,
+        |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          ^
+  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here
+    251 |   T * data() const {
+        | ^ ~~
+  /kaggle/working/repo/submodules/diff-gaussian-rasterization/rasterize_points.cu:169:1046: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data<T>() is deprecated. Please use Tensor.data_ptr<T>() instead. [-Wdeprecated-declarations]
+    169 |           CudaRasterizer::Rasterizer::backward(P, degree, M, R,
+        |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      ^
+  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here
+    251 |   T * data() const {
+        | ^ ~~
+  /kaggle/working/repo/submodules/diff-gaussian-rasterization/rasterize_points.cu:169:1088: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data<T>() is deprecated. Please use Tensor.data_ptr<T>() instead. [-Wdeprecated-declarations]
+    169 |           CudaRasterizer::Rasterizer::backward(P, degree, M, R,
+        |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                ^
+  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here
+    251 |   T * data() const {
+        | ^ ~~
+  /kaggle/working/repo/submodules/diff-gaussian-rasterization/rasterize_points.cu:169:1127: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data<T>() is deprecated. Please use Tensor.data_ptr<T>() instead. [-Wdeprecated-declarations]
+    169 |           CudaRasterizer::Rasterizer::backward(P, degree, M, R,
+        |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       ^
+  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here
+    251 |   T * data() const {
+        | ^ ~~
+  /kaggle/working/repo/submodules/diff-gaussian-rasterization/rasterize_points.cu:169:1170: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data<T>() is deprecated. Please use Tensor.data_ptr<T>() instead. [-Wdeprecated-declarations]
+    169 |           CudaRasterizer::Rasterizer::backward(P, degree, M, R,
+        |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  ^
+  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here
+    251 |   T * data() const {
+        | ^ ~~
+  /kaggle/working/repo/submodules/diff-gaussian-rasterization/rasterize_points.cu:169:1216: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data<T>() is deprecated. Please use Tensor.data_ptr<T>() instead. [-Wdeprecated-declarations]
+    169 |           CudaRasterizer::Rasterizer::backward(P, degree, M, R,
+        |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                ^
+  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here
+    251 |   T * data() const {
+        | ^ ~~
+  /kaggle/working/repo/submodules/diff-gaussian-rasterization/rasterize_points.cu: In function ‘at::Tensor markVisible(at::Tensor&, at::Tensor&, at::Tensor&)’:
+  /kaggle/working/repo/submodules/diff-gaussian-rasterization/rasterize_points.cu:217:87: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data<T>() is deprecated. Please use Tensor.data_ptr<T>() instead. [-Wdeprecated-declarations]
+    217 |         CudaRasterizer::Rasterizer::markVisible(P,
+        |                                                                                       ^
+  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here
+    251 |   T * data() const {
+        | ^ ~~
+  /kaggle/working/repo/submodules/diff-gaussian-rasterization/rasterize_points.cu:217:130: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data<T>() is deprecated. Please use Tensor.data_ptr<T>() instead. [-Wdeprecated-declarations]
+    217 |         CudaRasterizer::Rasterizer::markVisible(P,
+        |                                                                                                                                  ^
+  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here
+    251 |   T * data() const {
+        | ^ ~~
+  /kaggle/working/repo/submodules/diff-gaussian-rasterization/rasterize_points.cu:217:173: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data<T>() is deprecated. Please use Tensor.data_ptr<T>() instead. [-Wdeprecated-declarations]
+    217 |         CudaRasterizer::Rasterizer::markVisible(P,
+        |                                                                                                                                                                             ^
+  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here
+    251 |   T * data() const {
+        | ^ ~~
+  /kaggle/working/repo/submodules/diff-gaussian-rasterization/rasterize_points.cu:217:212: warning: ‘T* at::Tensor::data() const [with T = bool]’ is deprecated: Tensor.data<T>() is deprecated. Please use Tensor.data_ptr<T>() instead. [-Wdeprecated-declarations]
+    217 |         CudaRasterizer::Rasterizer::markVisible(P,
+        |                                                                                                                                                                                                                    ^
+  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here
+    251 |   T * data() const {
+        | ^ ~~
+  x86_64-linux-gnu-g++ -fno-strict-overflow -Wsign-compare -DNDEBUG -g -O2 -Wall -g -fstack-protector-strong -Wformat -Werror=format-security -g -fwrapv -O2 -shared -Wl,-O1 -Wl,-Bsymbolic-functions -Wl,-Bsymbolic-functions -g -fwrapv -O2 /kaggle/working/repo/submodules/diff-gaussian-rasterization/build/temp.linux-x86_64-cpython-312/cuda_rasterizer/backward.o /kaggle/working/repo/submodules/diff-gaussian-rasterization/build/temp.linux-x86_64-cpython-312/cuda_rasterizer/forward.o /kaggle/working/repo/submodules/diff-gaussian-rasterization/build/temp.linux-x86_64-cpython-312/cuda_rasterizer/rasterizer_impl.o /kaggle/working/repo/submodules/diff-gaussian-rasterization/build/temp.linux-x86_64-cpython-312/ext.o /kaggle/working/repo/submodules/diff-gaussian-rasterization/build/temp.linux-x86_64-cpython-312/rasterize_points.o -L/usr/local/lib/python3.12/dist-packages/torch/lib -L/usr/local/cuda/lib64 -L/usr/lib/x86_64-linux-gnu -lc10 -ltorch -ltorch_cpu -ltorch_python -lcudart -lc10_cuda -ltorch_cuda -o build/lib.linux-x86_64-cpython-312/diff_gaussian_rasterization/_C.cpython-312-x86_64-linux-gnu.so
+  /usr/local/lib/python3.12/dist-packages/setuptools/_distutils/cmd.py:90: SetuptoolsDeprecationWarning: setup.py install is deprecated.
+  !!
+          ********************************************************************************
+          Please avoid running ``setup.py`` directly.
+          Instead, use pypa/build, pypa/installer or other
+          standards-based tools.
+          This deprecation is overdue, please update your project and remove deprecated
+          calls to avoid build errors in the future.
+          See https://blog.ganssle.io/articles/2021/10/setup-py-deprecated.html for details.
+          ********************************************************************************
+  !!
+    self.initialize_options()
+  installing to build/bdist.linux-x86_64/wheel
+  running install
+  running install_lib
+  creating build/bdist.linux-x86_64/wheel
+  creating build/bdist.linux-x86_64/wheel/diff_gaussian_rasterization
+  copying build/lib.linux-x86_64-cpython-312/diff_gaussian_rasterization/__init__.py -> build/bdist.linux-x86_64/wheel/./diff_gaussian_rasterization
+  copying build/lib.linux-x86_64-cpython-312/diff_gaussian_rasterization/_C.cpython-312-x86_64-linux-gnu.so -> build/bdist.linux-x86_64/wheel/./diff_gaussian_rasterization
+  running install_egg_info
+  running egg_info
+  writing diff_gaussian_rasterization.egg-info/PKG-INFO
+  writing dependency_links to diff_gaussian_rasterization.egg-info/dependency_links.txt
+  writing top-level names to diff_gaussian_rasterization.egg-info/top_level.txt
+  reading manifest file 'diff_gaussian_rasterization.egg-info/SOURCES.txt'
+  adding license file 'LICENSE.md'
+  writing manifest file 'diff_gaussian_rasterization.egg-info/SOURCES.txt'
+  Copying diff_gaussian_rasterization.egg-info to build/bdist.linux-x86_64/wheel/./diff_gaussian_rasterization-0.0.0-py3.12.egg-info
+  running install_scripts
+  creating build/bdist.linux-x86_64/wheel/diff_gaussian_rasterization-0.0.0.dist-info/WHEEL
+  creating '/tmp/pip-wheel-oorep1_g/diff_gaussian_rasterization-0.0.0-cp312-cp312-linux_x86_64.whl' and adding 'build/bdist.linux-x86_64/wheel' to it
+  adding 'diff_gaussian_rasterization/_C.cpython-312-x86_64-linux-gnu.so'
+  adding 'diff_gaussian_rasterization/__init__.py'
+  adding 'diff_gaussian_rasterization-0.0.0.dist-info/licenses/LICENSE.md'
+  adding 'diff_gaussian_rasterization-0.0.0.dist-info/METADATA'
+  adding 'diff_gaussian_rasterization-0.0.0.dist-info/WHEEL'
+  adding 'diff_gaussian_rasterization-0.0.0.dist-info/top_level.txt'
+  adding 'diff_gaussian_rasterization-0.0.0.dist-info/RECORD'
+  removing build/bdist.linux-x86_64/wheel
+  Building wheel for diff_gaussian_rasterization (setup.py): finished with status 'done'
+  Created wheel for diff_gaussian_rasterization: filename=diff_gaussian_rasterization-0.0.0-cp312-cp312-linux_x86_64.whl size=3594744 sha256=5d662f5c7fc24d9d96a6c6e2df9037dc0a5d598848f421ee85df1da3384a037f
+  Stored in directory: /root/.cache/pip/wheels/ab/06/f2/7a6285c344bab1d62d8cbe8cafc04c596a579b9f9e5ddb562e
+Successfully built diff_gaussian_rasterization
+Installing collected packages: diff_gaussian_rasterization
+Successfully installed diff_gaussian_rasterization-0.0.0
++ pip install -v /kaggle/working/repo/submodules/simple-knn
+Using pip 24.1.2 from /usr/local/lib/python3.12/dist-packages/pip (python 3.12)
+Processing ./repo/submodules/simple-knn
+  Preparing metadata (setup.py): started
+  Running command python setup.py egg_info
+  running egg_info
+  creating /tmp/pip-pip-egg-info-hdox1pb9/simple_knn.egg-info
+  writing /tmp/pip-pip-egg-info-hdox1pb9/simple_knn.egg-info/PKG-INFO
+  writing dependency_links to /tmp/pip-pip-egg-info-hdox1pb9/simple_knn.egg-info/dependency_links.txt
+  writing top-level names to /tmp/pip-pip-egg-info-hdox1pb9/simple_knn.egg-info/top_level.txt
+  writing manifest file '/tmp/pip-pip-egg-info-hdox1pb9/simple_knn.egg-info/SOURCES.txt'
+  reading manifest file '/tmp/pip-pip-egg-info-hdox1pb9/simple_knn.egg-info/SOURCES.txt'
+  writing manifest file '/tmp/pip-pip-egg-info-hdox1pb9/simple_knn.egg-info/SOURCES.txt'
+  Preparing metadata (setup.py): finished with status 'done'
+Building wheels for collected packages: simple_knn
+  Building wheel for simple_knn (setup.py): started
+  Running command python setup.py bdist_wheel
+  running bdist_wheel
+  running build
+  running build_ext
+  W0911 23:52:51.689000 225 torch/utils/cpp_extension.py:535] There are no x86_64-linux-gnu-g++ version bounds defined for CUDA version 12.8
+  building 'simple_knn._C' extension
+  creating /kaggle/working/repo/submodules/simple-knn/build/temp.linux-x86_64-cpython-312
+  [1/3] /usr/local/cuda/bin/nvcc --generate-dependencies-with-compile --dependency-output /kaggle/working/repo/submodules/simple-knn/build/temp.linux-x86_64-cpython-312/simple_knn.o.d -I/usr/local/lib/python3.12/dist-packages/torch/include -I/usr/local/lib/python3.12/dist-packages/torch/include/torch/csrc/api/include -I/usr/local/cuda/include -I/usr/include/python3.12 -c -c /kaggle/working/repo/submodules/simple-knn/simple_knn.cu -o /kaggle/working/repo/submodules/simple-knn/build/temp.linux-x86_64-cpython-312/simple_knn.o -D__CUDA_NO_HALF_OPERATORS__ -D__CUDA_NO_HALF_CONVERSIONS__ -D__CUDA_NO_BFLOAT16_CONVERSIONS__ -D__CUDA_NO_HALF2_OPERATORS__ --expt-relaxed-constexpr --compiler-options ''"'"'-fPIC'"'"'' -DTORCH_API_INCLUDE_EXTENSION_H -DTORCH_EXTENSION_NAME=_C -gencode=arch=compute_75,code=sm_75 -std=c++17
+  /kaggle/working/repo/submodules/simple-knn/simple_knn.cu:24: warning: "__CUDACC__" redefined
+     24 | #define __CUDACC__
+        |
+  <command-line>: note: this is the location of the previous definition
+  /kaggle/working/repo/submodules/simple-knn/simple_knn.cu:24: warning: "__CUDACC__" redefined
+     24 | #define __CUDACC__
+        |
+  <command-line>: note: this is the location of the previous definition
+  [2/3] c++ -MMD -MF /kaggle/working/repo/submodules/simple-knn/build/temp.linux-x86_64-cpython-312/ext.o.d -fno-strict-overflow -Wsign-compare -DNDEBUG -g -O2 -Wall -g -fstack-protector-strong -Wformat -Werror=format-security -g -fwrapv -O2 -fPIC -I/usr/local/lib/python3.12/dist-packages/torch/include -I/usr/local/lib/python3.12/dist-packages/torch/include/torch/csrc/api/include -I/usr/local/cuda/include -I/usr/include/python3.12 -c -c /kaggle/working/repo/submodules/simple-knn/ext.cpp -o /kaggle/working/repo/submodules/simple-knn/build/temp.linux-x86_64-cpython-312/ext.o -DTORCH_API_INCLUDE_EXTENSION_H -DTORCH_EXTENSION_NAME=_C -std=c++17
+  [3/3] /usr/local/cuda/bin/nvcc --generate-dependencies-with-compile --dependency-output /kaggle/working/repo/submodules/simple-knn/build/temp.linux-x86_64-cpython-312/spatial.o.d -I/usr/local/lib/python3.12/dist-packages/torch/include -I/usr/local/lib/python3.12/dist-packages/torch/include/torch/csrc/api/include -I/usr/local/cuda/include -I/usr/include/python3.12 -c -c /kaggle/working/repo/submodules/simple-knn/spatial.cu -o /kaggle/working/repo/submodules/simple-knn/build/temp.linux-x86_64-cpython-312/spatial.o -D__CUDA_NO_HALF_OPERATORS__ -D__CUDA_NO_HALF_CONVERSIONS__ -D__CUDA_NO_BFLOAT16_CONVERSIONS__ -D__CUDA_NO_HALF2_OPERATORS__ --expt-relaxed-constexpr --compiler-options ''"'"'-fPIC'"'"'' -DTORCH_API_INCLUDE_EXTENSION_H -DTORCH_EXTENSION_NAME=_C -gencode=arch=compute_75,code=sm_75 -std=c++17
+  /kaggle/working/repo/submodules/simple-knn/spatial.cu: In function ‘at::Tensor distCUDA2(const at::Tensor&)’:
+  /kaggle/working/repo/submodules/simple-knn/spatial.cu:23:64: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data<T>() is deprecated. Please use Tensor.data_ptr<T>() instead. [-Wdeprecated-declarations]
+     23 |   SimpleKNN::knn(P, (float3*)points.contiguous().data<float>(), means.contiguous().data<float>());
+        |                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~
+  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here
+    251 |   T * data() const {
+        | ^ ~~
+  /kaggle/working/repo/submodules/simple-knn/spatial.cu:23:102: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data<T>() is deprecated. Please use Tensor.data_ptr<T>() instead. [-Wdeprecated-declarations]
+     23 |   SimpleKNN::knn(P, (float3*)points.contiguous().data<float>(), means.contiguous().data<float>());
+        |                                                                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   ^
+  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here
+    251 |   T * data() const {
+        | ^ ~~
+  creating build/lib.linux-x86_64-cpython-312/simple_knn
+  x86_64-linux-gnu-g++ -fno-strict-overflow -Wsign-compare -DNDEBUG -g -O2 -Wall -g -fstack-protector-strong -Wformat -Werror=format-security -g -fwrapv -O2 -shared -Wl,-O1 -Wl,-Bsymbolic-functions -Wl,-Bsymbolic-functions -g -fwrapv -O2 /kaggle/working/repo/submodules/simple-knn/build/temp.linux-x86_64-cpython-312/ext.o /kaggle/working/repo/submodules/simple-knn/build/temp.linux-x86_64-cpython-312/simple_knn.o /kaggle/working/repo/submodules/simple-knn/build/temp.linux-x86_64-cpython-312/spatial.o -L/usr/local/lib/python3.12/dist-packages/torch/lib -L/usr/local/cuda/lib64 -L/usr/lib/x86_64-linux-gnu -lc10 -ltorch -ltorch_cpu -ltorch_python -lcudart -lc10_cuda -ltorch_cuda -o build/lib.linux-x86_64-cpython-312/simple_knn/_C.cpython-312-x86_64-linux-gnu.so
+  /usr/local/lib/python3.12/dist-packages/setuptools/_distutils/cmd.py:90: SetuptoolsDeprecationWarning: setup.py install is deprecated.
+  !!
+          ********************************************************************************
+          Please avoid running ``setup.py`` directly.
+          Instead, use pypa/build, pypa/installer or other
+          standards-based tools.
+          This deprecation is overdue, please update your project and remove deprecated
+          calls to avoid build errors in the future.
+          See https://blog.ganssle.io/articles/2021/10/setup-py-deprecated.html for details.
+          ********************************************************************************
+  !!
+    self.initialize_options()
+  installing to build/bdist.linux-x86_64/wheel
+  running install
+  running install_lib
+  creating build/bdist.linux-x86_64/wheel
+  creating build/bdist.linux-x86_64/wheel/simple_knn
+  copying build/lib.linux-x86_64-cpython-312/simple_knn/_C.cpython-312-x86_64-linux-gnu.so -> build/bdist.linux-x86_64/wheel/./simple_knn
+  running install_egg_info
+  running egg_info
+  creating simple_knn.egg-info
+  writing simple_knn.egg-info/PKG-INFO
+  writing dependency_links to simple_knn.egg-info/dependency_links.txt
+  writing top-level names to simple_knn.egg-info/top_level.txt
+  writing manifest file 'simple_knn.egg-info/SOURCES.txt'
+  reading manifest file 'simple_knn.egg-info/SOURCES.txt'
+  writing manifest file 'simple_knn.egg-info/SOURCES.txt'
+  Copying simple_knn.egg-info to build/bdist.linux-x86_64/wheel/./simple_knn-0.0.0-py3.12.egg-info
+  running install_scripts
+  creating build/bdist.linux-x86_64/wheel/simple_knn-0.0.0.dist-info/WHEEL
+  creating '/tmp/pip-wheel-paw6o7_f/simple_knn-0.0.0-cp312-cp312-linux_x86_64.whl' and adding 'build/bdist.linux-x86_64/wheel' to it
+  adding 'simple_knn/_C.cpython-312-x86_64-linux-gnu.so'
+  adding 'simple_knn-0.0.0.dist-info/METADATA'
+  adding 'simple_knn-0.0.0.dist-info/WHEEL'
+  adding 'simple_knn-0.0.0.dist-info/top_level.txt'
+  adding 'simple_knn-0.0.0.dist-info/RECORD'
+  removing build/bdist.linux-x86_64/wheel
+  Building wheel for simple_knn (setup.py): finished with status 'done'
+  Created wheel for simple_knn: filename=simple_knn-0.0.0-cp312-cp312-linux_x86_64.whl size=3393879 sha256=4d1b8c46e9d0f77b76af5dbdb8a61fedf5b330f4f4023d2df3aa9a129b660487
+  Stored in directory: /root/.cache/pip/wheels/cb/b9/33/81960efda1471685833da4d25d613aa16a636d6e999b651d86
+Successfully built simple_knn
+Installing collected packages: simple_knn
+Successfully installed simple_knn-0.0.0
++ python /kaggle/working/repo/convert_blender_data.py --blender_dir /kaggle/input/nerf-synthetic-dataset/nerf_synthetic --object_name ship --out_dir /kaggle/working/multi-scale
+['/kaggle/input/nerf-synthetic-dataset/nerf_synthetic/ship']
+Converting from /kaggle/input/nerf-synthetic-dataset/nerf_synthetic/ship to /kaggle/working/multi-scale/ship
+Split train
+Loading imgs
+Loaded all images, shape is (100, 800, 800, 4)
+Saving images
+Split val
+Loading imgs
+Loaded all images, shape is (100, 800, 800, 4)
+Saving images
+Split test
+Loading imgs
+Loaded all images, shape is (200, 800, 800, 4)
+Saving images
+train file_path <class 'list'> (400,)
+train cam2world <class 'list'> (400, 4, 4)
+train width <class 'list'> (400,)
+train height <class 'list'> (400,)
+train focal <class 'list'> (400,)
+train label <class 'list'> (400,)
+train near <class 'list'> (400,)
+train far <class 'list'> (400,)
+train lossmult <class 'list'> (400,)
+train pix2cam <class 'list'> (400, 3, 3)
+val file_path <class 'list'> (400,)
+val cam2world <class 'list'> (400, 4, 4)
+val width <class 'list'> (400,)
+val height <class 'list'> (400,)
+val focal <class 'list'> (400,)
+val label <class 'list'> (400,)
+val near <class 'list'> (400,)
+val far <class 'list'> (400,)
+val lossmult <class 'list'> (400,)
+val pix2cam <class 'list'> (400, 3, 3)
+test file_path <class 'list'> (800,)
+test cam2world <class 'list'> (800, 4, 4)
+test width <class 'list'> (800,)
+test height <class 'list'> (800,)
+test focal <class 'list'> (800,)
+test label <class 'list'> (800,)
+test near <class 'list'> (800,)
+test far <class 'list'> (800,)
+test lossmult <class 'list'> (800,)
+test pix2cam <class 'list'> (800, 3, 3)
++ python /kaggle/working/repo/convert_blender_data.py --blender_dir /kaggle/input/nerf-synthetic-dataset/nerf_synthetic --object_name drums --out_dir /kaggle/working/multi-scale
+['/kaggle/input/nerf-synthetic-dataset/nerf_synthetic/drums']
+Converting from /kaggle/input/nerf-synthetic-dataset/nerf_synthetic/drums to /kaggle/working/multi-scale/drums
+Split train
+Loading imgs
+Loaded all images, shape is (100, 800, 800, 4)
+Saving images
+Split val
+Loading imgs
+Loaded all images, shape is (100, 800, 800, 4)
+Saving images
+Split test
+Loading imgs
+Loaded all images, shape is (200, 800, 800, 4)
+Saving images
+train file_path <class 'list'> (400,)
+train cam2world <class 'list'> (400, 4, 4)
+train width <class 'list'> (400,)
+train height <class 'list'> (400,)
+train focal <class 'list'> (400,)
+train label <class 'list'> (400,)
+train near <class 'list'> (400,)
+train far <class 'list'> (400,)
+train lossmult <class 'list'> (400,)
+train pix2cam <class 'list'> (400, 3, 3)
+val file_path <class 'list'> (400,)
+val cam2world <class 'list'> (400, 4, 4)
+val width <class 'list'> (400,)
+val height <class 'list'> (400,)
+val focal <class 'list'> (400,)
+val label <class 'list'> (400,)
+val near <class 'list'> (400,)
+val far <class 'list'> (400,)
+val lossmult <class 'list'> (400,)
+val pix2cam <class 'list'> (400, 3, 3)
+test file_path <class 'list'> (800,)
+test cam2world <class 'list'> (800, 4, 4)
+test width <class 'list'> (800,)
+test height <class 'list'> (800,)
+test focal <class 'list'> (800,)
+test label <class 'list'> (800,)
+test near <class 'list'> (800,)
+test far <class 'list'> (800,)
+test lossmult <class 'list'> (800,)
+test pix2cam <class 'list'> (800, 3, 3)
++ python /kaggle/working/repo/convert_blender_data.py --blender_dir /kaggle/input/nerf-synthetic-dataset/nerf_synthetic --object_name ficus --out_dir /kaggle/working/multi-scale
+['/kaggle/input/nerf-synthetic-dataset/nerf_synthetic/ficus']
+Converting from /kaggle/input/nerf-synthetic-dataset/nerf_synthetic/ficus to /kaggle/working/multi-scale/ficus
+Split train
+Loading imgs
+Loaded all images, shape is (100, 800, 800, 4)
+Saving images
+Split val
+Loading imgs
+Loaded all images, shape is (100, 800, 800, 4)
+Saving images
+Split test
+Loading imgs
+Loaded all images, shape is (200, 800, 800, 4)
+Saving images
+train file_path <class 'list'> (400,)
+train cam2world <class 'list'> (400, 4, 4)
+train width <class 'list'> (400,)
+train height <class 'list'> (400,)
+train focal <class 'list'> (400,)
+train label <class 'list'> (400,)
+train near <class 'list'> (400,)
+train far <class 'list'> (400,)
+train lossmult <class 'list'> (400,)
+train pix2cam <class 'list'> (400, 3, 3)
+val file_path <class 'list'> (400,)
+val cam2world <class 'list'> (400, 4, 4)
+val width <class 'list'> (400,)
+val height <class 'list'> (400,)
+val focal <class 'list'> (400,)
+val label <class 'list'> (400,)
+val near <class 'list'> (400,)
+val far <class 'list'> (400,)
+val lossmult <class 'list'> (400,)
+val pix2cam <class 'list'> (400, 3, 3)
+test file_path <class 'list'> (800,)
+test cam2world <class 'list'> (800, 4, 4)
+test width <class 'list'> (800,)
+test height <class 'list'> (800,)
+test focal <class 'list'> (800,)
+test label <class 'list'> (800,)
+test near <class 'list'> (800,)
+test far <class 'list'> (800,)
+test lossmult <class 'list'> (800,)
+test pix2cam <class 'list'> (800, 3, 3)
++ python /kaggle/working/repo/convert_blender_data.py --blender_dir /kaggle/input/nerf-synthetic-dataset/nerf_synthetic --object_name hotdog --out_dir /kaggle/working/multi-scale
+['/kaggle/input/nerf-synthetic-dataset/nerf_synthetic/hotdog']
+Converting from /kaggle/input/nerf-synthetic-dataset/nerf_synthetic/hotdog to /kaggle/working/multi-scale/hotdog
+Split train
+Loading imgs
+Loaded all images, shape is (100, 800, 800, 4)
+Saving images
+Split val
+Loading imgs
+Loaded all images, shape is (100, 800, 800, 4)
+Saving images
+Split test
+Loading imgs
+Loaded all images, shape is (200, 800, 800, 4)
+Saving images
+train file_path <class 'list'> (400,)
+train cam2world <class 'list'> (400, 4, 4)
+train width <class 'list'> (400,)
+train height <class 'list'> (400,)
+train focal <class 'list'> (400,)
+train label <class 'list'> (400,)
+train near <class 'list'> (400,)
+train far <class 'list'> (400,)
+train lossmult <class 'list'> (400,)
+train pix2cam <class 'list'> (400, 3, 3)
+val file_path <class 'list'> (400,)
+val cam2world <class 'list'> (400, 4, 4)
+val width <class 'list'> (400,)
+val height <class 'list'> (400,)
+val focal <class 'list'> (400,)
+val label <class 'list'> (400,)
+val near <class 'list'> (400,)
+val far <class 'list'> (400,)
+val lossmult <class 'list'> (400,)
+val pix2cam <class 'list'> (400, 3, 3)
+test file_path <class 'list'> (800,)
+test cam2world <class 'list'> (800, 4, 4)
+test width <class 'list'> (800,)
+test height <class 'list'> (800,)
+test focal <class 'list'> (800,)
+test label <class 'list'> (800,)
+test near <class 'list'> (800,)
+test far <class 'list'> (800,)
+test lossmult <class 'list'> (800,)
+test pix2cam <class 'list'> (800, 3, 3)
++ python /kaggle/working/repo/convert_blender_data.py --blender_dir /kaggle/input/nerf-synthetic-dataset/nerf_synthetic --object_name lego --out_dir /kaggle/working/multi-scale
+['/kaggle/input/nerf-synthetic-dataset/nerf_synthetic/lego']
+Converting from /kaggle/input/nerf-synthetic-dataset/nerf_synthetic/lego to /kaggle/working/multi-scale/lego
+Split train
+Loading imgs
+Loaded all images, shape is (100, 800, 800, 4)
+Saving images
+Split val
+Loading imgs
+Loaded all images, shape is (100, 800, 800, 4)
+Saving images
+Split test
+Loading imgs
+Loaded all images, shape is (200, 800, 800, 4)
+Saving images
+train file_path <class 'list'> (400,)
+train cam2world <class 'list'> (400, 4, 4)
+train width <class 'list'> (400,)
+train height <class 'list'> (400,)
+train focal <class 'list'> (400,)
+train label <class 'list'> (400,)
+train near <class 'list'> (400,)
+train far <class 'list'> (400,)
+train lossmult <class 'list'> (400,)
+train pix2cam <class 'list'> (400, 3, 3)
+val file_path <class 'list'> (400,)
+val cam2world <class 'list'> (400, 4, 4)
+val width <class 'list'> (400,)
+val height <class 'list'> (400,)
+val focal <class 'list'> (400,)
+val label <class 'list'> (400,)
+val near <class 'list'> (400,)
+val far <class 'list'> (400,)
+val lossmult <class 'list'> (400,)
+val pix2cam <class 'list'> (400, 3, 3)
+test file_path <class 'list'> (800,)
+test cam2world <class 'list'> (800, 4, 4)
+test width <class 'list'> (800,)
+test height <class 'list'> (800,)
+test focal <class 'list'> (800,)
+test label <class 'list'> (800,)
+test near <class 'list'> (800,)
+test far <class 'list'> (800,)
+test lossmult <class 'list'> (800,)
+test pix2cam <class 'list'> (800, 3, 3)
++ python /kaggle/working/repo/convert_blender_data.py --blender_dir /kaggle/input/nerf-synthetic-dataset/nerf_synthetic --object_name materials --out_dir /kaggle/working/multi-scale
+['/kaggle/input/nerf-synthetic-dataset/nerf_synthetic/materials']
+Converting from /kaggle/input/nerf-synthetic-dataset/nerf_synthetic/materials to /kaggle/working/multi-scale/materials
+Split train
+Loading imgs
+Loaded all images, shape is (100, 800, 800, 4)
+Saving images
+Split val
+Loading imgs
+Loaded all images, shape is (100, 800, 800, 4)
+Saving images
+Split test
+Loading imgs
+Loaded all images, shape is (200, 800, 800, 4)
+Saving images
+train file_path <class 'list'> (400,)
+train cam2world <class 'list'> (400, 4, 4)
+train width <class 'list'> (400,)
+train height <class 'list'> (400,)
+train focal <class 'list'> (400,)
+train label <class 'list'> (400,)
+train near <class 'list'> (400,)
+train far <class 'list'> (400,)
+train lossmult <class 'list'> (400,)
+train pix2cam <class 'list'> (400, 3, 3)
+val file_path <class 'list'> (400,)
+val cam2world <class 'list'> (400, 4, 4)
+val width <class 'list'> (400,)
+val height <class 'list'> (400,)
+val focal <class 'list'> (400,)
+val label <class 'list'> (400,)
+val near <class 'list'> (400,)
+val far <class 'list'> (400,)
+val lossmult <class 'list'> (400,)
+val pix2cam <class 'list'> (400, 3, 3)
+test file_path <class 'list'> (800,)
+test cam2world <class 'list'> (800, 4, 4)
+test width <class 'list'> (800,)
+test height <class 'list'> (800,)
+test focal <class 'list'> (800,)
+test label <class 'list'> (800,)
+test near <class 'list'> (800,)
+test far <class 'list'> (800,)
+test lossmult <class 'list'> (800,)
+test pix2cam <class 'list'> (800, 3, 3)
++ python /kaggle/working/repo/convert_blender_data.py --blender_dir /kaggle/input/nerf-synthetic-dataset/nerf_synthetic --object_name mic --out_dir /kaggle/working/multi-scale
+['/kaggle/input/nerf-synthetic-dataset/nerf_synthetic/mic']
+Converting from /kaggle/input/nerf-synthetic-dataset/nerf_synthetic/mic to /kaggle/working/multi-scale/mic
+Split train
+Loading imgs
+Loaded all images, shape is (100, 800, 800, 4)
+Saving images
+Split val
+Loading imgs
+Loaded all images, shape is (100, 800, 800, 4)
+Saving images
+Split test
+Loading imgs
+Loaded all images, shape is (200, 800, 800, 4)
+Saving images
+train file_path <class 'list'> (400,)
+train cam2world <class 'list'> (400, 4, 4)
+train width <class 'list'> (400,)
+train height <class 'list'> (400,)
+train focal <class 'list'> (400,)
+train label <class 'list'> (400,)
+train near <class 'list'> (400,)
+train far <class 'list'> (400,)
+train lossmult <class 'list'> (400,)
+train pix2cam <class 'list'> (400, 3, 3)
+val file_path <class 'list'> (400,)
+val cam2world <class 'list'> (400, 4, 4)
+val width <class 'list'> (400,)
+val height <class 'list'> (400,)
+val focal <class 'list'> (400,)
+val label <class 'list'> (400,)
+val near <class 'list'> (400,)
+val far <class 'list'> (400,)
+val lossmult <class 'list'> (400,)
+val pix2cam <class 'list'> (400, 3, 3)
+test file_path <class 'list'> (800,)
+test cam2world <class 'list'> (800, 4, 4)
+test width <class 'list'> (800,)
+test height <class 'list'> (800,)
+test focal <class 'list'> (800,)
+test label <class 'list'> (800,)
+test near <class 'list'> (800,)
+test far <class 'list'> (800,)
+test lossmult <class 'list'> (800,)
+test pix2cam <class 'list'> (800, 3, 3)
++ python /kaggle/working/repo/convert_blender_data.py --blender_dir /kaggle/input/nerf-synthetic-dataset/nerf_synthetic --object_name chair --out_dir /kaggle/working/multi-scale
+['/kaggle/input/nerf-synthetic-dataset/nerf_synthetic/chair']
+Converting from /kaggle/input/nerf-synthetic-dataset/nerf_synthetic/chair to /kaggle/working/multi-scale/chair
+Split train
+Loading imgs
+Loaded all images, shape is (100, 800, 800, 4)
+Saving images
+Split val
+Loading imgs
+Loaded all images, shape is (100, 800, 800, 4)
+Saving images
+Split test
+Loading imgs
+Loaded all images, shape is (200, 800, 800, 4)
+Saving images
+train file_path <class 'list'> (400,)
+train cam2world <class 'list'> (400, 4, 4)
+train width <class 'list'> (400,)
+train height <class 'list'> (400,)
+train focal <class 'list'> (400,)
+train label <class 'list'> (400,)
+train near <class 'list'> (400,)
+train far <class 'list'> (400,)
+train lossmult <class 'list'> (400,)
+train pix2cam <class 'list'> (400, 3, 3)
+val file_path <class 'list'> (400,)
+val cam2world <class 'list'> (400, 4, 4)
+val width <class 'list'> (400,)
+val height <class 'list'> (400,)
+val focal <class 'list'> (400,)
+val label <class 'list'> (400,)
+val near <class 'list'> (400,)
+val far <class 'list'> (400,)
+val lossmult <class 'list'> (400,)
+val pix2cam <class 'list'> (400, 3, 3)
+test file_path <class 'list'> (800,)
+test cam2world <class 'list'> (800, 4, 4)
+test width <class 'list'> (800,)
+test height <class 'list'> (800,)
+test focal <class 'list'> (800,)
+test label <class 'list'> (800,)
+test near <class 'list'> (800,)
+test far <class 'list'> (800,)
+test lossmult <class 'list'> (800,)
+test pix2cam <class 'list'> (800, 3, 3)
+found 8 trained models: ['chair', 'drums', 'ficus', 'hotdog', 'lego', 'materials', 'mic', 'ship']
++ OMP_NUM_THREADS=4 python render.py -m /kaggle/working/out/ship_full --skip_train -s /kaggle/working/multi-scale/ship   (cwd=/kaggle/working/repo)
+Looking for config file in /kaggle/working/out/ship_full/cfg_args
+Config file found: /kaggle/working/out/ship_full/cfg_args
+Rendering /kaggle/working/out/ship_full
+Loading trained model at iteration 30000 [12/09 00:07:32]
+Found metadata.json file, assuming multi scale Blender data set! [12/09 00:07:32]
+Reading train from metadata.json [12/09 00:07:32]
+read split: train [12/09 00:07:32]
+number of training images: 100 [12/09 00:07:37]
+Reading test from metadata.json [12/09 00:07:37]
+read split: test [12/09 00:07:37]
+number of testing images: 800 [12/09 00:07:52]
+Generating random point cloud (100000)... [12/09 00:07:52]
+Loading Training Cameras [12/09 00:07:53]
+Loading Test Cameras [12/09 00:07:54]
+Rendering progress:   0%|          | 0/800 [00:00<?, ?it/s]
++ OMP_NUM_THREADS=4 python metrics.py -m /kaggle/working/out/ship_full   (cwd=/kaggle/working/repo)
+/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:208: UserWarning: The parameter 'pretrained' is deprecated since 0.13 and may be removed in the future, please use 'weights' instead.
+  warnings.warn(
+/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:223: UserWarning: Arguments other than a weight enum or `None` for 'weights' are deprecated since 0.13 and may be removed in the future. The current behavior is equivalent to passing `weights=VGG16_Weights.IMAGENET1K_V1`. You can also use `weights=VGG16_Weights.DEFAULT` to get the most up-to-date weights.
+  warnings.warn(msg)
+Setting up [LPIPS] perceptual loss: trunk [vgg], v[0.1], spatial [off]
+Downloading: "https://download.pytorch.org/models/vgg16-397923af.pth" to /root/.cache/torch/hub/checkpoints/vgg16-397923af.pth
+  0%|          | 0.00/528M [00:00<?, ?B/s]
+Loading model from: /usr/local/lib/python3.12/dist-packages/lpips/weights/v0.1/vgg.pth
+Scene: /kaggle/working/out/ship_full
+Method: ours_30000
+  SSIM :    0.9225485
+  PSNR :   29.7199612
+  LPIPS:    0.0676351
+[ship/full] PSNR 29.720 | 111.4 MB
++ OMP_NUM_THREADS=4 python render.py -m /kaggle/working/out/ship_b2_0p01 --skip_train -s /kaggle/working/multi-scale/ship   (cwd=/kaggle/working/repo)
+Looking for config file in /kaggle/working/out/ship_b2_0p01/cfg_args
+Config file found: /kaggle/working/out/ship_b2_0p01/cfg_args
+Rendering /kaggle/working/out/ship_b2_0p01
+Loading trained model at iteration 30000 [12/09 00:12:30]
+Found metadata.json file, assuming multi scale Blender data set! [12/09 00:12:30]
+Reading train from metadata.json [12/09 00:12:30]
+read split: train [12/09 00:12:30]
+number of training images: 100 [12/09 00:12:35]
+Reading test from metadata.json [12/09 00:12:35]
+read split: test [12/09 00:12:35]
+number of testing images: 800 [12/09 00:12:50]
+Loading Training Cameras [12/09 00:12:50]
+Loading Test Cameras [12/09 00:12:51]
+Rendering progress:   0%|          | 0/800 [00:00<?, ?it/s]
++ OMP_NUM_THREADS=4 python metrics.py -m /kaggle/working/out/ship_b2_0p01   (cwd=/kaggle/working/repo)
+/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:208: UserWarning: The parameter 'pretrained' is deprecated since 0.13 and may be removed in the future, please use 'weights' instead.
+  warnings.warn(
+/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:223: UserWarning: Arguments other than a weight enum or `None` for 'weights' are deprecated since 0.13 and may be removed in the future. The current behavior is equivalent to passing `weights=VGG16_Weights.IMAGENET1K_V1`. You can also use `weights=VGG16_Weights.DEFAULT` to get the most up-to-date weights.
+  warnings.warn(msg)
+Setting up [LPIPS] perceptual loss: trunk [vgg], v[0.1], spatial [off]
+Loading model from: /usr/local/lib/python3.12/dist-packages/lpips/weights/v0.1/vgg.pth
+Scene: /kaggle/working/out/ship_b2_0p01
+Method: ours_30000
+Metric evaluation progress:   0%|          | 0/800 [00:00<?, ?it/s]
+  SSIM :    0.9225485
+  PSNR :   29.7199612
+  LPIPS:    0.0676351
+[ship/b2/tau0.01] PSNR 29.720 | 111.4 MB | non-DC kept 100.0% | mean l_max 3.00
++ OMP_NUM_THREADS=4 python render.py -m /kaggle/working/out/ship_mag_0p01 --skip_train -s /kaggle/working/multi-scale/ship   (cwd=/kaggle/working/repo)
+Looking for config file in /kaggle/working/out/ship_mag_0p01/cfg_args
+Config file found: /kaggle/working/out/ship_mag_0p01/cfg_args
+Rendering /kaggle/working/out/ship_mag_0p01
+Loading trained model at iteration 30000 [12/09 00:15:31]
+Found metadata.json file, assuming multi scale Blender data set! [12/09 00:15:31]
+Reading train from metadata.json [12/09 00:15:31]
+read split: train [12/09 00:15:31]
+number of training images: 100 [12/09 00:15:36]
+Reading test from metadata.json [12/09 00:15:36]
+read split: test [12/09 00:15:36]
+number of testing images: 800 [12/09 00:15:51]
+Loading Training Cameras [12/09 00:15:51]
+Loading Test Cameras [12/09 00:15:52]
+Rendering progress:   0%|          | 0/800 [00:00<?, ?it/s]
++ OMP_NUM_THREADS=4 python metrics.py -m /kaggle/working/out/ship_mag_0p01   (cwd=/kaggle/working/repo)
+/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:208: UserWarning: The parameter 'pretrained' is deprecated since 0.13 and may be removed in the future, please use 'weights' instead.
+  warnings.warn(
+/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:223: UserWarning: Arguments other than a weight enum or `None` for 'weights' are deprecated since 0.13 and may be removed in the future. The current behavior is equivalent to passing `weights=VGG16_Weights.IMAGENET1K_V1`. You can also use `weights=VGG16_Weights.DEFAULT` to get the most up-to-date weights.
+  warnings.warn(msg)
+Setting up [LPIPS] perceptual loss: trunk [vgg], v[0.1], spatial [off]
+Loading model from: /usr/local/lib/python3.12/dist-packages/lpips/weights/v0.1/vgg.pth
+Scene: /kaggle/working/out/ship_mag_0p01
+Method: ours_30000
+Metric evaluation progress:   0%|          | 0/800 [00:00<?, ?it/s]
+  SSIM :    0.9225485
+  PSNR :   29.7199612
+  LPIPS:    0.0676351
+[ship/magnitude/tau0.01] PSNR 29.720 | 111.4 MB | non-DC kept 100.0%
++ OMP_NUM_THREADS=4 python render.py -m /kaggle/working/out/drums_full --skip_train -s /kaggle/working/multi-scale/drums   (cwd=/kaggle/working/repo)
+Looking for config file in /kaggle/working/out/drums_full/cfg_args
+Config file found: /kaggle/working/out/drums_full/cfg_args
+Rendering /kaggle/working/out/drums_full
+Loading trained model at iteration 30000 [12/09 00:18:37]
+Found metadata.json file, assuming multi scale Blender data set! [12/09 00:18:37]
+Reading train from metadata.json [12/09 00:18:37]
+read split: train [12/09 00:18:37]
+number of training images: 100 [12/09 00:18:42]
+Reading test from metadata.json [12/09 00:18:42]
+read split: test [12/09 00:18:42]
+number of testing images: 800 [12/09 00:18:56]
+Generating random point cloud (100000)... [12/09 00:18:56]
+Loading Training Cameras [12/09 00:18:56]
+Loading Test Cameras [12/09 00:18:57]
+Rendering progress:   0%|          | 0/800 [00:00<?, ?it/s]
++ OMP_NUM_THREADS=4 python metrics.py -m /kaggle/working/out/drums_full   (cwd=/kaggle/working/repo)
+/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:208: UserWarning: The parameter 'pretrained' is deprecated since 0.13 and may be removed in the future, please use 'weights' instead.
+  warnings.warn(
+/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:223: UserWarning: Arguments other than a weight enum or `None` for 'weights' are deprecated since 0.13 and may be removed in the future. The current behavior is equivalent to passing `weights=VGG16_Weights.IMAGENET1K_V1`. You can also use `weights=VGG16_Weights.DEFAULT` to get the most up-to-date weights.
+  warnings.warn(msg)
+Setting up [LPIPS] perceptual loss: trunk [vgg], v[0.1], spatial [off]
+Loading model from: /usr/local/lib/python3.12/dist-packages/lpips/weights/v0.1/vgg.pth
+Scene: /kaggle/working/out/drums_full
+Method: ours_30000
+Metric evaluation progress:   0%|          | 0/800 [00:00<?, ?it/s]
+  SSIM :    0.9581021
+  PSNR :   26.4726715
+  LPIPS:    0.0348570
+[drums/full] PSNR 26.473 | 86.4 MB
++ OMP_NUM_THREADS=4 python render.py -m /kaggle/working/out/drums_b2_0p01 --skip_train -s /kaggle/working/multi-scale/drums   (cwd=/kaggle/working/repo)
+Looking for config file in /kaggle/working/out/drums_b2_0p01/cfg_args
+Config file found: /kaggle/working/out/drums_b2_0p01/cfg_args
+Rendering /kaggle/working/out/drums_b2_0p01
+Loading trained model at iteration 30000 [12/09 00:22:41]
+Found metadata.json file, assuming multi scale Blender data set! [12/09 00:22:41]
+Reading train from metadata.json [12/09 00:22:41]
+read split: train [12/09 00:22:41]
+number of training images: 100 [12/09 00:22:46]
+Reading test from metadata.json [12/09 00:22:46]
+read split: test [12/09 00:22:46]
+number of testing images: 800 [12/09 00:23:00]
+Loading Training Cameras [12/09 00:23:00]
+Loading Test Cameras [12/09 00:23:01]
+Rendering progress:   0%|          | 0/800 [00:00<?, ?it/s]
++ OMP_NUM_THREADS=4 python metrics.py -m /kaggle/working/out/drums_b2_0p01   (cwd=/kaggle/working/repo)
+/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:208: UserWarning: The parameter 'pretrained' is deprecated since 0.13 and may be removed in the future, please use 'weights' instead.
+  warnings.warn(
+/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:223: UserWarning: Arguments other than a weight enum or `None` for 'weights' are deprecated since 0.13 and may be removed in the future. The current behavior is equivalent to passing `weights=VGG16_Weights.IMAGENET1K_V1`. You can also use `weights=VGG16_Weights.DEFAULT` to get the most up-to-date weights.
+  warnings.warn(msg)
+Setting up [LPIPS] perceptual loss: trunk [vgg], v[0.1], spatial [off]
+Loading model from: /usr/local/lib/python3.12/dist-packages/lpips/weights/v0.1/vgg.pth
+Scene: /kaggle/working/out/drums_b2_0p01
+Method: ours_30000
+Metric evaluation progress:   0%|          | 0/800 [00:00<?, ?it/s]
+  SSIM :    0.9581021
+  PSNR :   26.4726715
+  LPIPS:    0.0348570
+[drums/b2/tau0.01] PSNR 26.473 | 86.4 MB | non-DC kept 100.0% | mean l_max 3.00
++ OMP_NUM_THREADS=4 python render.py -m /kaggle/working/out/drums_mag_0p01 --skip_train -s /kaggle/working/multi-scale/drums   (cwd=/kaggle/working/repo)
+Looking for config file in /kaggle/working/out/drums_mag_0p01/cfg_args
+Config file found: /kaggle/working/out/drums_mag_0p01/cfg_args
+Rendering /kaggle/working/out/drums_mag_0p01
+Loading trained model at iteration 30000 [12/09 00:25:13]
+Found metadata.json file, assuming multi scale Blender data set! [12/09 00:25:13]
+Reading train from metadata.json [12/09 00:25:13]
+read split: train [12/09 00:25:13]
+number of training images: 100 [12/09 00:25:18]
+Reading test from metadata.json [12/09 00:25:18]
+read split: test [12/09 00:25:18]
+number of testing images: 800 [12/09 00:25:32]
+Loading Training Cameras [12/09 00:25:32]
+Loading Test Cameras [12/09 00:25:33]
+Rendering progress:   0%|          | 0/800 [00:00<?, ?it/s]
++ OMP_NUM_THREADS=4 python metrics.py -m /kaggle/working/out/drums_mag_0p01   (cwd=/kaggle/working/repo)
+/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:208: UserWarning: The parameter 'pretrained' is deprecated since 0.13 and may be removed in the future, please use 'weights' instead.
+  warnings.warn(
+/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:223: UserWarning: Arguments other than a weight enum or `None` for 'weights' are deprecated since 0.13 and may be removed in the future. The current behavior is equivalent to passing `weights=VGG16_Weights.IMAGENET1K_V1`. You can also use `weights=VGG16_Weights.DEFAULT` to get the most up-to-date weights.
+  warnings.warn(msg)
+Setting up [LPIPS] perceptual loss: trunk [vgg], v[0.1], spatial [off]
+Loading model from: /usr/local/lib/python3.12/dist-packages/lpips/weights/v0.1/vgg.pth
+Scene: /kaggle/working/out/drums_mag_0p01
+Method: ours_30000
+Metric evaluation progress:   0%|          | 0/800 [00:00<?, ?it/s]
+  SSIM :    0.9581021
+  PSNR :   26.4726715
+  LPIPS:    0.0348570
+[drums/magnitude/tau0.01] PSNR 26.473 | 86.4 MB | non-DC kept 100.0%
++ OMP_NUM_THREADS=4 python render.py -m /kaggle/working/out/ficus_full --skip_train -s /kaggle/working/multi-scale/ficus   (cwd=/kaggle/working/repo)
+Looking for config file in /kaggle/working/out/ficus_full/cfg_args
+Config file found: /kaggle/working/out/ficus_full/cfg_args
+Rendering /kaggle/working/out/ficus_full
+Loading trained model at iteration 30000 [12/09 00:27:49]
+Found metadata.json file, assuming multi scale Blender data set! [12/09 00:27:49]
+Reading train from metadata.json [12/09 00:27:49]
+read split: train [12/09 00:27:49]
+number of training images: 100 [12/09 00:27:54]
+Reading test from metadata.json [12/09 00:27:54]
+read split: test [12/09 00:27:54]
+number of testing images: 800 [12/09 00:28:07]
+Generating random point cloud (100000)... [12/09 00:28:07]
+Loading Training Cameras [12/09 00:28:08]
+Loading Test Cameras [12/09 00:28:09]
+Rendering progress:   0%|          | 0/800 [00:00<?, ?it/s]
++ OMP_NUM_THREADS=4 python metrics.py -m /kaggle/working/out/ficus_full   (cwd=/kaggle/working/repo)
+/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:208: UserWarning: The parameter 'pretrained' is deprecated since 0.13 and may be removed in the future, please use 'weights' instead.
+  warnings.warn(
+/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:223: UserWarning: Arguments other than a weight enum or `None` for 'weights' are deprecated since 0.13 and may be removed in the future. The current behavior is equivalent to passing `weights=VGG16_Weights.IMAGENET1K_V1`. You can also use `weights=VGG16_Weights.DEFAULT` to get the most up-to-date weights.
+  warnings.warn(msg)
+Setting up [LPIPS] perceptual loss: trunk [vgg], v[0.1], spatial [off]
+Loading model from: /usr/local/lib/python3.12/dist-packages/lpips/weights/v0.1/vgg.pth
+Scene: /kaggle/working/out/ficus_full
+Method: ours_30000
+Metric evaluation progress:   0%|          | 0/800 [00:00<?, ?it/s]
+  SSIM :    0.9880856
+  PSNR :   33.0047264
+  LPIPS:    0.0116573
+[ficus/full] PSNR 33.005 | 46.8 MB
++ OMP_NUM_THREADS=4 python render.py -m /kaggle/working/out/ficus_b2_0p01 --skip_train -s /kaggle/working/multi-scale/ficus   (cwd=/kaggle/working/repo)
+Looking for config file in /kaggle/working/out/ficus_b2_0p01/cfg_args
+Config file found: /kaggle/working/out/ficus_b2_0p01/cfg_args
+Rendering /kaggle/working/out/ficus_b2_0p01
+Loading trained model at iteration 30000 [12/09 00:30:55]
+Found metadata.json file, assuming multi scale Blender data set! [12/09 00:30:55]
+Reading train from metadata.json [12/09 00:30:55]
+read split: train [12/09 00:30:55]
+number of training images: 100 [12/09 00:30:59]
+Reading test from metadata.json [12/09 00:30:59]
+read split: test [12/09 00:30:59]
+number of testing images: 800 [12/09 00:31:13]
+Loading Training Cameras [12/09 00:31:13]
+Loading Test Cameras [12/09 00:31:14]
+Rendering progress:   0%|          | 0/800 [00:00<?, ?it/s]
++ OMP_NUM_THREADS=4 python metrics.py -m /kaggle/working/out/ficus_b2_0p01   (cwd=/kaggle/working/repo)
+/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:208: UserWarning: The parameter 'pretrained' is deprecated since 0.13 and may be removed in the future, please use 'weights' instead.
+  warnings.warn(
+/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:223: UserWarning: Arguments other than a weight enum or `None` for 'weights' are deprecated since 0.13 and may be removed in the future. The current behavior is equivalent to passing `weights=VGG16_Weights.IMAGENET1K_V1`. You can also use `weights=VGG16_Weights.DEFAULT` to get the most up-to-date weights.
+  warnings.warn(msg)
+Setting up [LPIPS] perceptual loss: trunk [vgg], v[0.1], spatial [off]
+Loading model from: /usr/local/lib/python3.12/dist-packages/lpips/weights/v0.1/vgg.pth
+Scene: /kaggle/working/out/ficus_b2_0p01
+Method: ours_30000
+Metric evaluation progress:   0%|          | 0/800 [00:00<?, ?it/s]
+  SSIM :    0.9880856
+  PSNR :   33.0047264
+  LPIPS:    0.0116573
+[ficus/b2/tau0.01] PSNR 33.005 | 46.8 MB | non-DC kept 100.0% | mean l_max 3.00
++ OMP_NUM_THREADS=4 python render.py -m /kaggle/working/out/ficus_mag_0p01 --skip_train -s /kaggle/working/multi-scale/ficus   (cwd=/kaggle/working/repo)
+Looking for config file in /kaggle/working/out/ficus_mag_0p01/cfg_args
+Config file found: /kaggle/working/out/ficus_mag_0p01/cfg_args
+Rendering /kaggle/working/out/ficus_mag_0p01
+Loading trained model at iteration 30000 [12/09 00:33:08]
+Found metadata.json file, assuming multi scale Blender data set! [12/09 00:33:08]
+Reading train from metadata.json [12/09 00:33:08]
+read split: train [12/09 00:33:08]
+number of training images: 100 [12/09 00:33:12]
+Reading test from metadata.json [12/09 00:33:12]
+read split: test [12/09 00:33:12]
+number of testing images: 800 [12/09 00:33:26]
+Loading Training Cameras [12/09 00:33:26]
+Loading Test Cameras [12/09 00:33:28]
+Rendering progress:   0%|          | 0/800 [00:00<?, ?it/s]
++ OMP_NUM_THREADS=4 python metrics.py -m /kaggle/working/out/ficus_mag_0p01   (cwd=/kaggle/working/repo)
+/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:208: UserWarning: The parameter 'pretrained' is deprecated since 0.13 and may be removed in the future, please use 'weights' instead.
+  warnings.warn(
+/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:223: UserWarning: Arguments other than a weight enum or `None` for 'weights' are deprecated since 0.13 and may be removed in the future. The current behavior is equivalent to passing `weights=VGG16_Weights.IMAGENET1K_V1`. You can also use `weights=VGG16_Weights.DEFAULT` to get the most up-to-date weights.
+  warnings.warn(msg)
+Setting up [LPIPS] perceptual loss: trunk [vgg], v[0.1], spatial [off]
+Loading model from: /usr/local/lib/python3.12/dist-packages/lpips/weights/v0.1/vgg.pth
+Scene: /kaggle/working/out/ficus_mag_0p01
+Method: ours_30000
+Metric evaluation progress:   0%|          | 0/800 [00:00<?, ?it/s]
+  SSIM :    0.9880856
+  PSNR :   33.0047264
+  LPIPS:    0.0116573
+[ficus/magnitude/tau0.01] PSNR 33.005 | 46.8 MB | non-DC kept 100.0%
++ OMP_NUM_THREADS=4 python render.py -m /kaggle/working/out/hotdog_full --skip_train -s /kaggle/working/multi-scale/hotdog   (cwd=/kaggle/working/repo)
+Looking for config file in /kaggle/working/out/hotdog_full/cfg_args
+Config file found: /kaggle/working/out/hotdog_full/cfg_args
+Rendering /kaggle/working/out/hotdog_full
+Loading trained model at iteration 30000 [12/09 00:35:25]
+Found metadata.json file, assuming multi scale Blender data set! [12/09 00:35:25]
+Reading train from metadata.json [12/09 00:35:25]
+read split: train [12/09 00:35:25]
+number of training images: 100 [12/09 00:35:30]
+Reading test from metadata.json [12/09 00:35:30]
+read split: test [12/09 00:35:30]
+number of testing images: 800 [12/09 00:35:43]
+Generating random point cloud (100000)... [12/09 00:35:43]
+Loading Training Cameras [12/09 00:35:43]
+Loading Test Cameras [12/09 00:35:45]
+Rendering progress:   0%|          | 0/800 [00:00<?, ?it/s]
++ OMP_NUM_THREADS=4 python metrics.py -m /kaggle/working/out/hotdog_full   (cwd=/kaggle/working/repo)
+/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:208: UserWarning: The parameter 'pretrained' is deprecated since 0.13 and may be removed in the future, please use 'weights' instead.
+  warnings.warn(
+/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:223: UserWarning: Arguments other than a weight enum or `None` for 'weights' are deprecated since 0.13 and may be removed in the future. The current behavior is equivalent to passing `weights=VGG16_Weights.IMAGENET1K_V1`. You can also use `weights=VGG16_Weights.DEFAULT` to get the most up-to-date weights.
+  warnings.warn(msg)
+Setting up [LPIPS] perceptual loss: trunk [vgg], v[0.1], spatial [off]
+Loading model from: /usr/local/lib/python3.12/dist-packages/lpips/weights/v0.1/vgg.pth
+Scene: /kaggle/working/out/hotdog_full
+Method: ours_30000
+Metric evaluation progress:   0%|          | 0/800 [00:00<?, ?it/s]
+  SSIM :    0.9874673
+  PSNR :   36.1462059
+  LPIPS:    0.0131743
+[hotdog/full] PSNR 36.146 | 48.9 MB
++ OMP_NUM_THREADS=4 python render.py -m /kaggle/working/out/hotdog_b2_0p01 --skip_train -s /kaggle/working/multi-scale/hotdog   (cwd=/kaggle/working/repo)
+Looking for config file in /kaggle/working/out/hotdog_b2_0p01/cfg_args
+Config file found: /kaggle/working/out/hotdog_b2_0p01/cfg_args
+Rendering /kaggle/working/out/hotdog_b2_0p01
+Loading trained model at iteration 30000 [12/09 00:38:51]
+Found metadata.json file, assuming multi scale Blender data set! [12/09 00:38:51]
+Reading train from metadata.json [12/09 00:38:51]
+read split: train [12/09 00:38:51]
+number of training images: 100 [12/09 00:38:56]
+Reading test from metadata.json [12/09 00:38:56]
+read split: test [12/09 00:38:56]
+number of testing images: 800 [12/09 00:39:09]
+Loading Training Cameras [12/09 00:39:09]
+Loading Test Cameras [12/09 00:39:10]
+Rendering progress:   0%|          | 0/800 [00:00<?, ?it/s]
++ OMP_NUM_THREADS=4 python metrics.py -m /kaggle/working/out/hotdog_b2_0p01   (cwd=/kaggle/working/repo)
+/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:208: UserWarning: The parameter 'pretrained' is deprecated since 0.13 and may be removed in the future, please use 'weights' instead.
+  warnings.warn(
+/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:223: UserWarning: Arguments other than a weight enum or `None` for 'weights' are deprecated since 0.13 and may be removed in the future. The current behavior is equivalent to passing `weights=VGG16_Weights.IMAGENET1K_V1`. You can also use `weights=VGG16_Weights.DEFAULT` to get the most up-to-date weights.
+  warnings.warn(msg)
+Setting up [LPIPS] perceptual loss: trunk [vgg], v[0.1], spatial [off]
+Loading model from: /usr/local/lib/python3.12/dist-packages/lpips/weights/v0.1/vgg.pth
+Scene: /kaggle/working/out/hotdog_b2_0p01
+Method: ours_30000
+Metric evaluation progress:   0%|          | 0/800 [00:00<?, ?it/s]
+  SSIM :    0.9874673
+  PSNR :   36.1462059
+  LPIPS:    0.0131743
+[hotdog/b2/tau0.01] PSNR 36.146 | 48.9 MB | non-DC kept 100.0% | mean l_max 3.00
++ OMP_NUM_THREADS=4 python render.py -m /kaggle/working/out/hotdog_mag_0p01 --skip_train -s /kaggle/working/multi-scale/hotdog   (cwd=/kaggle/working/repo)
+Looking for config file in /kaggle/working/out/hotdog_mag_0p01/cfg_args
+Config file found: /kaggle/working/out/hotdog_mag_0p01/cfg_args
+Rendering /kaggle/working/out/hotdog_mag_0p01
+Loading trained model at iteration 30000 [12/09 00:41:24]
+Found metadata.json file, assuming multi scale Blender data set! [12/09 00:41:24]
+Reading train from metadata.json [12/09 00:41:24]
+read split: train [12/09 00:41:24]
+number of training images: 100 [12/09 00:41:28]
+Reading test from metadata.json [12/09 00:41:28]
+read split: test [12/09 00:41:28]
+number of testing images: 800 [12/09 00:41:41]
+Loading Training Cameras [12/09 00:41:41]
+Loading Test Cameras [12/09 00:41:43]
+Rendering progress:   0%|          | 0/800 [00:00<?, ?it/s]
++ OMP_NUM_THREADS=4 python metrics.py -m /kaggle/working/out/hotdog_mag_0p01   (cwd=/kaggle/working/repo)
+/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:208: UserWarning: The parameter 'pretrained' is deprecated since 0.13 and may be removed in the future, please use 'weights' instead.
+  warnings.warn(
+/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:223: UserWarning: Arguments other than a weight enum or `None` for 'weights' are deprecated since 0.13 and may be removed in the future. The current behavior is equivalent to passing `weights=VGG16_Weights.IMAGENET1K_V1`. You can also use `weights=VGG16_Weights.DEFAULT` to get the most up-to-date weights.
+  warnings.warn(msg)
+Setting up [LPIPS] perceptual loss: trunk [vgg], v[0.1], spatial [off]
+Loading model from: /usr/local/lib/python3.12/dist-packages/lpips/weights/v0.1/vgg.pth
+Scene: /kaggle/working/out/hotdog_mag_0p01
+Method: ours_30000
+Metric evaluation progress:   0%|          | 0/800 [00:00<?, ?it/s]
+  SSIM :    0.9874673
+  PSNR :   36.1462059
+  LPIPS:    0.0131743
+[hotdog/magnitude/tau0.01] PSNR 36.146 | 48.9 MB | non-DC kept 100.0%
++ OMP_NUM_THREADS=4 python render.py -m /kaggle/working/out/lego_full --skip_train -s /kaggle/working/multi-scale/lego   (cwd=/kaggle/working/repo)
+Looking for config file in /kaggle/working/out/lego_full/cfg_args
+Config file found: /kaggle/working/out/lego_full/cfg_args
+Rendering /kaggle/working/out/lego_full
+Loading trained model at iteration 30000 [12/09 00:44:00]
+Found metadata.json file, assuming multi scale Blender data set! [12/09 00:44:00]
+Reading train from metadata.json [12/09 00:44:00]
+read split: train [12/09 00:44:00]
+number of training images: 100 [12/09 00:44:05]
+Reading test from metadata.json [12/09 00:44:05]
+read split: test [12/09 00:44:05]
+number of testing images: 800 [12/09 00:44:19]
+Generating random point cloud (100000)... [12/09 00:44:19]
+Loading Training Cameras [12/09 00:44:19]
+Loading Test Cameras [12/09 00:44:21]
+Rendering progress:   0%|          | 0/800 [00:00<?, ?it/s]
++ OMP_NUM_THREADS=4 python metrics.py -m /kaggle/working/out/lego_full   (cwd=/kaggle/working/repo)
+/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:208: UserWarning: The parameter 'pretrained' is deprecated since 0.13 and may be removed in the future, please use 'weights' instead.
+  warnings.warn(
+/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:223: UserWarning: Arguments other than a weight enum or `None` for 'weights' are deprecated since 0.13 and may be removed in the future. The current behavior is equivalent to passing `weights=VGG16_Weights.IMAGENET1K_V1`. You can also use `weights=VGG16_Weights.DEFAULT` to get the most up-to-date weights.
+  warnings.warn(msg)
+Setting up [LPIPS] perceptual loss: trunk [vgg], v[0.1], spatial [off]
+Loading model from: /usr/local/lib/python3.12/dist-packages/lpips/weights/v0.1/vgg.pth
+Scene: /kaggle/working/out/lego_full
+Method: ours_30000
+Metric evaluation progress:   0%|          | 0/800 [00:00<?, ?it/s]
+  SSIM :    0.9827490
+  PSNR :   32.8557358
+  LPIPS:    0.0155787
+[lego/full] PSNR 32.856 | 73.9 MB
++ OMP_NUM_THREADS=4 python render.py -m /kaggle/working/out/lego_b2_0p01 --skip_train -s /kaggle/working/multi-scale/lego   (cwd=/kaggle/working/repo)
+Looking for config file in /kaggle/working/out/lego_b2_0p01/cfg_args
+Config file found: /kaggle/working/out/lego_b2_0p01/cfg_args
+Rendering /kaggle/working/out/lego_b2_0p01
+Loading trained model at iteration 30000 [12/09 00:47:59]
+Found metadata.json file, assuming multi scale Blender data set! [12/09 00:47:59]
+Reading train from metadata.json [12/09 00:47:59]
+read split: train [12/09 00:47:59]
+number of training images: 100 [12/09 00:48:03]
+Reading test from metadata.json [12/09 00:48:03]
+read split: test [12/09 00:48:03]
+number of testing images: 800 [12/09 00:48:18]
+Loading Training Cameras [12/09 00:48:18]
+Loading Test Cameras [12/09 00:48:19]
+Rendering progress:   0%|          | 0/800 [00:00<?, ?it/s]
++ OMP_NUM_THREADS=4 python metrics.py -m /kaggle/working/out/lego_b2_0p01   (cwd=/kaggle/working/repo)
+/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:208: UserWarning: The parameter 'pretrained' is deprecated since 0.13 and may be removed in the future, please use 'weights' instead.
+  warnings.warn(
+/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:223: UserWarning: Arguments other than a weight enum or `None` for 'weights' are deprecated since 0.13 and may be removed in the future. The current behavior is equivalent to passing `weights=VGG16_Weights.IMAGENET1K_V1`. You can also use `weights=VGG16_Weights.DEFAULT` to get the most up-to-date weights.
+  warnings.warn(msg)
+Setting up [LPIPS] perceptual loss: trunk [vgg], v[0.1], spatial [off]
+Loading model from: /usr/local/lib/python3.12/dist-packages/lpips/weights/v0.1/vgg.pth
+Scene: /kaggle/working/out/lego_b2_0p01
+Method: ours_30000
+Metric evaluation progress:   0%|          | 0/800 [00:00<?, ?it/s]
+  SSIM :    0.9827490
+  PSNR :   32.8557358
+  LPIPS:    0.0155787
+[lego/b2/tau0.01] PSNR 32.856 | 73.9 MB | non-DC kept 100.0% | mean l_max 3.00
++ OMP_NUM_THREADS=4 python render.py -m /kaggle/working/out/lego_mag_0p01 --skip_train -s /kaggle/working/multi-scale/lego   (cwd=/kaggle/working/repo)
+Looking for config file in /kaggle/working/out/lego_mag_0p01/cfg_args
+Config file found: /kaggle/working/out/lego_mag_0p01/cfg_args
+Rendering /kaggle/working/out/lego_mag_0p01
+Loading trained model at iteration 30000 [12/09 00:50:39]
+Found metadata.json file, assuming multi scale Blender data set! [12/09 00:50:39]
+Reading train from metadata.json [12/09 00:50:39]
+read split: train [12/09 00:50:39]
+number of training images: 100 [12/09 00:50:44]
+Reading test from metadata.json [12/09 00:50:44]
+read split: test [12/09 00:50:44]
+number of testing images: 800 [12/09 00:50:59]
+Loading Training Cameras [12/09 00:51:00]
+Loading Test Cameras [12/09 00:51:01]
+Rendering progress:   0%|          | 0/800 [00:00<?, ?it/s]
++ OMP_NUM_THREADS=4 python metrics.py -m /kaggle/working/out/lego_mag_0p01   (cwd=/kaggle/working/repo)
+/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:208: UserWarning: The parameter 'pretrained' is deprecated since 0.13 and may be removed in the future, please use 'weights' instead.
+  warnings.warn(
+/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:223: UserWarning: Arguments other than a weight enum or `None` for 'weights' are deprecated since 0.13 and may be removed in the future. The current behavior is equivalent to passing `weights=VGG16_Weights.IMAGENET1K_V1`. You can also use `weights=VGG16_Weights.DEFAULT` to get the most up-to-date weights.
+  warnings.warn(msg)
+Setting up [LPIPS] perceptual loss: trunk [vgg], v[0.1], spatial [off]
+Loading model from: /usr/local/lib/python3.12/dist-packages/lpips/weights/v0.1/vgg.pth
+Scene: /kaggle/working/out/lego_mag_0p01
+Method: ours_30000
+Metric evaluation progress:   0%|          | 0/800 [00:00<?, ?it/s]
+  SSIM :    0.9827490
+  PSNR :   32.8557358
+  LPIPS:    0.0155787
+[lego/magnitude/tau0.01] PSNR 32.856 | 73.9 MB | non-DC kept 100.0%
++ OMP_NUM_THREADS=4 python render.py -m /kaggle/working/out/materials_full --skip_train -s /kaggle/working/multi-scale/materials   (cwd=/kaggle/working/repo)
+Looking for config file in /kaggle/working/out/materials_full/cfg_args
+Config file found: /kaggle/working/out/materials_full/cfg_args
+Rendering /kaggle/working/out/materials_full
+Loading trained model at iteration 30000 [12/09 00:53:27]
+Found metadata.json file, assuming multi scale Blender data set! [12/09 00:53:27]
+Reading train from metadata.json [12/09 00:53:27]
+read split: train [12/09 00:53:27]
+number of training images: 100 [12/09 00:53:32]
+Reading test from metadata.json [12/09 00:53:32]
+read split: test [12/09 00:53:32]
+number of testing images: 800 [12/09 00:53:46]
+Generating random point cloud (100000)... [12/09 00:53:46]
+Loading Training Cameras [12/09 00:53:47]
+Loading Test Cameras [12/09 00:53:48]
+Rendering progress:   0%|          | 0/800 [00:00<?, ?it/s]
++ OMP_NUM_THREADS=4 python metrics.py -m /kaggle/working/out/materials_full   (cwd=/kaggle/working/repo)
+/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:208: UserWarning: The parameter 'pretrained' is deprecated since 0.13 and may be removed in the future, please use 'weights' instead.
+  warnings.warn(
+/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:223: UserWarning: Arguments other than a weight enum or `None` for 'weights' are deprecated since 0.13 and may be removed in the future. The current behavior is equivalent to passing `weights=VGG16_Weights.IMAGENET1K_V1`. You can also use `weights=VGG16_Weights.DEFAULT` to get the most up-to-date weights.
+  warnings.warn(msg)
+Setting up [LPIPS] perceptual loss: trunk [vgg], v[0.1], spatial [off]
+Loading model from: /usr/local/lib/python3.12/dist-packages/lpips/weights/v0.1/vgg.pth
+Scene: /kaggle/working/out/materials_full
+Method: ours_30000
+Metric evaluation progress:   0%|          | 0/800 [00:00<?, ?it/s]
+  SSIM :    0.9747298
+  PSNR :   30.0825996
+  LPIPS:    0.0188627
+[materials/full] PSNR 30.083 | 61.0 MB
++ OMP_NUM_THREADS=4 python render.py -m /kaggle/working/out/materials_b2_0p01 --skip_train -s /kaggle/working/multi-scale/materials   (cwd=/kaggle/working/repo)
+Looking for config file in /kaggle/working/out/materials_b2_0p01/cfg_args
+Config file found: /kaggle/working/out/materials_b2_0p01/cfg_args
+Rendering /kaggle/working/out/materials_b2_0p01
+Loading trained model at iteration 30000 [12/09 00:57:11]
+Found metadata.json file, assuming multi scale Blender data set! [12/09 00:57:11]
+Reading train from metadata.json [12/09 00:57:11]
+read split: train [12/09 00:57:11]
+number of training images: 100 [12/09 00:57:16]
+Reading test from metadata.json [12/09 00:57:16]
+read split: test [12/09 00:57:16]
+number of testing images: 800 [12/09 00:57:30]
+Loading Training Cameras [12/09 00:57:30]
+Loading Test Cameras [12/09 00:57:31]
+Rendering progress:   0%|          | 0/800 [00:00<?, ?it/s]
++ OMP_NUM_THREADS=4 python metrics.py -m /kaggle/working/out/materials_b2_0p01   (cwd=/kaggle/working/repo)
+/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:208: UserWarning: The parameter 'pretrained' is deprecated since 0.13 and may be removed in the future, please use 'weights' instead.
+  warnings.warn(
+/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:223: UserWarning: Arguments other than a weight enum or `None` for 'weights' are deprecated since 0.13 and may be removed in the future. The current behavior is equivalent to passing `weights=VGG16_Weights.IMAGENET1K_V1`. You can also use `weights=VGG16_Weights.DEFAULT` to get the most up-to-date weights.
+  warnings.warn(msg)
+Setting up [LPIPS] perceptual loss: trunk [vgg], v[0.1], spatial [off]
+Loading model from: /usr/local/lib/python3.12/dist-packages/lpips/weights/v0.1/vgg.pth
+Scene: /kaggle/working/out/materials_b2_0p01
+Method: ours_30000
+Metric evaluation progress:   0%|          | 0/800 [00:00<?, ?it/s]
+  SSIM :    0.9747298
+  PSNR :   30.0825996
+  LPIPS:    0.0188627
+[materials/b2/tau0.01] PSNR 30.083 | 61.0 MB | non-DC kept 100.0% | mean l_max 3.00
++ OMP_NUM_THREADS=4 python render.py -m /kaggle/working/out/materials_mag_0p01 --skip_train -s /kaggle/working/multi-scale/materials   (cwd=/kaggle/working/repo)
+Looking for config file in /kaggle/working/out/materials_mag_0p01/cfg_args
+Config file found: /kaggle/working/out/materials_mag_0p01/cfg_args
+Rendering /kaggle/working/out/materials_mag_0p01
+Loading trained model at iteration 30000 [12/09 00:59:43]
+Found metadata.json file, assuming multi scale Blender data set! [12/09 00:59:43]
+Reading train from metadata.json [12/09 00:59:43]
+read split: train [12/09 00:59:43]
+number of training images: 100 [12/09 00:59:48]
+Reading test from metadata.json [12/09 00:59:48]
+read split: test [12/09 00:59:48]
+number of testing images: 800 [12/09 01:00:02]
+Loading Training Cameras [12/09 01:00:02]
+Loading Test Cameras [12/09 01:00:03]
+Rendering progress:   0%|          | 0/800 [00:00<?, ?it/s]
++ OMP_NUM_THREADS=4 python metrics.py -m /kaggle/working/out/materials_mag_0p01   (cwd=/kaggle/working/repo)
+/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:208: UserWarning: The parameter 'pretrained' is deprecated since 0.13 and may be removed in the future, please use 'weights' instead.
+  warnings.warn(
+/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:223: UserWarning: Arguments other than a weight enum or `None` for 'weights' are deprecated since 0.13 and may be removed in the future. The current behavior is equivalent to passing `weights=VGG16_Weights.IMAGENET1K_V1`. You can also use `weights=VGG16_Weights.DEFAULT` to get the most up-to-date weights.
+  warnings.warn(msg)
+Setting up [LPIPS] perceptual loss: trunk [vgg], v[0.1], spatial [off]
+Loading model from: /usr/local/lib/python3.12/dist-packages/lpips/weights/v0.1/vgg.pth
+Scene: /kaggle/working/out/materials_mag_0p01
+Method: ours_30000
+Metric evaluation progress:   0%|          | 0/800 [00:00<?, ?it/s]
+  SSIM :    0.9747298
+  PSNR :   30.0825996
+  LPIPS:    0.0188627
+[materials/magnitude/tau0.01] PSNR 30.083 | 61.0 MB | non-DC kept 100.0%
++ OMP_NUM_THREADS=4 python render.py -m /kaggle/working/out/mic_full --skip_train -s /kaggle/working/multi-scale/mic   (cwd=/kaggle/working/repo)
+Looking for config file in /kaggle/working/out/mic_full/cfg_args
+Config file found: /kaggle/working/out/mic_full/cfg_args
+Rendering /kaggle/working/out/mic_full
+Loading trained model at iteration 30000 [12/09 01:02:21]
+Found metadata.json file, assuming multi scale Blender data set! [12/09 01:02:21]
+Reading train from metadata.json [12/09 01:02:21]
+read split: train [12/09 01:02:21]
+number of training images: 100 [12/09 01:02:25]
+Reading test from metadata.json [12/09 01:02:25]
+read split: test [12/09 01:02:25]
+number of testing images: 800 [12/09 01:02:38]
+Generating random point cloud (100000)... [12/09 01:02:38]
+Loading Training Cameras [12/09 01:02:38]
+Loading Test Cameras [12/09 01:02:40]
+Rendering progress:   0%|          | 0/800 [00:00<?, ?it/s]
++ OMP_NUM_THREADS=4 python metrics.py -m /kaggle/working/out/mic_full   (cwd=/kaggle/working/repo)
+/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:208: UserWarning: The parameter 'pretrained' is deprecated since 0.13 and may be removed in the future, please use 'weights' instead.
+  warnings.warn(
+/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:223: UserWarning: Arguments other than a weight enum or `None` for 'weights' are deprecated since 0.13 and may be removed in the future. The current behavior is equivalent to passing `weights=VGG16_Weights.IMAGENET1K_V1`. You can also use `weights=VGG16_Weights.DEFAULT` to get the most up-to-date weights.
+  warnings.warn(msg)
+Setting up [LPIPS] perceptual loss: trunk [vgg], v[0.1], spatial [off]
+Loading model from: /usr/local/lib/python3.12/dist-packages/lpips/weights/v0.1/vgg.pth
+Scene: /kaggle/working/out/mic_full
+Method: ours_30000
+Metric evaluation progress:   0%|          | 0/800 [00:00<?, ?it/s]
+  SSIM :    0.9861976
+  PSNR :   31.7140579
+  LPIPS:    0.0149236
+[mic/full] PSNR 31.714 | 102.7 MB
++ OMP_NUM_THREADS=4 python render.py -m /kaggle/working/out/mic_b2_0p01 --skip_train -s /kaggle/working/multi-scale/mic   (cwd=/kaggle/working/repo)
+Looking for config file in /kaggle/working/out/mic_b2_0p01/cfg_args
+Config file found: /kaggle/working/out/mic_b2_0p01/cfg_args
+Rendering /kaggle/working/out/mic_b2_0p01
+Loading trained model at iteration 30000 [12/09 01:06:28]
+Found metadata.json file, assuming multi scale Blender data set! [12/09 01:06:28]
+Reading train from metadata.json [12/09 01:06:28]
+read split: train [12/09 01:06:28]
+number of training images: 100 [12/09 01:06:32]
+Reading test from metadata.json [12/09 01:06:32]
+read split: test [12/09 01:06:32]
+number of testing images: 800 [12/09 01:06:45]
+Loading Training Cameras [12/09 01:06:45]
+Loading Test Cameras [12/09 01:06:46]
+Rendering progress:   0%|          | 0/800 [00:00<?, ?it/s]
++ OMP_NUM_THREADS=4 python metrics.py -m /kaggle/working/out/mic_b2_0p01   (cwd=/kaggle/working/repo)
+/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:208: UserWarning: The parameter 'pretrained' is deprecated since 0.13 and may be removed in the future, please use 'weights' instead.
+  warnings.warn(
+/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:223: UserWarning: Arguments other than a weight enum or `None` for 'weights' are deprecated since 0.13 and may be removed in the future. The current behavior is equivalent to passing `weights=VGG16_Weights.IMAGENET1K_V1`. You can also use `weights=VGG16_Weights.DEFAULT` to get the most up-to-date weights.
+  warnings.warn(msg)
+Setting up [LPIPS] perceptual loss: trunk [vgg], v[0.1], spatial [off]
+Loading model from: /usr/local/lib/python3.12/dist-packages/lpips/weights/v0.1/vgg.pth
+Scene: /kaggle/working/out/mic_b2_0p01
+Method: ours_30000
+Metric evaluation progress:   0%|          | 0/800 [00:00<?, ?it/s]
+  SSIM :    0.9861976
+  PSNR :   31.7140579
+  LPIPS:    0.0149236
+[mic/b2/tau0.01] PSNR 31.714 | 102.7 MB | non-DC kept 100.0% | mean l_max 3.00
++ OMP_NUM_THREADS=4 python render.py -m /kaggle/working/out/mic_mag_0p01 --skip_train -s /kaggle/working/multi-scale/mic   (cwd=/kaggle/working/repo)
+Looking for config file in /kaggle/working/out/mic_mag_0p01/cfg_args
+Config file found: /kaggle/working/out/mic_mag_0p01/cfg_args
+Rendering /kaggle/working/out/mic_mag_0p01
+Loading trained model at iteration 30000 [12/09 01:08:45]
+Found metadata.json file, assuming multi scale Blender data set! [12/09 01:08:45]
+Reading train from metadata.json [12/09 01:08:45]
+read split: train [12/09 01:08:45]
+number of training images: 100 [12/09 01:08:50]
+Reading test from metadata.json [12/09 01:08:50]
+read split: test [12/09 01:08:50]
+number of testing images: 800 [12/09 01:09:03]
+Loading Training Cameras [12/09 01:09:03]
+Loading Test Cameras [12/09 01:09:04]
+Rendering progress:   0%|          | 0/800 [00:00<?, ?it/s]
++ OMP_NUM_THREADS=4 python metrics.py -m /kaggle/working/out/mic_mag_0p01   (cwd=/kaggle/working/repo)
+/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:208: UserWarning: The parameter 'pretrained' is deprecated since 0.13 and may be removed in the future, please use 'weights' instead.
+  warnings.warn(
+/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:223: UserWarning: Arguments other than a weight enum or `None` for 'weights' are deprecated since 0.13 and may be removed in the future. The current behavior is equivalent to passing `weights=VGG16_Weights.IMAGENET1K_V1`. You can also use `weights=VGG16_Weights.DEFAULT` to get the most up-to-date weights.
+  warnings.warn(msg)
+Setting up [LPIPS] perceptual loss: trunk [vgg], v[0.1], spatial [off]
+Loading model from: /usr/local/lib/python3.12/dist-packages/lpips/weights/v0.1/vgg.pth
+Scene: /kaggle/working/out/mic_mag_0p01
+Method: ours_30000
+Metric evaluation progress:   0%|          | 0/800 [00:00<?, ?it/s]
+  SSIM :    0.9861976
+  PSNR :   31.7140579
+  LPIPS:    0.0149236
+[mic/magnitude/tau0.01] PSNR 31.714 | 102.7 MB | non-DC kept 100.0%
++ OMP_NUM_THREADS=4 python render.py -m /kaggle/working/out/chair_full --skip_train -s /kaggle/working/multi-scale/chair   (cwd=/kaggle/working/repo)
+Looking for config file in /kaggle/working/out/chair_full/cfg_args
+Config file found: /kaggle/working/out/chair_full/cfg_args
+Rendering /kaggle/working/out/chair_full
+Loading trained model at iteration 30000 [12/09 01:11:07]
+Found metadata.json file, assuming multi scale Blender data set! [12/09 01:11:07]
+Reading train from metadata.json [12/09 01:11:07]
+read split: train [12/09 01:11:07]
+number of training images: 100 [12/09 01:11:11]
+Reading test from metadata.json [12/09 01:11:11]
+read split: test [12/09 01:11:11]
+number of testing images: 800 [12/09 01:11:25]
+Generating random point cloud (100000)... [12/09 01:11:25]
+Loading Training Cameras [12/09 01:11:25]
+Loading Test Cameras [12/09 01:11:26]
+Rendering progress:   0%|          | 0/800 [00:00<?, ?it/s]
++ OMP_NUM_THREADS=4 python metrics.py -m /kaggle/working/out/chair_full   (cwd=/kaggle/working/repo)
+/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:208: UserWarning: The parameter 'pretrained' is deprecated since 0.13 and may be removed in the future, please use 'weights' instead.
+  warnings.warn(
+/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:223: UserWarning: Arguments other than a weight enum or `None` for 'weights' are deprecated since 0.13 and may be removed in the future. The current behavior is equivalent to passing `weights=VGG16_Weights.IMAGENET1K_V1`. You can also use `weights=VGG16_Weights.DEFAULT` to get the most up-to-date weights.
+  warnings.warn(msg)
+Setting up [LPIPS] perceptual loss: trunk [vgg], v[0.1], spatial [off]
+Loading model from: /usr/local/lib/python3.12/dist-packages/lpips/weights/v0.1/vgg.pth
+Scene: /kaggle/working/out/chair_full
+Method: ours_30000
+Metric evaluation progress:   0%|          | 0/800 [00:00<?, ?it/s]
+  SSIM :    0.9877725
+  PSNR :   35.6125412
+  LPIPS:    0.0132841
+[chair/full] PSNR 35.613 | 67.3 MB
++ OMP_NUM_THREADS=4 python render.py -m /kaggle/working/out/chair_b2_0p01 --skip_train -s /kaggle/working/multi-scale/chair   (cwd=/kaggle/working/repo)
+Looking for config file in /kaggle/working/out/chair_b2_0p01/cfg_args
+Config file found: /kaggle/working/out/chair_b2_0p01/cfg_args
+Rendering /kaggle/working/out/chair_b2_0p01
+Loading trained model at iteration 30000 [12/09 01:14:43]
+Found metadata.json file, assuming multi scale Blender data set! [12/09 01:14:43]
+Reading train from metadata.json [12/09 01:14:43]
+read split: train [12/09 01:14:43]
+number of training images: 100 [12/09 01:14:47]
+Reading test from metadata.json [12/09 01:14:47]
+read split: test [12/09 01:14:47]
+number of testing images: 800 [12/09 01:15:01]
+Loading Training Cameras [12/09 01:15:01]
+Loading Test Cameras [12/09 01:15:02]
+Rendering progress:   0%|          | 0/800 [00:00<?, ?it/s]
++ OMP_NUM_THREADS=4 python metrics.py -m /kaggle/working/out/chair_b2_0p01   (cwd=/kaggle/working/repo)
+/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:208: UserWarning: The parameter 'pretrained' is deprecated since 0.13 and may be removed in the future, please use 'weights' instead.
+  warnings.warn(
+/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:223: UserWarning: Arguments other than a weight enum or `None` for 'weights' are deprecated since 0.13 and may be removed in the future. The current behavior is equivalent to passing `weights=VGG16_Weights.IMAGENET1K_V1`. You can also use `weights=VGG16_Weights.DEFAULT` to get the most up-to-date weights.
+  warnings.warn(msg)
+Setting up [LPIPS] perceptual loss: trunk [vgg], v[0.1], spatial [off]
+Loading model from: /usr/local/lib/python3.12/dist-packages/lpips/weights/v0.1/vgg.pth
+Scene: /kaggle/working/out/chair_b2_0p01
+Method: ours_30000
+Metric evaluation progress:   0%|          | 0/800 [00:00<?, ?it/s]
+  SSIM :    0.9877725
+  PSNR :   35.6125412
+  LPIPS:    0.0132841
+[chair/b2/tau0.01] PSNR 35.613 | 67.3 MB | non-DC kept 100.0% | mean l_max 3.00
++ OMP_NUM_THREADS=4 python render.py -m /kaggle/working/out/chair_mag_0p01 --skip_train -s /kaggle/working/multi-scale/chair   (cwd=/kaggle/working/repo)
+Looking for config file in /kaggle/working/out/chair_mag_0p01/cfg_args
+Config file found: /kaggle/working/out/chair_mag_0p01/cfg_args
+Rendering /kaggle/working/out/chair_mag_0p01
+Loading trained model at iteration 30000 [12/09 01:17:07]
+Found metadata.json file, assuming multi scale Blender data set! [12/09 01:17:07]
+Reading train from metadata.json [12/09 01:17:07]
+read split: train [12/09 01:17:07]
+number of training images: 100 [12/09 01:17:11]
+Reading test from metadata.json [12/09 01:17:11]
+read split: test [12/09 01:17:11]
+number of testing images: 800 [12/09 01:17:25]
+Loading Training Cameras [12/09 01:17:25]
+Loading Test Cameras [12/09 01:17:26]
+Rendering progress:   0%|          | 0/800 [00:00<?, ?it/s]
++ OMP_NUM_THREADS=4 python metrics.py -m /kaggle/working/out/chair_mag_0p01   (cwd=/kaggle/working/repo)
+/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:208: UserWarning: The parameter 'pretrained' is deprecated since 0.13 and may be removed in the future, please use 'weights' instead.
+  warnings.warn(
+/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:223: UserWarning: Arguments other than a weight enum or `None` for 'weights' are deprecated since 0.13 and may be removed in the future. The current behavior is equivalent to passing `weights=VGG16_Weights.IMAGENET1K_V1`. You can also use `weights=VGG16_Weights.DEFAULT` to get the most up-to-date weights.
+  warnings.warn(msg)
+Setting up [LPIPS] perceptual loss: trunk [vgg], v[0.1], spatial [off]
+Loading model from: /usr/local/lib/python3.12/dist-packages/lpips/weights/v0.1/vgg.pth
+Scene: /kaggle/working/out/chair_mag_0p01
+Method: ours_30000
+Metric evaluation progress:   0%|          | 0/800 [00:00<?, ?it/s]
+  SSIM :    0.9877725
+  PSNR :   35.6125412
+  LPIPS:    0.0132841
+[chair/magnitude/tau0.01] PSNR 35.613 | 67.3 MB | non-DC kept 100.0%
++ OMP_NUM_THREADS=4 python render.py -m /kaggle/working/out/lego_b2_0p003 --skip_train -s /kaggle/working/multi-scale/lego   (cwd=/kaggle/working/repo)
+Looking for config file in /kaggle/working/out/lego_b2_0p003/cfg_args
+Config file found: /kaggle/working/out/lego_b2_0p003/cfg_args
+Rendering /kaggle/working/out/lego_b2_0p003
+Loading trained model at iteration 30000 [12/09 01:20:48]
+Found metadata.json file, assuming multi scale Blender data set! [12/09 01:20:48]
+Reading train from metadata.json [12/09 01:20:48]
+read split: train [12/09 01:20:48]
+number of training images: 100 [12/09 01:20:53]
+Reading test from metadata.json [12/09 01:20:53]
+read split: test [12/09 01:20:53]
+number of testing images: 800 [12/09 01:21:07]
+Loading Training Cameras [12/09 01:21:07]
+Loading Test Cameras [12/09 01:21:08]
+Rendering progress:   0%|          | 0/800 [00:00<?, ?it/s]
++ OMP_NUM_THREADS=4 python metrics.py -m /kaggle/working/out/lego_b2_0p003   (cwd=/kaggle/working/repo)
+/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:208: UserWarning: The parameter 'pretrained' is deprecated since 0.13 and may be removed in the future, please use 'weights' instead.
+  warnings.warn(
+/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:223: UserWarning: Arguments other than a weight enum or `None` for 'weights' are deprecated since 0.13 and may be removed in the future. The current behavior is equivalent to passing `weights=VGG16_Weights.IMAGENET1K_V1`. You can also use `weights=VGG16_Weights.DEFAULT` to get the most up-to-date weights.
+  warnings.warn(msg)
+Setting up [LPIPS] perceptual loss: trunk [vgg], v[0.1], spatial [off]
+Loading model from: /usr/local/lib/python3.12/dist-packages/lpips/weights/v0.1/vgg.pth
+Scene: /kaggle/working/out/lego_b2_0p003
+Method: ours_30000
+Metric evaluation progress:   0%|          | 0/800 [00:00<?, ?it/s]
+  SSIM :    0.9827490
+  PSNR :   32.8557358
+  LPIPS:    0.0155787
+[lego/b2/tau0.003_sweep] PSNR 32.856 | 73.9 MB | non-DC kept 100.0% | mean l_max 3.00
++ OMP_NUM_THREADS=4 python render.py -m /kaggle/working/out/lego_mag_0p003 --skip_train -s /kaggle/working/multi-scale/lego   (cwd=/kaggle/working/repo)
+Looking for config file in /kaggle/working/out/lego_mag_0p003/cfg_args
+Config file found: /kaggle/working/out/lego_mag_0p003/cfg_args
+Rendering /kaggle/working/out/lego_mag_0p003
+Loading trained model at iteration 30000 [12/09 01:23:25]
+Found metadata.json file, assuming multi scale Blender data set! [12/09 01:23:25]
+Reading train from metadata.json [12/09 01:23:25]
+read split: train [12/09 01:23:25]
+number of training images: 100 [12/09 01:23:30]
+Reading test from metadata.json [12/09 01:23:30]
+read split: test [12/09 01:23:30]
+number of testing images: 800 [12/09 01:23:44]
+Loading Training Cameras [12/09 01:23:44]
+Loading Test Cameras [12/09 01:23:46]
+Rendering progress:   0%|          | 0/800 [00:00<?, ?it/s]
++ OMP_NUM_THREADS=4 python metrics.py -m /kaggle/working/out/lego_mag_0p003   (cwd=/kaggle/working/repo)
+/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:208: UserWarning: The parameter 'pretrained' is deprecated since 0.13 and may be removed in the future, please use 'weights' instead.
+  warnings.warn(
+/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:223: UserWarning: Arguments other than a weight enum or `None` for 'weights' are deprecated since 0.13 and may be removed in the future. The current behavior is equivalent to passing `weights=VGG16_Weights.IMAGENET1K_V1`. You can also use `weights=VGG16_Weights.DEFAULT` to get the most up-to-date weights.
+  warnings.warn(msg)
+Setting up [LPIPS] perceptual loss: trunk [vgg], v[0.1], spatial [off]
+Loading model from: /usr/local/lib/python3.12/dist-packages/lpips/weights/v0.1/vgg.pth
+Scene: /kaggle/working/out/lego_mag_0p003
+Method: ours_30000
+Metric evaluation progress:   0%|          | 0/800 [00:00<?, ?it/s]
+  SSIM :    0.9827490
+  PSNR :   32.8557358
+  LPIPS:    0.0155787
+[lego/magnitude/tau0.003_sweep] PSNR 32.856 | 73.9 MB | non-DC kept 100.0%
++ OMP_NUM_THREADS=4 python render.py -m /kaggle/working/out/lego_b2_0p03 --skip_train -s /kaggle/working/multi-scale/lego   (cwd=/kaggle/working/repo)
+Looking for config file in /kaggle/working/out/lego_b2_0p03/cfg_args
+Config file found: /kaggle/working/out/lego_b2_0p03/cfg_args
+Rendering /kaggle/working/out/lego_b2_0p03
+Loading trained model at iteration 30000 [12/09 01:27:22]
+Found metadata.json file, assuming multi scale Blender data set! [12/09 01:27:22]
+Reading train from metadata.json [12/09 01:27:22]
+read split: train [12/09 01:27:22]
+number of training images: 100 [12/09 01:27:27]
+Reading test from metadata.json [12/09 01:27:27]
+read split: test [12/09 01:27:27]
+number of testing images: 800 [12/09 01:27:41]
+Loading Training Cameras [12/09 01:27:41]
+Loading Test Cameras [12/09 01:27:42]
+Rendering progress:   0%|          | 0/800 [00:00<?, ?it/s]
++ OMP_NUM_THREADS=4 python metrics.py -m /kaggle/working/out/lego_b2_0p03   (cwd=/kaggle/working/repo)
+/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:208: UserWarning: The parameter 'pretrained' is deprecated since 0.13 and may be removed in the future, please use 'weights' instead.
+  warnings.warn(
+/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:223: UserWarning: Arguments other than a weight enum or `None` for 'weights' are deprecated since 0.13 and may be removed in the future. The current behavior is equivalent to passing `weights=VGG16_Weights.IMAGENET1K_V1`. You can also use `weights=VGG16_Weights.DEFAULT` to get the most up-to-date weights.
+  warnings.warn(msg)
+Setting up [LPIPS] perceptual loss: trunk [vgg], v[0.1], spatial [off]
+Loading model from: /usr/local/lib/python3.12/dist-packages/lpips/weights/v0.1/vgg.pth
+Scene: /kaggle/working/out/lego_b2_0p03
+Method: ours_30000
+Metric evaluation progress:   0%|          | 0/800 [00:00<?, ?it/s]
+  SSIM :    0.9827490
+  PSNR :   32.8557358
+  LPIPS:    0.0155787
+[lego/b2/tau0.03_sweep] PSNR 32.856 | 73.9 MB | non-DC kept 100.0% | mean l_max 3.00
++ OMP_NUM_THREADS=4 python render.py -m /kaggle/working/out/lego_mag_0p03 --skip_train -s /kaggle/working/multi-scale/lego   (cwd=/kaggle/working/repo)
+Looking for config file in /kaggle/working/out/lego_mag_0p03/cfg_args
+Config file found: /kaggle/working/out/lego_mag_0p03/cfg_args
+Rendering /kaggle/working/out/lego_mag_0p03
+Loading trained model at iteration 30000 [12/09 01:30:00]
+Found metadata.json file, assuming multi scale Blender data set! [12/09 01:30:00]
+Reading train from metadata.json [12/09 01:30:00]
+read split: train [12/09 01:30:00]
+number of training images: 100 [12/09 01:30:04]
+Reading test from metadata.json [12/09 01:30:04]
+read split: test [12/09 01:30:04]
+number of testing images: 800 [12/09 01:30:19]
+Loading Training Cameras [12/09 01:30:19]
+Loading Test Cameras [12/09 01:30:20]
+Rendering progress:   0%|          | 0/800 [00:00<?, ?it/s]
++ OMP_NUM_THREADS=4 python metrics.py -m /kaggle/working/out/lego_mag_0p03   (cwd=/kaggle/working/repo)
+/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:208: UserWarning: The parameter 'pretrained' is deprecated since 0.13 and may be removed in the future, please use 'weights' instead.
+  warnings.warn(
+/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:223: UserWarning: Arguments other than a weight enum or `None` for 'weights' are deprecated since 0.13 and may be removed in the future. The current behavior is equivalent to passing `weights=VGG16_Weights.IMAGENET1K_V1`. You can also use `weights=VGG16_Weights.DEFAULT` to get the most up-to-date weights.
+  warnings.warn(msg)
+Setting up [LPIPS] perceptual loss: trunk [vgg], v[0.1], spatial [off]
+Loading model from: /usr/local/lib/python3.12/dist-packages/lpips/weights/v0.1/vgg.pth
+Scene: /kaggle/working/out/lego_mag_0p03
+Method: ours_30000
+Metric evaluation progress:   0%|          | 0/800 [00:00<?, ?it/s]
+  SSIM :    0.9827490
+  PSNR :   32.8557358
+  LPIPS:    0.0155787
+[lego/magnitude/tau0.03_sweep] PSNR 32.856 | 73.9 MB | non-DC kept 100.0%
++ OMP_NUM_THREADS=4 python render.py -m /kaggle/working/out/lego_b2_0p1 --skip_train -s /kaggle/working/multi-scale/lego   (cwd=/kaggle/working/repo)
+Looking for config file in /kaggle/working/out/lego_b2_0p1/cfg_args
+Config file found: /kaggle/working/out/lego_b2_0p1/cfg_args
+Rendering /kaggle/working/out/lego_b2_0p1
+Loading trained model at iteration 30000 [12/09 01:33:56]
+Found metadata.json file, assuming multi scale Blender data set! [12/09 01:33:56]
+Reading train from metadata.json [12/09 01:33:56]
+read split: train [12/09 01:33:56]
+number of training images: 100 [12/09 01:34:01]
+Reading test from metadata.json [12/09 01:34:01]
+read split: test [12/09 01:34:01]
+number of testing images: 800 [12/09 01:34:15]
+Loading Training Cameras [12/09 01:34:15]
+Loading Test Cameras [12/09 01:34:16]
+Rendering progress:   0%|          | 0/800 [00:00<?, ?it/s]
++ OMP_NUM_THREADS=4 python metrics.py -m /kaggle/working/out/lego_b2_0p1   (cwd=/kaggle/working/repo)
+/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:208: UserWarning: The parameter 'pretrained' is deprecated since 0.13 and may be removed in the future, please use 'weights' instead.
+  warnings.warn(
+/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:223: UserWarning: Arguments other than a weight enum or `None` for 'weights' are deprecated since 0.13 and may be removed in the future. The current behavior is equivalent to passing `weights=VGG16_Weights.IMAGENET1K_V1`. You can also use `weights=VGG16_Weights.DEFAULT` to get the most up-to-date weights.
+  warnings.warn(msg)
+Setting up [LPIPS] perceptual loss: trunk [vgg], v[0.1], spatial [off]
+Loading model from: /usr/local/lib/python3.12/dist-packages/lpips/weights/v0.1/vgg.pth
+Scene: /kaggle/working/out/lego_b2_0p1
+Method: ours_30000
+Metric evaluation progress:   0%|          | 0/800 [00:00<?, ?it/s]
+  SSIM :    0.9827490
+  PSNR :   32.8557358
+  LPIPS:    0.0155787
+[lego/b2/tau0.1_sweep] PSNR 32.856 | 73.9 MB | non-DC kept 100.0% | mean l_max 3.00
++ OMP_NUM_THREADS=4 python render.py -m /kaggle/working/out/lego_mag_0p1 --skip_train -s /kaggle/working/multi-scale/lego   (cwd=/kaggle/working/repo)
+Looking for config file in /kaggle/working/out/lego_mag_0p1/cfg_args
+Config file found: /kaggle/working/out/lego_mag_0p1/cfg_args
+Rendering /kaggle/working/out/lego_mag_0p1
+Loading trained model at iteration 30000 [12/09 01:36:34]
+Found metadata.json file, assuming multi scale Blender data set! [12/09 01:36:34]
+Reading train from metadata.json [12/09 01:36:34]
+read split: train [12/09 01:36:34]
+number of training images: 100 [12/09 01:36:38]
+Reading test from metadata.json [12/09 01:36:38]
+read split: test [12/09 01:36:38]
+number of testing images: 800 [12/09 01:36:53]
+Loading Training Cameras [12/09 01:36:53]
+Loading Test Cameras [12/09 01:36:54]
+Rendering progress:   0%|          | 0/800 [00:00<?, ?it/s]
++ OMP_NUM_THREADS=4 python metrics.py -m /kaggle/working/out/lego_mag_0p1   (cwd=/kaggle/working/repo)
+/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:208: UserWarning: The parameter 'pretrained' is deprecated since 0.13 and may be removed in the future, please use 'weights' instead.
+  warnings.warn(
+/usr/local/lib/python3.12/dist-packages/torchvision/models/_utils.py:223: UserWarning: Arguments other than a weight enum or `None` for 'weights' are deprecated since 0.13 and may be removed in the future. The current behavior is equivalent to passing `weights=VGG16_Weights.IMAGENET1K_V1`. You can also use `weights=VGG16_Weights.DEFAULT` to get the most up-to-date weights.
+  warnings.warn(msg)
+Setting up [LPIPS] perceptual loss: trunk [vgg], v[0.1], spatial [off]
+Loading model from: /usr/local/lib/python3.12/dist-packages/lpips/weights/v0.1/vgg.pth
+Scene: /kaggle/working/out/lego_mag_0p1
+Method: ours_30000
+Metric evaluation progress:   0%|          | 0/800 [00:00<?, ?it/s]
+  SSIM :    0.9827490
+  PSNR :   32.8557358
+  LPIPS:    0.0155787
+[lego/magnitude/tau0.1_sweep] PSNR 32.856 | 73.9 MB | non-DC kept 100.0%
+[b2-proto] ship/full n_cam=400 span=180deg retained=100.0%
+[b2-proto] ship/arc n_cam=100 span=81deg retained=41.1%
+[b2-proto] ship/cone n_cam=40 span=42deg retained=12.4%
+[b2-proto] ship/mixed n_cam=400 span=180deg retained=100.0%
+[b2-proto] ship/grazing n_cam=200 span=172deg retained=100.0%
+[b2-proto] drums/full n_cam=400 span=179deg retained=100.0%
+[b2-proto] drums/arc n_cam=100 span=89deg retained=58.7%
+[b2-proto] drums/cone n_cam=40 span=52deg retained=20.0%
+[b2-proto] drums/mixed n_cam=400 span=179deg retained=100.0%
+[b2-proto] drums/grazing n_cam=200 span=168deg retained=100.0%
+[b2-proto] ficus/full n_cam=400 span=179deg retained=100.0%
+[b2-proto] ficus/arc n_cam=100 span=96deg retained=94.1%
+[b2-proto] ficus/cone n_cam=40 span=50deg retained=20.0%
+[b2-proto] ficus/mixed n_cam=400 span=179deg retained=100.0%
+[b2-proto] ficus/grazing n_cam=200 span=168deg retained=100.0%
+[b2-proto] hotdog/full n_cam=400 span=179deg retained=100.0%
+[b2-proto] hotdog/arc n_cam=100 span=107deg retained=20.1%
+[b2-proto] hotdog/cone n_cam=40 span=53deg retained=20.0%
+[b2-proto] hotdog/mixed n_cam=400 span=179deg retained=100.0%
+[b2-proto] hotdog/grazing n_cam=200 span=164deg retained=100.0%
+[b2-proto] lego/full n_cam=400 span=179deg retained=100.0%
+[b2-proto] lego/arc n_cam=100 span=93deg retained=44.6%
+[b2-proto] lego/cone n_cam=40 span=41deg retained=13.3%
+[b2-proto] lego/mixed n_cam=400 span=179deg retained=100.0%
+[b2-proto] lego/grazing n_cam=200 span=157deg retained=100.0%
+[b2-proto] materials/full n_cam=400 span=179deg retained=100.0%
+[b2-proto] materials/arc n_cam=100 span=102deg retained=100.0%
+[b2-proto] materials/cone n_cam=40 span=74deg retained=75.8%
+[b2-proto] materials/mixed n_cam=400 span=179deg retained=100.0%
+[b2-proto] materials/grazing n_cam=200 span=172deg retained=100.0%
+[b2-proto] mic/full n_cam=400 span=178deg retained=100.0%
+[b2-proto] mic/arc n_cam=100 span=92deg retained=84.4%
+[b2-proto] mic/cone n_cam=40 span=37deg retained=20.0%
+[b2-proto] mic/mixed n_cam=400 span=178deg retained=100.0%
+[b2-proto] mic/grazing n_cam=200 span=171deg retained=100.0%
+[b2-proto] chair/full n_cam=400 span=179deg retained=100.0%
+[b2-proto] chair/arc n_cam=100 span=95deg retained=53.3%
+[b2-proto] chair/cone n_cam=40 span=54deg retained=20.0%
+[b2-proto] chair/mixed n_cam=400 span=179deg retained=100.0%
+[b2-proto] chair/grazing n_cam=200 span=164deg retained=100.0%
+done 30, failed []
+R8_SUMMARY_JSON={"rung": "R8", "iterations": 30000, "scenes": ["ship", "drums", "ficus", "hotdog", "lego", "materials", "mic", "chair"], "taus": [0.01], "sweep_scene": "lego", "sweep_taus": [0.003, 0.03, 0.1], "commit": "e342d3ffee62dfa17ff059ac36591dc3ec126bf5", "gpu": "Tesla T4", "results": {"ship/full": {"PSNR": 29.719961166381836, "SSIM": 0.9225485324859619, "LPIPS": 0.06763513386249542, "model_mb": 111.444776, "retained": 1.0, "per_scale": {"1x": 30.4821293926239, "1/2": 31.50946457862854, "1/4": 29.986843156814576, "1/8": 26.90140513420105}}, "ship/b2/tau0.01": {"PSNR": 29.719961166381836, "SSIM": 0.9225485324859619, "LPIPS": 0.06763513386249542, "model_mb": 111.444776, "retained": 1.0, "per_scale": {"1x": 30.4821293926239, "1/2": 31.50946457862854, "1/4": 29.986843156814576, "1/8": 26.90140513420105}, "tau": 0.01, "mean_l_max": 3.0, "l_max_hist": {"0": 0, "1": 0, "2": 0, "3": 442235}, "mean_views": 400.0}, "ship/magnitude/tau0.01": {"PSNR": 29.719961166381836, "SSIM": 0.9225485324859619, "LPIPS": 0.06763513386249542, "model_mb": 111.444776, "retained": 1.0, "per_scale": {"1x": 30.4821293926239, "1/2": 31.50946457862854, "1/4": 29.986843156814576, "1/8": 26.90140513420105}, "matched_to_tau": 0.01}, "drums/full": {"PSNR": 26.472671508789062, "SSIM": 0.9581021070480347, "LPIPS": 0.03485703840851784, "model_mb": 86.3675, "retained": 1.0, "per_scale": {"1x": 26.214589176177977, "1/2": 26.949900150299072, "1/4": 26.907392587661743, "1/8": 25.81880325317383}}, "drums/b2/tau0.01": {"PSNR": 26.472671508789062, "SSIM": 0.9581021070480347, "LPIPS": 0.03485703840851784, "model_mb": 86.3675, "retained": 1.0, "per_scale": {"1x": 26.214589176177977, "1/2": 26.949900150299072, "1/4": 26.907392587661743, "1/8": 25.81880325317383}, "tau": 0.01, "mean_l_max": 3.0, "l_max_hist": {"0": 0, "1": 0, "2": 0, "3": 342722}, "mean_views": 400.0}, "drums/magnitude/tau0.01": {"PSNR": 26.472671508789062, "SSIM": 0.9581021070480347, "LPIPS": 0.03485703840851784, "model_mb": 86.3675, "retained": 1.0, "per_scale": {"1x": 26.214589176177977, "1/2": 26.949900150299072, "1/4": 26.907392587661743, "1/8": 25.81880325317383}, "matched_to_tau": 0.01}, "ficus/full": {"PSNR": 33.00472640991211, "SSIM": 0.9880855679512024, "LPIPS": 0.011657305993139744, "model_mb": 46.843064, "retained": 1.0, "per_scale": {"1x": 35.19167607307434, "1/2": 34.78994893074036, "1/4": 32.294866704940794, "1/8": 29.742421875}}, "ficus/b2/tau0.01": {"PSNR": 33.00472640991211, "SSIM": 0.9880855679512024, "LPIPS": 0.011657305993139744, "model_mb": 46.843064, "retained": 1.0, "per_scale": {"1x": 35.19167607307434, "1/2": 34.78994893074036, "1/4": 32.294866704940794, "1/8": 29.742421875}, "tau": 0.01, "mean_l_max": 3.0, "l_max_hist": {"0": 0, "1": 0, "2": 0, "3": 185879}, "mean_views": 400.0}, "ficus/magnitude/tau0.01": {"PSNR": 33.00472640991211, "SSIM": 0.9880855679512024, "LPIPS": 0.011657305993139744, "model_mb": 46.843064, "retained": 1.0, "per_scale": {"1x": 35.19167607307434, "1/2": 34.78994893074036, "1/4": 32.294866704940794, "1/8": 29.742421875}, "matched_to_tau": 0.01}, "hotdog/full": {"PSNR": 36.14620590209961, "SSIM": 0.9874672889709473, "LPIPS": 0.013174254447221756, "model_mb": 48.917276, "retained": 1.0, "per_scale": {"1x": 37.87619429588318, "1/2": 38.548525972366335, "1/4": 35.982732648849485, "1/8": 32.177372217178345}}, "hotdog/b2/tau0.01": {"PSNR": 36.14620590209961, "SSIM": 0.9874672889709473, "LPIPS": 0.013174254447221756, "model_mb": 48.917276, "retained": 1.0, "per_scale": {"1x": 37.87619429588318, "1/2": 38.548525972366335, "1/4": 35.982732648849485, "1/8": 32.177372217178345}, "tau": 0.01, "mean_l_max": 3.0, "l_max_hist": {"0": 0, "1": 0, "2": 0, "3": 194110}, "mean_views": 400.0}, "hotdog/magnitude/tau0.01": {"PSNR": 36.14620590209961, "SSIM": 0.9874672889709473, "LPIPS": 0.013174254447221756, "model_mb": 48.917276, "retained": 1.0, "per_scale": {"1x": 37.87619429588318, "1/2": 38.548525972366335, "1/4": 35.982732648849485, "1/8": 32.177372217178345}, "matched_to_tau": 0.01}, "lego/full": {"PSNR": 32.855735778808594, "SSIM": 0.9827490448951721, "LPIPS": 0.015578709542751312, "model_mb": 73.931048, "retained": 1.0, "per_scale": {"1x": 35.881837615966795, "1/2": 35.4345465183258, "1/4": 31.845805292129516, "1/8": 28.26075119972229}}, "lego/b2/tau0.01": {"PSNR": 32.855735778808594, "SSIM": 0.9827490448951721, "LPIPS": 0.015578709542751312, "model_mb": 73.931048, "retained": 1.0, "per_scale": {"1x": 35.881837615966795, "1/2": 35.4345465183258, "1/4": 31.845805292129516, "1/8": 28.26075119972229}, "tau": 0.01, "mean_l_max": 3.0, "l_max_hist": {"0": 0, "1": 0, "2": 0, "3": 293371}, "mean_views": 400.0}, "lego/magnitude/tau0.01": {"PSNR": 32.855735778808594, "SSIM": 0.9827490448951721, "LPIPS": 0.015578709542751312, "model_mb": 73.931048, "retained": 1.0, "per_scale": {"1x": 35.881837615966795, "1/2": 35.4345465183258, "1/4": 31.845805292129516, "1/8": 28.26075119972229}, "matched_to_tau": 0.01}, "materials/full": {"PSNR": 30.082599639892578, "SSIM": 0.9747297763824463, "LPIPS": 0.01886272244155407, "model_mb": 61.034948, "retained": 1.0, "per_scale": {"1x": 30.26516854286194, "1/2": 31.199254474639893, "1/4": 30.66622923851013, "1/8": 28.199738273620607}}, "materials/b2/tau0.01": {"PSNR": 30.082599639892578, "SSIM": 0.9747297763824463, "LPIPS": 0.01886272244155407, "model_mb": 61.034948, "retained": 1.0, "per_scale": {"1x": 30.26516854286194, "1/2": 31.199254474639893, "1/4": 30.66622923851013, "1/8": 28.199738273620607}, "tau": 0.01, "mean_l_max": 3.0, "l_max_hist": {"0": 0, "1": 0, "2": 0, "3": 242196}, "mean_views": 400.0}, "materials/magnitude/tau0.01": {"PSNR": 30.082599639892578, "SSIM": 0.9747297763824463, "LPIPS": 0.01886272244155407, "model_mb": 61.034948, "retained": 1.0, "per_scale": {"1x": 30.26516854286194, "1/2": 31.199254474639893, "1/4": 30.66622923851013, "1/8": 28.199738273620607}, "matched_to_tau": 0.01}, "mic/full": {"PSNR": 31.71405792236328, "SSIM": 0.9861975908279419, "LPIPS": 0.014923634938895702, "model_mb": 102.65048, "retained": 1.0, "per_scale": {"1x": 35.649836692810055, "1/2": 35.73192726135254, "1/4": 30.451478815078737, "1/8": 25.02297634124756}}, "mic/b2/tau0.01": {"PSNR": 31.71405792236328, "SSIM": 0.9861975908279419, "LPIPS": 0.014923634938895702, "model_mb": 102.65048, "retained": 1.0, "per_scale": {"1x": 35.649836692810055, "1/2": 35.73192726135254, "1/4": 30.451478815078737, "1/8": 25.02297634124756}, "tau": 0.01, "mean_l_max": 3.0, "l_max_hist": {"0": 0, "1": 0, "2": 0, "3": 407337}, "mean_views": 400.0}, "mic/magnitude/tau0.01": {"PSNR": 31.71405792236328, "SSIM": 0.9861975908279419, "LPIPS": 0.014923634938895702, "model_mb": 102.65048, "retained": 1.0, "per_scale": {"1x": 35.649836692810055, "1/2": 35.73192726135254, "1/4": 30.451478815078737, "1/8": 25.02297634124756}, "matched_to_tau": 0.01}, "chair/full": {"PSNR": 35.61254119873047, "SSIM": 0.9877724647521973, "LPIPS": 0.013284075073897839, "model_mb": 67.332932, "retained": 1.0, "per_scale": {"1x": 35.94803554534912, "1/2": 37.896539821624756, "1/4": 36.11901521682739, "1/8": 32.486580476760864}}, "chair/b2/tau0.01": {"PSNR": 35.61254119873047, "SSIM": 0.9877724647521973, "LPIPS": 0.013284075073897839, "model_mb": 67.332932, "retained": 1.0, "per_scale": {"1x": 35.94803554534912, "1/2": 37.896539821624756, "1/4": 36.11901521682739, "1/8": 32.486580476760864}, "tau": 0.01, "mean_l_max": 3.0, "l_max_hist": {"0": 0, "1": 0, "2": 0, "3": 267188}, "mean_views": 400.0}, "chair/magnitude/tau0.01": {"PSNR": 35.61254119873047, "SSIM": 0.9877724647521973, "LPIPS": 0.013284075073897839, "model_mb": 67.332932, "retained": 1.0, "per_scale": {"1x": 35.94803554534912, "1/2": 37.896539821624756, "1/4": 36.11901521682739, "1/8": 32.486580476760864}, "matched_to_tau": 0.01}, "lego/b2/tau0.003_sweep": {"PSNR": 32.855735778808594, "SSIM": 0.9827490448951721, "LPIPS": 0.015578709542751312, "model_mb": 73.931048, "retained": 1.0, "per_scale": {"1x": 35.881837615966795, "1/2": 35.4345465183258, "1/4": 31.845805292129516, "1/8": 28.26075119972229}, "tau": 0.003, "mean_l_max": 3.0, "l_max_hist": {"0": 0, "1": 0, "2": 0, "3": 293371}, "mean_views": 400.0}, "lego/magnitude/tau0.003_sweep": {"PSNR": 32.855735778808594, "SSIM": 0.9827490448951721, "LPIPS": 0.015578709542751312, "model_mb": 73.931048, "retained": 1.0, "per_scale": {"1x": 35.881837615966795, "1/2": 35.4345465183258, "1/4": 31.845805292129516, "1/8": 28.26075119972229}, "matched_to_tau": 0.003}, "lego/b2/tau0.03_sweep": {"PSNR": 32.855735778808594, "SSIM": 0.9827490448951721, "LPIPS": 0.015578709542751312, "model_mb": 73.931048, "retained": 1.0, "per_scale": {"1x": 35.881837615966795, "1/2": 35.4345465183258, "1/4": 31.845805292129516, "1/8": 28.26075119972229}, "tau": 0.03, "mean_l_max": 3.0, "l_max_hist": {"0": 0, "1": 0, "2": 0, "3": 293371}, "mean_views": 400.0}, "lego/magnitude/tau0.03_sweep": {"PSNR": 32.855735778808594, "SSIM": 0.9827490448951721, "LPIPS": 0.015578709542751312, "model_mb": 73.931048, "retained": 1.0, "per_scale": {"1x": 35.881837615966795, "1/2": 35.4345465183258, "1/4": 31.845805292129516, "1/8": 28.26075119972229}, "matched_to_tau": 0.03}, "lego/b2/tau0.1_sweep": {"PSNR": 32.855735778808594, "SSIM": 0.9827490448951721, "LPIPS": 0.015578709542751312, "model_mb": 73.931048, "retained": 1.0, "per_scale": {"1x": 35.881837615966795, "1/2": 35.4345465183258, "1/4": 31.845805292129516, "1/8": 28.26075119972229}, "tau": 0.1, "mean_l_max": 3.0, "l_max_hist": {"0": 0, "1": 0, "2": 0, "3": 293371}, "mean_views": 400.0}, "lego/magnitude/tau0.1_sweep": {"PSNR": 32.855735778808594, "SSIM": 0.9827490448951721, "LPIPS": 0.015578709542751312, "model_mb": 73.931048, "retained": 1.0, "per_scale": {"1x": 35.881837615966795, "1/2": 35.4345465183258, "1/4": 31.845805292129516, "1/8": 28.26075119972229}, "matched_to_tau": 0.1}}, "failed": {}, "protocols": {"ship/full": {"scene": "ship", "protocol": "full", "criterion": "cond", "n_cameras": 400, "span_deg": 179.7538782258733, "mean_l_max": 3.0, "non_dc_retained": 1.0, "l_max_hist": {"0": 0, "1": 0, "2": 0, "3": 442235}, "mean_views": 400.0}, "ship/arc": {"scene": "ship", "protocol": "arc", "criterion": "cond", "n_cameras": 100, "span_deg": 81.29995900035229, "mean_l_max": 1.5811457709136545, "non_dc_retained": 0.4114316294880927, "l_max_hist": {"0": 0, "1": 243993, "2": 139481, "3": 58761}, "mean_views": 100.0}, "ship/cone": {"scene": "ship", "protocol": "cone", "criterion": "cond", "n_cameras": 40, "span_deg": 42.234135843805866, "mean_l_max": 0.6209277872624284, "non_dc_retained": 0.12418555745248568, "l_max_hist": {"0": 167639, "1": 274596, "2": 0, "3": 0}, "mean_views": 40.0}, "ship/mixed": {"scene": "ship", "protocol": "mixed", "criterion": "cond", "n_cameras": 400, "span_deg": 179.7538782258733, "mean_l_max": 3.0, "non_dc_retained": 1.0, "l_max_hist": {"0": 0, "1": 0, "2": 0, "3": 442235}, "mean_views": 400.0}, "ship/grazing": {"scene": "ship", "protocol": "grazing", "criterion": "cond", "n_cameras": 200, "span_deg": 171.62580833852695, "mean_l_max": 3.0, "non_dc_retained": 1.0, "l_max_hist": {"0": 0, "1": 0, "2": 0, "3": 442235}, "mean_views": 200.0}, "drums/full": {"scene": "drums", "protocol": "full", "criterion": "cond", "n_cameras": 400, "span_deg": 179.193096853599, "mean_l_max": 3.0, "non_dc_retained": 1.0, "l_max_hist": {"0": 0, "1": 0, "2": 0, "3": 342722}, "mean_views": 400.0}, "drums/arc": {"scene": "drums", "protocol": "arc", "criterion": "cond", "n_cameras": 100, "span_deg": 89.22041621420591, "mean_l_max": 2.0994567025169086, "non_dc_retained": 0.5867033144453327, "l_max_hist": {"0": 0, "1": 17882, "2": 272872, "3": 51968}, "mean_views": 100.0}, "drums/cone": {"scene": "drums", "protocol": "cone", "criterion": "cond", "n_cameras": 40, "span_deg": 52.43501029536724, "mean_l_max": 1.0, "non_dc_retained": 0.2, "l_max_hist": {"0": 0, "1": 342722, "2": 0, "3": 0}, "mean_views": 40.0}, "drums/mixed": {"scene": "drums", "protocol": "mixed", "criterion": "cond", "n_cameras": 400, "span_deg": 179.193096853599, "mean_l_max": 3.0, "non_dc_retained": 1.0, "l_max_hist": {"0": 0, "1": 0, "2": 0, "3": 342722}, "mean_views": 400.0}, "drums/grazing": {"scene": "drums", "protocol": "grazing", "criterion": "cond", "n_cameras": 200, "span_deg": 168.45161899513002, "mean_l_max": 3.0, "non_dc_retained": 1.0, "l_max_hist": {"0": 0, "1": 0, "2": 0, "3": 342722}, "mean_views": 200.0}, "ficus/full": {"scene": "ficus", "protocol": "full", "criterion": "cond", "n_cameras": 400, "span_deg": 179.21205473307504, "mean_l_max": 3.0, "non_dc_retained": 1.0, "l_max_hist": {"0": 0, "1": 0, "2": 0, "3": 185879}, "mean_views": 400.0}, "ficus/arc": {"scene": "ficus", "protocol": "arc", "criterion": "cond", "n_cameras": 100, "span_deg": 96.49158039068145, "mean_l_max": 2.873853420773729, "non_dc_retained": 0.9411315963610736, "l_max_hist": {"0": 0, "1": 0, "2": 23448, "3": 162431}, "mean_views": 100.0}, "ficus/cone": {"scene": "ficus", "protocol": "cone", "criterion": "cond", "n_cameras": 40, "span_deg": 50.24456602308003, "mean_l_max": 1.0, "non_dc_retained": 0.2, "l_max_hist": {"0": 0, "1": 185879, "2": 0, "3": 0}, "mean_views": 40.0}, "ficus/mixed": {"scene": "ficus", "protocol": "mixed", "criterion": "cond", "n_cameras": 400, "span_deg": 179.21205473307504, "mean_l_max": 3.0, "non_dc_retained": 1.0, "l_max_hist": {"0": 0, "1": 0, "2": 0, "3": 185879}, "mean_views": 400.0}, "ficus/grazing": {"scene": "ficus", "protocol": "grazing", "criterion": "cond", "n_cameras": 200, "span_deg": 168.22306134653718, "mean_l_max": 3.0, "non_dc_retained": 1.0, "l_max_hist": {"0": 0, "1": 0, "2": 0, "3": 185879}, "mean_views": 200.0}, "hotdog/full": {"scene": "hotdog", "protocol": "full", "criterion": "cond", "n_cameras": 400, "span_deg": 178.66402652925058, "mean_l_max": 3.0, "non_dc_retained": 1.0, "l_max_hist": {"0": 0, "1": 0, "2": 0, "3": 194110}, "mean_views": 400.0}, "hotdog/arc": {"scene": "hotdog", "protocol": "arc", "criterion": "cond", "n_cameras": 100, "span_deg": 106.81479555652056, "mean_l_max": 1.0038380299829994, "non_dc_retained": 0.20127934332766645, "l_max_hist": {"0": 0, "1": 193365, "2": 745, "3": 0}, "mean_views": 100.0}, "hotdog/cone": {"scene": "hotdog", "protocol": "cone", "criterion": "cond", "n_cameras": 40, "span_deg": 52.6442613048228, "mean_l_max": 1.0, "non_dc_retained": 0.2, "l_max_hist": {"0": 0, "1": 194110, "2": 0, "3": 0}, "mean_views": 40.0}, "hotdog/mixed": {"scene": "hotdog", "protocol": "mixed", "criterion": "cond", "n_cameras": 400, "span_deg": 178.66402652925058, "mean_l_max": 3.0, "non_dc_retained": 1.0, "l_max_hist": {"0": 0, "1": 0, "2": 0, "3": 194110}, "mean_views": 400.0}, "hotdog/grazing": {"scene": "hotdog", "protocol": "grazing", "criterion": "cond", "n_cameras": 200, "span_deg": 163.94649111706894, "mean_l_max": 3.0, "non_dc_retained": 1.0, "l_max_hist": {"0": 0, "1": 0, "2": 0, "3": 194110}, "mean_views": 200.0}, "lego/full": {"scene": "lego", "protocol": "full", "criterion": "cond", "n_cameras": 400, "span_deg": 178.97687028487118, "mean_l_max": 3.0, "non_dc_retained": 1.0, "l_max_hist": {"0": 0, "1": 0, "2": 0, "3": 293371}, "mean_views": 400.0}, "lego/arc": {"scene": "lego", "protocol": "arc", "criterion": "cond", "n_cameras": 100, "span_deg": 92.86431085102389, "mean_l_max": 1.7303448534449553, "non_dc_retained": 0.4459738692645149, "l_max_hist": {"0": 0, "1": 84666, "2": 203148, "3": 5557}, "mean_views": 100.0}, "lego/cone": {"scene": "lego", "protocol": "cone", "criterion": "cond", "n_cameras": 40, "span_deg": 41.061415694657235, "mean_l_max": 0.6649600676276797, "non_dc_retained": 0.1329920135255359, "l_max_hist": {"0": 98291, "1": 195080, "2": 0, "3": 0}, "mean_views": 40.0}, "lego/mixed": {"scene": "lego", "protocol": "mixed", "criterion": "cond", "n_cameras": 400, "span_deg": 178.97687028487118, "mean_l_max": 3.0, "non_dc_retained": 1.0, "l_max_hist": {"0": 0, "1": 0, "2": 0, "3": 293371}, "mean_views": 400.0}, "lego/grazing": {"scene": "lego", "protocol": "grazing", "criterion": "cond", "n_cameras": 200, "span_deg": 156.79402241963555, "mean_l_max": 3.0, "non_dc_retained": 1.0, "l_max_hist": {"0": 0, "1": 0, "2": 0, "3": 293371}, "mean_views": 200.0}, "materials/full": {"scene": "materials", "protocol": "full", "criterion": "cond", "n_cameras": 400, "span_deg": 179.02084616831115, "mean_l_max": 3.0, "non_dc_retained": 1.0, "l_max_hist": {"0": 0, "1": 0, "2": 0, "3": 242196}, "mean_views": 400.0}, "materials/arc": {"scene": "materials", "protocol": "arc", "criterion": "cond", "n_cameras": 100, "span_deg": 102.14290659491854, "mean_l_max": 3.0, "non_dc_retained": 1.0, "l_max_hist": {"0": 0, "1": 0, "2": 0, "3": 242196}, "mean_views": 100.0}, "materials/cone": {"scene": "materials", "protocol": "cone", "criterion": "cond", "n_cameras": 40, "span_deg": 74.36001310793688, "mean_l_max": 2.476440568795521, "non_dc_retained": 0.7584232054479292, "l_max_hist": {"0": 0, "1": 4997, "2": 116810, "3": 120389}, "mean_views": 40.0}, "materials/mixed": {"scene": "materials", "protocol": "mixed", "criterion": "cond", "n_cameras": 400, "span_deg": 179.02084616831115, "mean_l_max": 3.0, "non_dc_retained": 1.0, "l_max_hist": {"0": 0, "1": 0, "2": 0, "3": 242196}, "mean_views": 400.0}, "materials/grazing": {"scene": "materials", "protocol": "grazing", "criterion": "cond", "n_cameras": 200, "span_deg": 172.0347994309598, "mean_l_max": 3.0, "non_dc_retained": 1.0, "l_max_hist": {"0": 0, "1": 0, "2": 0, "3": 242196}, "mean_views": 200.0}, "mic/full": {"scene": "mic", "protocol": "full", "criterion": "cond", "n_cameras": 400, "span_deg": 178.47412486243323, "mean_l_max": 3.0, "non_dc_retained": 1.0, "l_max_hist": {"0": 0, "1": 0, "2": 0, "3": 407337}, "mean_views": 400.0}, "mic/arc": {"scene": "mic", "protocol": "arc", "criterion": "cond", "n_cameras": 100, "span_deg": 92.42982991006609, "mean_l_max": 2.6472257614702324, "non_dc_retained": 0.8444491907192325, "l_max_hist": {"0": 0, "1": 27731, "2": 88236, "3": 291370}, "mean_views": 100.0}, "mic/cone": {"scene": "mic", "protocol": "cone", "criterion": "cond", "n_cameras": 40, "span_deg": 36.62501331786738, "mean_l_max": 1.0, "non_dc_retained": 0.2, "l_max_hist": {"0": 0, "1": 407337, "2": 0, "3": 0}, "mean_views": 40.0}, "mic/mixed": {"scene": "mic", "protocol": "mixed", "criterion": "cond", "n_cameras": 400, "span_deg": 178.47412486243323, "mean_l_max": 3.0, "non_dc_retained": 1.0, "l_max_hist": {"0": 0, "1": 0, "2": 0, "3": 407337}, "mean_views": 400.0}, "mic/grazing": {"scene": "mic", "protocol": "grazing", "criterion": "cond", "n_cameras": 200, "span_deg": 170.81377506324486, "mean_l_max": 3.0, "non_dc_retained": 1.0, "l_max_hist": {"0": 0, "1": 0, "2": 0, "3": 407337}, "mean_views": 200.0}, "chair/full": {"scene": "chair", "protocol": "full", "criterion": "cond", "n_cameras": 400, "span_deg": 178.6578806541832, "mean_l_max": 3.0, "non_dc_retained": 1.0, "l_max_hist": {"0": 0, "1": 0, "2": 0, "3": 267188}, "mean_views": 400.0}, "chair/arc": {"scene": "chair", "protocol": "arc", "criterion": "cond", "n_cameras": 100, "span_deg": 95.22338371305824, "mean_l_max": 2.0, "non_dc_retained": 0.5333333333333333, "l_max_hist": {"0": 0, "1": 0, "2": 267188, "3": 0}, "mean_views": 100.0}, "chair/cone": {"scene": "chair", "protocol": "cone", "criterion": "cond", "n_cameras": 40, "span_deg": 53.662493548881926, "mean_l_max": 1.0, "non_dc_retained": 0.2, "l_max_hist": {"0": 0, "1": 267188, "2": 0, "3": 0}, "mean_views": 40.0}, "chair/mixed": {"scene": "chair", "protocol": "mixed", "criterion": "cond", "n_cameras": 400, "span_deg": 178.6578806541832, "mean_l_max": 3.0, "non_dc_retained": 1.0, "l_max_hist": {"0": 0, "1": 0, "2": 0, "3": 267188}, "mean_views": 400.0}, "chair/grazing": {"scene": "chair", "protocol": "grazing", "criterion": "cond", "n_cameras": 200, "span_deg": 163.73725371633498, "mean_l_max": 3.0, "non_dc_retained": 1.0, "l_max_hist": {"0": 0, "1": 0, "2": 0, "3": 267188}, "mean_views": 200.0}}, "session_seconds": 8296.784002304077, "gpu_hours_used": 2.304662223259608}
+/usr/local/lib/python3.12/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\|'
+  cells[i][c] = re.sub('\\\\\|', '|', cell)
+/usr/local/lib/python3.12/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\_'
+  text = re.sub(r'_', '\_', text) # Escape underscores in display text
+[NbConvertApp] Converting notebook __script__.ipynb to html
+[NbConvertApp] Writing 350453 bytes to __results__.html

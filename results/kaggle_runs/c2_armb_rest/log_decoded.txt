@@ -1,0 +1,1147 @@
+Sat Sep 12 01:42:50 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 580.159.04             Driver Version: 580.159.04     CUDA Version: 13.0     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  Tesla T4                       Off |   00000000:00:04.0 Off |                    0 |
+| N/A   35C    P8             10W /   70W |       0MiB /  15360MiB |      0%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+|   1  Tesla T4                       Off |   00000000:00:05.0 Off |                    0 |
+| N/A   36C    P8             10W /   70W |       0MiB /  15360MiB |      0%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+torch 2.10.0+cu128  cuda 12.8  capability (7, 5)  gpu Tesla T4 x2
+Cloning into '/kaggle/working/armA'...
+Cloning into '/kaggle/working/armB'...
+armA a77201ee6c60a7fa4d8442e92112bc115538a373 armB de7cb44c168b1cc901d7b7974153604bda1007bd
++ pip install -q ninja gputil lpips plyfile opencv-python
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 43.3/43.3 kB 2.9 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 53.8/53.8 kB 3.7 MB/s eta 0:00:00
++ pip install -q open3d
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 447.7/447.7 MB 3.9 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 8.9/8.9 MB 49.6 MB/s eta 0:00:00
+applied build fix: added #include <cfloat> to /kaggle/working/armA/submodules/simple-knn/simple_knn.cu
+applied build fix: added #include <cfloat> to /kaggle/working/armB/submodules/simple-knn/simple_knn.cu
+installing the rasteriser from armB
++ pip install -v /kaggle/working/armB/submodules/diff-gaussian-rasterization
+Using pip 24.1.2 from /usr/local/lib/python3.12/dist-packages/pip (python 3.12)
+Processing ./armB/submodules/diff-gaussian-rasterization
+  Preparing metadata (setup.py): started
+  Running command python setup.py egg_info
+  running egg_info
+  creating /tmp/pip-pip-egg-info-aa5nl24y/diff_gaussian_rasterization.egg-info
+  writing /tmp/pip-pip-egg-info-aa5nl24y/diff_gaussian_rasterization.egg-info/PKG-INFO
+  writing dependency_links to /tmp/pip-pip-egg-info-aa5nl24y/diff_gaussian_rasterization.egg-info/dependency_links.txt
+  writing top-level names to /tmp/pip-pip-egg-info-aa5nl24y/diff_gaussian_rasterization.egg-info/top_level.txt
+  writing manifest file '/tmp/pip-pip-egg-info-aa5nl24y/diff_gaussian_rasterization.egg-info/SOURCES.txt'
+  reading manifest file '/tmp/pip-pip-egg-info-aa5nl24y/diff_gaussian_rasterization.egg-info/SOURCES.txt'
+  adding license file 'LICENSE.md'
+  writing manifest file '/tmp/pip-pip-egg-info-aa5nl24y/diff_gaussian_rasterization.egg-info/SOURCES.txt'
+  Preparing metadata (setup.py): finished with status 'done'
+Building wheels for collected packages: diff_gaussian_rasterization
+  Building wheel for diff_gaussian_rasterization (setup.py): started
+  Running command python setup.py bdist_wheel
+  running bdist_wheel
+  running build
+  running build_py
+  creating build/lib.linux-x86_64-cpython-312/diff_gaussian_rasterization
+  copying diff_gaussian_rasterization/__init__.py -> build/lib.linux-x86_64-cpython-312/diff_gaussian_rasterization
+  running build_ext
+  W0912 01:43:43.659000 149 torch/utils/cpp_extension.py:535] There are no x86_64-linux-gnu-g++ version bounds defined for CUDA version 12.8
+  building 'diff_gaussian_rasterization._C' extension
+  creating /kaggle/working/armB/submodules/diff-gaussian-rasterization/build/temp.linux-x86_64-cpython-312/cuda_rasterizer
+  [1/5] /usr/local/cuda/bin/nvcc --generate-dependencies-with-compile --dependency-output /kaggle/working/armB/submodules/diff-gaussian-rasterization/build/temp.linux-x86_64-cpython-312/cuda_rasterizer/forward.o.d -I/usr/local/lib/python3.12/dist-packages/torch/include -I/usr/local/lib/python3.12/dist-packages/torch/include/torch/csrc/api/include -I/usr/local/cuda/include -I/usr/include/python3.12 -c -c /kaggle/working/armB/submodules/diff-gaussian-rasterization/cuda_rasterizer/forward.cu -o /kaggle/working/armB/submodules/diff-gaussian-rasterization/build/temp.linux-x86_64-cpython-312/cuda_rasterizer/forward.o -D__CUDA_NO_HALF_OPERATORS__ -D__CUDA_NO_HALF_CONVERSIONS__ -D__CUDA_NO_BFLOAT16_CONVERSIONS__ -D__CUDA_NO_HALF2_OPERATORS__ --expt-relaxed-constexpr --compiler-options ''"'"'-fPIC'"'"'' -I/kaggle/working/armB/submodules/diff-gaussian-rasterization/third_party/glm/ -DTORCH_API_INCLUDE_EXTENSION_H -DTORCH_EXTENSION_NAME=_C -gencode=arch=compute_75,code=sm_75 -std=c++17
+  /kaggle/working/armB/submodules/diff-gaussian-rasterization/cuda_rasterizer/auxiliary.h(151): warning #177-D: variable "p_proj" was declared but never referenced
+     float3 p_proj = { p_hom.x * p_w, p_hom.y * p_w, p_hom.z * p_w };
+            ^
+  Remark: The warnings can be suppressed with "-diag-suppress <warning-number>"
+  [2/5] /usr/local/cuda/bin/nvcc --generate-dependencies-with-compile --dependency-output /kaggle/working/armB/submodules/diff-gaussian-rasterization/build/temp.linux-x86_64-cpython-312/cuda_rasterizer/backward.o.d -I/usr/local/lib/python3.12/dist-packages/torch/include -I/usr/local/lib/python3.12/dist-packages/torch/include/torch/csrc/api/include -I/usr/local/cuda/include -I/usr/include/python3.12 -c -c /kaggle/working/armB/submodules/diff-gaussian-rasterization/cuda_rasterizer/backward.cu -o /kaggle/working/armB/submodules/diff-gaussian-rasterization/build/temp.linux-x86_64-cpython-312/cuda_rasterizer/backward.o -D__CUDA_NO_HALF_OPERATORS__ -D__CUDA_NO_HALF_CONVERSIONS__ -D__CUDA_NO_BFLOAT16_CONVERSIONS__ -D__CUDA_NO_HALF2_OPERATORS__ --expt-relaxed-constexpr --compiler-options ''"'"'-fPIC'"'"'' -I/kaggle/working/armB/submodules/diff-gaussian-rasterization/third_party/glm/ -DTORCH_API_INCLUDE_EXTENSION_H -DTORCH_EXTENSION_NAME=_C -gencode=arch=compute_75,code=sm_75 -std=c++17
+  /kaggle/working/armB/submodules/diff-gaussian-rasterization/cuda_rasterizer/auxiliary.h(151): warning #177-D: variable "p_proj" was declared but never referenced
+     float3 p_proj = { p_hom.x * p_w, p_hom.y * p_w, p_hom.z * p_w };
+            ^
+  Remark: The warnings can be suppressed with "-diag-suppress <warning-number>"
+  [3/5] /usr/local/cuda/bin/nvcc --generate-dependencies-with-compile --dependency-output /kaggle/working/armB/submodules/diff-gaussian-rasterization/build/temp.linux-x86_64-cpython-312/cuda_rasterizer/rasterizer_impl.o.d -I/usr/local/lib/python3.12/dist-packages/torch/include -I/usr/local/lib/python3.12/dist-packages/torch/include/torch/csrc/api/include -I/usr/local/cuda/include -I/usr/include/python3.12 -c -c /kaggle/working/armB/submodules/diff-gaussian-rasterization/cuda_rasterizer/rasterizer_impl.cu -o /kaggle/working/armB/submodules/diff-gaussian-rasterization/build/temp.linux-x86_64-cpython-312/cuda_rasterizer/rasterizer_impl.o -D__CUDA_NO_HALF_OPERATORS__ -D__CUDA_NO_HALF_CONVERSIONS__ -D__CUDA_NO_BFLOAT16_CONVERSIONS__ -D__CUDA_NO_HALF2_OPERATORS__ --expt-relaxed-constexpr --compiler-options ''"'"'-fPIC'"'"'' -I/kaggle/working/armB/submodules/diff-gaussian-rasterization/third_party/glm/ -DTORCH_API_INCLUDE_EXTENSION_H -DTORCH_EXTENSION_NAME=_C -gencode=arch=compute_75,code=sm_75 -std=c++17
+  /kaggle/working/armB/submodules/diff-gaussian-rasterization/cuda_rasterizer/auxiliary.h(151): warning #177-D: variable "p_proj" was declared but never referenced
+     float3 p_proj = { p_hom.x * p_w, p_hom.y * p_w, p_hom.z * p_w };
+            ^
+  Remark: The warnings can be suppressed with "-diag-suppress <warning-number>"
+  [4/5] c++ -MMD -MF /kaggle/working/armB/submodules/diff-gaussian-rasterization/build/temp.linux-x86_64-cpython-312/ext.o.d -fno-strict-overflow -Wsign-compare -DNDEBUG -g -O2 -Wall -g -fstack-protector-strong -Wformat -Werror=format-security -g -fwrapv -O2 -fPIC -I/usr/local/lib/python3.12/dist-packages/torch/include -I/usr/local/lib/python3.12/dist-packages/torch/include/torch/csrc/api/include -I/usr/local/cuda/include -I/usr/include/python3.12 -c -c /kaggle/working/armB/submodules/diff-gaussian-rasterization/ext.cpp -o /kaggle/working/armB/submodules/diff-gaussian-rasterization/build/temp.linux-x86_64-cpython-312/ext.o -DTORCH_API_INCLUDE_EXTENSION_H -DTORCH_EXTENSION_NAME=_C -std=c++17
+  [5/5] /usr/local/cuda/bin/nvcc --generate-dependencies-with-compile --dependency-output /kaggle/working/armB/submodules/diff-gaussian-rasterization/build/temp.linux-x86_64-cpython-312/rasterize_points.o.d -I/usr/local/lib/python3.12/dist-packages/torch/include -I/usr/local/lib/python3.12/dist-packages/torch/include/torch/csrc/api/include -I/usr/local/cuda/include -I/usr/include/python3.12 -c -c /kaggle/working/armB/submodules/diff-gaussian-rasterization/rasterize_points.cu -o /kaggle/working/armB/submodules/diff-gaussian-rasterization/build/temp.linux-x86_64-cpython-312/rasterize_points.o -D__CUDA_NO_HALF_OPERATORS__ -D__CUDA_NO_HALF_CONVERSIONS__ -D__CUDA_NO_BFLOAT16_CONVERSIONS__ -D__CUDA_NO_HALF2_OPERATORS__ --expt-relaxed-constexpr --compiler-options ''"'"'-fPIC'"'"'' -I/kaggle/working/armB/submodules/diff-gaussian-rasterization/third_party/glm/ -DTORCH_API_INCLUDE_EXTENSION_H -DTORCH_EXTENSION_NAME=_C -gencode=arch=compute_75,code=sm_75 -std=c++17
+  /kaggle/working/armB/submodules/diff-gaussian-rasterization/rasterize_points.cu: In function ‘std::tuple<int, at::Tensor, at::Tensor, at::Tensor, at::Tensor, at::Tensor> RasterizeGaussiansCUDA(const at::Tensor&, const at::Tensor&, const at::Tensor&, const at::Tensor&, const at::Tensor&, const at::Tensor&, float, const at::Tensor&, const at::Tensor&, const at::Tensor&, float, float, float, bool, const at::Tensor&, int, int, const at::Tensor&, int, const at::Tensor&, bool, bool)’:
+  /kaggle/working/armB/submodules/diff-gaussian-rasterization/rasterize_points.cu:92:140: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data<T>() is deprecated. Please use Tensor.data_ptr<T>() instead. [-Wdeprecated-declarations]
+     92 |           rendered = CudaRasterizer::Rasterizer::forward(
+        |                                                                                                                                            ^
+  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here
+    251 |   T * data() const {
+        | ^ ~~
+  /kaggle/working/armB/submodules/diff-gaussian-rasterization/rasterize_points.cu:92:186: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data<T>() is deprecated. Please use Tensor.data_ptr<T>() instead. [-Wdeprecated-declarations]
+     92 |           rendered = CudaRasterizer::Rasterizer::forward(
+        |                                                                                                                                                                                          ^
+  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here
+    251 |   T * data() const {
+        | ^ ~~
+  /kaggle/working/armB/submodules/diff-gaussian-rasterization/rasterize_points.cu:92:264: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data<T>() is deprecated. Please use Tensor.data_ptr<T>() instead. [-Wdeprecated-declarations]
+     92 |           rendered = CudaRasterizer::Rasterizer::forward(
+        |                                                                                                                                                                                                                                                                        ^
+  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here
+    251 |   T * data() const {
+        | ^ ~~
+  /kaggle/working/armB/submodules/diff-gaussian-rasterization/rasterize_points.cu:92:304: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data<T>() is deprecated. Please use Tensor.data_ptr<T>() instead. [-Wdeprecated-declarations]
+     92 |           rendered = CudaRasterizer::Rasterizer::forward(
+        |                                                                                                                                                                                                                                                                                                                ^
+  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here
+    251 |   T * data() const {
+        | ^ ~~
+  /kaggle/working/armB/submodules/diff-gaussian-rasterization/rasterize_points.cu:92:455: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data<T>() is deprecated. Please use Tensor.data_ptr<T>() instead. [-Wdeprecated-declarations]
+     92 |           rendered = CudaRasterizer::Rasterizer::forward(
+        |                                                                                                                                                                                                                                                                                                                                                                                                                                                                       ^
+  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here
+    251 |   T * data() const {
+        | ^ ~~
+  /kaggle/working/armB/submodules/diff-gaussian-rasterization/rasterize_points.cu:92:498: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data<T>() is deprecated. Please use Tensor.data_ptr<T>() instead. [-Wdeprecated-declarations]
+     92 |           rendered = CudaRasterizer::Rasterizer::forward(
+        |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  ^
+  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here
+    251 |   T * data() const {
+        | ^ ~~
+  /kaggle/working/armB/submodules/diff-gaussian-rasterization/rasterize_points.cu:92:541: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data<T>() is deprecated. Please use Tensor.data_ptr<T>() instead. [-Wdeprecated-declarations]
+     92 |           rendered = CudaRasterizer::Rasterizer::forward(
+        |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             ^
+  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here
+    251 |   T * data() const {
+        | ^ ~~
+  /kaggle/working/armB/submodules/diff-gaussian-rasterization/rasterize_points.cu:92:580: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data<T>() is deprecated. Please use Tensor.data_ptr<T>() instead. [-Wdeprecated-declarations]
+     92 |           rendered = CudaRasterizer::Rasterizer::forward(
+        |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    ^
+  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here
+    251 |   T * data() const {
+        | ^ ~~
+  /kaggle/working/armB/submodules/diff-gaussian-rasterization/rasterize_points.cu:92:679: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data<T>() is deprecated. Please use Tensor.data_ptr<T>() instead. [-Wdeprecated-declarations]
+     92 |           rendered = CudaRasterizer::Rasterizer::forward(
+        |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       ^
+  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here
+    251 |   T * data() const {
+        | ^ ~~
+  /kaggle/working/armB/submodules/diff-gaussian-rasterization/rasterize_points.cu:92:734: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data<T>() is deprecated. Please use Tensor.data_ptr<T>() instead. [-Wdeprecated-declarations]
+     92 |           rendered = CudaRasterizer::Rasterizer::forward(
+        |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              ^
+  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here
+    251 |   T * data() const {
+        | ^ ~~
+  /kaggle/working/armB/submodules/diff-gaussian-rasterization/rasterize_points.cu:92:770: warning: ‘T* at::Tensor::data() const [with T = int]’ is deprecated: Tensor.data<T>() is deprecated. Please use Tensor.data_ptr<T>() instead. [-Wdeprecated-declarations]
+     92 |           rendered = CudaRasterizer::Rasterizer::forward(
+        |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  ^
+  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here
+    251 |   T * data() const {
+        | ^ ~~
+  /kaggle/working/armB/submodules/diff-gaussian-rasterization/rasterize_points.cu: In function ‘std::tuple<at::Tensor, at::Tensor, at::Tensor, at::Tensor, at::Tensor, at::Tensor, at::Tensor, at::Tensor> RasterizeGaussiansBackwardCUDA(const at::Tensor&, const at::Tensor&, const at::Tensor&, const at::Tensor&, const at::Tensor&, const at::Tensor&, float, const at::Tensor&, const at::Tensor&, const at::Tensor&, float, float, float, bool, const at::Tensor&, const at::Tensor&, const at::Tensor&, int, const at::Tensor&, const at::Tensor&, int, const at::Tensor&, const at::Tensor&, bool)’:
+  /kaggle/working/armB/submodules/diff-gaussian-rasterization/rasterize_points.cu:172:101: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data<T>() is deprecated. Please use Tensor.data_ptr<T>() instead. [-Wdeprecated-declarations]
+    172 |           CudaRasterizer::Rasterizer::backward(P, degree, M, R,
+        |                                                              ~~                                     ^
+  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here
+    251 |   T * data() const {
+        | ^ ~~
+  /kaggle/working/armB/submodules/diff-gaussian-rasterization/rasterize_points.cu:172:147: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data<T>() is deprecated. Please use Tensor.data_ptr<T>() instead. [-Wdeprecated-declarations]
+    172 |           CudaRasterizer::Rasterizer::backward(P, degree, M, R,
+        |                                                                                                                                                   ^
+  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here
+    251 |   T * data() const {
+        | ^ ~~
+  /kaggle/working/armB/submodules/diff-gaussian-rasterization/rasterize_points.cu:172:182: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data<T>() is deprecated. Please use Tensor.data_ptr<T>() instead. [-Wdeprecated-declarations]
+    172 |           CudaRasterizer::Rasterizer::backward(P, degree, M, R,
+        |                                                                                                                                                                                      ^
+  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here
+    251 |   T * data() const {
+        | ^ ~~
+  /kaggle/working/armB/submodules/diff-gaussian-rasterization/rasterize_points.cu:172:221: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data<T>() is deprecated. Please use Tensor.data_ptr<T>() instead. [-Wdeprecated-declarations]
+    172 |           CudaRasterizer::Rasterizer::backward(P, degree, M, R,
+        |                                                                                                                                                                                                                             ^
+  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here
+    251 |   T * data() const {
+        | ^ ~~
+  /kaggle/working/armB/submodules/diff-gaussian-rasterization/rasterize_points.cu:172:342: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data<T>() is deprecated. Please use Tensor.data_ptr<T>() instead. [-Wdeprecated-declarations]
+    172 |           CudaRasterizer::Rasterizer::backward(P, degree, M, R,
+        |                                                                                                                                                                                                                                                                                                                                                      ^
+  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here
+    251 |   T * data() const {
+        | ^ ~~
+  /kaggle/working/armB/submodules/diff-gaussian-rasterization/rasterize_points.cu:172:385: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data<T>() is deprecated. Please use Tensor.data_ptr<T>() instead. [-Wdeprecated-declarations]
+    172 |           CudaRasterizer::Rasterizer::backward(P, degree, M, R,
+        |                                                                                                                                                                                                                                                                                                                                                                                                 ^
+  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here
+    251 |   T * data() const {
+        | ^ ~~
+  /kaggle/working/armB/submodules/diff-gaussian-rasterization/rasterize_points.cu:172:428: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data<T>() is deprecated. Please use Tensor.data_ptr<T>() instead. [-Wdeprecated-declarations]
+    172 |           CudaRasterizer::Rasterizer::backward(P, degree, M, R,
+        |                                                                                                                                                                                                                                                                                                                                                                                                                                            ^
+  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here
+    251 |   T * data() const {
+        | ^ ~~
+  /kaggle/working/armB/submodules/diff-gaussian-rasterization/rasterize_points.cu:172:467: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data<T>() is deprecated. Please use Tensor.data_ptr<T>() instead. [-Wdeprecated-declarations]
+    172 |           CudaRasterizer::Rasterizer::backward(P, degree, M, R,
+        |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   ^
+  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here
+    251 |   T * data() const {
+        | ^ ~~
+  /kaggle/working/armB/submodules/diff-gaussian-rasterization/rasterize_points.cu:172:566: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data<T>() is deprecated. Please use Tensor.data_ptr<T>() instead. [-Wdeprecated-declarations]
+    172 |           CudaRasterizer::Rasterizer::backward(P, degree, M, R,
+        |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      ^
+  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here
+    251 |   T * data() const {
+        | ^ ~~
+  /kaggle/working/armB/submodules/diff-gaussian-rasterization/rasterize_points.cu:172:602: warning: ‘T* at::Tensor::data() const [with T = int]’ is deprecated: Tensor.data<T>() is deprecated. Please use Tensor.data_ptr<T>() instead. [-Wdeprecated-declarations]
+    172 |           CudaRasterizer::Rasterizer::backward(P, degree, M, R,
+        |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          ^
+  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here
+    251 |   T * data() const {
+        | ^ ~~
+  /kaggle/working/armB/submodules/diff-gaussian-rasterization/rasterize_points.cu:172:847: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data<T>() is deprecated. Please use Tensor.data_ptr<T>() instead. [-Wdeprecated-declarations]
+    172 |           CudaRasterizer::Rasterizer::backward(P, degree, M, R,
+        |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               ^
+  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here
+    251 |   T * data() const {
+        | ^ ~~
+  /kaggle/working/armB/submodules/diff-gaussian-rasterization/rasterize_points.cu:172:891: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data<T>() is deprecated. Please use Tensor.data_ptr<T>() instead. [-Wdeprecated-declarations]
+    172 |           CudaRasterizer::Rasterizer::backward(P, degree, M, R,
+        |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           ^
+  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here
+    251 |   T * data() const {
+        | ^ ~~
+  /kaggle/working/armB/submodules/diff-gaussian-rasterization/rasterize_points.cu:172:933: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data<T>() is deprecated. Please use Tensor.data_ptr<T>() instead. [-Wdeprecated-declarations]
+    172 |           CudaRasterizer::Rasterizer::backward(P, degree, M, R,
+        |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     ^
+  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here
+    251 |   T * data() const {
+        | ^ ~~
+  /kaggle/working/armB/submodules/diff-gaussian-rasterization/rasterize_points.cu:172:977: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data<T>() is deprecated. Please use Tensor.data_ptr<T>() instead. [-Wdeprecated-declarations]
+    172 |           CudaRasterizer::Rasterizer::backward(P, degree, M, R,
+        |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 ^
+  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here
+    251 |   T * data() const {
+        | ^ ~~
+  /kaggle/working/armB/submodules/diff-gaussian-rasterization/rasterize_points.cu:172:1020: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data<T>() is deprecated. Please use Tensor.data_ptr<T>() instead. [-Wdeprecated-declarations]
+    172 |           CudaRasterizer::Rasterizer::backward(P, degree, M, R,
+        |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            ^
+  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here
+    251 |   T * data() const {
+        | ^ ~~
+  /kaggle/working/armB/submodules/diff-gaussian-rasterization/rasterize_points.cu:172:1064: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data<T>() is deprecated. Please use Tensor.data_ptr<T>() instead. [-Wdeprecated-declarations]
+    172 |           CudaRasterizer::Rasterizer::backward(P, degree, M, R,
+        |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        ^
+  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here
+    251 |   T * data() const {
+        | ^ ~~
+  /kaggle/working/armB/submodules/diff-gaussian-rasterization/rasterize_points.cu:172:1106: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data<T>() is deprecated. Please use Tensor.data_ptr<T>() instead. [-Wdeprecated-declarations]
+    172 |           CudaRasterizer::Rasterizer::backward(P, degree, M, R,
+        |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  ^
+  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here
+    251 |   T * data() const {
+        | ^ ~~
+  /kaggle/working/armB/submodules/diff-gaussian-rasterization/rasterize_points.cu:172:1145: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data<T>() is deprecated. Please use Tensor.data_ptr<T>() instead. [-Wdeprecated-declarations]
+    172 |           CudaRasterizer::Rasterizer::backward(P, degree, M, R,
+        |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         ^
+  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here
+    251 |   T * data() const {
+        | ^ ~~
+  /kaggle/working/armB/submodules/diff-gaussian-rasterization/rasterize_points.cu:172:1188: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data<T>() is deprecated. Please use Tensor.data_ptr<T>() instead. [-Wdeprecated-declarations]
+    172 |           CudaRasterizer::Rasterizer::backward(P, degree, M, R,
+        |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    ^
+  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here
+    251 |   T * data() const {
+        | ^ ~~
+  /kaggle/working/armB/submodules/diff-gaussian-rasterization/rasterize_points.cu:172:1234: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data<T>() is deprecated. Please use Tensor.data_ptr<T>() instead. [-Wdeprecated-declarations]
+    172 |           CudaRasterizer::Rasterizer::backward(P, degree, M, R,
+        |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  ^
+  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here
+    251 |   T * data() const {
+        | ^ ~~
+  /kaggle/working/armB/submodules/diff-gaussian-rasterization/rasterize_points.cu: In function ‘at::Tensor markVisible(at::Tensor&, at::Tensor&, at::Tensor&)’:
+  /kaggle/working/armB/submodules/diff-gaussian-rasterization/rasterize_points.cu:221:87: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data<T>() is deprecated. Please use Tensor.data_ptr<T>() instead. [-Wdeprecated-declarations]
+    221 |         CudaRasterizer::Rasterizer::markVisible(P,
+        |                                                                                       ^
+  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here
+    251 |   T * data() const {
+        | ^ ~~
+  /kaggle/working/armB/submodules/diff-gaussian-rasterization/rasterize_points.cu:221:130: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data<T>() is deprecated. Please use Tensor.data_ptr<T>() instead. [-Wdeprecated-declarations]
+    221 |         CudaRasterizer::Rasterizer::markVisible(P,
+        |                                                                                                                                  ^
+  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here
+    251 |   T * data() const {
+        | ^ ~~
+  /kaggle/working/armB/submodules/diff-gaussian-rasterization/rasterize_points.cu:221:173: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data<T>() is deprecated. Please use Tensor.data_ptr<T>() instead. [-Wdeprecated-declarations]
+    221 |         CudaRasterizer::Rasterizer::markVisible(P,
+        |                                                                                                                                                                             ^
+  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here
+    251 |   T * data() const {
+        | ^ ~~
+  /kaggle/working/armB/submodules/diff-gaussian-rasterization/rasterize_points.cu:221:212: warning: ‘T* at::Tensor::data() const [with T = bool]’ is deprecated: Tensor.data<T>() is deprecated. Please use Tensor.data_ptr<T>() instead. [-Wdeprecated-declarations]
+    221 |         CudaRasterizer::Rasterizer::markVisible(P,
+        |                                                                                                                                                                                                                    ^
+  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here
+    251 |   T * data() const {
+        | ^ ~~
+  x86_64-linux-gnu-g++ -fno-strict-overflow -Wsign-compare -DNDEBUG -g -O2 -Wall -g -fstack-protector-strong -Wformat -Werror=format-security -g -fwrapv -O2 -shared -Wl,-O1 -Wl,-Bsymbolic-functions -Wl,-Bsymbolic-functions -g -fwrapv -O2 /kaggle/working/armB/submodules/diff-gaussian-rasterization/build/temp.linux-x86_64-cpython-312/cuda_rasterizer/backward.o /kaggle/working/armB/submodules/diff-gaussian-rasterization/build/temp.linux-x86_64-cpython-312/cuda_rasterizer/forward.o /kaggle/working/armB/submodules/diff-gaussian-rasterization/build/temp.linux-x86_64-cpython-312/cuda_rasterizer/rasterizer_impl.o /kaggle/working/armB/submodules/diff-gaussian-rasterization/build/temp.linux-x86_64-cpython-312/ext.o /kaggle/working/armB/submodules/diff-gaussian-rasterization/build/temp.linux-x86_64-cpython-312/rasterize_points.o -L/usr/local/lib/python3.12/dist-packages/torch/lib -L/usr/local/cuda/lib64 -L/usr/lib/x86_64-linux-gnu -lc10 -ltorch -ltorch_cpu -ltorch_python -lcudart -lc10_cuda -ltorch_cuda -o build/lib.linux-x86_64-cpython-312/diff_gaussian_rasterization/_C.cpython-312-x86_64-linux-gnu.so
+  /usr/local/lib/python3.12/dist-packages/setuptools/_distutils/cmd.py:90: SetuptoolsDeprecationWarning: setup.py install is deprecated.
+  !!
+          ********************************************************************************
+          Please avoid running ``setup.py`` directly.
+          Instead, use pypa/build, pypa/installer or other
+          standards-based tools.
+          This deprecation is overdue, please update your project and remove deprecated
+          calls to avoid build errors in the future.
+          See https://blog.ganssle.io/articles/2021/10/setup-py-deprecated.html for details.
+          ********************************************************************************
+  !!
+    self.initialize_options()
+  installing to build/bdist.linux-x86_64/wheel
+  running install
+  running install_lib
+  creating build/bdist.linux-x86_64/wheel
+  creating build/bdist.linux-x86_64/wheel/diff_gaussian_rasterization
+  copying build/lib.linux-x86_64-cpython-312/diff_gaussian_rasterization/_C.cpython-312-x86_64-linux-gnu.so -> build/bdist.linux-x86_64/wheel/./diff_gaussian_rasterization
+  copying build/lib.linux-x86_64-cpython-312/diff_gaussian_rasterization/__init__.py -> build/bdist.linux-x86_64/wheel/./diff_gaussian_rasterization
+  running install_egg_info
+  running egg_info
+  writing diff_gaussian_rasterization.egg-info/PKG-INFO
+  writing dependency_links to diff_gaussian_rasterization.egg-info/dependency_links.txt
+  writing top-level names to diff_gaussian_rasterization.egg-info/top_level.txt
+  reading manifest file 'diff_gaussian_rasterization.egg-info/SOURCES.txt'
+  adding license file 'LICENSE.md'
+  writing manifest file 'diff_gaussian_rasterization.egg-info/SOURCES.txt'
+  Copying diff_gaussian_rasterization.egg-info to build/bdist.linux-x86_64/wheel/./diff_gaussian_rasterization-0.0.0-py3.12.egg-info
+  running install_scripts
+  creating build/bdist.linux-x86_64/wheel/diff_gaussian_rasterization-0.0.0.dist-info/WHEEL
+  creating '/tmp/pip-wheel-d142a_uk/diff_gaussian_rasterization-0.0.0-cp312-cp312-linux_x86_64.whl' and adding 'build/bdist.linux-x86_64/wheel' to it
+  adding 'diff_gaussian_rasterization/_C.cpython-312-x86_64-linux-gnu.so'
+  adding 'diff_gaussian_rasterization/__init__.py'
+  adding 'diff_gaussian_rasterization-0.0.0.dist-info/licenses/LICENSE.md'
+  adding 'diff_gaussian_rasterization-0.0.0.dist-info/METADATA'
+  adding 'diff_gaussian_rasterization-0.0.0.dist-info/WHEEL'
+  adding 'diff_gaussian_rasterization-0.0.0.dist-info/top_level.txt'
+  adding 'diff_gaussian_rasterization-0.0.0.dist-info/RECORD'
+  removing build/bdist.linux-x86_64/wheel
+  Building wheel for diff_gaussian_rasterization (setup.py): finished with status 'done'
+  Created wheel for diff_gaussian_rasterization: filename=diff_gaussian_rasterization-0.0.0-cp312-cp312-linux_x86_64.whl size=3598928 sha256=35218841a84e9108e48941314694bb682f67d8c659c2cfa6e4fdb228a17ba9f6
+  Stored in directory: /root/.cache/pip/wheels/81/4d/00/b44cac72cd4d2fb56d7ab3679108b1710f7f4aa4f864a40352
+Successfully built diff_gaussian_rasterization
+Installing collected packages: diff_gaussian_rasterization
+Successfully installed diff_gaussian_rasterization-0.0.0
++ pip install -v /kaggle/working/armA/submodules/simple-knn
+Using pip 24.1.2 from /usr/local/lib/python3.12/dist-packages/pip (python 3.12)
+Processing ./armA/submodules/simple-knn
+  Preparing metadata (setup.py): started
+  Running command python setup.py egg_info
+  running egg_info
+  creating /tmp/pip-pip-egg-info-oq76wwpq/simple_knn.egg-info
+  writing /tmp/pip-pip-egg-info-oq76wwpq/simple_knn.egg-info/PKG-INFO
+  writing dependency_links to /tmp/pip-pip-egg-info-oq76wwpq/simple_knn.egg-info/dependency_links.txt
+  writing top-level names to /tmp/pip-pip-egg-info-oq76wwpq/simple_knn.egg-info/top_level.txt
+  writing manifest file '/tmp/pip-pip-egg-info-oq76wwpq/simple_knn.egg-info/SOURCES.txt'
+  reading manifest file '/tmp/pip-pip-egg-info-oq76wwpq/simple_knn.egg-info/SOURCES.txt'
+  writing manifest file '/tmp/pip-pip-egg-info-oq76wwpq/simple_knn.egg-info/SOURCES.txt'
+  Preparing metadata (setup.py): finished with status 'done'
+Building wheels for collected packages: simple_knn
+  Building wheel for simple_knn (setup.py): started
+  Running command python setup.py bdist_wheel
+  running bdist_wheel
+  running build
+  running build_ext
+  W0912 01:45:04.850000 267 torch/utils/cpp_extension.py:535] There are no x86_64-linux-gnu-g++ version bounds defined for CUDA version 12.8
+  building 'simple_knn._C' extension
+  creating /kaggle/working/armA/submodules/simple-knn/build/temp.linux-x86_64-cpython-312
+  [1/3] /usr/local/cuda/bin/nvcc --generate-dependencies-with-compile --dependency-output /kaggle/working/armA/submodules/simple-knn/build/temp.linux-x86_64-cpython-312/simple_knn.o.d -I/usr/local/lib/python3.12/dist-packages/torch/include -I/usr/local/lib/python3.12/dist-packages/torch/include/torch/csrc/api/include -I/usr/local/cuda/include -I/usr/include/python3.12 -c -c /kaggle/working/armA/submodules/simple-knn/simple_knn.cu -o /kaggle/working/armA/submodules/simple-knn/build/temp.linux-x86_64-cpython-312/simple_knn.o -D__CUDA_NO_HALF_OPERATORS__ -D__CUDA_NO_HALF_CONVERSIONS__ -D__CUDA_NO_BFLOAT16_CONVERSIONS__ -D__CUDA_NO_HALF2_OPERATORS__ --expt-relaxed-constexpr --compiler-options ''"'"'-fPIC'"'"'' -DTORCH_API_INCLUDE_EXTENSION_H -DTORCH_EXTENSION_NAME=_C -gencode=arch=compute_75,code=sm_75 -std=c++17
+  /kaggle/working/armA/submodules/simple-knn/simple_knn.cu:24: warning: "__CUDACC__" redefined
+     24 | #define __CUDACC__
+        |
+  <command-line>: note: this is the location of the previous definition
+  /kaggle/working/armA/submodules/simple-knn/simple_knn.cu:24: warning: "__CUDACC__" redefined
+     24 | #define __CUDACC__
+        |
+  <command-line>: note: this is the location of the previous definition
+  [2/3] c++ -MMD -MF /kaggle/working/armA/submodules/simple-knn/build/temp.linux-x86_64-cpython-312/ext.o.d -fno-strict-overflow -Wsign-compare -DNDEBUG -g -O2 -Wall -g -fstack-protector-strong -Wformat -Werror=format-security -g -fwrapv -O2 -fPIC -I/usr/local/lib/python3.12/dist-packages/torch/include -I/usr/local/lib/python3.12/dist-packages/torch/include/torch/csrc/api/include -I/usr/local/cuda/include -I/usr/include/python3.12 -c -c /kaggle/working/armA/submodules/simple-knn/ext.cpp -o /kaggle/working/armA/submodules/simple-knn/build/temp.linux-x86_64-cpython-312/ext.o -DTORCH_API_INCLUDE_EXTENSION_H -DTORCH_EXTENSION_NAME=_C -std=c++17
+  [3/3] /usr/local/cuda/bin/nvcc --generate-dependencies-with-compile --dependency-output /kaggle/working/armA/submodules/simple-knn/build/temp.linux-x86_64-cpython-312/spatial.o.d -I/usr/local/lib/python3.12/dist-packages/torch/include -I/usr/local/lib/python3.12/dist-packages/torch/include/torch/csrc/api/include -I/usr/local/cuda/include -I/usr/include/python3.12 -c -c /kaggle/working/armA/submodules/simple-knn/spatial.cu -o /kaggle/working/armA/submodules/simple-knn/build/temp.linux-x86_64-cpython-312/spatial.o -D__CUDA_NO_HALF_OPERATORS__ -D__CUDA_NO_HALF_CONVERSIONS__ -D__CUDA_NO_BFLOAT16_CONVERSIONS__ -D__CUDA_NO_HALF2_OPERATORS__ --expt-relaxed-constexpr --compiler-options ''"'"'-fPIC'"'"'' -DTORCH_API_INCLUDE_EXTENSION_H -DTORCH_EXTENSION_NAME=_C -gencode=arch=compute_75,code=sm_75 -std=c++17
+  /kaggle/working/armA/submodules/simple-knn/spatial.cu: In function ‘at::Tensor distCUDA2(const at::Tensor&)’:
+  /kaggle/working/armA/submodules/simple-knn/spatial.cu:23:64: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data<T>() is deprecated. Please use Tensor.data_ptr<T>() instead. [-Wdeprecated-declarations]
+     23 |   SimpleKNN::knn(P, (float3*)points.contiguous().data<float>(), means.contiguous().data<float>());
+        |                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~
+  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here
+    251 |   T * data() const {
+        | ^ ~~
+  /kaggle/working/armA/submodules/simple-knn/spatial.cu:23:102: warning: ‘T* at::Tensor::data() const [with T = float]’ is deprecated: Tensor.data<T>() is deprecated. Please use Tensor.data_ptr<T>() instead. [-Wdeprecated-declarations]
+     23 |   SimpleKNN::knn(P, (float3*)points.contiguous().data<float>(), means.contiguous().data<float>());
+        |                                                                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   ^
+  /usr/local/lib/python3.12/dist-packages/torch/include/ATen/core/TensorBody.h:251:1: note: declared here
+    251 |   T * data() const {
+        | ^ ~~
+  creating build/lib.linux-x86_64-cpython-312/simple_knn
+  x86_64-linux-gnu-g++ -fno-strict-overflow -Wsign-compare -DNDEBUG -g -O2 -Wall -g -fstack-protector-strong -Wformat -Werror=format-security -g -fwrapv -O2 -shared -Wl,-O1 -Wl,-Bsymbolic-functions -Wl,-Bsymbolic-functions -g -fwrapv -O2 /kaggle/working/armA/submodules/simple-knn/build/temp.linux-x86_64-cpython-312/ext.o /kaggle/working/armA/submodules/simple-knn/build/temp.linux-x86_64-cpython-312/simple_knn.o /kaggle/working/armA/submodules/simple-knn/build/temp.linux-x86_64-cpython-312/spatial.o -L/usr/local/lib/python3.12/dist-packages/torch/lib -L/usr/local/cuda/lib64 -L/usr/lib/x86_64-linux-gnu -lc10 -ltorch -ltorch_cpu -ltorch_python -lcudart -lc10_cuda -ltorch_cuda -o build/lib.linux-x86_64-cpython-312/simple_knn/_C.cpython-312-x86_64-linux-gnu.so
+  /usr/local/lib/python3.12/dist-packages/setuptools/_distutils/cmd.py:90: SetuptoolsDeprecationWarning: setup.py install is deprecated.
+  !!
+          ********************************************************************************
+          Please avoid running ``setup.py`` directly.
+          Instead, use pypa/build, pypa/installer or other
+          standards-based tools.
+          This deprecation is overdue, please update your project and remove deprecated
+          calls to avoid build errors in the future.
+          See https://blog.ganssle.io/articles/2021/10/setup-py-deprecated.html for details.
+          ********************************************************************************
+  !!
+    self.initialize_options()
+  installing to build/bdist.linux-x86_64/wheel
+  running install
+  running install_lib
+  creating build/bdist.linux-x86_64/wheel
+  creating build/bdist.linux-x86_64/wheel/simple_knn
+  copying build/lib.linux-x86_64-cpython-312/simple_knn/_C.cpython-312-x86_64-linux-gnu.so -> build/bdist.linux-x86_64/wheel/./simple_knn
+  running install_egg_info
+  running egg_info
+  creating simple_knn.egg-info
+  writing simple_knn.egg-info/PKG-INFO
+  writing dependency_links to simple_knn.egg-info/dependency_links.txt
+  writing top-level names to simple_knn.egg-info/top_level.txt
+  writing manifest file 'simple_knn.egg-info/SOURCES.txt'
+  reading manifest file 'simple_knn.egg-info/SOURCES.txt'
+  writing manifest file 'simple_knn.egg-info/SOURCES.txt'
+  Copying simple_knn.egg-info to build/bdist.linux-x86_64/wheel/./simple_knn-0.0.0-py3.12.egg-info
+  running install_scripts
+  creating build/bdist.linux-x86_64/wheel/simple_knn-0.0.0.dist-info/WHEEL
+  creating '/tmp/pip-wheel-qvkgjpcu/simple_knn-0.0.0-cp312-cp312-linux_x86_64.whl' and adding 'build/bdist.linux-x86_64/wheel' to it
+  adding 'simple_knn/_C.cpython-312-x86_64-linux-gnu.so'
+  adding 'simple_knn-0.0.0.dist-info/METADATA'
+  adding 'simple_knn-0.0.0.dist-info/WHEEL'
+  adding 'simple_knn-0.0.0.dist-info/top_level.txt'
+  adding 'simple_knn-0.0.0.dist-info/RECORD'
+  removing build/bdist.linux-x86_64/wheel
+  Building wheel for simple_knn (setup.py): finished with status 'done'
+  Created wheel for simple_knn: filename=simple_knn-0.0.0-cp312-cp312-linux_x86_64.whl size=3393855 sha256=eff5776be585ba6f1c80929ecb8e1d6292070df24a2bdff8b5408c742f3da4ef
+  Stored in directory: /root/.cache/pip/wheels/8e/27/d8/553a219e282bfe710760578524e5a6a97696877f96239f6f7e
+Successfully built simple_knn
+Installing collected packages: simple_knn
+Successfully installed simple_knn-0.0.0
+build OK (open3d=yes)
++ git -C /kaggle/working/armB diff origin/main...HEAD --name-only
+.gitignore
+arguments/__init__.py
+gaussian_renderer/__init__.py
+render.py
+scene/gaussian_model.py
+submodules/diff-gaussian-rasterization/cuda_rasterizer/backward.cu
+submodules/diff-gaussian-rasterization/cuda_rasterizer/backward.h
+submodules/diff-gaussian-rasterization/cuda_rasterizer/forward.cu
+submodules/diff-gaussian-rasterization/cuda_rasterizer/forward.h
+submodules/diff-gaussian-rasterization/cuda_rasterizer/rasterizer.h
+submodules/diff-gaussian-rasterization/cuda_rasterizer/rasterizer_impl.cu
+submodules/diff-gaussian-rasterization/diff_gaussian_rasterization/__init__.py
+submodules/diff-gaussian-rasterization/rasterize_points.cu
+submodules/diff-gaussian-rasterization/rasterize_points.h
+train.py
+§3 diff confined to ['.gitignore', 'arguments/__init__.py', 'gaussian_renderer/__init__.py', 'render.py', 'scene/gaussian_model.py', 'submodules/diff-gaussian-rasterization/cuda_rasterizer/backward.cu', 'submodules/diff-gaussian-rasterization/cuda_rasterizer/backward.h', 'submodules/diff-gaussian-rasterization/cuda_rasterizer/forward.cu', 'submodules/diff-gaussian-rasterization/cuda_rasterizer/forward.h', 'submodules/diff-gaussian-rasterization/cuda_rasterizer/rasterizer.h', 'submodules/diff-gaussian-rasterization/cuda_rasterizer/rasterizer_impl.cu', 'submodules/diff-gaussian-rasterization/diff_gaussian_rasterization/__init__.py', 'submodules/diff-gaussian-rasterization/rasterize_points.cu', 'submodules/diff-gaussian-rasterization/rasterize_points.h', 'train.py']
+rasteriser carries mip_compensation: the C1 switch is live
+blender dir: /kaggle/input/nerf-synthetic-dataset/nerf_synthetic
++ python /kaggle/working/armA/convert_blender_data.py --blender_dir /kaggle/input/nerf-synthetic-dataset/nerf_synthetic --object_name ship --out_dir /kaggle/working/multi-scale
+['/kaggle/input/nerf-synthetic-dataset/nerf_synthetic/ship']
+Converting from /kaggle/input/nerf-synthetic-dataset/nerf_synthetic/ship to /kaggle/working/multi-scale/ship
+Split train
+Loading imgs
+Loaded all images, shape is (100, 800, 800, 4)
+Saving images
+Split val
+Loading imgs
+Loaded all images, shape is (100, 800, 800, 4)
+Saving images
+Split test
+Loading imgs
+Loaded all images, shape is (200, 800, 800, 4)
+Saving images
+train file_path <class 'list'> (400,)
+train cam2world <class 'list'> (400, 4, 4)
+train width <class 'list'> (400,)
+train height <class 'list'> (400,)
+train focal <class 'list'> (400,)
+train label <class 'list'> (400,)
+train near <class 'list'> (400,)
+train far <class 'list'> (400,)
+train lossmult <class 'list'> (400,)
+train pix2cam <class 'list'> (400, 3, 3)
+val file_path <class 'list'> (400,)
+val cam2world <class 'list'> (400, 4, 4)
+val width <class 'list'> (400,)
+val height <class 'list'> (400,)
+val focal <class 'list'> (400,)
+val label <class 'list'> (400,)
+val near <class 'list'> (400,)
+val far <class 'list'> (400,)
+val lossmult <class 'list'> (400,)
+val pix2cam <class 'list'> (400, 3, 3)
+test file_path <class 'list'> (800,)
+test cam2world <class 'list'> (800, 4, 4)
+test width <class 'list'> (800,)
+test height <class 'list'> (800,)
+test focal <class 'list'> (800,)
+test label <class 'list'> (800,)
+test near <class 'list'> (800,)
+test far <class 'list'> (800,)
+test lossmult <class 'list'> (800,)
+test pix2cam <class 'list'> (800, 3, 3)
++ python /kaggle/working/armA/convert_blender_data.py --blender_dir /kaggle/input/nerf-synthetic-dataset/nerf_synthetic --object_name chair --out_dir /kaggle/working/multi-scale
+['/kaggle/input/nerf-synthetic-dataset/nerf_synthetic/chair']
+Converting from /kaggle/input/nerf-synthetic-dataset/nerf_synthetic/chair to /kaggle/working/multi-scale/chair
+Split train
+Loading imgs
+Loaded all images, shape is (100, 800, 800, 4)
+Saving images
+Split val
+Loading imgs
+Loaded all images, shape is (100, 800, 800, 4)
+Saving images
+Split test
+Loading imgs
+Loaded all images, shape is (200, 800, 800, 4)
+Saving images
+train file_path <class 'list'> (400,)
+train cam2world <class 'list'> (400, 4, 4)
+train width <class 'list'> (400,)
+train height <class 'list'> (400,)
+train focal <class 'list'> (400,)
+train label <class 'list'> (400,)
+train near <class 'list'> (400,)
+train far <class 'list'> (400,)
+train lossmult <class 'list'> (400,)
+train pix2cam <class 'list'> (400, 3, 3)
+val file_path <class 'list'> (400,)
+val cam2world <class 'list'> (400, 4, 4)
+val width <class 'list'> (400,)
+val height <class 'list'> (400,)
+val focal <class 'list'> (400,)
+val label <class 'list'> (400,)
+val near <class 'list'> (400,)
+val far <class 'list'> (400,)
+val lossmult <class 'list'> (400,)
+val pix2cam <class 'list'> (400, 3, 3)
+test file_path <class 'list'> (800,)
+test cam2world <class 'list'> (800, 4, 4)
+test width <class 'list'> (800,)
+test height <class 'list'> (800,)
+test focal <class 'list'> (800,)
+test label <class 'list'> (800,)
+test near <class 'list'> (800,)
+test far <class 'list'> (800,)
+test lossmult <class 'list'> (800,)
+test pix2cam <class 'list'> (800, 3, 3)
+[timing] convert all 2 scenes: 229s
++ OMP_NUM_THREADS=4 CUDA_VISIBLE_DEVICES=0 python train.py -s /kaggle/working/multi-scale/ship -m /kaggle/working/out_armB/ship --eval --white_background --iterations 30000 --test_iterations -1 --port 6209  --kernel_size 0.3 --disable_3D_filter --disable_2D_mip_compensation   (cwd=/kaggle/working/armB)+ OMP_NUM_THREADS=4 CUDA_VISIBLE_DEVICES=1 python train.py -s /kaggle/working/multi-scale/chair -m /kaggle/working/out_armB/chair --eval --white_background --iterations 30000 --test_iterations -1 --port 6210  --kernel_size 0.3 --disable_3D_filter --disable_2D_mip_compensation   (cwd=/kaggle/working/armB)
+
+Optimizing /kaggle/working/out_armB/chair
+Output folder: /kaggle/working/out_armB/chair [12/09 01:50:35]
+Found metadata.json file, assuming multi scale Blender data set! [12/09 01:50:35]
+Reading train from metadata.json [12/09 01:50:35]
+read split: train [12/09 01:50:35]
+number of training images: 100 [12/09 01:50:40]
+Reading test from metadata.json [12/09 01:50:40]
+read split: test [12/09 01:50:40]
+number of testing images: 800 [12/09 01:50:55]
+Generating random point cloud (100000)... [12/09 01:50:55]
+Loading Training Cameras [12/09 01:50:56]
+Loading Test Cameras [12/09 01:50:57]
+Number of points at initialisation :  100000 [12/09 01:51:03]
+Computing 3D filter [12/09 01:51:05]
+Training progress:   0%|          | 0/30000 [00:00<?, ?it/s]
+Optimizing /kaggle/working/out_armB/ship
+Output folder: /kaggle/working/out_armB/ship [12/09 01:50:35]
+Found metadata.json file, assuming multi scale Blender data set! [12/09 01:50:35]
+Reading train from metadata.json [12/09 01:50:35]
+read split: train [12/09 01:50:35]
+number of training images: 100 [12/09 01:50:40]
+Reading test from metadata.json [12/09 01:50:40]
+read split: test [12/09 01:50:40]
+number of testing images: 800 [12/09 01:50:57]
+Generating random point cloud (100000)... [12/09 01:50:57]
+Loading Training Cameras [12/09 01:50:57]
+Loading Test Cameras [12/09 01:51:00]
+Number of points at initialisation :  100000 [12/09 01:51:04]
+Computing 3D filter [12/09 01:51:06]
+Training progress:   0%|          | 0/30000 [00:00<?, ?it/s]
+Training progress:  14%|█▍        | 4160/30000 [02:06<15:28, 27.84it/s, Loss=0.0112301]
+Training progress:  10%|▉         | 2990/30000 [02:05<20:23, 22.08it/s, Loss=0.0446105]
+Training progress:  23%|██▎       | 6950/30000 [04:02<16:55, 22.70it/s, Loss=0.0050156]
+Training progress:  17%|█▋        | 5090/30000 [04:06<25:19, 16.40it/s, Loss=0.0448603]
+Training progress:  32%|███▏      | 9510/30000 [06:08<16:18, 20.95it/s, Loss=0.0047881]
+Training progress:  23%|██▎       | 6950/30000 [06:13<27:41, 13.87it/s, Loss=0.0289469]
+Training progress:  40%|████      | 12050/30000 [08:11<15:30, 19.30it/s, Loss=0.0080574]
+Training progress:  29%|██▊       | 8580/30000 [08:15<26:39, 13.40it/s, Loss=0.0258051]
+Computing 3D filter [12/09 01:51:39]
+Computing 3D filter [12/09 01:51:43]
+Computing 3D filter [12/09 01:51:47]
+Computing 3D filter [12/09 01:51:50]
+Computing 3D filter [12/09 01:51:54]
+Computing 3D filter [12/09 01:51:58]
+Computing 3D filter [12/09 01:52:01]
+Computing 3D filter [12/09 01:52:05]
+Computing 3D filter [12/09 01:52:09]
+Computing 3D filter [12/09 01:52:13]
+Computing 3D filter [12/09 01:52:16]
+Computing 3D filter [12/09 01:52:20]
+Computing 3D filter [12/09 01:52:24]
+Computing 3D filter [12/09 01:52:28]
+Computing 3D filter [12/09 01:52:32]
+Computing 3D filter [12/09 01:52:36]
+Computing 3D filter [12/09 01:52:41]
+Computing 3D filter [12/09 01:52:45]
+Computing 3D filter [12/09 01:52:49]
+Computing 3D filter [12/09 01:52:54]
+Computing 3D filter [12/09 01:52:58]
+Computing 3D filter [12/09 01:53:03]
+Computing 3D filter [12/09 01:53:07]
+Computing 3D filter [12/09 01:53:12]
+Computing 3D filter [12/09 01:53:18]
+Computing 3D filter [12/09 01:53:23]
+Computing 3D filter [12/09 01:53:28]
+Computing 3D filter [12/09 01:53:34]
+Computing 3D filter [12/09 01:53:39]
+Computing 3D filter [12/09 01:53:45]
+Computing 3D filter [12/09 01:53:50]
+Computing 3D filter [12/09 01:53:56]
+Computing 3D filter [12/09 01:54:02]
+Computing 3D filter [12/09 01:54:07]
+Computing 3D filter [12/09 01:54:13]
+Computing 3D filter [12/09 01:54:19]
+Computing 3D filter [12/09 01:54:25]
+Computing 3D filter [12/09 01:54:31]
+Computing 3D filter [12/09 01:54:37]
+Computing 3D filter [12/09 01:54:43]
+Computing 3D filter [12/09 01:54:49]
+Computing 3D filter [12/09 01:54:55]
+Computing 3D filter [12/09 01:55:01]
+Computing 3D filter [12/09 01:55:07]
+Computing 3D filter [12/09 01:55:13]
+Computing 3D filter [12/09 01:55:19]
+Computing 3D filter [12/09 01:55:26]
+Computing 3D filter [12/09 01:55:32]
+Computing 3D filter [12/09 01:55:38]
+Computing 3D filter [12/09 01:55:45]
+Computing 3D filter [12/09 01:55:51]
+Computing 3D filter [12/09 01:55:58]
+Computing 3D filter [12/09 01:56:05]
+Computing 3D filter [12/09 01:56:11]
+Computing 3D filter [12/09 01:56:19]
+Computing 3D filter [12/09 01:56:26]
+Computing 3D filter [12/09 01:56:33]
+Computing 3D filter [12/09 01:56:40]
+Computing 3D filter [12/09 01:56:47]
+Computing 3D filter [12/09 01:56:55]
+Computing 3D filter [12/09 01:57:02]
+Computing 3D filter [12/09 01:57:09]
+Computing 3D filter [12/09 01:57:16]
+[ITER 7000] Saving Gaussians [12/09 01:57:23]
+Computing 3D filter [12/09 01:57:26]
+Computing 3D filter [12/09 01:57:33]
+Computing 3D filter [12/09 01:57:40]
+Computing 3D filter [12/09 01:57:47]
+Computing 3D filter [12/09 01:57:55]
+Computing 3D filter [12/09 01:58:02]
+Computing 3D filter [12/09 01:58:09]
+Computing 3D filter [12/09 01:58:17]
+Computing 3D filter [12/09 01:58:24]
+Computing 3D filter [12/09 01:58:31]
+Computing 3D filter [12/09 01:58:39]
+Computing 3D filter [12/09 01:58:46]
+Computing 3D filter [12/09 01:58:54]
+Computing 3D filter [12/09 01:59:01]
+Computing 3D filter [12/09 01:59:08]
+Computing 3D filter [12/09 01:59:16]
+Computing 3D filter [12/09 01:59:23]
+Computing 3D filter [12/09 01:59:31]
+Computing 3D filter [12/09 01:59:39]
+Computing 3D filter [12/09 01:59:46]
+Computing 3D filter [12/09 01:59:54]
+Computing 3D filter [12/09 02:00:03]
+Computing 3D filter [12/09 02:00:11]
+Computing 3D filter [12/09 02:00:19]
+Computing 3D filter [12/09 02:00:27]
+Computing 3D filter [12/09 02:00:35]
+Computing 3D filter [12/09 02:00:43]
+Computing 3D filter [12/09 02:00:51]
+Traceback (most recent call last):
+  File "/kaggle/working/armB/train.py", line 270, in <module>
+    training(lp.extract(args), op.extract(args), pp.extract(args), args.test_iterations, args.save_iterations, args.checkpoint_iterations, args.start_checkpoint, args.debug_from)
+  File "/kaggle/working/armB/train.py", line 137, in training
+    loss = (1.0 - opt.lambda_dssim) * Ll1 + opt.lambda_dssim * (1.0 - ssim(image, gt_image))
+                                                                      ^^^^^^^^^^^^^^^^^^^^^
+  File "/kaggle/working/armB/utils/loss_utils.py", line 38, in ssim
+    window = window.cuda(img1.get_device())
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+torch.AcceleratorError: CUDA error: an illegal memory access was encountered
+Search for `cudaErrorIllegalAddress' in https://docs.nvidia.com/cuda/cuda-runtime-api/group__CUDART__TYPES.html for more information.
+CUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.
+For debugging consider passing CUDA_LAUNCH_BLOCKING=1
+Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.
+Traceback (most recent call last):
+  File "/kaggle/src/script.py", line 385, in worker
+    done[key] = run_one(gpu, arm, scene, seed)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/kaggle/src/script.py", line 215, in run_one
+    kc.sh(f"{env} python {entry} -s {src} -m {out} --eval "
+  File "/kaggle/working/armA/tools/kernel_common.py", line 77, in sh
+    raise RuntimeError(f"command failed ({rc}): {cmd}\n--- tail ---\n{out[-3000:]}")
+RuntimeError: command failed (1): OMP_NUM_THREADS=4 CUDA_VISIBLE_DEVICES=0 python train.py -s /kaggle/working/multi-scale/ship -m /kaggle/working/out_armB/ship --eval --white_background --iterations 30000 --test_iterations -1 --port 6209  --kernel_size 0.3 --disable_3D_filter --disable_2D_mip_compensation
+--- tail ---
+g 3D filter [12/09 01:55:13]
+Computing 3D filter [12/09 01:55:19]
+Computing 3D filter [12/09 01:55:26]
+Computing 3D filter [12/09 01:55:32]
+Computing 3D filter [12/09 01:55:38]
+Computing 3D filter [12/09 01:55:45]
+Computing 3D filter [12/09 01:55:51]
+Computing 3D filter [12/09 01:55:58]
+Computing 3D filter [12/09 01:56:05]
+Computing 3D filter [12/09 01:56:11]
+Computing 3D filter [12/09 01:56:19]
+Computing 3D filter [12/09 01:56:26]
+Computing 3D filter [12/09 01:56:33]
+Computing 3D filter [12/09 01:56:40]
+Computing 3D filter [12/09 01:56:47]
+Computing 3D filter [12/09 01:56:55]
+Computing 3D filter [12/09 01:57:02]
+Computing 3D filter [12/09 01:57:09]
+Computing 3D filter [12/09 01:57:16]
+
+[ITER 7000] Saving Gaussians [12/09 01:57:23]
+Computing 3D filter [12/09 01:57:26]
+Computing 3D filter [12/09 01:57:33]
+Computing 3D filter [12/09 01:57:40]
+Computing 3D filter [12/09 01:57:47]
+Computing 3D filter [12/09 01:57:55]
+Computing 3D filter [12/09 01:58:02]
+Computing 3D filter [12/09 01:58:09]
+Computing 3D filter [12/09 01:58:17]
+Computing 3D filter [12/09 01:58:24]
+Computing 3D filter [12/09 01:58:31]
+Computing 3D filter [12/09 01:58:39]
+Computing 3D filter [12/09 01:58:46]
+Computing 3D filter [12/09 01:58:54]
+Computing 3D filter [12/09 01:59:01]
+Computing 3D filter [12/09 01:59:08]
+Computing 3D filter [12/09 01:59:16]
+Computing 3D filter [12/09 01:59:23]
+Computing 3D filter [12/09 01:59:31]
+Computing 3D filter [12/09 01:59:39]
+Computing 3D filter [12/09 01:59:46]
+Computing 3D filter [12/09 01:59:54]
+Computing 3D filter [12/09 02:00:03]
+Computing 3D filter [12/09 02:00:11]
+Computing 3D filter [12/09 02:00:19]
+Computing 3D filter [12/09 02:00:27]
+Computing 3D filter [12/09 02:00:35]
+Computing 3D filter [12/09 02:00:43]
+Computing 3D filter [12/09 02:00:51]
+Traceback (most recent call last):
+  File "/kaggle/working/armB/train.py", line 270, in <module>
+    training(lp.extract(args), op.extract(args), pp.extract(args), args.test_iterations, args.save_iterations, args.checkpoint_iterations, args.start_checkpoint, args.debug_from)
+  File "/kaggle/working/armB/train.py", line 137, in training
+    loss = (1.0 - opt.lambda_dssim) * Ll1 + opt.lambda_dssim * (1.0 - ssim(image, gt_image))
+                                                                      ^^^^^^^^^^^^^^^^^^^^^
+  File "/kaggle/working/armB/utils/loss_utils.py", line 38, in ssim
+    window = window.cuda(img1.get_device())
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+torch.AcceleratorError: CUDA error: an illegal memory access was encountered
+Search for `cudaErrorIllegalAddress' in https://docs.nvidia.com/cuda/cuda-runtime-api/group__CUDART__TYPES.html for more information.
+CUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.
+For debugging consider passing CUDA_LAUNCH_BLOCKING=1
+Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.
+
+
+Training progress:  32%|███▎      | 9750/30000 [09:50<20:26, 16.51it/s, Loss=0.0314093]
+
+Training progress:  49%|████▊     | 14580/30000 [10:12<12:20, 20.82it/s, Loss=0.0053015]
+Training progress:  57%|█████▋    | 17110/30000 [12:14<10:16, 20.90it/s, Loss=0.0038212]
+Training progress:  66%|██████▌   | 19870/30000 [14:22<07:41, 21.96it/s, Loss=0.0050083]
+Computing 3D filter [12/09 01:51:33]
+Computing 3D filter [12/09 01:51:35]
+Computing 3D filter [12/09 01:51:38]
+Computing 3D filter [12/09 01:51:40]
+Computing 3D filter [12/09 01:51:42]
+Computing 3D filter [12/09 01:51:45]
+Computing 3D filter [12/09 01:51:47]
+Computing 3D filter [12/09 01:51:49]
+Computing 3D filter [12/09 01:51:52]
+Computing 3D filter [12/09 01:51:54]
+Computing 3D filter [12/09 01:51:56]
+Computing 3D filter [12/09 01:51:59]
+Computing 3D filter [12/09 01:52:02]
+Computing 3D filter [12/09 01:52:04]
+Computing 3D filter [12/09 01:52:07]
+Computing 3D filter [12/09 01:52:09]
+Computing 3D filter [12/09 01:52:12]
+Computing 3D filter [12/09 01:52:15]
+Computing 3D filter [12/09 01:52:18]
+Computing 3D filter [12/09 01:52:20]
+Computing 3D filter [12/09 01:52:23]
+Computing 3D filter [12/09 01:52:26]
+Computing 3D filter [12/09 01:52:29]
+Computing 3D filter [12/09 01:52:32]
+Computing 3D filter [12/09 01:52:36]
+Computing 3D filter [12/09 01:52:39]
+Computing 3D filter [12/09 01:52:42]
+Computing 3D filter [12/09 01:52:45]
+Computing 3D filter [12/09 01:52:49]
+Computing 3D filter [12/09 01:52:52]
+Computing 3D filter [12/09 01:52:55]
+Computing 3D filter [12/09 01:52:59]
+Computing 3D filter [12/09 01:53:02]
+Computing 3D filter [12/09 01:53:06]
+Computing 3D filter [12/09 01:53:09]
+Computing 3D filter [12/09 01:53:13]
+Computing 3D filter [12/09 01:53:17]
+Computing 3D filter [12/09 01:53:20]
+Computing 3D filter [12/09 01:53:24]
+Computing 3D filter [12/09 01:53:28]
+Computing 3D filter [12/09 01:53:32]
+Computing 3D filter [12/09 01:53:36]
+Computing 3D filter [12/09 01:53:40]
+Computing 3D filter [12/09 01:53:44]
+Computing 3D filter [12/09 01:53:48]
+Computing 3D filter [12/09 01:53:52]
+Computing 3D filter [12/09 01:53:56]
+Computing 3D filter [12/09 01:54:00]
+Computing 3D filter [12/09 01:54:05]
+Computing 3D filter [12/09 01:54:09]
+Computing 3D filter [12/09 01:54:13]
+Computing 3D filter [12/09 01:54:18]
+Computing 3D filter [12/09 01:54:22]
+Computing 3D filter [12/09 01:54:26]
+Computing 3D filter [12/09 01:54:31]
+Computing 3D filter [12/09 01:54:35]
+Computing 3D filter [12/09 01:54:39]
+Computing 3D filter [12/09 01:54:44]
+Computing 3D filter [12/09 01:54:48]
+Computing 3D filter [12/09 01:54:52]
+Computing 3D filter [12/09 01:54:57]
+Computing 3D filter [12/09 01:55:01]
+Computing 3D filter [12/09 01:55:06]
+[ITER 7000] Saving Gaussians [12/09 01:55:10]
+Computing 3D filter [12/09 01:55:13]
+Computing 3D filter [12/09 01:55:17]
+Computing 3D filter [12/09 01:55:22]
+Computing 3D filter [12/09 01:55:27]
+Computing 3D filter [12/09 01:55:31]
+Computing 3D filter [12/09 01:55:36]
+Computing 3D filter [12/09 01:55:40]
+Computing 3D filter [12/09 01:55:45]
+Computing 3D filter [12/09 01:55:50]
+Computing 3D filter [12/09 01:55:55]
+Computing 3D filter [12/09 01:56:00]
+Computing 3D filter [12/09 01:56:04]
+Computing 3D filter [12/09 01:56:09]
+Computing 3D filter [12/09 01:56:14]
+Computing 3D filter [12/09 01:56:19]
+Computing 3D filter [12/09 01:56:24]
+Computing 3D filter [12/09 01:56:29]
+Computing 3D filter [12/09 01:56:34]
+Computing 3D filter [12/09 01:56:39]
+Computing 3D filter [12/09 01:56:44]
+Computing 3D filter [12/09 01:56:49]
+Computing 3D filter [12/09 01:56:55]
+Computing 3D filter [12/09 01:56:59]
+Computing 3D filter [12/09 01:57:04]
+Computing 3D filter [12/09 01:57:08]
+Computing 3D filter [12/09 01:57:13]
+Computing 3D filter [12/09 01:57:17]
+Computing 3D filter [12/09 01:57:22]
+Computing 3D filter [12/09 01:57:27]
+Computing 3D filter [12/09 01:57:31]
+Computing 3D filter [12/09 01:57:36]
+Computing 3D filter [12/09 01:57:41]
+Computing 3D filter [12/09 01:57:46]
+Computing 3D filter [12/09 01:57:50]
+Computing 3D filter [12/09 01:57:55]
+Computing 3D filter [12/09 01:58:00]
+Computing 3D filter [12/09 01:58:05]
+Computing 3D filter [12/09 01:58:10]
+Computing 3D filter [12/09 01:58:15]
+Computing 3D filter [12/09 01:58:19]
+Computing 3D filter [12/09 01:58:24]
+Computing 3D filter [12/09 01:58:29]
+Computing 3D filter [12/09 01:58:34]
+Computing 3D filter [12/09 01:58:39]
+Computing 3D filter [12/09 01:58:44]
+Computing 3D filter [12/09 01:58:49]
+Computing 3D filter [12/09 01:58:54]
+Computing 3D filter [12/09 01:58:59]
+Computing 3D filter [12/09 01:59:04]
+Computing 3D filter [12/09 01:59:09]
+Computing 3D filter [12/09 01:59:14]
+Computing 3D filter [12/09 01:59:19]
+Computing 3D filter [12/09 01:59:24]
+Computing 3D filter [12/09 01:59:28]
+Computing 3D filter [12/09 01:59:33]
+Computing 3D filter [12/09 01:59:38]
+Computing 3D filter [12/09 01:59:43]
+Computing 3D filter [12/09 01:59:48]
+Computing 3D filter [12/09 01:59:52]
+Computing 3D filter [12/09 01:59:57]
+Computing 3D filter [12/09 02:00:02]
+Computing 3D filter [12/09 02:00:07]
+Computing 3D filter [12/09 02:00:11]
+Computing 3D filter [12/09 02:00:16]
+Computing 3D filter [12/09 02:00:21]
+Computing 3D filter [12/09 02:00:26]
+Computing 3D filter [12/09 02:00:31]
+Computing 3D filter [12/09 02:00:36]
+Computing 3D filter [12/09 02:00:40]
+Computing 3D filter [12/09 02:00:45]
+Computing 3D filter [12/09 02:00:50]
+Computing 3D filter [12/09 02:00:55]
+Computing 3D filter [12/09 02:01:00]
+Computing 3D filter [12/09 02:01:05]
+Computing 3D filter [12/09 02:01:10]
+Computing 3D filter [12/09 02:01:14]
+Computing 3D filter [12/09 02:01:19]
+Computing 3D filter [12/09 02:01:24]
+Computing 3D filter [12/09 02:01:29]
+Computing 3D filter [12/09 02:01:34]
+Computing 3D filter [12/09 02:01:44]
+Computing 3D filter [12/09 02:01:48]
+Computing 3D filter [12/09 02:01:53]
+Computing 3D filter [12/09 02:01:58]
+Computing 3D filter [12/09 02:02:03]
+Computing 3D filter [12/09 02:02:08]
+Computing 3D filter [12/09 02:02:12]
+Computing 3D filter [12/09 02:02:17]
+Computing 3D filter [12/09 02:02:22]
+Computing 3D filter [12/09 02:02:27]
+Computing 3D filter [12/09 02:02:31]
+Computing 3D filter [12/09 02:02:36]
+Computing 3D filter [12/09 02:02:41]
+Computing 3D filter [12/09 02:02:46]
+Computing 3D filter [12/09 02:02:50]
+Computing 3D filter [12/09 02:02:55]
+Computing 3D filter [12/09 02:03:00]
+Computing 3D filter [12/09 02:03:05]
+Computing 3D filter [12/09 02:03:09]
+Computing 3D filter [12/09 02:03:14]
+Computing 3D filter [12/09 02:03:19]
+Computing 3D filter [12/09 02:03:23]
+Computing 3D filter [12/09 02:03:28]
+Computing 3D filter [12/09 02:03:33]
+Computing 3D filter [12/09 02:03:37]
+Computing 3D filter [12/09 02:03:42]
+Computing 3D filter [12/09 02:03:47]
+Computing 3D filter [12/09 02:03:51]
+Computing 3D filter [12/09 02:03:56]
+Computing 3D filter [12/09 02:04:01]
+Computing 3D filter [12/09 02:04:05]
+Computing 3D filter [12/09 02:04:10]
+Computing 3D filter [12/09 02:04:15]
+Computing 3D filter [12/09 02:04:19]
+Computing 3D filter [12/09 02:04:24]
+Computing 3D filter [12/09 02:04:29]
+Computing 3D filter [12/09 02:04:33]
+Computing 3D filter [12/09 02:04:38]
+Computing 3D filter [12/09 02:04:42]
+Computing 3D filter [12/09 02:04:47]
+Computing 3D filter [12/09 02:04:52]
+Computing 3D filter [12/09 02:04:56]
+Computing 3D filter [12/09 02:05:01]
+Computing 3D filter [12/09 02:05:06]
+Computing 3D filter [12/09 02:05:10]
+Computing 3D filter [12/09 02:05:15]
+Computing 3D filter [12/09 02:05:19]
+Computing 3D filter [12/09 02:05:24]
+Computing 3D filter [12/09 02:05:29]
+Computing 3D filter [12/09 02:05:33]
+Computing 3D filter [12/09 02:05:38]
+Computing 3D filter [12/09 02:05:42]
+Computing 3D filter [12/09 02:05:47]
+Computing 3D filter [12/09 02:05:52]
+Computing 3D filter [12/09 02:05:56]
+Computing 3D filter [12/09 02:06:01]
+Computing 3D filter [12/09 02:06:05]
+Computing 3D filter [12/09 02:06:10]
+Computing 3D filter [12/09 02:06:15]
+Computing 3D filter [12/09 02:06:19]
+Computing 3D filter [12/09 02:06:24]
+Computing 3D filter [12/09 02:06:28]
+Computing 3D filter [12/09 02:06:33]
+Computing 3D filter [12/09 02:06:37]
+Computing 3D filter [12/09 02:06:42]
+Computing 3D filter [12/09 02:06:47]
+Computing 3D filter [12/09 02:06:51]
+Computing 3D filter [12/09 02:06:56]
+Computing 3D filter [12/09 02:07:00]
+Computing 3D filter [12/09 02:07:05]
+Computing 3D filter [12/09 02:07:09]
+Computing 3D filter [12/09 02:07:14]
+Computing 3D filter [12/09 02:07:18]
+Computing 3D filter [12/09 02:07:23]
+Computing 3D filter [12/09 02:07:28]
+Computing 3D filter [12/09 02:07:32]
+Computing 3D filter
+Training progress:  76%|███████▌  | 22700/30000 [16:31<05:23, 22.54it/s, Loss=0.0036179]
+Training progress:  85%|████████▍ | 25390/30000 [18:33<03:23, 22.61it/s, Loss=0.0037550]
+Computing 3D filter [12/09 02:07:41]
+Computing 3D filter [12/09 02:07:46]
+Computing 3D filter [12/09 02:07:50]
+Computing 3D filter [12/09 02:07:55]
+Computing 3D filter [12/09 02:07:59]
+Computing 3D filter [12/09 02:08:04]
+Computing 3D filter [12/09 02:08:08]
+Computing 3D filter [12/09 02:08:13]
+Computing 3D filter [12/09 02:08:17]
+Computing 3D filter [12/09 02:08:22]
+Computing 3D filter [12/09 02:08:26]
+Computing 3D filter [12/09 02:08:31]
+Computing 3D filter [12/09 02:08:35]
+Computing 3D filter [12/09 02:08:40]
+Computing 3D filter [12/09 02:08:45]
+Computing 3D filter [12/09 02:08:49]
+Computing 3D filter [12/09 02:08:54]
+Computing 3D filter [12/09 02:08:58]
+Computing 3D filter [12/09 02:09:03]
+Computing 3D filter [12/09 02:09:07]
+Computing 3D filter [12/09 02:09:12]
+Computing 3D filter [12/09 02:09:16]
+Computing 3D filter [12/09 02:09:21]
+Computing 3D filter [12/09 02:09:25]
+Computing 3D filter [12/09 02:09:29]
+Computing 3D filter [12/09 02:09:34]
+Computing 3D filter [12/09 02:09:38]
+Computing 3D filter [12/09 02:09:43]
+Computing 3D filter [12/09 02:09:47]
+Computing 3D filter [12/09 02:09:52]
+Computing 3D filter [12/09 02:09:56]
+Computing 3D filter [12/09 02:10:01]
+Computing 3D filter [12/09 02:10:05]
+Computing 3D filter [12/09 02:10:10]
+Computing 3D filter [12/09 02:10:14]
+Computing 3D filter [12/09 02:10:19]
+Computing 3D filter [12/09 02:10:23]
+Computing 3D filter [12/09 02:10:28]
+Computing 3D filter [12/09 02:10:32]
+Computing 3D filter [12/09 02:10:37]
+Computing 3D filter [12/09 02:10:41]
+Computing 3D filter [12/09 02:10:46]
+Computing 3D filter [12/09 02:10:50]
+Computing 3D filter [12/09 02:10:54]
+Computing 3D filter [12/09 02:10:59]
+Computing 3D filter [12/09 02:11:03]
+Computing 3D filter [12/09 02:11:08]
+Computing 3D filter [12/09 02:11:12]
+Computing 3D filter [12/09 02:11:17]
+Computing 3D filter [12/09 02:11:21]
+Computing 3D filter [12/09 02:11:26]
+Computing 3D filter [12/09 02:11:30]
+Computing 3D filter [12/09 02:11:35]
+Computing 3D filter [12/09 02:11:39]
+Traceback (most recent call last):
+  File "/kaggle/working/armB/train.py", line 270, in <module>
+    training(lp.extract(args), op.extract(args), pp.extract(args), args.test_iterations, args.save_iterations, args.checkpoint_iterations, args.start_checkpoint, args.debug_from)
+  File "/kaggle/working/armB/train.py", line 137, in training
+    loss = (1.0 - opt.lambda_dssim) * Ll1 + opt.lambda_dssim * (1.0 - ssim(image, gt_image))
+                                                                      ^^^^^^^^^^^^^^^^^^^^^
+  File "/kaggle/working/armB/utils/loss_utils.py", line 38, in ssim
+    window = window.cuda(img1.get_device())
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+torch.AcceleratorError: CUDA error: an illegal memory access was encountered
+Search for `cudaErrorIllegalAddress' in https://docs.nvidia.com/cuda/cuda-runtime-api/group__CUDART__TYPES.html for more information.
+CUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.
+For debugging consider passing CUDA_LAUNCH_BLOCKING=1
+Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.
+Traceback (most recent call last):
+  File "/kaggle/src/script.py", line 385, in worker
+    done[key] = run_one(gpu, arm, scene, seed)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/kaggle/src/script.py", line 215, in run_one
+    kc.sh(f"{env} python {entry} -s {src} -m {out} --eval "
+  File "/kaggle/working/armA/tools/kernel_common.py", line 77, in sh
+    raise RuntimeError(f"command failed ({rc}): {cmd}\n--- tail ---\n{out[-3000:]}")
+RuntimeError: command failed (1): OMP_NUM_THREADS=4 CUDA_VISIBLE_DEVICES=1 python train.py -s /kaggle/working/multi-scale/chair -m /kaggle/working/out_armB/chair --eval --white_background --iterations 30000 --test_iterations -1 --port 6210  --kernel_size 0.3 --disable_3D_filter --disable_2D_mip_compensation
+--- tail ---
+
+Computing 3D filter [12/09 02:08:08]
+Computing 3D filter [12/09 02:08:13]
+Computing 3D filter [12/09 02:08:17]
+Computing 3D filter [12/09 02:08:22]
+Computing 3D filter [12/09 02:08:26]
+Computing 3D filter [12/09 02:08:31]
+Computing 3D filter [12/09 02:08:35]
+Computing 3D filter [12/09 02:08:40]
+Computing 3D filter [12/09 02:08:45]
+Computing 3D filter [12/09 02:08:49]
+Computing 3D filter [12/09 02:08:54]
+Computing 3D filter [12/09 02:08:58]
+Computing 3D filter [12/09 02:09:03]
+Computing 3D filter [12/09 02:09:07]
+Computing 3D filter [12/09 02:09:12]
+Computing 3D filter [12/09 02:09:16]
+Computing 3D filter [12/09 02:09:21]
+Computing 3D filter [12/09 02:09:25]
+Computing 3D filter [12/09 02:09:29]
+Computing 3D filter [12/09 02:09:34]
+Computing 3D filter [12/09 02:09:38]
+Computing 3D filter [12/09 02:09:43]
+Computing 3D filter [12/09 02:09:47]
+Computing 3D filter [12/09 02:09:52]
+Computing 3D filter [12/09 02:09:56]
+Computing 3D filter [12/09 02:10:01]
+Computing 3D filter [12/09 02:10:05]
+Computing 3D filter [12/09 02:10:10]
+Computing 3D filter [12/09 02:10:14]
+Computing 3D filter [12/09 02:10:19]
+Computing 3D filter [12/09 02:10:23]
+Computing 3D filter [12/09 02:10:28]
+Computing 3D filter [12/09 02:10:32]
+Computing 3D filter [12/09 02:10:37]
+Computing 3D filter [12/09 02:10:41]
+Computing 3D filter [12/09 02:10:46]
+Computing 3D filter [12/09 02:10:50]
+Computing 3D filter [12/09 02:10:54]
+Computing 3D filter [12/09 02:10:59]
+Computing 3D filter [12/09 02:11:03]
+Computing 3D filter [12/09 02:11:08]
+Computing 3D filter [12/09 02:11:12]
+Computing 3D filter [12/09 02:11:17]
+Computing 3D filter [12/09 02:11:21]
+Computing 3D filter [12/09 02:11:26]
+Computing 3D filter [12/09 02:11:30]
+Computing 3D filter [12/09 02:11:35]
+Computing 3D filter [12/09 02:11:39]
+Traceback (most recent call last):
+  File "/kaggle/working/armB/train.py", line 270, in <module>
+    training(lp.extract(args), op.extract(args), pp.extract(args), args.test_iterations, args.save_iterations, args.checkpoint_iterations, args.start_checkpoint, args.debug_from)
+  File "/kaggle/working/armB/train.py", line 137, in training
+    loss = (1.0 - opt.lambda_dssim) * Ll1 + opt.lambda_dssim * (1.0 - ssim(image, gt_image))
+                                                                      ^^^^^^^^^^^^^^^^^^^^^
+  File "/kaggle/working/armB/utils/loss_utils.py", line 38, in ssim
+    window = window.cuda(img1.get_device())
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+torch.AcceleratorError: CUDA error: an illegal memory access was encountered
+Search for `cudaErrorIllegalAddress' in https://docs.nvidia.com/cuda/cuda-runtime-api/group__CUDART__TYPES.html for more information.
+CUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.
+For debugging consider passing CUDA_LAUNCH_BLOCKING=1
+Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.
+
+
+Training progress:  94%|█████████▎| 28100/30000 [20:34<01:23, 22.76it/s, Loss=0.0038734]
+
+working dir after prune: 156 MB
+completed 0/4 jobs; failed: ['B/ship', 'B/chair']
+R1_SUMMARY_JSON={"rung": "C2", "protocol": "STMT", "load_allres": false, "seeds": [0], "scenes": ["ship", "chair"], "iterations": 30000, "gpu": "Tesla T4", "n_gpu": 2, "torch": "2.10.0+cu128", "cuda": "12.8", "open3d": true, "armA_commit": "a77201ee6c60a7fa4d8442e92112bc115538a373", "armB_commit": "de7cb44c168b1cc901d7b7974153604bda1007bd", "convert_seconds": 228.82791948318481, "done": {}, "failed": {"B/ship": "RuntimeError: command failed (1): OMP_NUM_THREADS=4 CUDA_VISIBLE_DEVICES=0 python train.py -s /kaggle/working/multi-scale/ship -m /kaggle/working/out_armB/ship --eval --white_background --iterations 30000 --test_iterations -1 --port 6209  --kernel_size 0.3 --disable_3D_filter --disable_2D_mip_compensation\n--- tail ---\ng 3D filter [12/09 01:55:13]\nComputing 3D filter [12/09 01:55:19]\nComputing 3D filter [12/09 01:55:26]\nComputing 3D filter [12/09 01:55:32]\nComputing 3D filter [12/09 01:55:38]\nComputing 3D filter [12/09 01:55:45]\nComputing 3D filter [12/09 01:55:51]\nComputing 3D filter [12/09 01", "B/chair": "RuntimeError: command failed (1): OMP_NUM_THREADS=4 CUDA_VISIBLE_DEVICES=1 python train.py -s /kaggle/working/multi-scale/chair -m /kaggle/working/out_armB/chair --eval --white_background --iterations 30000 --test_iterations -1 --port 6210  --kernel_size 0.3 --disable_3D_filter --disable_2D_mip_compensation\n--- tail ---\n\nComputing 3D filter [12/09 02:08:08]\nComputing 3D filter [12/09 02:08:13]\nComputing 3D filter [12/09 02:08:17]\nComputing 3D filter [12/09 02:08:22]\nComputing 3D filter [12/09 02:08:26]\nComputing 3D filter [12/09 02:08:31]\nComputing 3D filter [12/09 02:08:35]\nComputing 3D filte"}, "session_seconds": 1731.8077247142792, "gpu_hours_used": 0.4810577015744315, "complete": false, "filter_3D_max": {}, "armB_all_zero": true, "armA_all_nonzero": true}
+2 job(s) failed — see the table above.
+/usr/local/lib/python3.12/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\|'
+  cells[i][c] = re.sub('\\\\\|', '|', cell)
+/usr/local/lib/python3.12/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\_'
+  text = re.sub(r'_', '\_', text) # Escape underscores in display text
+[NbConvertApp] Converting notebook __script__.ipynb to html
+[NbConvertApp] Writing 365106 bytes to __results__.html

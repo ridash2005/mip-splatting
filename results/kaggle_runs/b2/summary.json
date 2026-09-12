@@ -1,0 +1,1172 @@
+{
+  "rung": "R8",
+  "iterations": 30000,
+  "scenes": [
+    "ship",
+    "drums",
+    "ficus",
+    "hotdog",
+    "lego",
+    "materials",
+    "mic",
+    "chair"
+  ],
+  "taus": [
+    0.01
+  ],
+  "sweep_scene": "lego",
+  "sweep_taus": [
+    0.003,
+    0.03,
+    0.1
+  ],
+  "commit": "e342d3ffee62dfa17ff059ac36591dc3ec126bf5",
+  "gpu": "Tesla T4",
+  "results": {
+    "ship/full": {
+      "PSNR": 29.719961166381836,
+      "SSIM": 0.9225485324859619,
+      "LPIPS": 0.06763513386249542,
+      "model_mb": 111.444776,
+      "retained": 1.0,
+      "per_scale": {
+        "1x": 30.4821293926239,
+        "1/2": 31.50946457862854,
+        "1/4": 29.986843156814576,
+        "1/8": 26.90140513420105
+      }
+    },
+    "ship/b2/tau0.01": {
+      "PSNR": 29.719961166381836,
+      "SSIM": 0.9225485324859619,
+      "LPIPS": 0.06763513386249542,
+      "model_mb": 111.444776,
+      "retained": 1.0,
+      "per_scale": {
+        "1x": 30.4821293926239,
+        "1/2": 31.50946457862854,
+        "1/4": 29.986843156814576,
+        "1/8": 26.90140513420105
+      },
+      "tau": 0.01,
+      "mean_l_max": 3.0,
+      "l_max_hist": {
+        "0": 0,
+        "1": 0,
+        "2": 0,
+        "3": 442235
+      },
+      "mean_views": 400.0
+    },
+    "ship/magnitude/tau0.01": {
+      "PSNR": 29.719961166381836,
+      "SSIM": 0.9225485324859619,
+      "LPIPS": 0.06763513386249542,
+      "model_mb": 111.444776,
+      "retained": 1.0,
+      "per_scale": {
+        "1x": 30.4821293926239,
+        "1/2": 31.50946457862854,
+        "1/4": 29.986843156814576,
+        "1/8": 26.90140513420105
+      },
+      "matched_to_tau": 0.01
+    },
+    "drums/full": {
+      "PSNR": 26.472671508789062,
+      "SSIM": 0.9581021070480347,
+      "LPIPS": 0.03485703840851784,
+      "model_mb": 86.3675,
+      "retained": 1.0,
+      "per_scale": {
+        "1x": 26.214589176177977,
+        "1/2": 26.949900150299072,
+        "1/4": 26.907392587661743,
+        "1/8": 25.81880325317383
+      }
+    },
+    "drums/b2/tau0.01": {
+      "PSNR": 26.472671508789062,
+      "SSIM": 0.9581021070480347,
+      "LPIPS": 0.03485703840851784,
+      "model_mb": 86.3675,
+      "retained": 1.0,
+      "per_scale": {
+        "1x": 26.214589176177977,
+        "1/2": 26.949900150299072,
+        "1/4": 26.907392587661743,
+        "1/8": 25.81880325317383
+      },
+      "tau": 0.01,
+      "mean_l_max": 3.0,
+      "l_max_hist": {
+        "0": 0,
+        "1": 0,
+        "2": 0,
+        "3": 342722
+      },
+      "mean_views": 400.0
+    },
+    "drums/magnitude/tau0.01": {
+      "PSNR": 26.472671508789062,
+      "SSIM": 0.9581021070480347,
+      "LPIPS": 0.03485703840851784,
+      "model_mb": 86.3675,
+      "retained": 1.0,
+      "per_scale": {
+        "1x": 26.214589176177977,
+        "1/2": 26.949900150299072,
+        "1/4": 26.907392587661743,
+        "1/8": 25.81880325317383
+      },
+      "matched_to_tau": 0.01
+    },
+    "ficus/full": {
+      "PSNR": 33.00472640991211,
+      "SSIM": 0.9880855679512024,
+      "LPIPS": 0.011657305993139744,
+      "model_mb": 46.843064,
+      "retained": 1.0,
+      "per_scale": {
+        "1x": 35.19167607307434,
+        "1/2": 34.78994893074036,
+        "1/4": 32.294866704940794,
+        "1/8": 29.742421875
+      }
+    },
+    "ficus/b2/tau0.01": {
+      "PSNR": 33.00472640991211,
+      "SSIM": 0.9880855679512024,
+      "LPIPS": 0.011657305993139744,
+      "model_mb": 46.843064,
+      "retained": 1.0,
+      "per_scale": {
+        "1x": 35.19167607307434,
+        "1/2": 34.78994893074036,
+        "1/4": 32.294866704940794,
+        "1/8": 29.742421875
+      },
+      "tau": 0.01,
+      "mean_l_max": 3.0,
+      "l_max_hist": {
+        "0": 0,
+        "1": 0,
+        "2": 0,
+        "3": 185879
+      },
+      "mean_views": 400.0
+    },
+    "ficus/magnitude/tau0.01": {
+      "PSNR": 33.00472640991211,
+      "SSIM": 0.9880855679512024,
+      "LPIPS": 0.011657305993139744,
+      "model_mb": 46.843064,
+      "retained": 1.0,
+      "per_scale": {
+        "1x": 35.19167607307434,
+        "1/2": 34.78994893074036,
+        "1/4": 32.294866704940794,
+        "1/8": 29.742421875
+      },
+      "matched_to_tau": 0.01
+    },
+    "hotdog/full": {
+      "PSNR": 36.14620590209961,
+      "SSIM": 0.9874672889709473,
+      "LPIPS": 0.013174254447221756,
+      "model_mb": 48.917276,
+      "retained": 1.0,
+      "per_scale": {
+        "1x": 37.87619429588318,
+        "1/2": 38.548525972366335,
+        "1/4": 35.982732648849485,
+        "1/8": 32.177372217178345
+      }
+    },
+    "hotdog/b2/tau0.01": {
+      "PSNR": 36.14620590209961,
+      "SSIM": 0.9874672889709473,
+      "LPIPS": 0.013174254447221756,
+      "model_mb": 48.917276,
+      "retained": 1.0,
+      "per_scale": {
+        "1x": 37.87619429588318,
+        "1/2": 38.548525972366335,
+        "1/4": 35.982732648849485,
+        "1/8": 32.177372217178345
+      },
+      "tau": 0.01,
+      "mean_l_max": 3.0,
+      "l_max_hist": {
+        "0": 0,
+        "1": 0,
+        "2": 0,
+        "3": 194110
+      },
+      "mean_views": 400.0
+    },
+    "hotdog/magnitude/tau0.01": {
+      "PSNR": 36.14620590209961,
+      "SSIM": 0.9874672889709473,
+      "LPIPS": 0.013174254447221756,
+      "model_mb": 48.917276,
+      "retained": 1.0,
+      "per_scale": {
+        "1x": 37.87619429588318,
+        "1/2": 38.548525972366335,
+        "1/4": 35.982732648849485,
+        "1/8": 32.177372217178345
+      },
+      "matched_to_tau": 0.01
+    },
+    "lego/full": {
+      "PSNR": 32.855735778808594,
+      "SSIM": 0.9827490448951721,
+      "LPIPS": 0.015578709542751312,
+      "model_mb": 73.931048,
+      "retained": 1.0,
+      "per_scale": {
+        "1x": 35.881837615966795,
+        "1/2": 35.4345465183258,
+        "1/4": 31.845805292129516,
+        "1/8": 28.26075119972229
+      }
+    },
+    "lego/b2/tau0.01": {
+      "PSNR": 32.855735778808594,
+      "SSIM": 0.9827490448951721,
+      "LPIPS": 0.015578709542751312,
+      "model_mb": 73.931048,
+      "retained": 1.0,
+      "per_scale": {
+        "1x": 35.881837615966795,
+        "1/2": 35.4345465183258,
+        "1/4": 31.845805292129516,
+        "1/8": 28.26075119972229
+      },
+      "tau": 0.01,
+      "mean_l_max": 3.0,
+      "l_max_hist": {
+        "0": 0,
+        "1": 0,
+        "2": 0,
+        "3": 293371
+      },
+      "mean_views": 400.0
+    },
+    "lego/magnitude/tau0.01": {
+      "PSNR": 32.855735778808594,
+      "SSIM": 0.9827490448951721,
+      "LPIPS": 0.015578709542751312,
+      "model_mb": 73.931048,
+      "retained": 1.0,
+      "per_scale": {
+        "1x": 35.881837615966795,
+        "1/2": 35.4345465183258,
+        "1/4": 31.845805292129516,
+        "1/8": 28.26075119972229
+      },
+      "matched_to_tau": 0.01
+    },
+    "materials/full": {
+      "PSNR": 30.082599639892578,
+      "SSIM": 0.9747297763824463,
+      "LPIPS": 0.01886272244155407,
+      "model_mb": 61.034948,
+      "retained": 1.0,
+      "per_scale": {
+        "1x": 30.26516854286194,
+        "1/2": 31.199254474639893,
+        "1/4": 30.66622923851013,
+        "1/8": 28.199738273620607
+      }
+    },
+    "materials/b2/tau0.01": {
+      "PSNR": 30.082599639892578,
+      "SSIM": 0.9747297763824463,
+      "LPIPS": 0.01886272244155407,
+      "model_mb": 61.034948,
+      "retained": 1.0,
+      "per_scale": {
+        "1x": 30.26516854286194,
+        "1/2": 31.199254474639893,
+        "1/4": 30.66622923851013,
+        "1/8": 28.199738273620607
+      },
+      "tau": 0.01,
+      "mean_l_max": 3.0,
+      "l_max_hist": {
+        "0": 0,
+        "1": 0,
+        "2": 0,
+        "3": 242196
+      },
+      "mean_views": 400.0
+    },
+    "materials/magnitude/tau0.01": {
+      "PSNR": 30.082599639892578,
+      "SSIM": 0.9747297763824463,
+      "LPIPS": 0.01886272244155407,
+      "model_mb": 61.034948,
+      "retained": 1.0,
+      "per_scale": {
+        "1x": 30.26516854286194,
+        "1/2": 31.199254474639893,
+        "1/4": 30.66622923851013,
+        "1/8": 28.199738273620607
+      },
+      "matched_to_tau": 0.01
+    },
+    "mic/full": {
+      "PSNR": 31.71405792236328,
+      "SSIM": 0.9861975908279419,
+      "LPIPS": 0.014923634938895702,
+      "model_mb": 102.65048,
+      "retained": 1.0,
+      "per_scale": {
+        "1x": 35.649836692810055,
+        "1/2": 35.73192726135254,
+        "1/4": 30.451478815078737,
+        "1/8": 25.02297634124756
+      }
+    },
+    "mic/b2/tau0.01": {
+      "PSNR": 31.71405792236328,
+      "SSIM": 0.9861975908279419,
+      "LPIPS": 0.014923634938895702,
+      "model_mb": 102.65048,
+      "retained": 1.0,
+      "per_scale": {
+        "1x": 35.649836692810055,
+        "1/2": 35.73192726135254,
+        "1/4": 30.451478815078737,
+        "1/8": 25.02297634124756
+      },
+      "tau": 0.01,
+      "mean_l_max": 3.0,
+      "l_max_hist": {
+        "0": 0,
+        "1": 0,
+        "2": 0,
+        "3": 407337
+      },
+      "mean_views": 400.0
+    },
+    "mic/magnitude/tau0.01": {
+      "PSNR": 31.71405792236328,
+      "SSIM": 0.9861975908279419,
+      "LPIPS": 0.014923634938895702,
+      "model_mb": 102.65048,
+      "retained": 1.0,
+      "per_scale": {
+        "1x": 35.649836692810055,
+        "1/2": 35.73192726135254,
+        "1/4": 30.451478815078737,
+        "1/8": 25.02297634124756
+      },
+      "matched_to_tau": 0.01
+    },
+    "chair/full": {
+      "PSNR": 35.61254119873047,
+      "SSIM": 0.9877724647521973,
+      "LPIPS": 0.013284075073897839,
+      "model_mb": 67.332932,
+      "retained": 1.0,
+      "per_scale": {
+        "1x": 35.94803554534912,
+        "1/2": 37.896539821624756,
+        "1/4": 36.11901521682739,
+        "1/8": 32.486580476760864
+      }
+    },
+    "chair/b2/tau0.01": {
+      "PSNR": 35.61254119873047,
+      "SSIM": 0.9877724647521973,
+      "LPIPS": 0.013284075073897839,
+      "model_mb": 67.332932,
+      "retained": 1.0,
+      "per_scale": {
+        "1x": 35.94803554534912,
+        "1/2": 37.896539821624756,
+        "1/4": 36.11901521682739,
+        "1/8": 32.486580476760864
+      },
+      "tau": 0.01,
+      "mean_l_max": 3.0,
+      "l_max_hist": {
+        "0": 0,
+        "1": 0,
+        "2": 0,
+        "3": 267188
+      },
+      "mean_views": 400.0
+    },
+    "chair/magnitude/tau0.01": {
+      "PSNR": 35.61254119873047,
+      "SSIM": 0.9877724647521973,
+      "LPIPS": 0.013284075073897839,
+      "model_mb": 67.332932,
+      "retained": 1.0,
+      "per_scale": {
+        "1x": 35.94803554534912,
+        "1/2": 37.896539821624756,
+        "1/4": 36.11901521682739,
+        "1/8": 32.486580476760864
+      },
+      "matched_to_tau": 0.01
+    },
+    "lego/b2/tau0.003_sweep": {
+      "PSNR": 32.855735778808594,
+      "SSIM": 0.9827490448951721,
+      "LPIPS": 0.015578709542751312,
+      "model_mb": 73.931048,
+      "retained": 1.0,
+      "per_scale": {
+        "1x": 35.881837615966795,
+        "1/2": 35.4345465183258,
+        "1/4": 31.845805292129516,
+        "1/8": 28.26075119972229
+      },
+      "tau": 0.003,
+      "mean_l_max": 3.0,
+      "l_max_hist": {
+        "0": 0,
+        "1": 0,
+        "2": 0,
+        "3": 293371
+      },
+      "mean_views": 400.0
+    },
+    "lego/magnitude/tau0.003_sweep": {
+      "PSNR": 32.855735778808594,
+      "SSIM": 0.9827490448951721,
+      "LPIPS": 0.015578709542751312,
+      "model_mb": 73.931048,
+      "retained": 1.0,
+      "per_scale": {
+        "1x": 35.881837615966795,
+        "1/2": 35.4345465183258,
+        "1/4": 31.845805292129516,
+        "1/8": 28.26075119972229
+      },
+      "matched_to_tau": 0.003
+    },
+    "lego/b2/tau0.03_sweep": {
+      "PSNR": 32.855735778808594,
+      "SSIM": 0.9827490448951721,
+      "LPIPS": 0.015578709542751312,
+      "model_mb": 73.931048,
+      "retained": 1.0,
+      "per_scale": {
+        "1x": 35.881837615966795,
+        "1/2": 35.4345465183258,
+        "1/4": 31.845805292129516,
+        "1/8": 28.26075119972229
+      },
+      "tau": 0.03,
+      "mean_l_max": 3.0,
+      "l_max_hist": {
+        "0": 0,
+        "1": 0,
+        "2": 0,
+        "3": 293371
+      },
+      "mean_views": 400.0
+    },
+    "lego/magnitude/tau0.03_sweep": {
+      "PSNR": 32.855735778808594,
+      "SSIM": 0.9827490448951721,
+      "LPIPS": 0.015578709542751312,
+      "model_mb": 73.931048,
+      "retained": 1.0,
+      "per_scale": {
+        "1x": 35.881837615966795,
+        "1/2": 35.4345465183258,
+        "1/4": 31.845805292129516,
+        "1/8": 28.26075119972229
+      },
+      "matched_to_tau": 0.03
+    },
+    "lego/b2/tau0.1_sweep": {
+      "PSNR": 32.855735778808594,
+      "SSIM": 0.9827490448951721,
+      "LPIPS": 0.015578709542751312,
+      "model_mb": 73.931048,
+      "retained": 1.0,
+      "per_scale": {
+        "1x": 35.881837615966795,
+        "1/2": 35.4345465183258,
+        "1/4": 31.845805292129516,
+        "1/8": 28.26075119972229
+      },
+      "tau": 0.1,
+      "mean_l_max": 3.0,
+      "l_max_hist": {
+        "0": 0,
+        "1": 0,
+        "2": 0,
+        "3": 293371
+      },
+      "mean_views": 400.0
+    },
+    "lego/magnitude/tau0.1_sweep": {
+      "PSNR": 32.855735778808594,
+      "SSIM": 0.9827490448951721,
+      "LPIPS": 0.015578709542751312,
+      "model_mb": 73.931048,
+      "retained": 1.0,
+      "per_scale": {
+        "1x": 35.881837615966795,
+        "1/2": 35.4345465183258,
+        "1/4": 31.845805292129516,
+        "1/8": 28.26075119972229
+      },
+      "matched_to_tau": 0.1
+    }
+  },
+  "failed": {},
+  "protocols": {
+    "ship/full": {
+      "scene": "ship",
+      "protocol": "full",
+      "criterion": "cond",
+      "n_cameras": 400,
+      "span_deg": 179.7538782258733,
+      "mean_l_max": 3.0,
+      "non_dc_retained": 1.0,
+      "l_max_hist": {
+        "0": 0,
+        "1": 0,
+        "2": 0,
+        "3": 442235
+      },
+      "mean_views": 400.0
+    },
+    "ship/arc": {
+      "scene": "ship",
+      "protocol": "arc",
+      "criterion": "cond",
+      "n_cameras": 100,
+      "span_deg": 81.29995900035229,
+      "mean_l_max": 1.5811457709136545,
+      "non_dc_retained": 0.4114316294880927,
+      "l_max_hist": {
+        "0": 0,
+        "1": 243993,
+        "2": 139481,
+        "3": 58761
+      },
+      "mean_views": 100.0
+    },
+    "ship/cone": {
+      "scene": "ship",
+      "protocol": "cone",
+      "criterion": "cond",
+      "n_cameras": 40,
+      "span_deg": 42.234135843805866,
+      "mean_l_max": 0.6209277872624284,
+      "non_dc_retained": 0.12418555745248568,
+      "l_max_hist": {
+        "0": 167639,
+        "1": 274596,
+        "2": 0,
+        "3": 0
+      },
+      "mean_views": 40.0
+    },
+    "ship/mixed": {
+      "scene": "ship",
+      "protocol": "mixed",
+      "criterion": "cond",
+      "n_cameras": 400,
+      "span_deg": 179.7538782258733,
+      "mean_l_max": 3.0,
+      "non_dc_retained": 1.0,
+      "l_max_hist": {
+        "0": 0,
+        "1": 0,
+        "2": 0,
+        "3": 442235
+      },
+      "mean_views": 400.0
+    },
+    "ship/grazing": {
+      "scene": "ship",
+      "protocol": "grazing",
+      "criterion": "cond",
+      "n_cameras": 200,
+      "span_deg": 171.62580833852695,
+      "mean_l_max": 3.0,
+      "non_dc_retained": 1.0,
+      "l_max_hist": {
+        "0": 0,
+        "1": 0,
+        "2": 0,
+        "3": 442235
+      },
+      "mean_views": 200.0
+    },
+    "drums/full": {
+      "scene": "drums",
+      "protocol": "full",
+      "criterion": "cond",
+      "n_cameras": 400,
+      "span_deg": 179.193096853599,
+      "mean_l_max": 3.0,
+      "non_dc_retained": 1.0,
+      "l_max_hist": {
+        "0": 0,
+        "1": 0,
+        "2": 0,
+        "3": 342722
+      },
+      "mean_views": 400.0
+    },
+    "drums/arc": {
+      "scene": "drums",
+      "protocol": "arc",
+      "criterion": "cond",
+      "n_cameras": 100,
+      "span_deg": 89.22041621420591,
+      "mean_l_max": 2.0994567025169086,
+      "non_dc_retained": 0.5867033144453327,
+      "l_max_hist": {
+        "0": 0,
+        "1": 17882,
+        "2": 272872,
+        "3": 51968
+      },
+      "mean_views": 100.0
+    },
+    "drums/cone": {
+      "scene": "drums",
+      "protocol": "cone",
+      "criterion": "cond",
+      "n_cameras": 40,
+      "span_deg": 52.43501029536724,
+      "mean_l_max": 1.0,
+      "non_dc_retained": 0.2,
+      "l_max_hist": {
+        "0": 0,
+        "1": 342722,
+        "2": 0,
+        "3": 0
+      },
+      "mean_views": 40.0
+    },
+    "drums/mixed": {
+      "scene": "drums",
+      "protocol": "mixed",
+      "criterion": "cond",
+      "n_cameras": 400,
+      "span_deg": 179.193096853599,
+      "mean_l_max": 3.0,
+      "non_dc_retained": 1.0,
+      "l_max_hist": {
+        "0": 0,
+        "1": 0,
+        "2": 0,
+        "3": 342722
+      },
+      "mean_views": 400.0
+    },
+    "drums/grazing": {
+      "scene": "drums",
+      "protocol": "grazing",
+      "criterion": "cond",
+      "n_cameras": 200,
+      "span_deg": 168.45161899513002,
+      "mean_l_max": 3.0,
+      "non_dc_retained": 1.0,
+      "l_max_hist": {
+        "0": 0,
+        "1": 0,
+        "2": 0,
+        "3": 342722
+      },
+      "mean_views": 200.0
+    },
+    "ficus/full": {
+      "scene": "ficus",
+      "protocol": "full",
+      "criterion": "cond",
+      "n_cameras": 400,
+      "span_deg": 179.21205473307504,
+      "mean_l_max": 3.0,
+      "non_dc_retained": 1.0,
+      "l_max_hist": {
+        "0": 0,
+        "1": 0,
+        "2": 0,
+        "3": 185879
+      },
+      "mean_views": 400.0
+    },
+    "ficus/arc": {
+      "scene": "ficus",
+      "protocol": "arc",
+      "criterion": "cond",
+      "n_cameras": 100,
+      "span_deg": 96.49158039068145,
+      "mean_l_max": 2.873853420773729,
+      "non_dc_retained": 0.9411315963610736,
+      "l_max_hist": {
+        "0": 0,
+        "1": 0,
+        "2": 23448,
+        "3": 162431
+      },
+      "mean_views": 100.0
+    },
+    "ficus/cone": {
+      "scene": "ficus",
+      "protocol": "cone",
+      "criterion": "cond",
+      "n_cameras": 40,
+      "span_deg": 50.24456602308003,
+      "mean_l_max": 1.0,
+      "non_dc_retained": 0.2,
+      "l_max_hist": {
+        "0": 0,
+        "1": 185879,
+        "2": 0,
+        "3": 0
+      },
+      "mean_views": 40.0
+    },
+    "ficus/mixed": {
+      "scene": "ficus",
+      "protocol": "mixed",
+      "criterion": "cond",
+      "n_cameras": 400,
+      "span_deg": 179.21205473307504,
+      "mean_l_max": 3.0,
+      "non_dc_retained": 1.0,
+      "l_max_hist": {
+        "0": 0,
+        "1": 0,
+        "2": 0,
+        "3": 185879
+      },
+      "mean_views": 400.0
+    },
+    "ficus/grazing": {
+      "scene": "ficus",
+      "protocol": "grazing",
+      "criterion": "cond",
+      "n_cameras": 200,
+      "span_deg": 168.22306134653718,
+      "mean_l_max": 3.0,
+      "non_dc_retained": 1.0,
+      "l_max_hist": {
+        "0": 0,
+        "1": 0,
+        "2": 0,
+        "3": 185879
+      },
+      "mean_views": 200.0
+    },
+    "hotdog/full": {
+      "scene": "hotdog",
+      "protocol": "full",
+      "criterion": "cond",
+      "n_cameras": 400,
+      "span_deg": 178.66402652925058,
+      "mean_l_max": 3.0,
+      "non_dc_retained": 1.0,
+      "l_max_hist": {
+        "0": 0,
+        "1": 0,
+        "2": 0,
+        "3": 194110
+      },
+      "mean_views": 400.0
+    },
+    "hotdog/arc": {
+      "scene": "hotdog",
+      "protocol": "arc",
+      "criterion": "cond",
+      "n_cameras": 100,
+      "span_deg": 106.81479555652056,
+      "mean_l_max": 1.0038380299829994,
+      "non_dc_retained": 0.20127934332766645,
+      "l_max_hist": {
+        "0": 0,
+        "1": 193365,
+        "2": 745,
+        "3": 0
+      },
+      "mean_views": 100.0
+    },
+    "hotdog/cone": {
+      "scene": "hotdog",
+      "protocol": "cone",
+      "criterion": "cond",
+      "n_cameras": 40,
+      "span_deg": 52.6442613048228,
+      "mean_l_max": 1.0,
+      "non_dc_retained": 0.2,
+      "l_max_hist": {
+        "0": 0,
+        "1": 194110,
+        "2": 0,
+        "3": 0
+      },
+      "mean_views": 40.0
+    },
+    "hotdog/mixed": {
+      "scene": "hotdog",
+      "protocol": "mixed",
+      "criterion": "cond",
+      "n_cameras": 400,
+      "span_deg": 178.66402652925058,
+      "mean_l_max": 3.0,
+      "non_dc_retained": 1.0,
+      "l_max_hist": {
+        "0": 0,
+        "1": 0,
+        "2": 0,
+        "3": 194110
+      },
+      "mean_views": 400.0
+    },
+    "hotdog/grazing": {
+      "scene": "hotdog",
+      "protocol": "grazing",
+      "criterion": "cond",
+      "n_cameras": 200,
+      "span_deg": 163.94649111706894,
+      "mean_l_max": 3.0,
+      "non_dc_retained": 1.0,
+      "l_max_hist": {
+        "0": 0,
+        "1": 0,
+        "2": 0,
+        "3": 194110
+      },
+      "mean_views": 200.0
+    },
+    "lego/full": {
+      "scene": "lego",
+      "protocol": "full",
+      "criterion": "cond",
+      "n_cameras": 400,
+      "span_deg": 178.97687028487118,
+      "mean_l_max": 3.0,
+      "non_dc_retained": 1.0,
+      "l_max_hist": {
+        "0": 0,
+        "1": 0,
+        "2": 0,
+        "3": 293371
+      },
+      "mean_views": 400.0
+    },
+    "lego/arc": {
+      "scene": "lego",
+      "protocol": "arc",
+      "criterion": "cond",
+      "n_cameras": 100,
+      "span_deg": 92.86431085102389,
+      "mean_l_max": 1.7303448534449553,
+      "non_dc_retained": 0.4459738692645149,
+      "l_max_hist": {
+        "0": 0,
+        "1": 84666,
+        "2": 203148,
+        "3": 5557
+      },
+      "mean_views": 100.0
+    },
+    "lego/cone": {
+      "scene": "lego",
+      "protocol": "cone",
+      "criterion": "cond",
+      "n_cameras": 40,
+      "span_deg": 41.061415694657235,
+      "mean_l_max": 0.6649600676276797,
+      "non_dc_retained": 0.1329920135255359,
+      "l_max_hist": {
+        "0": 98291,
+        "1": 195080,
+        "2": 0,
+        "3": 0
+      },
+      "mean_views": 40.0
+    },
+    "lego/mixed": {
+      "scene": "lego",
+      "protocol": "mixed",
+      "criterion": "cond",
+      "n_cameras": 400,
+      "span_deg": 178.97687028487118,
+      "mean_l_max": 3.0,
+      "non_dc_retained": 1.0,
+      "l_max_hist": {
+        "0": 0,
+        "1": 0,
+        "2": 0,
+        "3": 293371
+      },
+      "mean_views": 400.0
+    },
+    "lego/grazing": {
+      "scene": "lego",
+      "protocol": "grazing",
+      "criterion": "cond",
+      "n_cameras": 200,
+      "span_deg": 156.79402241963555,
+      "mean_l_max": 3.0,
+      "non_dc_retained": 1.0,
+      "l_max_hist": {
+        "0": 0,
+        "1": 0,
+        "2": 0,
+        "3": 293371
+      },
+      "mean_views": 200.0
+    },
+    "materials/full": {
+      "scene": "materials",
+      "protocol": "full",
+      "criterion": "cond",
+      "n_cameras": 400,
+      "span_deg": 179.02084616831115,
+      "mean_l_max": 3.0,
+      "non_dc_retained": 1.0,
+      "l_max_hist": {
+        "0": 0,
+        "1": 0,
+        "2": 0,
+        "3": 242196
+      },
+      "mean_views": 400.0
+    },
+    "materials/arc": {
+      "scene": "materials",
+      "protocol": "arc",
+      "criterion": "cond",
+      "n_cameras": 100,
+      "span_deg": 102.14290659491854,
+      "mean_l_max": 3.0,
+      "non_dc_retained": 1.0,
+      "l_max_hist": {
+        "0": 0,
+        "1": 0,
+        "2": 0,
+        "3": 242196
+      },
+      "mean_views": 100.0
+    },
+    "materials/cone": {
+      "scene": "materials",
+      "protocol": "cone",
+      "criterion": "cond",
+      "n_cameras": 40,
+      "span_deg": 74.36001310793688,
+      "mean_l_max": 2.476440568795521,
+      "non_dc_retained": 0.7584232054479292,
+      "l_max_hist": {
+        "0": 0,
+        "1": 4997,
+        "2": 116810,
+        "3": 120389
+      },
+      "mean_views": 40.0
+    },
+    "materials/mixed": {
+      "scene": "materials",
+      "protocol": "mixed",
+      "criterion": "cond",
+      "n_cameras": 400,
+      "span_deg": 179.02084616831115,
+      "mean_l_max": 3.0,
+      "non_dc_retained": 1.0,
+      "l_max_hist": {
+        "0": 0,
+        "1": 0,
+        "2": 0,
+        "3": 242196
+      },
+      "mean_views": 400.0
+    },
+    "materials/grazing": {
+      "scene": "materials",
+      "protocol": "grazing",
+      "criterion": "cond",
+      "n_cameras": 200,
+      "span_deg": 172.0347994309598,
+      "mean_l_max": 3.0,
+      "non_dc_retained": 1.0,
+      "l_max_hist": {
+        "0": 0,
+        "1": 0,
+        "2": 0,
+        "3": 242196
+      },
+      "mean_views": 200.0
+    },
+    "mic/full": {
+      "scene": "mic",
+      "protocol": "full",
+      "criterion": "cond",
+      "n_cameras": 400,
+      "span_deg": 178.47412486243323,
+      "mean_l_max": 3.0,
+      "non_dc_retained": 1.0,
+      "l_max_hist": {
+        "0": 0,
+        "1": 0,
+        "2": 0,
+        "3": 407337
+      },
+      "mean_views": 400.0
+    },
+    "mic/arc": {
+      "scene": "mic",
+      "protocol": "arc",
+      "criterion": "cond",
+      "n_cameras": 100,
+      "span_deg": 92.42982991006609,
+      "mean_l_max": 2.6472257614702324,
+      "non_dc_retained": 0.8444491907192325,
+      "l_max_hist": {
+        "0": 0,
+        "1": 27731,
+        "2": 88236,
+        "3": 291370
+      },
+      "mean_views": 100.0
+    },
+    "mic/cone": {
+      "scene": "mic",
+      "protocol": "cone",
+      "criterion": "cond",
+      "n_cameras": 40,
+      "span_deg": 36.62501331786738,
+      "mean_l_max": 1.0,
+      "non_dc_retained": 0.2,
+      "l_max_hist": {
+        "0": 0,
+        "1": 407337,
+        "2": 0,
+        "3": 0
+      },
+      "mean_views": 40.0
+    },
+    "mic/mixed": {
+      "scene": "mic",
+      "protocol": "mixed",
+      "criterion": "cond",
+      "n_cameras": 400,
+      "span_deg": 178.47412486243323,
+      "mean_l_max": 3.0,
+      "non_dc_retained": 1.0,
+      "l_max_hist": {
+        "0": 0,
+        "1": 0,
+        "2": 0,
+        "3": 407337
+      },
+      "mean_views": 400.0
+    },
+    "mic/grazing": {
+      "scene": "mic",
+      "protocol": "grazing",
+      "criterion": "cond",
+      "n_cameras": 200,
+      "span_deg": 170.81377506324486,
+      "mean_l_max": 3.0,
+      "non_dc_retained": 1.0,
+      "l_max_hist": {
+        "0": 0,
+        "1": 0,
+        "2": 0,
+        "3": 407337
+      },
+      "mean_views": 200.0
+    },
+    "chair/full": {
+      "scene": "chair",
+      "protocol": "full",
+      "criterion": "cond",
+      "n_cameras": 400,
+      "span_deg": 178.6578806541832,
+      "mean_l_max": 3.0,
+      "non_dc_retained": 1.0,
+      "l_max_hist": {
+        "0": 0,
+        "1": 0,
+        "2": 0,
+        "3": 267188
+      },
+      "mean_views": 400.0
+    },
+    "chair/arc": {
+      "scene": "chair",
+      "protocol": "arc",
+      "criterion": "cond",
+      "n_cameras": 100,
+      "span_deg": 95.22338371305824,
+      "mean_l_max": 2.0,
+      "non_dc_retained": 0.5333333333333333,
+      "l_max_hist": {
+        "0": 0,
+        "1": 0,
+        "2": 267188,
+        "3": 0
+      },
+      "mean_views": 100.0
+    },
+    "chair/cone": {
+      "scene": "chair",
+      "protocol": "cone",
+      "criterion": "cond",
+      "n_cameras": 40,
+      "span_deg": 53.662493548881926,
+      "mean_l_max": 1.0,
+      "non_dc_retained": 0.2,
+      "l_max_hist": {
+        "0": 0,
+        "1": 267188,
+        "2": 0,
+        "3": 0
+      },
+      "mean_views": 40.0
+    },
+    "chair/mixed": {
+      "scene": "chair",
+      "protocol": "mixed",
+      "criterion": "cond",
+      "n_cameras": 400,
+      "span_deg": 178.6578806541832,
+      "mean_l_max": 3.0,
+      "non_dc_retained": 1.0,
+      "l_max_hist": {
+        "0": 0,
+        "1": 0,
+        "2": 0,
+        "3": 267188
+      },
+      "mean_views": 400.0
+    },
+    "chair/grazing": {
+      "scene": "chair",
+      "protocol": "grazing",
+      "criterion": "cond",
+      "n_cameras": 200,
+      "span_deg": 163.73725371633498,
+      "mean_l_max": 3.0,
+      "non_dc_retained": 1.0,
+      "l_max_hist": {
+        "0": 0,
+        "1": 0,
+        "2": 0,
+        "3": 267188
+      },
+      "mean_views": 200.0
+    }
+  },
+  "session_seconds": 8296.784002304077,
+  "gpu_hours_used": 2.304662223259608
+}

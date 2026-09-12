@@ -201,6 +201,68 @@ def magnitude_mask(scene, target_frac):
     return (mag >= thresh)
 
 
+def _block_energy(scene):
+    """Per-primitive energy of each SH degree block, [N, 3] for l = 1, 2, 3."""
+    from plyfile import PlyData
+    v = PlyData.read(os.path.join(srcs[scene], "point_cloud.ply"))["vertex"]
+    names = list(v.data.dtype.names)
+    rest = sorted([n for n in names if n.startswith("f_rest_")],
+                  key=lambda s: int(s.split("_")[-1]))
+    n = v.count
+    per = np.zeros((n, 15))
+    for ch in range(3):
+        for j in range(15):
+            per[:, j] += np.asarray(v[rest[ch * 15 + j]]).astype(np.float64) ** 2
+    out = np.zeros((n, 3))
+    for l in (1, 2, 3):
+        sl = shid.DEG_SLICES[l]
+        out[:, l - 1] = per[:, sl.start - 1:sl.stop - 1].sum(axis=1)
+    return out
+
+
+def degree_magnitude_mask(scene, target_frac):
+    """The FAIR control: magnitude pruning with B2's own structure.
+
+    The plain `magnitude_mask` selects individual coefficients anywhere in the
+    [N, 15] array, while B2 keeps NESTED WHOLE DEGREES per primitive. At a
+    matched retained fraction that gives magnitude strictly more freedom, and a
+    win for it then measures granularity rather than criterion -- which makes the
+    comparison unable to answer the question it was built for.
+
+    This control keeps B2's structure exactly and changes only the quantity
+    thresholded: block ENERGY where B2 uses block CONDITIONING. Both assign a
+    nested l_max per primitive; both spend the same budget; the only difference
+    is what decides. A loss against THIS is a statement about the criterion.
+    """
+    e = _block_energy(scene)
+    n = len(e)
+
+    def frac_at(theta):
+        keep_l = np.zeros(n, dtype=int)
+        alive = np.ones(n, dtype=bool)
+        for l in (1, 2, 3):                       # nested: degree l needs l-1
+            alive &= e[:, l - 1] > theta
+            keep_l += alive.astype(int)
+        kept = sum((2 * l + 1) * int((keep_l >= l).sum()) for l in (1, 2, 3))
+        return kept / (15.0 * n), keep_l
+
+    lo, hi = 0.0, float(e.max()) + 1e-12
+    best = None
+    for _ in range(60):                            # bisect on the threshold
+        mid = 0.5 * (lo + hi)
+        f, keep_l = frac_at(mid)
+        best = keep_l
+        if f > target_frac:
+            lo = mid
+        else:
+            hi = mid
+    keep = np.zeros((n, 15), dtype=bool)
+    for l in (1, 2, 3):
+        sl = shid.DEG_SLICES[l]
+        keep[:, sl.start - 1:sl.stop - 1] = (best >= l)[:, None]
+    return keep
+
+
 def evaluate(scene, tag, keep_mask):
     """Write the masked model, render it and score it, using the shipped path."""
     out = f"{WORK}/out/{scene}_{tag}"
@@ -249,6 +311,17 @@ def do(scene, tau, with_sweep_tag=""):
         results[mkey] = rm
         print(f"[{mkey}] PSNR {rm['PSNR']:.3f} | {rm['model_mb']:.1f} MB | "
               f"non-DC kept {rm['retained']:.1%}", flush=True)
+
+        # The fair control: same structure as B2, different criterion. Without
+        # it a magnitude win measures granularity, not the criterion.
+        dkey = f"{scene}/degmag/tau{tau}{with_sweep_tag}"
+        dmask = degree_magnitude_mask(scene, frac)
+        rd = evaluate(scene, f"degmag_{str(tau).replace('.', 'p')}", dmask)
+        rd["matched_to_tau"] = tau
+        results[dkey] = rd
+        print(f"[{dkey}] PSNR {rd['PSNR']:.3f} | {rd['model_mb']:.1f} MB | "
+              f"non-DC kept {rd['retained']:.1%} | "
+              f"vs B2 {r['PSNR'] - rd['PSNR']:+.3f} dB", flush=True)
     except Exception as e:
         failed[f"{scene}/tau{tau}"] = f"{type(e).__name__}: {e}"[:400]
         traceback.print_exc()

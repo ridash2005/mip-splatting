@@ -1022,15 +1022,15 @@ The control that separates them is magnitude pruning restricted to B2's own
 nested degrees: same structure, same budget, and the only remaining difference
 is what the two rank by. It is the \emph{blocked} column of
 Table~\ref{tab:btwomatched}, and it moves the answer a long way. On
-\texttt{chair}, where the free control had beaten B2 by $1.82$\,dB, the fair one
-beats it by $0.09$ --- inside the seed spread of $\seedSigma$\,dB, so on that
-scene the criterion is not distinguishable from magnitude at all. Something like
-$95\,\%$ of what looked like a verdict on identifiability was a verdict on block
-structure.
+\btwoStructureScene, where the free control had beaten B2 by
+$\btwoFreeGap$\,dB, the fair one beats it by $\btwoBlockedGapMin$ --- inside the
+seed spread of $\seedSigma$\,dB, so on that scene the criterion is not
+distinguishable from magnitude at all. $\btwoStructureShare\,\%$ of what looked
+like a verdict on identifiability was a verdict on block structure.
 
 What does not change is the direction. On \texttt{lego} the fair control still
-wins by $0.21$ and $0.42$\,dB, two and four times the seed spread, at both
-budgets where anything is pruned. So the honest statement is narrower and
+wins at both budgets where anything is pruned, by up to
+$\btwoBlockedGapMax$\,dB --- four times the seed spread. So the honest statement is narrower and
 firmer than the one it replaces: at matched structure and matched budget,
 ranking spherical-harmonic coefficients by how well the capture determines them
 is worse than ranking them by how large they are --- by a fifth of a decibel

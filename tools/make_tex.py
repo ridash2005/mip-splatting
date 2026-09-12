@@ -1497,7 +1497,7 @@ def b2_protocol_table(proto, sweep, label, caption):
 
 
 # ------------------------------------------------------------------- macros
-def macros(rows, summaries, inst=None, raw=None):
+def macros(rows, summaries, inst=None, raw=None, b2c_for_macros=None):
     """Inline numbers, as \\newcommand. Undefined data yields a visible marker."""
     M = {}
 
@@ -1607,6 +1607,35 @@ def macros(rows, summaries, inst=None, raw=None):
     put("stressFlatMax", max(_flat) if _flat else None, "{:+.3f}")
     M["stressFlatCount"] = str(len(_flat)) if _flat else NOT_MEASURED
     put("stressBindDelta", max(_bind) if _bind else None, "{:+.3f}")
+    # Table 4's fair control, quoted in §7.13's prose. The free/blocked pair is
+    # the whole point of that section, so neither may be typed.
+    _res = (b2c_for_macros or {}).get("results") or {}
+    _free, _blocked, _worst = [], [], None
+    for k, v in _res.items():
+        if "/b2/" not in k or not isinstance(v, dict) or "PSNR" not in v:
+            continue
+        scene, _, tail = k.split("/", 2)
+        mg = _res.get(f"{scene}/magnitude/{tail}")
+        dg = _res.get(f"{scene}/degmag/{tail}")
+        if not mg or not dg or not v.get("retained"):
+            continue
+        _free.append(v["PSNR"] - mg["PSNR"])
+        _blocked.append(v["PSNR"] - dg["PSNR"])
+        cand = abs(v["PSNR"] - mg["PSNR"])
+        if _worst is None or cand > _worst[0]:
+            _worst = (cand, abs(v["PSNR"] - dg["PSNR"]), scene)
+    # Magnitudes, not signed deltas: these are quoted after "beats it by", where
+    # a minus sign reads as a double negative. The signed values stay in the
+    # table, which is where the direction belongs.
+    put("btwoFreeGap", abs(min(_free)) if _free else None, "{:.3f}")
+    put("btwoBlockedGapMax", abs(min(_blocked)) if _blocked else None, "{:.3f}")
+    put("btwoBlockedGapMin", abs(max(_blocked)) if _blocked else None, "{:.3f}")
+    if _worst:
+        put("btwoStructureShare", 100.0 * (1.0 - _worst[1] / _worst[0]), "{:.0f}")
+        M["btwoStructureScene"] = chr(92) + "texttt{" + _worst[2] + "}"
+    else:
+        put("btwoStructureShare", None)
+        M["btwoStructureScene"] = NOT_MEASURED
     put("stressBindSigma",
         (max(_bind) / _rep) if (_bind and _rep) else None, "{:.1f}")
     armA = [s for k, s in sds.items() if k[1] == "A"]
@@ -1912,7 +1941,8 @@ def main():
             r"I-1 (floor occupancy) and I-2 (conditioning) across the five "
             r"capture protocols of \S\ref{sec:stress}. Computed from trained "
             r"point clouds and camera geometry; no retraining."),
-        "measured.tex": macros(rows, summaries, inst, raw=raw),
+        "measured.tex": macros(rows, summaries, inst, raw=raw,
+                               b2c_for_macros=b2c),
     }
     for name, body in written.items():
         with open(os.path.join(a.out, name), "w", encoding="utf-8") as f:

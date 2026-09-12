@@ -45,8 +45,10 @@ retention of its \emph{spectrum}.
 \medskip
 \keybox{status of this version}{%
 Both baselines are reproduced end to end on free compute across four rungs, and
-the reproduction is the subject of Chapter~\ref{ch:results}. Mip-Splatting
-reproduces to \textbf{L1 at all four test scales} (Table~\ref{tab:stmt}), and the
+the reproduction is the subject of Chapter~\ref{ch:results}. \textbf{Both} arms
+land within $0.5$\,dB of their published figures at all four test scales, and the
+gap between them --- the quantity the two-arm construction exists to measure ---
+within $0.2$\,dB (Table~\ref{tab:stmt}). The
 two falsification gates the method's premise rests on --- does the Nyquist floor
 bind everywhere, and is the capture conditioning really anisotropic --- are
 \textbf{both passed on measurement} (\S\ref{sec:instrumentresults}), before any
@@ -69,7 +71,19 @@ domain. Measurement also amended the angular criterion: an absolute
 $\lambda_{\min}$ threshold has no value that responds gradually across capture
 regimes, and the scale-free condition number does (\S\ref{sec:b2amend}).
 
-What remains untested is whether either translates into rendered quality on a
-degraded capture. That is Table~\ref{tab:stress}, it needs GPU time the weekly
-free-tier quota no longer has (\S\ref{sec:budget}), and its cells stay empty
-rather than estimated.}
+Whether that translates into rendered quality on a degraded capture is
+Table~\ref{tab:stress}, and it is now measured. Across six capture protocols the
+answer has the shape the derivation demands: on the five where the Nyquist floor
+still dominates, the estimation term exceeds it on \emph{zero} primitives, the
+filter is isotropic to two decimals, and B1 differs from Mip-Splatting by
+$-0.041$ to $+0.012$\,dB --- Proposition~\ref{prop:reduction} holding to the
+precision of the instrument. On the sixth, a three-camera pencil spanning
+$29^\circ$, the estimation term exceeds the floor on $93\,\%$ of primitives, the
+filter becomes anisotropic at $1.47\times$, and B1 leads by $+0.197$\,dB --- on
+the mean and on every one of the eight paired cells. The step falls exactly where
+the estimation term overtakes the floor.
+
+Two things that result is not. The pencil reconstructs at $14$\,dB against the
+full orbit's $34$, so what is established is that the mechanism is the one
+claimed, not that the method is useful at that operating point; and eight
+consistent pairings are eight cells of one run on two scenes.}

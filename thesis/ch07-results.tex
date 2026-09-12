@@ -205,6 +205,26 @@ forward contribution and leaving its gradient live is not a consistent pair, and
 matching them is what the C1 switch should have done from the start --- it was
 supposed to isolate one term and it removed three.
 
+\paragraph{\texttt{ship} does not complete, and is reported as such.} With both
+guards matched it fails a third time, back in the forward pass, at the same point
+in training. It is excluded from the single-scale arm-B rows, and because every
+between-arm table in this chapter is restricted to the scenes both arms have, it
+is excluded from arm A's there too --- a seven-scene mean against an eight-scene
+one is not a comparison. Nothing was reduced to make it fit: the protocol's rule
+for a scene that will not run is to record it and move on, and that rule does not
+become optional when the scene is one of eight rather than one of nine.
+
+Two things make the exclusion narrow rather than convenient. \texttt{ship}
+trains without incident on the \emph{multi-scale} protocol, on all four scales,
+so Table~\ref{tab:mtmt} is a full eight-scene comparison and the failure is
+specific to single-scale training. And it trains without incident on arm A, so
+the fragility belongs to the vanilla band-limit semantics rather than to the
+scene, the data or the harness. Both point the same way: the opacity compensation
+was doing something beyond anti-aliasing --- it was keeping degenerate primitives
+out of the raster --- and removing it exposes a scene that the densification of
+this codebase pushes into that regime. That is a property of the combination, and
+it is the kind of thing a reproduction is for.
+
 \keybox{a switch that is not minimal is not a control}{%
 Each of those three removals was invisible: no assertion covered them, the
 numbers that came back were plausible, and six of eight scenes were unaffected.

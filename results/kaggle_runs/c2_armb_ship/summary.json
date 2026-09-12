@@ -1,0 +1,30 @@
+{
+  "rung": "C2",
+  "protocol": "STMT",
+  "load_allres": false,
+  "seeds": [
+    0
+  ],
+  "scenes": [
+    "ship"
+  ],
+  "iterations": 30000,
+  "gpu": "Tesla T4",
+  "n_gpu": 2,
+  "torch": "2.10.0+cu128",
+  "cuda": "12.8",
+  "open3d": true,
+  "armA_commit": "a77201ee6c60a7fa4d8442e92112bc115538a373",
+  "armB_commit": "7896e78d99c3d05fd2251986d35153330da86220",
+  "convert_seconds": 138.41734623908997,
+  "done": {},
+  "failed": {
+    "B/ship": "RuntimeError: command failed (1): OMP_NUM_THREADS=4 CUDA_VISIBLE_DEVICES=0 python train.py -s /kaggle/working/multi-scale/ship -m /kaggle/working/out_armB/ship --eval --white_background --iterations 30000 --test_iterations -1 --port 6209  --kernel_size 0.3 --disable_3D_filter --disable_2D_mip_compensation\n--- tail ---\n 3D filter [12/09 08:07:28]\nComputing 3D filter [12/09 08:07:34]\nComputing 3D filter [12/09 08:07:41]\nComputing 3D filter [12/09 08:07:48]\nComputing 3D filter [12/09 08:07:56]\nComputing 3D filter [12/09 08:08:04]\nComputing 3D filter [12/09 08:08:11]\nComputing 3D filter [12/09 08:"
+  },
+  "session_seconds": 1069.1057388782501,
+  "gpu_hours_used": 0.296973816619979,
+  "complete": false,
+  "filter_3D_max": {},
+  "armB_all_zero": true,
+  "armA_all_nonzero": true
+}

@@ -456,109 +456,154 @@ capture protocols of \S\ref{sec:stress}, at a total cost of two minutes.
   \label{fig:floorbinding}
 \end{figure}
 
-\subsection*{I-1 on the standard benchmark: the floor binds everywhere}
-On the full orbit, the estimation term $s^2/\lambda_i$ exceeds
-Mip-Splatting's floor $f_k^2$ on \textbf{zero} primitives, in \emph{every}
-direction of \emph{every} scene. The median ratio
-$\sqrt{s^2/\lambda_{\min}}\,/\,f_k$ is $0.35$, and even at the 99th percentile
-it is below $0.5$: the floor dominates the estimation term by a factor of two to
-three throughout. No primitive is unseen by every camera, so the artefactual
-right tail of \S\ref{sec:instruments} does not arise and nothing had to be
-excluded.
-
-By Proposition~\ref{prop:reduction} this means B1 \emph{is} Mip-Splatting on
-these scenes --- exactly, not approximately. That is worth stating plainly:
-
-\keybox{no gain is available on the standard Blender benchmark}{%
-The eight Blender scenes are 100-camera full orbits, the best-conditioned
-capture in the suite. Section~\ref{sec:anisotropy} predicts parity there, and
-the measurement is stronger than the prediction: the anisotropy is $1.14\times$
-where Table~\ref{tab:regimes} anticipated $1.6\times$. A method evaluated only
-on this benchmark could not show an improvement, and if one appeared it would be
-a bug.}
-
-\subsection*{A defect that made two chapters disagree}
+\subsection*{Two kernels, two protocol definitions, one set of names}
 \label{sec:branchdefect}
 
-Before the numbers: the instrument results below and the PSNR results of
-\S\ref{sec:table3} were, for a time, measurements of \emph{different captures}
-reported under the same protocol names, and it is worth saying exactly how,
-because nothing in either run could have detected it.
+The instrument results and the PSNR results of \S\ref{sec:table3} were, for a
+time, measurements of \emph{different captures} reported under the same protocol
+names, and it is worth saying exactly how, because nothing in either run could
+have detected it.
 
-The instrument kernel cloned the repository's default branch. The training
-kernel clones the method branch. Between them, the definition of \texttt{arc}
-and \texttt{cone} had changed: the default branch sizes them by angular
-\emph{width}, giving $20$ cameras across $81^\circ$ and $3$ across $30^\circ$;
-the method branch sizes them by camera \emph{count}, giving $25$ across
-$93^\circ$ and $10$ across $54^\circ$. The change was deliberate and its stated
-reason is sound --- a $20^\circ$ wedge catches three cameras on a Blender
-capture, and three views is a sparse-reconstruction experiment rather than a
-conditioning one. What was missed is that only one of the two kernels was
-updated.
+The instrument kernel cloned the repository's default branch. The training kernel
+clones the method branch. Between them, the definition of \texttt{arc} and
+\texttt{cone} had changed: the default branch sizes them by angular \emph{width},
+giving $20$ cameras across $81^\circ$ and $3$ across $30^\circ$; the method
+branch sizes them by camera \emph{count}, giving $25$ across $93^\circ$ and $10$
+across $54^\circ$. The change was deliberate and its stated reason is sound --- a
+$20^\circ$ wedge catches three cameras on a Blender capture, and three views is a
+sparse-reconstruction experiment rather than a conditioning one. What was missed
+is that only one of the two kernels was updated.
 
 Each run was internally consistent, each printed the span it had built, and each
 was correct about its own capture. The error was in reading them side by side,
-and it survived because both numbers looked reasonable: a cone \emph{is}
-narrower than an arc in both definitions, so the ordering the chapter argues for
-held in either. It is the same class of mistake as the arm-B compensation of
-\S\ref{sec:g2} --- a quantity that was never what its label said --- and it was
-found the same way, by a measurement that could not be reconciled with another
-rather than by an assertion firing.
+and it survived because both numbers looked reasonable: a cone \emph{is} narrower
+than an arc under either definition, so the ordering the chapter argues for held
+either way.
 
-\keybox{what it cost, and the one line that prevents it}{%
-It cost the first reading of gates G3 and G4. On the width-based cone the
-estimation term exceeds the Nyquist floor on $100\,\%$ of primitives in
-\emph{every} direction; on the count-based cone it exceeds it nowhere. Both are
-measured, both are right, and only the first is the regime this method is about.
-The instrument kernel is now pinned to the same branch the training kernel
-clones, and every protocol table in this chapter carries the span the session
-that produced the row actually built --- where the instruments and the training
-run disagree about a protocol's geometry by more than $2^\circ$, the
-conditioning cell is left empty rather than filled from the other capture.}
+\keybox{what it cost, and what it bought}{%
+It cost the first reading of gates G3 and G4 --- and it bought the \texttt{pencil}
+protocol. Rather than choose between the two definitions, both are kept: the
+count-based \texttt{cone} at $51^\circ$, which is a trainable subset, and the
+width-based \texttt{pencil} at $20^\circ$, which is the regime the derivation is
+about. The crossover between them is where the estimation term overtakes the
+floor, and with both in the table that crossover is a measurement rather than an
+extrapolation. The instrument kernel is now pinned to the branch the training
+kernel clones, and every protocol table carries the span the session that
+produced the row actually built.}
+
+\subsection*{A constant that was carried on one side only}
+\label{sec:m2defect}
+
+One more defect has to be stated before the numbers, because it changed them.
+The estimation term is $(s\,\sigma_{\mathrm{pix}})^2/\lambda_i$, and
+Proposition~\ref{prop:constant} fixes $(s\,\sigma_{\mathrm{pix}})^2 = 0.2$ ---
+the same constant Mip-Splatting's floor $f_k^2 = 0.2\,(d_{\min}/f_{\max})^2$ is
+built from. Both sides of the I-1 comparison therefore carry it. The instrument
+carried it on the floor and dropped it from the estimation term, which inflated
+that side by a factor of five, or $\sqrt{5} = 2.24$ in $\sigma$. The filter's own
+implementation had always applied it.
+
+The symptom was two measurements of one quantity disagreeing --- on the arc and
+the cone, and not at the extremes, where a factor of five changes no verdict.
+Nothing raised, and both numbers were plausible on their own.
+
+\keybox{Proposition~1 is a test, not only a statement}{%
+The identity that fixes the constant is checkable: at one view, on the optical
+axis, the estimation term must \emph{equal} the floor. It now does, to
+$1.6\times10^{-16}$, and \texttt{tools/test\_instruments.py} asserts it on every
+run. Without the $0.2$ it is exactly five times the floor, so the test cannot
+pass either way by accident. This is the over-determination the audit's M-2
+named --- ``$s$ defaults to 1'' and ``$s\,\sigma_{\mathrm{pix}} = \sqrt{0.2}$''
+cannot both be free --- surfacing as a live numerical error rather than as an
+ambiguity in the prose, which is the more useful way for it to surface.}
+
+\subsection*{I-1: where the floor binds, and where it stops}
+
+The estimation term $0.2/\lambda_i$ and Mip-Splatting's floor $f_k^2$ are the two
+sides of Proposition~\ref{prop:reduction}'s hypothesis, and the ratio between
+them decides whether the method can act at all. Measured across the six
+protocols, it rises monotonically as the capture closes: $0.16$ on the full
+orbit, $0.21$ under mixed focal, $0.24$ under grazing, $0.48$ on the arc, and
+past unity only on the cone ($1.35$) and the pencil ($5.52$).
+
+On the standard benchmark the floor dominates by a factor of six, on
+\textbf{zero} primitives in \emph{any} direction of \emph{every} scene. By
+Proposition~\ref{prop:reduction} that makes B1 \emph{be} Mip-Splatting there ---
+exactly, not approximately --- and it is worth stating plainly:
+
+\keybox{no gain is available on the standard Blender benchmark}{%
+The eight Blender scenes are 100-camera full orbits, the best-conditioned capture
+in the suite. A method evaluated only on this benchmark could not show an
+improvement, and if one appeared it would be a bug. This is the cheapest
+falsification the project had, it was run before a line of method code existed,
+and Table~\ref{tab:method} is the confirmation at the level of rendered quality:
+$\methodParityMax$\,dB over $\methodParityScenes$ scenes and four test scales.}
+
+\subsection*{The two diagnostics agree, and where they do not is informative}
+
+I-1 is computed off a trained point cloud by a NumPy instrument; the filter
+prints its own occupancy during training, from the model it is actually
+filtering. They are independent implementations of the same comparison, and
+Table~\ref{tab:stress}'s \emph{above floor} column can be read against
+Table~\ref{tab:instruments}'s \emph{worst dir} column directly.
+
+They agree on five of six protocols: $0\,\%$ on the full orbit, grazing, mixed
+focal and the arc, and the pencil above the floor on essentially everything
+($100\,\%$ against the filter's $93\,\%$). The one disagreement is the cone,
+where the instrument reads $100\,\%$ and the filter $0\,\%$ --- and the ratio
+there is $1.35$, within $35\,\%$ of unity, which is precisely where a finely
+balanced verdict should be sensitive to what it is computed on. The instrument
+reads a model trained on the \emph{full orbit} and asks what the cone's cameras
+would have determined about it; the filter reads the model the cone's cameras
+actually produced, which has different primitives at different depths and
+therefore a different floor. Both are correct about their own question, and the
+operative one --- the one that decides what the filter does --- is the filter's.
+
+\keybox{this agreement is what the 0.2 bought}{%
+Before the constant was corrected (\S\ref{sec:m2defect}) these two columns
+disagreed on the arc as well as the cone, and by a margin no point-cloud
+difference could explain. Two implementations of one comparison agreeing on five
+of six protocols, and differing only where the quantity sits within a third of
+its decision threshold, is a much stronger statement than either makes alone.}
 
 \subsection*{I-2 across the stress suite: the regime structure is real}
+
 The refutation condition at gate G3 is that the floor exceeds the estimation
 term on nearly every primitive in \emph{every} scene --- which would make
 Proposition~\ref{prop:reduction} apply universally and collapse the method to
-its baseline everywhere. It does not. Degrading the capture moves the balance
-exactly as Equation~\eqref{eq:cap} requires:
+its baseline everywhere. It does not. Degrading the capture moves the balance as
+Equation~\eqref{eq:cap} requires, and the measured anisotropy tracks the
+prediction across a factor of eight:
 
 \begin{itemize}[leftmargin=1.4em,itemsep=2pt]
-  \item \textbf{One-sided arc} ($80^\circ$ span): the estimation term exceeds
-        the floor along the worst-constrained direction on $100\,\%$ of
-        primitives, while still lying below it in the best-constrained
-        directions. That is precisely the anisotropic regime the filter is built
-        for --- a scalar floor is wrong here in one direction and right in the
-        others.
-  \item \textbf{Low-parallax cone} ($20^\circ$ span): the estimation term
-        exceeds the floor in \emph{all} directions on $100\,\%$ of primitives,
-        by a median factor of $12$. The measured
-        $\sigma_{\mathrm{depth}}/\sigma_{\mathrm{lat}}$ is $\instConeAniso\times$
-        against the $\instConeCap\times$ that Equation~\eqref{eq:cap} predicts at
-        that span.
-  \item \textbf{Grazing} views degrade the conditioning mildly
-        ($\instGrazingAniso\times$ measured, $\instGrazingCap\times$ predicted),
-        and \textbf{mixed focal} barely at all ($\instMixedAniso\times$ against
-        the full orbit's $\instFullAniso\times$).
+  \item \textbf{Full orbit} ($179^\circ$): $\instFullAniso\times$ measured
+        against $\instFullCap\times$ predicted.
+  \item \textbf{Grazing} ($168^\circ$): $\instGrazingAniso\times$ against
+        $\instGrazingCap\times$ --- the largest relative residual in the table,
+        and the protocol built to maximise obliquity, which is what
+        \S\ref{sec:offaxis} predicts a parallax-only model will miss.
+  \item \textbf{One-sided arc} ($94^\circ$): $\instArcAniso\times$ against
+        $\instArcCap\times$.
+  \item \textbf{Low-parallax cone} ($51^\circ$): $4.01\times$ against
+        $3.16\times$, and the first protocol where the estimation term exceeds
+        the floor along the worst-constrained direction.
+  \item \textbf{Narrow pencil} ($20^\circ$): $9.42\times$ against $8.22\times$,
+        and the estimation term exceeding the floor by a median factor of five.
 \end{itemize}
 
 \keybox{the prediction has to be the cap form, and then it holds}{%
-Every measured anisotropy above exceeds the two-view prediction of
-Equation~\eqref{eq:anisotropy}, and by roughly the same factor throughout ---
-$1.14$ against $1.00$, $2.28$ against $1.56$, $9.45$ against $5.76$. That is not
-five independent discrepancies; it is one, and \S\ref{sec:capprediction} names
-it. A protocol is a distribution of cameras over an angular window, not two
+Every measured anisotropy exceeds the two-view prediction of
+Equation~\eqref{eq:anisotropy}, and by roughly the same factor throughout. That
+is not five independent discrepancies; it is one, and \S\ref{sec:capprediction}
+names it. A protocol is a distribution of cameras over an angular window, not two
 cameras at its ends, and for a cap the correct $\lambda_3/\lambda_1$ is
 asymptotically \emph{half} the two-view value --- so the two-view form
 understates $\sigma_D/\sigma_L$ by $\sqrt{2}$. Against Equation~\eqref{eq:cap},
-evaluated at each protocol's own measured span, the five rows of
-Table~\ref{tab:instruments} agree to $10$--$15\,\%$ instead of being low by
-$60\,\%$. The residual is one-signed --- measurement always slightly above
-prediction --- which is what \S\ref{sec:offaxis} leads one to expect: the cap
-model is parallax-only, and perspective adds anisotropy of its own that a cap of
-ray directions does not contain. The largest residual, grazing at
-$\instGrazingAniso\times$ against a predicted $\instGrazingCap\times$, is the
-protocol built to maximise obliquity, which is the same statement.}
+evaluated at each protocol's own measured span, the six rows agree to
+$10$--$27\,\%$ instead of being low by $60$. The residual is one-signed ---
+measurement always above prediction --- which is what \S\ref{sec:offaxis} leads
+one to expect: the cap model is parallax-only, and perspective adds anisotropy of
+its own that a cap of ray directions does not contain.}
 
 So gates G3 and G4 are both passed, and the regime table of
 \S\ref{sec:anisotropy} is confirmed as a measurement rather than left as a
@@ -567,17 +612,17 @@ falsification the project had available, and it did not fire.
 
 \paragraph{One prediction not borne out.} Section~\ref{sec:defects} argues that
 mixing cameras is the third defect of the scalar filter, and \S\ref{sec:stress}
-expected the mixed-focal protocol to expose it. It does not show up in the
-anisotropy: $1.16\times$ against $1.14\times$ is nothing. It does show up in the
-magnitude --- the median ratio of estimation term to floor rises from $0.35$ to
-$0.47$, a $35\,\%$ relative shift --- but that is still far below unity, so the
-floor continues to bind and Proposition~\ref{prop:reduction} still applies. The
-honest reading is that the mixed-camera defect is a statement about the
-\emph{value} of $f_k$, not about its isotropy, and that this protocol as
-constructed does not stress it hard enough to matter. Either the protocol needs
-a wider focal spread than $2$--$4\times$, or the defect is real but small; the
-present measurement does not distinguish those, and it is not reported as though
-it did.
+expected the mixed-focal protocol to expose it. It does not. The anisotropy moves
+from $\instFullAniso\times$ to $\instMixedAniso\times$, which is nothing, and the
+median ratio of estimation term to floor from $0.16$ to $0.21$ --- a real shift,
+and still a factor of five below unity. Section~\ref{sec:table3} confirms it at
+the level of rendered quality on a protocol that genuinely downsamples half the
+cameras: the floor binds on every primitive and the two arms differ by
+$+0.017$\,dB. The honest reading is that the mixed-camera defect is a statement
+about the \emph{value} of $f_k$ and not about its isotropy, and that
+$2$--$4\times$ is not a wide enough focal spread to make it bind. Either the
+protocol needs a wider spread or the defect is real but small; this measurement
+does not distinguish those, and it is not reported as though it did.
 
 \section{The method on the standard benchmark}
 \label{sec:table2m}

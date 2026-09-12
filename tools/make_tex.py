@@ -1504,8 +1504,21 @@ def main():
                     cand = json.load(open(os.path.join(d, fn_)))
                 except Exception:
                     continue
+                # Prefer the run covering the most protocols, then the most
+                # scenes. Several instrument sessions exist -- one per protocol
+                # definition and one per correction -- and walking the tree takes
+                # whichever sorts last, which is not the same as the current one.
                 if cand.get("by_protocol"):
-                    inst = cand
+                    bp_new = cand["by_protocol"]
+                    bp_old = inst.get("by_protocol") or {}
+                    score_new = (len(bp_new),
+                                 max((v.get("n_scenes", 0) for v in bp_new.values()),
+                                     default=0))
+                    score_old = (len(bp_old),
+                                 max((v.get("n_scenes", 0) for v in bp_old.values()),
+                                     default=0))
+                    if score_new >= score_old:
+                        inst = cand
 
     # seed=0 for the headline tables. R5 adds seeds 1 and 2 for two scenes only,
     # so including them would silently weight the 8-scene mean toward lego and

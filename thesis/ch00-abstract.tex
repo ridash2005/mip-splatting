@@ -45,10 +45,11 @@ retention of its \emph{spectrum}.
 \medskip
 \keybox{status of this version}{%
 Both baselines are reproduced end to end on free compute across four rungs, and
-the reproduction is the subject of Chapter~\ref{ch:results}. \textbf{Both} arms
-land within $0.5$\,dB of their published figures at all four test scales, and the
-gap between them --- the quantity the two-arm construction exists to measure ---
-within $0.2$\,dB (Table~\ref{tab:stmt}). The
+the reproduction is the subject of Chapter~\ref{ch:results}. Both arms land
+within $\stmtArmAMaxDelta$\,dB of their published figures at all four test
+scales --- L2 --- and the gap between them, which is the quantity the two-arm
+construction exists to measure, within $\stmtGapMaxDelta$\,dB, which is L1
+(Table~\ref{tab:stmt}). The
 two falsification gates the method's premise rests on --- does the Nyquist floor
 bind everywhere, and is the capture conditioning really anisotropic --- are
 \textbf{both passed on measurement} (\S\ref{sec:instrumentresults}), before any
@@ -56,8 +57,9 @@ method code exists. Three results run against expectation and are reported as
 such. Gate G2 failed, and the first diagnosis of the failure was itself wrong:
 the 3DGS arm had kept Mip-Splatting's screen-space opacity compensation, so the
 arm labelled 3DGS was anti-aliasing better than 3DGS. Rebuilt and re-measured,
-the gate passes on all three of its criteria and \emph{both} arms reproduce the
-published figures to within $0.4$\,dB at every test scale (\S\ref{sec:g2}). The instrument and training kernels were cloning
+the gate passes on all three of its criteria and the \emph{gap} between the arms
+reproduces to within $\stmtGapMaxDelta$\,dB at every test scale
+(\S\ref{sec:g2}). The instrument and training kernels were cloning
 different branches, so the conditioning reported for a capture protocol and the
 rendered quality reported for it were measurements of different captures
 (\S\ref{sec:branchdefect}). And the seed-to-seed spread is close enough to the L1

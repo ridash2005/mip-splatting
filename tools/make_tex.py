@@ -1315,6 +1315,30 @@ def macros(rows, summaries, inst=None):
         put(proto.capitalize() + "GapEighth", (aF - bF) if aF and bF else None)
         M[proto.capitalize() + "Scenes"] = str(len({r["scene"] for r in sel})) or "0"
 
+    # Largest |ours - published| per arm on the STMT protocol, over the matched
+    # scenes. The L1 verdict is quoted from these; they moved when arm B was
+    # re-measured and the scene set became matched, and a typed constant would
+    # not have.
+    stmt_m, _cm = matched(select(rows, iterations=30000, load_allres="False",
+                                 seed=0))
+    acc_s = by_arm_scale(stmt_m)
+    for arm, tag in (("A", "ArmA"), ("B", "ArmB")):
+        ds = []
+        for i, sc in enumerate(SCALES):
+            v = [float(r["psnr"]) for r in acc_s.get(arm, {}).get(sc, [])]
+            if v:
+                ds.append(abs(mean(v) - PUBLISHED["STMT"][arm][i]))
+        put("stmt" + tag + "MaxDelta", max(ds) if ds else None, "{:.2f}")
+    gaps = []
+    for i, sc in enumerate(SCALES):
+        a_ = [float(r["psnr"]) for r in acc_s.get("A", {}).get(sc, [])]
+        b_ = [float(r["psnr"]) for r in acc_s.get("B", {}).get(sc, [])]
+        if a_ and b_:
+            pub_gap = PUBLISHED["STMT"]["A"][i] - PUBLISHED["STMT"]["B"][i]
+            gaps.append(abs((mean(a_) - mean(b_)) - pub_gap))
+    put("stmtGapMaxDelta", max(gaps) if gaps else None, "{:.2f}")
+    M["stmtMatchedScenes"] = str(len(_cm)) if _cm else NOT_MEASURED
+
     r0 = summaries.get("R0") or {}
     sa, sb = r0.get("stats_A") or {}, r0.get("stats_B") or {}
     put("rZeroItersPerSec", sa.get("iters_per_second"), "{:.1f}")
@@ -1325,10 +1349,12 @@ def macros(rows, summaries, inst=None):
     put("armBFilterMax", sb.get("filter_3D_max"), "{:.0f}")
 
     # Largest per-scale spread between any two runs of the same configuration.
+    # CONFIG_KEY, not a hand-listed subset of it: omitting train_scale pooled a
+    # full-orbit run with a three-camera pencil run of the same scene and called
+    # the 23 dB between them harness noise.
     grouped = defaultdict(list)
     for r in rows:
-        grouped[(r["scene"], r["arm"], r["test_scale"], r["iterations"],
-                 r["load_allres"], r["seed"])].append(float(r["psnr"]))
+        grouped[tuple(r.get(k) for k in CONFIG_KEY)].append(float(r["psnr"]))
     spreads = [max(v) - min(v) for v in grouped.values() if len(v) > 1]
     put("repeatSpread", max(spreads) if spreads else None, "{:.3f}")
 

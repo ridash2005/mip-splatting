@@ -1163,12 +1163,12 @@ def b2_table(b2, label, caption):
         lmax = agg(vs, "mean_l_max")
         L.append("    " + " & ".join([
             name,
-            f"{psnr:.2f}" if psnr is not None else NOT_MEASURED,
-            f"{mb:.1f}" if mb is not None else NOT_MEASURED,
+            f"{psnr:.2f}" if psnr is not None else r"n/a",
+            f"{mb:.1f}" if mb is not None else r"n/a",
             f"{ret * 100:.0f}\\%" if ret is not None else (r"100\%" if cfg == "full"
-                                                          else NOT_MEASURED),
+                                                          else r"n/a"),
             f"{lmax:.2f}" if lmax is not None else (r"3.00" if cfg == "full"
-                                                    else NOT_MEASURED),
+                                                    else r"n/a"),
         ]) + r" \\")
     L += [r"    \bottomrule", r"  \end{tabular}",
           r"  \par\vspace{2pt}\footnotesize Mean over the scenes measured, "
@@ -1570,8 +1570,13 @@ def main():
                     cand = json.load(open(os.path.join(d, fn_)))
                 except Exception:
                     continue
-                if cand.get("rung") == "R8" or (cand.get("results")
-                                                and "b2" in str(list(cand["results"])[:3])):
+                # Table 4 is the STANDARD benchmark, so it takes the full-orbit
+                # run specifically. Two B2 sessions exist -- one per protocol --
+                # and taking whichever sorts last in the tree silently put cone
+                # numbers under a caption describing the full orbit. The cone
+                # comparison has its own table.
+                if cand.get("results") and cand.get("protocol", "full") == "full"                         and (cand.get("rung") == "R8"
+                             or "b2" in str(list(cand["results"])[:3])):
                     b2 = cand
 
     fps = {}

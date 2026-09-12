@@ -72,7 +72,17 @@ def load(runs_path):
                 if r.get("psnr") and "SUPERSEDED" not in (r.get("notes") or "")]
 
 
-def select(rows, *, iterations, load_allres, dataset="blender", seed=None):
+def select(rows, *, iterations, load_allres, dataset="blender", seed=None,
+           train_scale=("1x", "multi")):
+    """Rows of the STANDARD benchmark, unless train_scale says otherwise.
+
+    train_scale is the filter that keeps the reproduction tables free of the
+    stress suite. method_eval writes arm "A" for Mip-Splatting exactly as
+    blender_rung does, and tags the protocol in train_scale ("1x/cone"), so
+    without this a mip row trained on ten cameras is averaged into Table 1 --
+    which pulled arm A's full-resolution figure down by 2.4 dB the first time
+    the stress rows were merged. Pass None to take every protocol.
+    """
     out = []
     for r in rows:
         if r.get("dataset") != dataset:
@@ -82,6 +92,8 @@ def select(rows, *, iterations, load_allres, dataset="blender", seed=None):
         if r.get("load_allres") != load_allres:
             continue
         if seed is not None and r.get("seed") != str(seed):
+            continue
+        if train_scale is not None and r.get("train_scale") not in train_scale:
             continue
         out.append(r)
     return out

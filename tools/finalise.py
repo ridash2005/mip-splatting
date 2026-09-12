@@ -30,11 +30,21 @@ KRUNS = os.path.join(ROOT, "results", "kaggle_runs")
 # 2 scenes x 3 seeds x 4 scales minus the seed-0 rows for the spread.
 SUPERSEDES = [
     dict(by="C2", where=["arm=B", "dataset=blender", "load_allres=False",
-                         "iterations=30000"],
-         unless="C2", require=32,
-         why="arm B, single-scale train: re-measured without the 2D opacity "
-             "compensation (C1). Covers the seed-1/2 rows too, which C2S "
-             "replaces."),
+                         "iterations=30000", "seed=0"],
+         unless="C2", require=28,
+         why="arm B, single-scale train, seed 0: re-measured without the 2D "
+             "opacity compensation (C1). Scoped to seed 0 so the R5 seed rows "
+             "are not orphaned -- C2S replaces those, separately, and marking "
+             "them before it lands would leave the spread table with one seed."),
+    dict(by="C2S", where=["arm=B", "dataset=blender", "load_allres=False",
+                          "iterations=30000", "seed=1"],
+         unless="C2S", require=8,
+         why="arm B, seed 1: the seed spread was measured on the compensated "
+             "arm, so it is a spread of a configuration no table reports."),
+    dict(by="C2S", where=["arm=B", "dataset=blender", "load_allres=False",
+                          "iterations=30000", "seed=2"],
+         unless="C2S", require=8,
+         why="arm B, seed 2: as above."),
     dict(by="C2M", where=["arm=B", "dataset=blender", "load_allres=True",
                           "iterations=30000"],
          unless="C2M", require=32,

@@ -1,0 +1,388 @@
+{
+  "rung": "R8C",
+  "iterations": 30000,
+  "scenes": [
+    "lego",
+    "chair"
+  ],
+  "taus": [
+    0.01
+  ],
+  "protocol": "cone",
+  "sweep_scene": "lego",
+  "sweep_taus": [
+    0.003,
+    0.03
+  ],
+  "commit": "207e07117a2c54f87a0f3ea391cdb99b52a4e99f",
+  "gpu": "Tesla T4",
+  "results": {
+    "lego/full": {
+      "PSNR": 32.855735778808594,
+      "SSIM": 0.9827490448951721,
+      "LPIPS": 0.015578708611428738,
+      "model_mb": 73.931048,
+      "retained": 1.0,
+      "per_scale": {
+        "1x": 35.881837615966795,
+        "1/2": 35.4345465183258,
+        "1/4": 31.845805292129516,
+        "1/8": 28.26075119972229
+      }
+    },
+    "lego/b2/tau0.01": {
+      "PSNR": 31.263662338256836,
+      "SSIM": 0.9747576713562012,
+      "LPIPS": 0.023036962375044823,
+      "model_mb": 73.931048,
+      "retained": 0.1329920135255359,
+      "per_scale": {
+        "1x": 32.98979479789734,
+        "1/2": 33.08102146148681,
+        "1/4": 30.99267720222473,
+        "1/8": 27.99116008758545
+      },
+      "tau": 0.01,
+      "mean_l_max": 0.6649600676276797,
+      "l_max_hist": {
+        "0": 98291,
+        "1": 195080,
+        "2": 0,
+        "3": 0
+      },
+      "mean_views": 40.0
+    },
+    "lego/magnitude/tau0.01": {
+      "PSNR": 32.08202362060547,
+      "SSIM": 0.9791245460510254,
+      "LPIPS": 0.01860763318836689,
+      "model_mb": 73.931048,
+      "retained": 0.1329920135255359,
+      "per_scale": {
+        "1x": 34.48217345237732,
+        "1/2": 34.29343752861023,
+        "1/4": 31.43732804298401,
+        "1/8": 28.115150299072265
+      },
+      "matched_to_tau": 0.01
+    },
+    "chair/full": {
+      "PSNR": 35.61254119873047,
+      "SSIM": 0.9877725839614868,
+      "LPIPS": 0.013284076005220413,
+      "model_mb": 67.332932,
+      "retained": 1.0,
+      "per_scale": {
+        "1x": 35.94803554534912,
+        "1/2": 37.896539821624756,
+        "1/4": 36.11901521682739,
+        "1/8": 32.486580476760864
+      }
+    },
+    "chair/b2/tau0.01": {
+      "PSNR": 32.45319747924805,
+      "SSIM": 0.9786282181739807,
+      "LPIPS": 0.021702175959944725,
+      "model_mb": 67.332932,
+      "retained": 0.2,
+      "per_scale": {
+        "1x": 32.13175647735596,
+        "1/2": 33.25200945854187,
+        "1/4": 33.10802720069885,
+        "1/8": 31.32100793838501
+      },
+      "tau": 0.01,
+      "mean_l_max": 1.0,
+      "l_max_hist": {
+        "0": 0,
+        "1": 267188,
+        "2": 0,
+        "3": 0
+      },
+      "mean_views": 40.0
+    },
+    "chair/magnitude/tau0.01": {
+      "PSNR": 34.268699645996094,
+      "SSIM": 0.9847235679626465,
+      "LPIPS": 0.01605033129453659,
+      "model_mb": 67.332932,
+      "retained": 0.2,
+      "per_scale": {
+        "1x": 34.26190580368042,
+        "1/2": 35.63875919342041,
+        "1/4": 34.86322275161743,
+        "1/8": 32.31091501235962
+      },
+      "matched_to_tau": 0.01
+    },
+    "lego/b2/tau0.003_sweep": {
+      "PSNR": 31.69732666015625,
+      "SSIM": 0.9772955179214478,
+      "LPIPS": 0.020980315282940865,
+      "model_mb": 73.931048,
+      "retained": 0.2,
+      "per_scale": {
+        "1x": 33.6834389591217,
+        "1/2": 33.72805304527283,
+        "1/4": 31.28836667060852,
+        "1/8": 28.089443340301514
+      },
+      "tau": 0.003,
+      "mean_l_max": 1.0,
+      "l_max_hist": {
+        "0": 0,
+        "1": 293371,
+        "2": 0,
+        "3": 0
+      },
+      "mean_views": 40.0
+    },
+    "lego/magnitude/tau0.003_sweep": {
+      "PSNR": 32.29507827758789,
+      "SSIM": 0.9801295399665833,
+      "LPIPS": 0.017685312777757645,
+      "model_mb": 73.931048,
+      "retained": 0.2,
+      "per_scale": {
+        "1x": 34.86436709403992,
+        "1/2": 34.60732778549195,
+        "1/4": 31.553893299102782,
+        "1/8": 28.154726648330687
+      },
+      "matched_to_tau": 0.003
+    },
+    "lego/b2/tau0.03_sweep": {
+      "PSNR": 30.566213607788086,
+      "SSIM": 0.9708053469657898,
+      "LPIPS": 0.026260409504175186,
+      "model_mb": 73.931048,
+      "retained": 0.0,
+      "per_scale": {
+        "1x": 31.93275990486145,
+        "1/2": 32.074847021102904,
+        "1/4": 30.46688726425171,
+        "1/8": 27.790364694595336
+      },
+      "tau": 0.03,
+      "mean_l_max": 0.0,
+      "l_max_hist": {
+        "0": 293371,
+        "1": 0,
+        "2": 0,
+        "3": 0
+      },
+      "mean_views": 40.0
+    },
+    "lego/magnitude/tau0.03_sweep": {
+      "PSNR": 30.566213607788086,
+      "SSIM": 0.9708053469657898,
+      "LPIPS": 0.026260409504175186,
+      "model_mb": 73.931048,
+      "retained": 0.0,
+      "per_scale": {
+        "1x": 31.93275990486145,
+        "1/2": 32.074847021102904,
+        "1/4": 30.46688726425171,
+        "1/8": 27.790364694595336
+      },
+      "matched_to_tau": 0.03
+    }
+  },
+  "failed": {},
+  "protocols": {
+    "lego/full": {
+      "scene": "lego",
+      "protocol": "full",
+      "criterion": "cond",
+      "n_cameras": 400,
+      "span_deg": 178.97687028487118,
+      "mean_l_max": 3.0,
+      "non_dc_retained": 1.0,
+      "l_max_hist": {
+        "0": 0,
+        "1": 0,
+        "2": 0,
+        "3": 293371
+      },
+      "mean_views": 400.0
+    },
+    "lego/arc": {
+      "scene": "lego",
+      "protocol": "arc",
+      "criterion": "cond",
+      "n_cameras": 100,
+      "span_deg": 92.86431085102389,
+      "mean_l_max": 1.7303448534449553,
+      "non_dc_retained": 0.4459738692645149,
+      "l_max_hist": {
+        "0": 0,
+        "1": 84666,
+        "2": 203148,
+        "3": 5557
+      },
+      "mean_views": 100.0
+    },
+    "lego/cone": {
+      "scene": "lego",
+      "protocol": "cone",
+      "criterion": "cond",
+      "n_cameras": 40,
+      "span_deg": 41.061415694657235,
+      "mean_l_max": 0.6649600676276797,
+      "non_dc_retained": 0.1329920135255359,
+      "l_max_hist": {
+        "0": 98291,
+        "1": 195080,
+        "2": 0,
+        "3": 0
+      },
+      "mean_views": 40.0
+    },
+    "lego/pencil": {
+      "scene": "lego",
+      "protocol": "pencil",
+      "criterion": "cond",
+      "n_cameras": 8,
+      "span_deg": 8.649923185428671,
+      "mean_l_max": 0.0,
+      "non_dc_retained": 0.0,
+      "l_max_hist": {
+        "0": 293371,
+        "1": 0,
+        "2": 0,
+        "3": 0
+      },
+      "mean_views": 8.0
+    },
+    "lego/mixed": {
+      "scene": "lego",
+      "protocol": "mixed",
+      "criterion": "cond",
+      "n_cameras": 400,
+      "span_deg": 178.97687028487118,
+      "mean_l_max": 3.0,
+      "non_dc_retained": 1.0,
+      "l_max_hist": {
+        "0": 0,
+        "1": 0,
+        "2": 0,
+        "3": 293371
+      },
+      "mean_views": 400.0
+    },
+    "lego/grazing": {
+      "scene": "lego",
+      "protocol": "grazing",
+      "criterion": "cond",
+      "n_cameras": 200,
+      "span_deg": 156.79402241963555,
+      "mean_l_max": 3.0,
+      "non_dc_retained": 1.0,
+      "l_max_hist": {
+        "0": 0,
+        "1": 0,
+        "2": 0,
+        "3": 293371
+      },
+      "mean_views": 200.0
+    },
+    "chair/full": {
+      "scene": "chair",
+      "protocol": "full",
+      "criterion": "cond",
+      "n_cameras": 400,
+      "span_deg": 178.6578806541832,
+      "mean_l_max": 3.0,
+      "non_dc_retained": 1.0,
+      "l_max_hist": {
+        "0": 0,
+        "1": 0,
+        "2": 0,
+        "3": 267188
+      },
+      "mean_views": 400.0
+    },
+    "chair/arc": {
+      "scene": "chair",
+      "protocol": "arc",
+      "criterion": "cond",
+      "n_cameras": 100,
+      "span_deg": 95.22338371305824,
+      "mean_l_max": 2.0,
+      "non_dc_retained": 0.5333333333333333,
+      "l_max_hist": {
+        "0": 0,
+        "1": 0,
+        "2": 267188,
+        "3": 0
+      },
+      "mean_views": 100.0
+    },
+    "chair/cone": {
+      "scene": "chair",
+      "protocol": "cone",
+      "criterion": "cond",
+      "n_cameras": 40,
+      "span_deg": 53.662493548881926,
+      "mean_l_max": 1.0,
+      "non_dc_retained": 0.2,
+      "l_max_hist": {
+        "0": 0,
+        "1": 267188,
+        "2": 0,
+        "3": 0
+      },
+      "mean_views": 40.0
+    },
+    "chair/pencil": {
+      "scene": "chair",
+      "protocol": "pencil",
+      "criterion": "cond",
+      "n_cameras": 4,
+      "span_deg": 0.0,
+      "mean_l_max": 0.0,
+      "non_dc_retained": 0.0,
+      "l_max_hist": {
+        "0": 267188,
+        "1": 0,
+        "2": 0,
+        "3": 0
+      },
+      "mean_views": 4.0
+    },
+    "chair/mixed": {
+      "scene": "chair",
+      "protocol": "mixed",
+      "criterion": "cond",
+      "n_cameras": 400,
+      "span_deg": 178.6578806541832,
+      "mean_l_max": 3.0,
+      "non_dc_retained": 1.0,
+      "l_max_hist": {
+        "0": 0,
+        "1": 0,
+        "2": 0,
+        "3": 267188
+      },
+      "mean_views": 400.0
+    },
+    "chair/grazing": {
+      "scene": "chair",
+      "protocol": "grazing",
+      "criterion": "cond",
+      "n_cameras": 200,
+      "span_deg": 163.73725371633498,
+      "mean_l_max": 3.0,
+      "non_dc_retained": 1.0,
+      "l_max_hist": {
+        "0": 0,
+        "1": 0,
+        "2": 0,
+        "3": 267188
+      },
+      "mean_views": 200.0
+    }
+  },
+  "session_seconds": 2454.006982088089,
+  "gpu_hours_used": 0.6816686066653993
+}

@@ -811,12 +811,52 @@ orbit changes.
 Table~\ref{tab:b2} exists to ask whether identifiability masking beats magnitude
 pruning \emph{at matched model size}. That question has no content when the
 criterion prunes nothing: both rows keep everything, so both score identically,
-and the table cannot distinguish a good criterion from a bad one. The comparison
-needs a capture where B2 actually masks --- the protocol sweep above, where the
-retained fraction falls to $62\,\%$ on the arc and $25\,\%$ on the cone --- and
-those models have not been rendered. Reporting the three equal rows as evidence
-that B2 matches magnitude pruning would be exactly the error this chapter warns
-about elsewhere: a condition tested where it was constrained to be satisfied.}
+and the table cannot distinguish a good criterion from a bad one. Reporting the
+three equal rows as evidence that B2 matches magnitude pruning would be exactly
+the error this chapter warns about elsewhere --- a condition tested where it was
+constrained to be satisfied. So the comparison was run again on a capture where
+the criterion does mask.}
+
+\subsection*{The comparison, on a capture where B2 prunes --- and it loses}
+\label{sec:b2loses}
+
+Restricting the cameras the \emph{criterion} reads to the low-parallax cone, and
+leaving the test set whole, B2 retains $13$--$20\,\%$ of non-DC coefficients.
+Magnitude pruning is then matched to that exact fraction, so the two models are
+the same size and differ only in which coefficients survive.
+
+\input{generated/table-b2-matched}
+
+\keybox{B2, as specified, is worse than the trivial baseline}{%
+On every configuration where both methods actually prune, magnitude pruning wins:
+by $0.60$ and $0.82$\,dB on \texttt{lego} and by $1.82$\,dB on \texttt{chair}.
+Chapter~\ref{ch:method2} states the standard this was to be held to --- ``a
+criterion that cannot beat magnitude pruning at matched size is not worth the
+machinery'' --- and by that standard the criterion fails. The row at $0\,\%$ is
+both methods discarding everything and agreeing by definition; it is not
+evidence either way.}
+
+\paragraph{Why, and what survives.} Identifiability and importance are different
+quantities, and the metric rewards the second. A coefficient can be badly
+conditioned by the capture and still carry most of the fitted energy for that
+primitive; zeroing it costs more PSNR than zeroing a well-determined coefficient
+that happens to be tiny. Magnitude pruning optimises directly for what PSNR
+measures, and B2 optimises for something else and is then scored on PSNR.
+
+There is a second, more mundane asymmetry, and it should be ruled in rather than
+out: B2 masks whole \emph{degrees}, so it removes coefficients in blocks of
+$2\ell+1$, while magnitude pruning selects individual coefficients within the
+same budget. Finer granularity at matched size is an advantage independent of the
+criterion, and this experiment does not separate the two effects. A degree-blocked
+magnitude control would, and has not been run.
+
+What survives is narrower than what was claimed. The criterion still does what
+\S\ref{sec:b2scale} says it does --- it responds gradually to the conditioning,
+retaining $100\,\%$, $62\,\%$ and $25\,\%$ as the capture degrades --- and that
+is a statement about the \emph{geometry}, measured and not in doubt. What is not
+supported is the step from there to rendered quality at matched size. On the
+evidence here, identifiability is a good description of what the capture
+determines and a poor rule for deciding what to keep.
 
 \paragraph{No memory saving is claimed.} Model size does not move either, and
 cannot: masking coefficients to zero leaves a fixed-width PLY the same size on

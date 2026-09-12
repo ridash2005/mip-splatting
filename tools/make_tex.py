@@ -1144,6 +1144,56 @@ def b2_table(b2, label, caption):
 
 
 
+def b2_matched_table(b2c, label, caption):
+    """B2 against magnitude pruning at matched size, where both actually prune.
+
+    This is the comparison Table 4 exists to make and cannot make on a full
+    orbit, where the criterion retains everything and both rows are the control.
+    """
+    res = (b2c or {}).get("results") or {}
+    rows_ = []
+    for k, v in res.items():
+        if not isinstance(v, dict) or "PSNR" not in v or "/b2/" not in k:
+            continue
+        scene, _, tail = k.split("/", 2)
+        mag = res.get(f"{scene}/magnitude/{tail}")
+        full = res.get(f"{scene}/full")
+        if not mag or not full:
+            continue
+        rows_.append((scene, tail.replace("tau", "").replace("_sweep", ""),
+                      v.get("retained", 0.0), full["PSNR"], v["PSNR"], mag["PSNR"]))
+    if not rows_:
+        return placeholder(label, caption,
+                           "B2 has not been evaluated on a capture where it "
+                           "masks, so the comparison has no content yet.")
+    rows_.sort(key=lambda t: (t[0], -t[2]))
+    L = [r"\begin{table}[htbp]", r"  \centering",
+         r"  \caption{" + caption + "}", r"  \label{tab:" + label + "}",
+         r"  \small", r"  \begin{tabular}{llrrrrr}", r"    \toprule",
+         r"    scene & $\tau$ & kept & control & B2 & magnitude"
+         r" & $\Delta$ (B2 $-$ mag.) \\", r"    \midrule"]
+    deltas = []
+    for scene, tau, kept, full, b2v, magv in rows_:
+        d = b2v - magv
+        if kept > 0:
+            deltas.append(d)
+        L.append("    " + " & ".join([
+            r"\texttt{" + scene + "}", tau, f"{kept * 100:.1f}\\%",
+            f"{full:.3f}", f"{b2v:.3f}", f"{magv:.3f}",
+            (r"\textbf{" + f"{d:+.3f}" + "}"),
+        ]) + r" \\")
+    L += [r"    \bottomrule", r"  \end{tabular}",
+          r"  \par\vspace{2pt}\footnotesize PSNR over the whole test set; only "
+          r"the capture the \emph{criterion} reads is restricted. Magnitude "
+          r"pruning is matched to the exact fraction B2 retained, so the two "
+          r"models are the same size and differ only in \emph{which} "
+          r"coefficients they keep. A row at $0\,\%$ kept is both methods "
+          r"discarding every non-DC coefficient, where they coincide by "
+          r"definition.",
+          r"\end{table}", ""]
+    return "\n".join(L)
+
+
 def b2_protocol_table(proto, sweep, label, caption):
     """B2's criterion across capture protocols, measured without a GPU.
 
@@ -1393,6 +1443,18 @@ def main():
             else:
                 b2sweep = loaded
 
+    b2c = {}
+    for d, _, files in os.walk(a.summaries):
+        for fn_ in files:
+            if fn_ != "summary.json":
+                continue
+            try:
+                cand = json.load(open(os.path.join(d, fn_)))
+            except Exception:
+                continue
+            if cand.get("protocol") and cand.get("protocol") != "full"                     and cand.get("results"):
+                b2c = cand
+
     b2 = {}
     for d, _, files in os.walk(a.summaries):
         for fn_ in files:
@@ -1483,6 +1545,9 @@ def main():
         "table-b2-protocols.tex": b2_protocol_table(
             b2proto, b2sweep, "btwoproto",
             r"B2 --- the identifiability criterion across capture protocols."),
+        "table-b2-matched.tex": b2_matched_table(b2c, "btwomatched",
+            r"B2 against magnitude pruning at matched model size, on a capture "
+            r"where the criterion actually masks."),
         "table-b2.tex": b2_table(b2, "b2",
             r"R8 Table 4 --- B2, angular identifiability of spherical harmonics."),
         "table-real.tex": real_scene_table(

@@ -54,6 +54,10 @@ thesis:
 	# make_figures' own exit code was never on the critical path: it had been
 	# failing on the b1-fisher slug for weeks without turning the build red.
 	python tools/make_figures.py --mode measured --runs $(RUNS) 	    --iterations $(ITERS) --out thesis/figures
+	# The qualitative panels, from the renders each rung kept. Skipped with a
+	# message rather than failing if results/renders is empty, since a fresh
+	# clone has no pictures until tools/fetch_renders.py has run.
+	python tools/make_qualitative.py --out thesis/figures
 	cd thesis && pdflatex -interaction=nonstopmode main.tex >/dev/null
 	cd thesis && pdflatex -interaction=nonstopmode main.tex >/dev/null
 	cd thesis && pdflatex -interaction=nonstopmode main.tex | grep -E "^!|Reference .* undefined" || true

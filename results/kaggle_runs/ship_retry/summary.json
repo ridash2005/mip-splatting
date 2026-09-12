@@ -1,0 +1,40 @@
+{
+  "rung": "C2",
+  "protocol": "STMT",
+  "load_allres": false,
+  "seeds": [
+    0
+  ],
+  "scenes": [
+    "ship"
+  ],
+  "iterations": 30000,
+  "gpu": "Tesla T4",
+  "n_gpu": 2,
+  "torch": "2.10.0+cu128",
+  "cuda": "12.8",
+  "open3d": true,
+  "armA_commit": "a77201ee6c60a7fa4d8442e92112bc115538a373",
+  "armB_commit": "7896e78d99c3d05fd2251986d35153330da86220",
+  "convert_seconds": 137.7054328918457,
+  "done": {},
+  "failed": {
+    "B/ship": "5 attempt(s), all failed. Last: RuntimeError: command failed (1): OMP_NUM_THREADS=4 CUDA_VISIBLE_DEVICES=0 python train.py -s /kaggle/working/multi-scale/ship -m /kaggle/working/out_armB/ship --eval --white_background --iterations 30000 --test_iterations -1 --port 6209  --kernel_size 0.3 --disable_3D_filter --disable_2D_mip_compensation\n--- tail ---\n\nComputing 3D filter [12/09 11:49:15]\nComputing 3D filter [12/09 11:49:22]\nComputing 3D filter [12/09 11:49:30]\nComputing 3D filter [12/09 11:49:38]\nComputing 3D filter [12/09 11:49:45]\nComputing 3D filter [12/09 11:49:53]\nComputing 3D filter [12/09 11:50:00]\nComputing 3D filter "
+  },
+  "attempts_allowed": 5,
+  "attempts_failed": {
+    "B/ship": [
+      "RuntimeError: command failed (1): OMP_NUM_THREADS=4 CUDA_VISIBLE_DEVICES=0 python train.py -s /kaggle/working/multi-scale/ship -m /kaggle/working/out_armB/ship --eval --white_background --iterations 30000 --test_iterations -1 --port 6209  --kernel_size 0.3 --disable_3D_filter --disable_2D_mip_compensation\n--- tail ---\ng 3D filter [12/09 11:01:11]\nComputing 3D filter [12/09 11:01:16]\nComputing 3D filter [12/09 11:01:20]\nComputing 3D filter [12/09 11:01:25]\nComputing 3D filter [12/09 11:01:30]\nComputing 3D filter [12/09 11:01:36]\nComputing 3D filter [12/09 11:01:41]\nComputing 3D filter [12/09 11",
+      "RuntimeError: command failed (1): OMP_NUM_THREADS=4 CUDA_VISIBLE_DEVICES=0 python train.py -s /kaggle/working/multi-scale/ship -m /kaggle/working/out_armB/ship --eval --white_background --iterations 30000 --test_iterations -1 --port 6209  --kernel_size 0.3 --disable_3D_filter --disable_2D_mip_compensation\n--- tail ---\n 3D filter [12/09 11:11:17]\nComputing 3D filter [12/09 11:11:23]\nComputing 3D filter [12/09 11:11:30]\nComputing 3D filter [12/09 11:11:36]\nComputing 3D filter [12/09 11:11:43]\nComputing 3D filter [12/09 11:11:49]\nComputing 3D filter [12/09 11:11:57]\nComputing 3D filter [12/09 11:",
+      "RuntimeError: command failed (1): OMP_NUM_THREADS=4 CUDA_VISIBLE_DEVICES=0 python train.py -s /kaggle/working/multi-scale/ship -m /kaggle/working/out_armB/ship --eval --white_background --iterations 30000 --test_iterations -1 --port 6209  --kernel_size 0.3 --disable_3D_filter --disable_2D_mip_compensation\n--- tail ---\ng 3D filter [12/09 11:21:51]\nComputing 3D filter [12/09 11:21:57]\nComputing 3D filter [12/09 11:22:03]\nComputing 3D filter [12/09 11:22:10]\nComputing 3D filter [12/09 11:22:16]\nComputing 3D filter [12/09 11:22:22]\nComputing 3D filter [12/09 11:22:29]\nComputing 3D filter [12/09 11",
+      "RuntimeError: command failed (1): OMP_NUM_THREADS=4 CUDA_VISIBLE_DEVICES=0 python train.py -s /kaggle/working/multi-scale/ship -m /kaggle/working/out_armB/ship --eval --white_background --iterations 30000 --test_iterations -1 --port 6209  --kernel_size 0.3 --disable_3D_filter --disable_2D_mip_compensation\n--- tail ---\n00] Saving Gaussians [12/09 11:34:31]\nComputing 3D filter [12/09 11:34:34]\nComputing 3D filter [12/09 11:34:41]\nComputing 3D filter [12/09 11:34:48]\nComputing 3D filter [12/09 11:34:55]\nComputing 3D filter [12/09 11:35:03]\nComputing 3D filter [12/09 11:35:10]\nComputing 3D filter ",
+      "RuntimeError: command failed (1): OMP_NUM_THREADS=4 CUDA_VISIBLE_DEVICES=0 python train.py -s /kaggle/working/multi-scale/ship -m /kaggle/working/out_armB/ship --eval --white_background --iterations 30000 --test_iterations -1 --port 6209  --kernel_size 0.3 --disable_3D_filter --disable_2D_mip_compensation\n--- tail ---\n\nComputing 3D filter [12/09 11:49:15]\nComputing 3D filter [12/09 11:49:22]\nComputing 3D filter [12/09 11:49:30]\nComputing 3D filter [12/09 11:49:38]\nComputing 3D filter [12/09 11:49:45]\nComputing 3D filter [12/09 11:49:53]\nComputing 3D filter [12/09 11:50:00]\nComputing 3D filter "
+    ]
+  },
+  "session_seconds": 3787.373213291168,
+  "gpu_hours_used": 1.0520481150017844,
+  "complete": false,
+  "filter_3D_max": {},
+  "armB_all_zero": true,
+  "armA_all_nonzero": true
+}

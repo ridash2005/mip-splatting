@@ -198,6 +198,11 @@ def table(s, x, y, w, rows, col_w, size=13, head=True):
 
 
 # --------------------------------------------------------------- the slides
+# A blank line inside a text run. Written this way because an escaped
+# newline in a literal is fragile to edit through tooling.
+PARA = chr(10) + chr(10)
+
+
 _WORD = {1: "One", 2: "Two", 3: "Three", 4: "Four", 5: "Five", 6: "Six",
          7: "Seven", 8: "Eight"}
 
@@ -409,6 +414,52 @@ def build(prs, D):
          "backbone, peak VRAM, primitive count and the claimed acceptance level.",
          size=15, colour=MUTED, spacing=1.35)
 
+    # 7b -------------------------------------------- the result, as a picture
+    s = slide(prs)
+    header(s, "result 1 · the control, visibly",
+           "What 10 dB of PSNR actually looks like")
+    picture(s, "fig11c-qualitative-ladder-compact", Inches(0.5), Inches(2.0),
+            Inches(5.7))
+    text(s, Inches(6.4), Inches(1.75), Inches(6.2), Inches(3.9),
+         [("One view of ", {}), ("lego", {"bold": True}),
+          (", trained once at full resolution and tested at four scales. Left "
+           "is ground truth, middle 3DGS, right Mip-Splatting." + PARA, {}),
+          ("At the training scale the two are indistinguishable", {"bold": True}),
+          (" — they agree to 0.07 dB. One octave down they have separated "
+           "by 7 dB, and the 3DGS reconstruction visibly ", {}),
+          ("thickens", {"bold": True, "colour": S2}),
+          (": treads merge, the gap between the shovel arms closes, the yellow "
+           "spreads past the studs that bound it." + PARA +
+           "A primitive smaller than a pixel is not removed by being "
+           "unresolvable — it is splatted at full opacity into the pixel "
+           "that contains it, and many such primitives sum. The band-limit is "
+           "what stops that.", {})],
+         size=15, colour=INK_2, spacing=1.3)
+    text(s, Inches(6.4), Inches(5.95), Inches(6.2), Inches(1.2),
+         "The pixels the PSNR column was computed from, not a re-render made "
+         "for the slide. Nearest-neighbour magnification, so no resampler "
+         "hides the aliasing.",
+         size=13, colour=MUTED, spacing=1.3)
+
+    # 7c ----------------------------------------------- across scenes at 1/8
+    s = slide(prs)
+    header(s, "result 1 · the control, visibly",
+           "The same signature on every scene")
+    picture(s, "fig12c-qualitative-scenes-compact", Inches(0.5), Inches(1.7),
+            Inches(5.2))
+    text(s, Inches(6.4), Inches(1.75), Inches(6.2), Inches(4.4),
+         [("The 1/8 row, three of the eight scenes." + PARA, {}),
+          ("materials", {"bold": True}),
+          (" is the clearest case: the spheres lose their specular highlights "
+           "to bloom and the dark ones lift towards grey. The image gains "
+           "energy it should not have." + PARA +
+           "These three are shown because they are visually distinct from one "
+           "another. Every scene measured under both arms shows the same "
+           "thing, and all eight are stored as per-scene contact sheets in "
+           "results/qualitative/ so the selection can be audited rather than "
+           "trusted.", {})],
+         size=15, colour=INK_2, spacing=1.3)
+
     # 8 ----------------------------------------------------- the instruments
     s = slide(prs)
     header(s, "result 2 \u00b7 the mechanism",
@@ -585,9 +636,18 @@ def main():
     # PowerPoint cannot embed PDF or SVG, so the figures are rendered again as
     # PNG by the same generator the thesis uses. Re-rendered, never converted:
     # a converted figure is a copy, and copies drift.
+    # MEASURED, for the same reason the thesis target is: --mode published
+    # draws Figure 1 without this project's own curves on it, and the deck then
+    # showed the paper's numbers where the slide said "ours".
     subprocess.run([sys.executable, os.path.join(HERE, "make_figures.py"),
-                    "--mode", "published", "--out", figs, "--formats", "png"],
+                    "--mode", "measured", "--runs", a.runs,
+                    "--iterations", "30000",
+                    "--out", figs, "--formats", "png"],
                    cwd=ROOT, check=False)
+    # The qualitative panels. Same generator as the thesis, so a slide and a
+    # figure cannot show different pixels for the same comparison.
+    subprocess.run([sys.executable, os.path.join(HERE, "make_qualitative.py"),
+                    "--out", figs], cwd=ROOT, check=False)
 
     D = {
         "macros": macros(os.path.join(ROOT, "thesis", "generated", "measured.tex")),

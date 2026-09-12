@@ -58,6 +58,69 @@ arms share and which therefore cancels in the gap --- that cancellation is the
 whole argument for running both arms in one codebase, and here it is visible as
 a number.}
 
+\subsection*{The same result, as a picture}
+\label{sec:qualitative}
+
+A decibel is a summary, and a $10$\,dB gap in a table is a claim the reader has
+to take on trust. Figure~\ref{fig:ladder} is the first row of
+Table~\ref{tab:stmt} rendered instead of tabulated: one view of \texttt{lego},
+trained once at full resolution, evaluated at each of the four test scales, on
+both arms.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.92\linewidth]{figures/fig11-qualitative-ladder.pdf}
+  \caption{One view of \texttt{lego}, single-scale training, four test scales.
+  Left: ground truth at that scale. Middle: 3DGS. Right: Mip-Splatting. The
+  numbers are PSNR for the two images shown, recomputed from those pixels, not
+  scene means --- which is why they differ from Table~\ref{tab:stmt}, a mean
+  over $\stmtMatchedScenes$ scenes and every test view. Renders are magnified
+  with nearest-neighbour interpolation so that a rendered pixel is a visible
+  block: a $\tfrac18$-scale render is $100\times100$, and any smooth resampler
+  would average away the aliasing the figure exists to show.}
+  \label{fig:ladder}
+\end{figure}
+
+At the training scale the two are indistinguishable, and the numbers agree to
+$0.07$\,dB. One octave down they have separated by $7$\,dB, and what separates
+them is visible without being told where to look: the 3DGS reconstruction
+\emph{thickens}. Treads merge into a band, the gap between the shovel arms
+closes, the yellow spreads past the studs that bound it. By $\tfrac18$ the
+machine is a blob with a red dot on it, and Mip-Splatting still resolves the
+tracks.
+
+That thickening is the mechanism of Chapter~\ref{ch:background} in visible
+form. A primitive smaller than a pixel at the test scale is not removed by being
+unresolvable --- it is splatted at full opacity into the pixel that contains it,
+and many such primitives sum. The image gains energy it should not have, so
+edges bloom outward and dark regions lift. The band-limit is what stops a
+primitive from being smaller than the sampling can support, and the right-hand
+column is what that buys.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.92\linewidth]{figures/fig12-qualitative-scenes.pdf}
+  \caption{The $\tfrac18$ row across four scenes, same construction as
+  Figure~\ref{fig:ladder}. \texttt{materials} is the clearest case: the
+  spheres lose their specular highlights to bloom and the dark ones lift
+  towards grey. Every scene measured under both arms shows the same signature;
+  these four are shown because they are visually distinct from one another, and
+  the remainder are in \texttt{results/qualitative/} as per-scene contact
+  sheets so the selection can be audited.}
+  \label{fig:qualscenes}
+\end{figure}
+
+\keybox{what these figures are, and what they are not}{%
+They are the pixels the PSNR column was computed from. Each rung deletes all but
+the first few rendered views once the metrics have consumed them, and what
+survives is a matched set of predictions and ground truths per model; these are
+those files, not a re-render made for the figure. The ground-truth image is
+byte-identical between the two arms at every index, checked rather than assumed,
+so the two predictions are of the same view.
+
+They are also \emph{single views}, and a single view is not evidence of a mean.
+The tables remain the claim; these show what the claim looks like.}
+
 \input{generated/table-cost}
 
 \section{Gate G2 --- the defect it found}
@@ -216,16 +279,31 @@ tensor derived from its output, \texttt{radii > 0} in
 \texttt{gaussian\_renderer}, with the backward pass never reached.
 
 Three things that rules out, and one it does not. It is not the backward
-kernel, which the second failure had suggested. It is not memory exhaustion:
-no allocation error is raised, and \texttt{ship} completes on arm A on the same
-$15\,360$\,MiB card at a measured peak of $13\,755$\,MiB. And it is not a
-deterministic fault at a fixed point, which is what this section claimed before
-it was instrumented --- the four attempts died at roughly iteration $3\,000$,
-$10\,320$ and $12\,100$, the last two on identical code and data. What remains
-is an out-of-bounds access in the forward raster whose onset depends on the
-trajectory, on much the largest model in the suite: \texttt{ship} reaches
-$442\,235$ primitives on arm A, more than any other Blender scene, at
-$\sim\!90\,\%$ of the card.
+kernel, which the second failure had suggested. It is not memory exhaustion: no
+allocation error is raised in any attempt, and \texttt{ship} completes on arm A
+on the same $15\,360$\,MiB card at a measured peak of $13\,755$\,MiB. And it is
+not a deterministic fault at a fixed point, which is what this section claimed
+before it was instrumented.
+
+The scene has now been attempted nine times on the vanilla arm --- four
+diagnostic runs and then five consecutive attempts in one session, since a fault
+whose onset moves is a fresh draw each time and retrying it is measurement
+rather than hope. \textbf{All nine failed}, every one with
+\texttt{cudaErrorIllegalAddress} and none with an allocation error, at
+iterations
+\[
+  3\,000,\quad 7\,220,\quad 8\,580,\quad 10\,100,\quad 10\,210,\quad
+  10\,320,\quad 11\,820,\quad 12\,100
+\]
+and one earlier still. What varies is \emph{when}, not \emph{whether}: the
+failure is certain and its timing is not. That settles the question retrying was
+asked to settle --- there is no lucky run to be had --- and it is why the scene
+is reported as failed rather than re-attempted further.
+
+What remains is an out-of-bounds access in the forward raster whose onset
+depends on the optimisation trajectory, on much the largest model in the suite:
+\texttt{ship} reaches $442\,235$ primitives on arm A, more than any other
+Blender scene, at $\sim\!90\,\%$ of the card.
 
 It is excluded from the single-scale arm-B rows, and because every between-arm
 table in this chapter is restricted to the scenes both arms have, it is excluded
@@ -835,6 +913,32 @@ the point, \emph{on every one of the eight paired cells}, two scenes by four tes
 scales, with per-cell gains from $+0.163$ to $+0.217$\,dB. A sign that is
 consistent across all eight pairings is not a mean that happens to come out
 positive.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.92\linewidth]{figures/fig13-qualitative-pencil.pdf}
+  \caption{The operating point where B1 acts, rendered. Three training cameras
+  spanning $29^\circ$; the test set is the full orbit, so most of what is
+  evaluated was never observed. Numbers are PSNR for the images shown. B1 leads
+  on both scenes, and on all four test scales of each, and the lead is not
+  visible.}
+  \label{fig:qualpencil}
+\end{figure}
+
+\keybox{the honest reading of Figure~\ref{fig:qualpencil}}{%
+Both reconstructions are ruined. The chair is a smear with floaters where the
+unobserved sides should be, the \texttt{lego} bulldozer is barely identifiable,
+and nothing in either image would be accepted as output. B1's advantage is real,
+signed consistently, and $\stressBindSigma\times$ the run-to-run spread --- and
+it is also a fifth of a decibel on a $14$\,dB reconstruction, which is invisible.
+
+Both statements are true, and the figure is here so that the first is not read
+without the second. What Table~\ref{tab:stress} establishes is that the
+\emph{mechanism} is the one the derivation names: the gain appears exactly where
+the estimation term overtakes the floor and nowhere else. What it does not
+establish, and what this figure makes plain, is that the method is useful at
+this operating point. A capture this degraded needs more cameras, not a better
+band-limit.}
 
 \keybox{the ordering was predicted before the runs, and it is the whole claim}{%
 Section~\ref{sec:anisotropy} does not predict that this method helps. It predicts

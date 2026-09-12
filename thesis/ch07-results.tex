@@ -206,24 +206,52 @@ matching them is what the C1 switch should have done from the start --- it was
 supposed to isolate one term and it removed three.
 
 \paragraph{\texttt{ship} does not complete, and is reported as such.} With both
-guards matched it fails a third time, back in the forward pass, at the same point
-in training. It is excluded from the single-scale arm-B rows, and because every
-between-arm table in this chapter is restricted to the scenes both arms have, it
-is excluded from arm A's there too --- a seven-scene mean against an eight-scene
-one is not a comparison. Nothing was reduced to make it fit: the protocol's rule
-for a scene that will not run is to record it and move on, and that rule does not
-become optional when the scene is one of eight rather than one of nine.
+guards matched it fails a third time, and a fourth under instrumentation. The
+first three tracebacks all pointed at \texttt{ssim}, in the \emph{next}
+iteration's loss, which is a red herring: a CUDA fault is reported
+asynchronously, at whichever call next touches the device. Re-run with
+\texttt{CUDA\_LAUNCH\_BLOCKING=1} so that each launch is synchronous, it
+localises instead to the forward rasteriser --- the fault surfaces on the first
+tensor derived from its output, \texttt{radii > 0} in
+\texttt{gaussian\_renderer}, with the backward pass never reached.
+
+Three things that rules out, and one it does not. It is not the backward
+kernel, which the second failure had suggested. It is not memory exhaustion:
+no allocation error is raised, and \texttt{ship} completes on arm A on the same
+$15\,360$\,MiB card at a measured peak of $13\,755$\,MiB. And it is not a
+deterministic fault at a fixed point, which is what this section claimed before
+it was instrumented --- the four attempts died at roughly iteration $3\,000$,
+$10\,320$ and $12\,100$, the last two on identical code and data. What remains
+is an out-of-bounds access in the forward raster whose onset depends on the
+trajectory, on much the largest model in the suite: \texttt{ship} reaches
+$442\,235$ primitives on arm A, more than any other Blender scene, at
+$\sim\!90\,\%$ of the card.
+
+It is excluded from the single-scale arm-B rows, and because every between-arm
+table in this chapter is restricted to the scenes both arms have, it is excluded
+from arm A's there too --- a seven-scene mean against an eight-scene one is not a
+comparison. Nothing was reduced to make it fit: the protocol's rule for a scene
+that will not run is to record it and move on, and that rule does not become
+optional when the scene is one of eight rather than one of nine.
 
 Two things make the exclusion narrow rather than convenient. \texttt{ship}
 trains without incident on the \emph{multi-scale} protocol, on all four scales,
 so Table~\ref{tab:mtmt} is a full eight-scene comparison and the failure is
 specific to single-scale training. And it trains without incident on arm A, so
 the fragility belongs to the vanilla band-limit semantics rather than to the
-scene, the data or the harness. Both point the same way: the opacity compensation
-was doing something beyond anti-aliasing --- it was keeping degenerate primitives
-out of the raster --- and removing it exposes a scene that the densification of
-this codebase pushes into that regime. That is a property of the combination, and
-it is the kind of thing a reproduction is for.
+scene, the data or the harness. Both point the same way: removing the
+compensation costs robustness on the one scene that sits closest to the limits of
+the card, and it does so through the forward raster.
+
+The mechanism is \emph{not} settled beyond that, and the earlier draft of this
+section overstated it. Hoisting the degeneracy guard out of the compensation
+branch was a real defect and a real fix --- it is what recovered \texttt{chair}
+--- but it cannot also be the explanation for the failures that persist after
+it, because the guard now fires identically whether the compensation is on or
+off. What can be said from measurement is the conjunction above: forward raster,
+varying onset, no allocation error, largest model in the suite, vanilla arm
+only. Naming a cause more specific than that would be inference presented as
+result, which is the thing \S\ref{sec:g2} already cost this project once.
 
 \keybox{a switch that is not minimal is not a control}{%
 Each of those three removals was invisible: no assertion covered them, the
@@ -238,6 +266,39 @@ not only against what it changes.}
 \label{sec:table2}
 
 \input{generated/table2-mtmt}
+
+\subsection*{Every cell of this column was two rasterisers, briefly}
+\label{sec:blend}
+
+Arm B's column here was re-measured after C1, and for a while afterwards each of
+its $32$ cells was the mean of the old measurement and the new one rather than
+the new one. The record is append-only by design (Table~\ref{tab:levels}): a
+re-measured configuration leaves its predecessor in the file, marked, and the
+tables skip anything marked. The marking rule identified the rows to retire by
+the rung name in their notes --- and the re-run was the same rung, so its rows
+carried the same name, the rule exempted both, and nothing was retired. Both
+rows then satisfied the table's selector and were averaged.
+
+Nothing about the output looked wrong. The two builds differ only in whether the
+degeneracy guards in the forward and backward passes match, which moves a scene
+by hundredths of a decibel on a capture this well conditioned, so the blended
+column sat exactly where a plausible column sits. The same defect had quietly
+taken hold in the B1 parity rows, where the two builds differed in whether the
+filter floor was Mip-Splatting's own value or a re-derivation of it.
+
+What was missing was not a better rule but any check at all on the invariant the
+rule exists to maintain. There is one now: the generator refuses to emit a table
+if any reported cell draws on more than one build, and it names the cell. It is
+four lines, it would have caught both instances the day they appeared, and it
+subsumes every future variant of the same mistake --- which a third special case
+in the marking rule would not have.
+
+\keybox{append-only is a property of the file, not of the average}{%
+Keeping superseded rows is what makes a result auditable, and this project has
+been strict about it. But a row that is kept and not marked is a row that is
+\emph{used}, and the marking is the only thing standing between an honest
+archive and a silently pooled average. A discipline that depends on a marking
+step needs the pooled average checked, not the marking step trusted.}
 
 \section{What remains of the densification difference}
 \label{sec:densification}
@@ -696,10 +757,25 @@ and the sequence is worth recording because each step ruled something out.
 With the clamp reduced to a division guard, $|\Sigma|$ taken from the scale
 vector where $\prod s_i^2$ is exact, and the isotropic regime using
 Mip-Splatting's own scalar expression, the largest difference over the two scenes
-then measured fell from $1.245$\,dB to $0.136$\,dB. On the full eight-scene
-benchmark it is now $\mathbf{\methodParityMax}$\,dB, an order of magnitude below
-the seed spread of \S\ref{sec:spread} --- the two-scene figure was itself
-dominated by which two scenes they were.
+then measured fell from $1.245$\,dB to $0.136$\,dB. Over the
+$\methodParityScenes$ scenes for which a \emph{paired} measurement exists it is
+now $\mathbf{\methodParityMax}$\,dB, comfortably below the seed spread of
+\S\ref{sec:spread}.
+
+\keybox{what ``paired'' has to mean here}{%
+Proposition~\ref{prop:reduction} says B1 \emph{becomes} Mip-Splatting when the
+floor dominates, so the two numbers being subtracted have to come from the same
+capture, the same harness invocation and the same build; otherwise the
+difference also contains whatever separates two runs. That is a stricter
+requirement than it sounds, and this table did not meet it. The selector behind
+the macro accepted the standard single-scale rows as a stand-in for
+Mip-Splatting at the full protocol, so B1 was being differenced against a sweep
+from three commits earlier that had never used the protocol, with two scenes
+entering twice on one side and once on the other. It reported $0.021$\,dB. The
+figure was not wrong by much, and that is the point: a comparison can be
+mis-specified and still land on a plausible number, which is why the pairing is
+now enforced in the generator rather than assumed, and why the scene count is a
+macro rather than the word ``eight''.}
 
 \keybox{what made this findable}{%
 The unit test of \S\ref{sec:proposition2} passed throughout, because its scales

@@ -142,13 +142,24 @@ def fig_scale_degradation(out, measured=None):
     axes[0].annotate("3DGS", (2, STMT["3DGS"][2]), xytext=(-2, -13),
                      textcoords="offset points", color=INK, fontsize=7.5,
                      weight="bold", ha="center")
-    # the gap that matters, drawn on the 1/8 column
-    axes[0].annotate("", xy=(3, STMT["3DGS"][3]), xytext=(3, STMT["Mip-Splatting"][3]),
+    # The gap that matters, drawn on the 1/8 column -- and drawn on whichever
+    # pair of curves is in the foreground. The arrow used to be pinned to the
+    # published points with the published 10.98 typed beside it, which on a
+    # panel whose solid curves are this project's own measurement reads as a
+    # measured gap. Both numbers are quoted; neither is typed.
+    t0 = "Single-scale train → multi-scale test"
+    m_b = (measured or {}).get((t0, "3DGS"))
+    m_a = (measured or {}).get((t0, "Mip-Splatting"))
+    if m_b and m_a:
+        lo, hi, tag = m_b[3], m_a[3], "ours"
+    else:
+        lo, hi, tag = STMT["3DGS"][3], STMT["Mip-Splatting"][3], "published"
+    axes[0].annotate("", xy=(3, lo), xytext=(3, hi),
                      arrowprops=dict(arrowstyle="<->", color=INK_2, lw=0.9,
                                      shrinkA=3, shrinkB=3))
-    axes[0].text(2.9, (STMT["3DGS"][3] + STMT["Mip-Splatting"][3]) / 2,
-                 "10.98 dB", ha="right", va="center", fontsize=7.5,
-                 color=INK, weight="bold")
+    axes[0].text(2.9, (lo + hi) / 2,
+                 f"{hi - lo:.2f} dB" + chr(10) + f"({tag})", ha="right", va="center",
+                 fontsize=7.5, color=INK, weight="bold", linespacing=1.25)
     axes[1].legend(frameon=False, fontsize=7.5, loc="lower left",
                    labelcolor=INK_2, handlelength=1.6)
     _save(fig, out, "fig1-scale-degradation")

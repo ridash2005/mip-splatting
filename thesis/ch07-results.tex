@@ -665,17 +665,19 @@ and the count-based cone, the estimation term exceeds the Nyquist floor on
 \emph{zero} primitives. $\Sigma_{\mathrm{filt}} = f_k^2 I$ identically, the mean
 anisotropy is $1.00\times$ to two decimals, and the two arms take the same code
 path. The measured differences over those five rows run from $-0.041$ to
-$+0.012$\,dB, every one of them inside the harness's own run-to-run spread. That
+$+0.017$\,dB --- every one inside the harness's own run-to-run spread, and none
+exceeding $0.8\sigma$. That
 is not a weak result; it is the proposition holding, on five independently
 degraded captures, to the precision of the instrument.
 
 On the narrow pencil the filter engages for the first time in this project: the
 estimation term exceeds the floor on $93\,\%$ of primitives and the filter comes
 out genuinely anisotropic at $1.47\times$. And there B1 is ahead --- by
-$+0.197$\,dB on the mean, and, more to the point, \emph{on every one of the eight
-paired cells}, two scenes by four test scales, with per-cell gains from $+0.163$
-to $+0.217$\,dB. A sign that is consistent across all eight pairings is not a
-mean that happens to come out positive.
+$+0.197$\,dB on the mean --- four times the run-to-run spread --- and, more to
+the point, \emph{on every one of the eight paired cells}, two scenes by four test
+scales, with per-cell gains from $+0.163$ to $+0.217$\,dB. A sign that is
+consistent across all eight pairings is not a mean that happens to come out
+positive.
 
 \keybox{the ordering was predicted before the runs, and it is the whole claim}{%
 Section~\ref{sec:anisotropy} does not predict that this method helps. It predicts
@@ -683,8 +685,11 @@ Section~\ref{sec:anisotropy} does not predict that this method helps. It predict
 capture's angular span closes. A method that helped uniformly would contradict
 its own derivation, and \S\ref{ch:discussion} recorded that in advance as a
 reason for suspicion rather than celebration. What the table shows is the
-predicted step: five rows at zero, one row at $5\times$ the noise, and the step
+predicted step: five rows inside the noise, one at four times it, and the step
 falls exactly at the span where the estimation term overtakes the floor. The
+conditioning column rises monotonically alongside it --- $1.17$, $1.22$, $1.48$,
+$2.47$, $4.11$, $6.17\times$ --- and is measured on the same captures the PSNR
+is, which is what \S\ref{sec:branchdefect} cost and bought. The
 crossover is between the count-based cone at $54^\circ$ and the pencil at
 $29^\circ$, and the suite contains both only because the two protocol
 definitions of \S\ref{sec:branchdefect} disagreed and both were kept.}

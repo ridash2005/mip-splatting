@@ -541,6 +541,23 @@ CONFIG_KEY = ("dataset", "scene", "method", "arm", "train_scale", "test_scale",
               "iterations", "load_allres", "kernel_size", "seed")
 
 
+def _inst_per_scene(inst):
+    """(scene, protocol) -> (span, sigma ratio) from the instruments' own records.
+
+    by_protocol is medianed over all eight Blender scenes; the stress suite runs
+    two. Comparing those two medians is comparing different scene sets, and it is
+    why the conditioning column came out blank on three protocols whose geometry
+    the instruments had in fact measured. Matching per scene removes the question.
+    """
+    out = {}
+    for key, v in ((inst or {}).get("results") or {}).items():
+        parts = key.split("/")
+        if len(parts) != 3 or not v.get("span_deg"):
+            continue
+        out[(parts[1], parts[2])] = (v["span_deg"], v.get("I2_median_sigma_ratio"))
+    return out
+
+
 def _run_spans(summaries_dir="results/kaggle_runs"):
     """Median realised span per protocol, from the runs that produced the PSNR.
 
@@ -563,8 +580,11 @@ def _run_spans(summaries_dir="results/kaggle_runs"):
             for key, job in (s.get("done") or {}).items():
                 parts = key.split("/")
                 if len(parts) == 3 and job.get("span_deg"):
-                    out.setdefault(parts[2], []).append(float(job["span_deg"]))
-    return {k: sorted(v)[len(v) // 2] for k, v in out.items() if v}
+                    # keyed (scene, protocol): the span differs BY SCENE for the
+                    # extent-based protocols, so a pooled median cannot be
+                    # compared against a per-scene instrument record.
+                    out[(parts[1], parts[2])] = float(job["span_deg"])
+    return out
 
 
 def _b1_diagnostics(summaries_dir="results/kaggle_runs"):
@@ -620,6 +640,7 @@ def stress_table(rows, inst, label, caption, sigma=SIGMA_FALLBACK):
            .setdefault((r["scene"], r["test_scale"]), []).append(float(r["psnr"]))
     bp = (inst or {}).get("by_protocol", {})
     spans = _run_spans()
+    ips = _inst_per_scene(inst)
     diag = _b1_diagnostics()
     L = [r"\begin{table}[htbp]", r"  \centering",
          r"  \caption{" + caption + "}", r"  \label{tab:" + label + "}",
@@ -639,15 +660,30 @@ def stress_table(rows, inst, label, caption, sigma=SIGMA_FALLBACK):
         b1 = [x for k in keys for x in b1_d[k]]
         delta = mean(paired) if paired else None
         v = bp.get(proto) or {}
-        span = spans.get(proto) or v.get("median_span_deg")
-        # I-2's anisotropy belongs to this row only if the instruments measured
-        # the same capture. When the two spans disagree by more than a couple of
-        # degrees they are different protocols under one name, and the cell is
-        # left empty rather than filled from the wrong one.
+        scenes_here = sorted({k[0] for k in keys})
+        # Span and conditioning from the instruments, restricted to the SCENES
+        # this row was trained on, so the two are the same capture. The cell is
+        # left empty if the instruments and the training run disagree about the
+        # geometry by more than two degrees on any of those scenes -- that means
+        # two different protocols under one name, and the wrong one must not be
+        # quoted.
+        run_spans = [spans[(sc, proto)] for sc in scenes_here
+                     if (sc, proto) in spans]
+        span = (sorted(run_spans)[len(run_spans) // 2] if run_spans
+                else v.get("median_span_deg"))
         aniso = None
-        if v.get("median_span_deg") and span:
-            if abs(v["median_span_deg"] - span) <= 2.0:
-                aniso = v.get("median_sigma_ratio_measured")
+        agree, vals = bool(scenes_here), []
+        for sc in scenes_here:
+            ins, run = ips.get((sc, proto)), spans.get((sc, proto))
+            if not ins or ins[1] is None or run is None:
+                agree = False
+                break
+            if abs(ins[0] - run) > max(1.0, 0.05 * run):
+                agree = False       # the same name, a different capture
+                break
+            vals.append(ins[1])
+        if agree and vals:
+            aniso = sorted(vals)[len(vals) // 2]
         dg = diag.get(proto) or {}
         L.append("    " + " & ".join([
             PROTO_LABEL[proto],

@@ -1,6 +1,32 @@
 \chapter{Background --- image formation, NeRF, 3DGS, EWA splatting, Mip-Splatting}
 \label{ch:background}
 
+\keybox{the idea, before the mathematics}{%
+A radiance field is a model of a scene that you can photograph from a new angle.
+You give it a few dozen real photographs; it fits something to them; you then ask
+it for a picture from a viewpoint nobody stood at.
+
+3D Gaussian Splatting fits a few hundred thousand small translucent blobs ---
+ellipsoids with a colour and an opacity. Rendering is cheap because a blob
+projects to an ellipse, and drawing a few hundred thousand ellipses in depth
+order is something a GPU does very well. Fitting is gradient descent: render,
+compare to the photograph, nudge every blob.
+
+Here is the problem this thesis is about. Nothing in that procedure stops a blob
+from becoming smaller than anything the photographs can resolve. If a blob ends
+up a tenth of a pixel across, it still gets drawn --- at full opacity, into
+whichever pixel contains its centre. At the resolution you trained on this is
+invisible, because the fit compensates. Change the resolution and it is not: the
+sub-pixel blobs no longer land where the fit assumed, and the image acquires
+energy it should not have. That is what you are seeing in
+Figure~\ref{fig:ladder}, where the same model is fine at full resolution and a
+bright smear at one-eighth.
+
+The fix, in general terms, is a \emph{band-limit}: a floor on how small a blob is
+allowed to be. This chapter sets out where each published method puts that floor
+and what it is made of. The rest of the thesis argues that the floor should be a
+matrix rather than a number, and measures what happens when you make it one.}
+
 \section{Image formation}
 Both baselines assume the same emission--absorption model. Along a ray
 $r(t)=o+td$ with density $\sigma$ and colour $c$, the rendered radiance is

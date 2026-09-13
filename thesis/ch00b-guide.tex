@@ -1,0 +1,52 @@
+\chapter*{How to read this document}
+\addcontentsline{toc}{chapter}{How to read this document}
+
+This thesis is written to be read in two ways, and it is separated so that either
+works.
+
+\paragraph{The argument} is Parts~I--IV, Chapters~\ref{ch:intro}--\ref{ch:plan}.
+It assumes you know what a photograph is and are willing to look at a
+$3\times3$ matrix, and nothing beyond that. It contains the question, the
+derivation, what was measured, and what the measurements mean. Every chapter
+opens with the idea in plain language before any mathematics, and no chapter in
+this part contains a file path, a command line, or a discussion of how the
+computation was arranged. Read straight through, it is a talk.
+
+\paragraph{The technical record} is the appendices. Appendix~\ref{app:derivations}
+carries the derivations in full, for a reader who wants to check the algebra
+rather than accept the results. Appendix~\ref{app:harness} describes the machinery
+that produced the measurements --- where the work ran, what is asserted before
+anything is measured, how a result enters the record and how it leaves it.
+Appendix~\ref{app:impl} gives the implementation: four configurations of one
+codebase, and exactly what each switch touches. Appendix~\ref{app:defects} is the
+eight defects found in this project's own measurement, each with what it looked
+like, what was actually happening, and what now prevents it.
+
+\medskip
+\noindent
+That last appendix is the one a supervisor is most likely to want and a seminar
+audience is least likely to. It is kept complete and kept out of the way.
+
+\section*{If you have twenty minutes}
+
+Read the Abstract, then \S\ref{sec:table1} and its figures --- the reproduction
+and what a ten-decibel gap looks like as a picture --- then \S\ref{sec:table3},
+the experiment the thesis exists to perform, then Chapter~\ref{ch:discussion} for
+what it does and does not establish. Four tables and three figures carry the
+whole argument.
+
+\section*{A note on what is claimed}
+
+This document reports a negative result and a null result alongside its positive
+one, and it does not weight them differently. Method~II is refuted. Method~I is
+exactly equal to its baseline on every standard benchmark --- by construction,
+provably, and that is the intended behaviour rather than a disappointment. Its
+one positive result is $0.197$\,dB on a single degraded capture protocol, at a
+cost of $2.8\times$ the memory.
+
+The reason to read on is not that the method works. It is that the derivation
+predicted, in advance and in detail, \emph{where} it would do nothing and where
+it would act, and the measurement agrees --- including on the five protocols
+where the prediction was that nothing would happen. A theory that correctly
+predicts its own null results is doing more work than one that only predicts its
+successes.

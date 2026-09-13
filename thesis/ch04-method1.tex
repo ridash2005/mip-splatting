@@ -1,6 +1,36 @@
 \chapter{Method I --- the sampling-geometry band-limit}
 \label{ch:method1}
 
+\keybox{the idea, before the mathematics}{%
+Think of each blob's position as a quantity you are \emph{measuring} rather than
+one you are choosing. Every training photograph that sees the blob is a
+measurement of where it is, and every measurement has noise --- roughly a pixel's
+worth, in the image plane.
+
+Now ask the standard estimation question: given all those measurements, how
+precisely do you know the position? The answer is not one number. A camera
+localises a point very well within its image plane and poorly along its own
+viewing direction; a second camera at a different angle fixes the first camera's
+weak direction. Accumulate over all the cameras that saw the blob and you get a
+$3\times3$ matrix --- the familiar Fisher information of the measurement model,
+which we write $\Lambda_k$. Its eigenvectors are the directions the capture
+constrains well and badly; its eigenvalues say how well.
+
+The proposal is then almost forced: \emph{a primitive should not be finer, in any
+direction, than the capture can determine it in that direction}. Invert the
+matrix, and you have a covariance floor with the right shape. Floor that at the
+per-view Nyquist limit --- because no amount of accumulated information lets you
+resolve structure finer than a pixel --- and you have the method.
+
+Three things follow, and this chapter proves them. Mip-Splatting's scalar filter
+is exactly what you get by collapsing this matrix to a single view and throwing
+away direction. Its mysterious constant $\sqrt{0.2}$ turns out to be a confidence
+radius of $0.447$ pixels. And when the Nyquist floor dominates --- which on a
+normal benchmark capture it always does --- the new method becomes the old one
+exactly, not approximately. That last point is why the standard benchmarks in
+Chapter~\ref{ch:results} show no improvement, and why a gain there would have
+indicated a bug rather than a success.}
+
 \section{The estimation problem}
 Regard the position $p_k$ of a primitive as a parameter to be estimated from
 image measurements. Camera $n$ observes the primitive's projection at

@@ -28,34 +28,12 @@
 \end{table}
 
 \section{Reproducibility artefacts}
-\begin{table}[htbp]
-  \centering
-  \caption{What exists, and what each artefact is for.}
-  \small
-  \begin{tabular}{lp{0.62\linewidth}}
-    \toprule
-    artefact & purpose \\
-    \midrule
-    \texttt{results/runs.csv} & Append-only. One row per (arm, scene, test-scale, seed), carrying both repository commits, LPIPS backbone, resolution flag, peak VRAM, primitive count, wall-clock and the claimed acceptance level. Every table and figure regenerates from it. \\
-    \texttt{tools/make\_tex.py} & Writes every measured table and every inline number in this document. A table with no measured rows is emitted as an explicit placeholder carrying the published targets and nothing in the measured columns; it is never quietly filled from the published column. \\
-    \texttt{tools/make\_figures.py} & Generates every figure. In \texttt{--mode measured} it redraws from the CSV with the published curve retained as a faint reference, and refuses to run if the CSV has no usable rows. \\
-    \texttt{tools/split\_by\_scale.py} & Recovers the per-scale columns that the shipped evaluation pipeline blends into a single average. Without it there is no multi-scale table. \\
-    \texttt{tools/selftest\_pipeline.py} & Runs the whole reporting chain against a fixture with planted, known-in-advance answers, on a machine with no GPU. It is what caught the two silent defects described below. \\
-    \texttt{kaggle/*.py} & The rung kernels, each printing every assertion it makes and ending in a single machine-readable summary line. \\
-    \bottomrule
-  \end{tabular}
-\end{table}
-
-\paragraph{Two defects the self-test caught, and why they matter here.} The
-figure generator's ``measured'' mode was drawing the \emph{published} curve under
-a measured filename, because \texttt{runs.csv} stores the method as
-\texttt{3dgs} while the figures key off \texttt{3DGS}: every lookup missed, the
-non-empty guard still passed, and the output was a plausible-looking lie. Second,
-the per-scale splitter assumed a JSON nesting that \texttt{metrics.py} does not
-write, which would have failed only after both arms had trained. Neither would
-have raised an error where it happened. They are recorded here because a
-reproducibility claim that has never been tested against a fixture with known
-answers is an assertion, not a property.
+The apparatus that produces this document from that record --- the generator
+that writes every table, the figure pipeline, the per-scale recovery the
+shipped evaluation does not provide, and the self-test that exercises the whole
+chain against a fixture with known answers --- is described in
+Appendix~\ref{app:harness}. Two silent defects were caught by that self-test
+rather than by reading output, and both are in Appendix~\ref{app:defects}.
 
 \section{Licence}
 3DGS is released under the Gaussian-Splatting License of Inria and the Max Planck

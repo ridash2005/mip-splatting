@@ -1,0 +1,144 @@
+\chapter{The reproduction harness}
+\label{app:harness}
+
+\keybox{what this appendix is for}{%
+Nothing here is a result. This is the machinery that produced the results: what
+runs where, what is checked before anything is measured, how a measurement gets
+into the record and how it gets out again, and what the compute allowance
+allowed. A reader who takes Chapter~\ref{ch:results} at face value can skip it.
+A reader who wants to know whether the numbers can be trusted --- or who wants
+to re-run them --- will find the answer here rather than there.}
+
+\section{Where the work runs}
+
+There is no local GPU. Every training run in this thesis was executed on Kaggle's
+free tier: two NVIDIA T4s, $15\,360$\,MiB each, in sessions capped at twelve
+hours, against a weekly allowance of $30$ GPU-hours per account. That shaped the
+design more than any other single fact, and it is stated first because several
+decisions later in this appendix look arbitrary until you know it.
+
+A \emph{rung} is one such session. It clones the repository at a named commit,
+builds the CUDA rasteriser from source, converts the dataset, trains, renders,
+evaluates, writes one CSV of results and one JSON summary, and prunes everything
+else so that the session's output fits in what the platform will hand back. The
+scripts are \texttt{kaggle/*.py}; the launcher that pushes them and collects
+their output is \texttt{tools/kaggle\_push.py}.
+
+\section{The twelve pre-flight assertions}
+\label{app:preflight}
+
+A reproduction that has not checked its own instrument is a reproduction of
+nothing in particular. Twelve assertions run before the first training step and
+abort the session if any fails. They are not defensive programming; each one
+exists because the thing it checks can fail silently, and several of them have.
+
+\input{generated/table-preflight}
+
+Three are worth singling out.
+
+\begin{itemize}[leftmargin=1.4em,itemsep=3pt]
+  \item \textbf{The accelerator check.} Kaggle allocates whichever GPU is free.
+        3DGS needs compute capability $7.0$ and a P100 is $6.0$, so a session
+        landing on one would fail forty minutes in with a message that looks like
+        a code fault. It now aborts in thirty seconds with a marker the launcher
+        recognises and relaunches on.
+  \item \textbf{The \S3 diff check.} Arm B must differ from arm A by exactly the
+        intended change and nothing else. The check enumerates the files that
+        change and refuses anything outside the list. It has fired twice in
+        anger --- once on a runtime state file that a careless \texttt{git add}
+        had committed, and once when the switch of Appendix~\ref{app:impl}
+        reached further than its author believed.
+  \item \textbf{The LPIPS backbone.} LPIPS defaults to AlexNet; both papers
+        report VGG. The two differ by more than the effects this thesis
+        measures. The backbone is pinned, asserted, and written into every row
+        of the record as a column, so a row cannot be compared against a
+        published figure without the comparison being checkable.
+\end{itemize}
+
+\section{The record}
+\label{app:record}
+
+Every measurement lands in one file, \texttt{results/runs.csv}, one row per
+(arm, scene, test scale). The file is \textbf{append-only}. A configuration that
+is re-measured does not overwrite its predecessor; the predecessor stays and is
+marked, in its own \texttt{notes} column, with the name of the stage that
+replaced it. Nothing is ever deleted.
+
+That discipline exists because a deleted row is a measurement that cannot be
+re-examined, and this project has needed to re-examine several. It also has a
+failure mode, which Appendix~\ref{app:defects} describes: a row that is kept but
+not marked is a row that is silently \emph{used}. The marking is the only thing
+standing between an honest archive and a pooled average, and it is now checked
+rather than trusted --- the generator refuses to emit any table whose cells draw
+on more than one build.
+
+\paragraph{From the record to the document.} No measured number in this thesis is
+typed by hand. \texttt{tools/make\_tex.py} reads \texttt{results/runs.csv} and
+writes every table and every inline figure as a LaTeX macro; a quantity that has
+not been measured expands to a visible marker rather than to a plausible-looking
+number. The same loader feeds the figures and the slide deck, so the three cannot
+disagree --- and a test asserts that they do not, because for a while they did.
+
+\section{The apparatus, artefact by artefact}
+\label{app:artefacts}
+
+\begin{table}[htbp]
+  \centering
+  \caption{What exists, and what each artefact is for.}
+  \small
+  \begin{tabular}{lp{0.62\linewidth}}
+    \toprule
+    artefact & purpose \\
+    \midrule
+    \texttt{results/runs.csv} & Append-only. One row per (arm, scene, test-scale, seed), carrying both repository commits, LPIPS backbone, resolution flag, peak VRAM, primitive count, wall-clock and the claimed acceptance level. Every table and figure regenerates from it. \\
+    \texttt{tools/make\_tex.py} & Writes every measured table and every inline number in this document. A table with no measured rows is emitted as an explicit placeholder carrying the published targets and nothing in the measured columns; it is never quietly filled from the published column. \\
+    \texttt{tools/make\_figures.py} & Generates every figure. In \texttt{--mode measured} it redraws from the CSV with the published curve retained as a faint reference, and refuses to run if the CSV has no usable rows. \\
+    \texttt{tools/split\_by\_scale.py} & Recovers the per-scale columns that the shipped evaluation pipeline blends into a single average. Without it there is no multi-scale table. \\
+    \texttt{tools/selftest\_pipeline.py} & Runs the whole reporting chain against a fixture with planted, known-in-advance answers, on a machine with no GPU. It is what caught the two silent defects described below. \\
+    \texttt{kaggle/*.py} & The rung kernels, each printing every assertion it makes and ending in a single machine-readable summary line. \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\paragraph{Two defects the self-test caught, and why they matter here.} The
+figure generator's ``measured'' mode was drawing the \emph{published} curve under
+a measured filename, because \texttt{runs.csv} stores the method as
+\texttt{3dgs} while the figures key off \texttt{3DGS}: every lookup missed, the
+non-empty guard still passed, and the output was a plausible-looking lie. Second,
+the per-scale splitter assumed a JSON nesting that \texttt{metrics.py} does not
+write, which would have failed only after both arms had trained. Neither would
+have raised an error where it happened. They are recorded here because a
+reproducibility claim that has never been tested against a fixture with known
+answers is an assertion, not a property.
+
+\section{The ladder, and what each rung cost}
+\label{app:ladder}
+
+\input{generated/table-budget}
+
+Three entries are worth a sentence each, because they are the project's real
+costs rather than its planned ones.
+
+\begin{itemize}[leftmargin=1.4em,itemsep=3pt]
+  \item \texttt{r3\_real} is the largest single session and did not complete. It
+        ran the four indoor Mip-NeRF 360 scenes and was still going when the
+        twelve-hour cap arrived. What it produced is kept and reported as a
+        four-scene subset, clearly labelled; what it did not produce is not
+        estimated.
+  \item The arm-B re-runs after C1 --- \texttt{c2\_armb} and its continuations
+        --- are pure re-measurement cost, incurred because the arm had been built
+        wrong. They are the price of the defect in Appendix~\ref{app:defects},
+        and they are itemised so that the price is visible.
+  \item The stress suite is cheap by comparison. Restricting the training cameras
+        does not make training longer, and the sixth protocol --- the one that
+        produced the only positive result in this thesis --- trains on three
+        cameras and is the fastest run in the table.
+\end{itemize}
+
+\paragraph{The allowance was exhausted, twice.} The first time stalled the
+programme for three days and is the reason a second account exists. The binding
+constraint on this project has been compute, not code, throughout; the ladder is
+ordered so that the cheapest falsifications come first, and the two that could
+have ended the project --- does the Nyquist floor bind everywhere, and is the
+capture conditioning really anisotropic --- were run before a line of method code
+was written.

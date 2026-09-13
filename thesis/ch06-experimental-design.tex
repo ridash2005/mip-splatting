@@ -1,10 +1,28 @@
 \chapter{Experimental design}
 \label{ch:design}
 
-The full protocol, verified against repository source, is the companion document
-\emph{Baseline Reproduction Protocol \& Report v3}
-(\texttt{docs/REPRODUCTION-PROMPT.md} in the code repository). This chapter
-states the design; that document states the commands.
+\keybox{why the experiment is shaped like this}{%
+Two ideas govern everything in this chapter.
+
+The first is that a comparison is only as good as what it holds fixed. If you
+compare two published methods by running each author's repository, the difference
+between the two numbers contains the difference between two dataloaders, two
+metric implementations and two perceptual-loss backbones, and you cannot tell
+which part is the method. So every configuration here is the same checkout with
+different flags, and the difference between two numbers is the flags.
+
+The second is that a prediction made after seeing the data is not a prediction.
+The acceptance levels, the decision gates, the thresholds and the compute budget
+were all written down before any run, and are reproduced here unchanged. Two of
+those gates could have ended the project --- if the resolution limit already binds
+everywhere, or if real capture geometry turns out to be effectively isotropic,
+then the method has nothing to act on. Both were designed to be cheap and to be
+run first, before any method code existed. Chapter~\ref{ch:results} reports what
+they returned.}
+
+This chapter states the design: what is held fixed, what is varied, what would
+count as success and what would count as failure. The commands that carry it
+out, and the machinery that runs them, are Appendix~\ref{app:harness}.
 
 \section{Compute envelope and what it forbids}
 Free tier: Kaggle $2\times$T4, 16\,GB each, compute capability 7.5. 3DGS states
@@ -41,9 +59,8 @@ codebase with the 3D filter zeroed and \texttt{kernel\_size}~$=0.3$, which by
 Proposition~\ref{prop:reduction} is 3DGS exactly.
 
 This is forced as well as desirable. The multi-scale benchmark data is written
-in mip-NeRF multiscale format (\texttt{metadata.json}), and only
-Mip-Splatting's \texttt{sceneLoadTypeCallbacks} carries a \texttt{Multi-scale}
-loader, so the original 3DGS repository cannot read it at all --- it falls
+in mip-NeRF's multiscale format, and only Mip-Splatting's loader can read it;
+the original 3DGS repository cannot open the dataset at all --- it falls
 through every branch of the dispatch and dies. It also could not work in
 principle: \texttt{readMultiScale} sets the field of view \emph{per frame},
 whereas the Blender reader takes one global \texttt{camera\_angle\_x}.
@@ -86,7 +103,7 @@ The third was added after \S\ref{sec:g2} found it missing.
     \midrule
     R0 & smoke --- one scene, 7\,K, both arms, plus the twelve pre-flight assertions & toolchain fixed; estimates replaced by measurement \\
     R1 & Blender single-scale train $\rightarrow$ multi-scale test, 8 scenes $\times$ 2 arms & gate G2: $\tfrac18$-scale gap exceeds 9\,dB \\
-    R2 & Blender multi-scale train and test (\texttt{--load\_allres}) & Mip-Splatting ahead at every scale; L1 within $0.20$\,dB \\
+    R2 & Blender multi-scale train and test & Mip-Splatting ahead at every scale; L1 within $0.20$\,dB \\
     R3 & real scenes that fit 16\,GB: 360 indoor $\times4$, T\&T $\times2$, DB $\times2$ & per-scene table; OOMs recorded, never worked around \\
     R5 & seed spread --- 3 seeds $\times$ 2 scenes $\times$ 2 arms & $\sigma$, without which parity is not a testable claim \\
     R4 & Mip-NeRF 360 outdoor at \texttt{images\_8} --- the only authorised deviation & L2 only, separate table, resolution in the caption \\

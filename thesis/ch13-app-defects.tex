@@ -1,0 +1,403 @@
+\chapter{Defects found in this project's own measurement}
+\label{app:defects}
+
+\keybox{what this appendix is for, and why it is not hidden}{%
+Eight defects were found in this project's measurement, by checks built for the
+purpose, and each one produced numbers that looked entirely reasonable while
+being wrong. They are collected here rather than scattered through
+Chapter~\ref{ch:results} because a reader following the argument does not need
+the forensics, and a reader auditing the work needs all of it in one place.
+
+Each entry follows the same shape: what the number said, what was actually
+happening, how it was found, and what now prevents it. The last of those is the
+point. A defect that is fixed but not covered by a check is a defect that will
+recur under a different name --- and two of the eight below are the same mistake
+at different denominators.}
+
+\section*{The eight, in one table}
+
+\begin{center}\small
+\begin{tabular}{p{0.30\linewidth}p{0.30\linewidth}p{0.30\linewidth}}
+  \toprule
+  what looked right & what was wrong & what catches it now \\
+  \midrule
+  Arm B reproduced 3DGS's published full-resolution figure &
+  It still carried Mip-Splatting's screen-space opacity compensation, so it was
+  anti-aliasing better than 3DGS at reduced scales &
+  The switch is asserted on the \emph{compiled} rasteriser, not the source \\
+  \addlinespace
+  The C1 switch isolated one term &
+  It removed three: the compensation, and a degeneracy guard in each of the
+  forward and backward kernels &
+  The guard is hoisted out of the branch in both kernels \\
+  \addlinespace
+  Conditioning and rendered quality agreed per protocol &
+  The instrument and the trainer were cloning different branches, so the same
+  protocol name meant two different captures &
+  Both pin a branch; \texttt{test\_camera\_subset.py} asserts what each protocol
+  selects \\
+  \addlinespace
+  The estimation term exceeded the floor everywhere &
+  The constant $0.2$ was carried on one side of the comparison and not the other,
+  inflating it fivefold &
+  Proposition~\ref{prop:constant} is a unit test, passing to $1.6\times10^{-16}$ \\
+  \addlinespace
+  Table~\ref{tab:mtmt}'s arm-B column &
+  Every one of its $32$ cells was the mean of two different rasterisers &
+  The generator refuses any table whose cells span more than one build \\
+  \addlinespace
+  Mip-Splatting reproduced to $0.50$\,dB --- L2 &
+  A seven-scene mean compared against an eight-scene published figure. The true
+  figure is $\stmtArmAMaxDelta$\,dB --- L1 &
+  Against-published uses the arm's own scene set; between-arms uses the matched
+  set; a test asserts all three outputs agree \\
+  \addlinespace
+  The offset was explained by GOF densification &
+  Asserted for months, never tested. Measured, the effect is
+  $\gofMaxEffect$\,dB and not consistently signed &
+  The pre-GOF commit is a probe in the record (Table~\ref{tab:pregof}) \\
+  \addlinespace
+  B2 lost heavily to magnitude pruning &
+  Against a \emph{free} control with more freedom than B2 has. At matched
+  structure the margin is $\btwoBlockedGapMin$--$\btwoBlockedGapMax$\,dB &
+  The control carries B2's own nested-degree structure \\
+  \bottomrule
+\end{tabular}
+\end{center}
+
+\medskip
+Five of the eight are given in full below. The other three --- the denominator,
+the densification explanation and B2's unfair control --- cannot be separated
+from the results they correct, so they are told where those results are:
+\Sef{sec:table1}, \Sef{sec:densification} and \Sef{sec:btwo}
+respectively.
+
+\paragraph{A pattern worth naming.} Six of the eight are the same error: two
+quantities were compared that were not measured over the same thing. Two
+rasterisers averaged into one cell. A seven-scene mean against an eight-scene
+figure. A protocol name meaning two captures. A constant present on one side and
+not the other. A pruning control with more freedom than the method it judged. In
+every case the arithmetic was right and the comparison was not, and in every case
+the result looked plausible --- which is why none of them was caught by reading
+the numbers, and all of them were caught by a check that asked what the numbers
+were means \emph{over}.
+
+\section{The fourth check: arm B was not running 3DGS's rasteriser}
+
+The single-codebase construction of \S\ref{sec:onecodebase} gives both arms
+Mip-Splatting's rasteriser, and sets arm B apart by zeroing \texttt{filter\_3D}
+and taking \texttt{kernel\_size}~$=0.3$. That reproduces 3DGS's \emph{3D}
+band-limit exactly --- which is what check~2 verifies --- and says nothing about
+the \emph{2D} one. Mip-Splatting's screen-space filter dilates the projected
+covariance by $k$ and then compensates the opacity by
+\begin{equation}
+  \rho \;=\; \sqrt{\frac{\lvert\Sigma'\rvert}{\lvert\Sigma' + kI\rvert}} ,
+\end{equation}
+so that dilation does not brighten the primitive. Vanilla 3DGS applies the same
+fixed $0.3$ dilation and \textbf{no compensation at all}. Setting
+\texttt{kernel\_size}~$=0.3$ reproduces the dilation magnitude and leaves $\rho$
+in place, so arm B kept an anti-aliasing term that 3DGS does not have --- and
+the term it kept is precisely the one that protects a dilated primitive from
+losing energy as the test sampling rate falls. An arm that anti-aliases better
+than 3DGS degrades less than 3DGS, which is exactly what G2 measured.
+
+\paragraph{C1 --- the test that separates the two explanations.} $\rho$ is
+computed in CUDA, so the switch is a rasteriser change: a
+\texttt{mip\_compensation} flag threaded through
+\texttt{GaussianRasterizationSettings} into \texttt{computeCov2D}, which skips
+the $\rho$ term while keeping the dilation. Everything else in that function is
+identical to \texttt{graphdeco-inria/diff-gaussian-rasterization} line for line.
+The build asserts the compiled binary carries the field before any training
+starts, because checking the source would prove nothing about the binary.
+
+One scene, \texttt{lego}, 30\,000 iterations, everything else held fixed:
+
+\input{generated/table-c1}
+
+Full resolution barely moves: $\cOneBaseFull$ against $\cOneFull$, which is
+what must happen, because at the training sampling rate the dilation is
+negligible against the primitive's own extent and $\rho \approx 1$. Every
+reduced scale collapses, and lands on the shape of the published 3DGS row:
+$\cOneHalf$ against $26.95$, $\cOneQuarter$ against $21.38$, $\cOneEighth$
+against $17.69$. The compensation was the whole of the defect.
+
+\keybox{the densification hypothesis is refuted, not merely superseded}{%
+Both columns of Table~\ref{tab:c1} ran GOF's densification. If densification were
+the cause of the shortfall, the right-hand column could not have collapsed --- and
+it collapses by $\cOneCollapse$\,dB at $\tfrac18$, landing within $0.3$\,dB of
+the published figure at every reduced scale. The earlier diagnosis is therefore
+wrong, and it is left in this chapter rather than deleted because how a wrong
+diagnosis survived matters: it was never given an experiment that could refute
+it. It explained the anomaly as a property of the codebase, which is the most
+comfortable kind of explanation and the one that most deserves a test.
+
+Worth stating separately, because it is easy to read the wrong way: the
+comparison that settles this is the one \emph{between the two columns}, not
+between either column and the published row. Both columns are \texttt{lego} and
+the published row is an eight-scene mean, so the agreement at reduced scales is
+corroboration and not a measurement. The measurement is that switching one CUDA
+term moved $\tfrac18$ by $\cOneCollapse$\,dB and full resolution by less than
+$0.05$.}
+
+
+\section{What the vanilla arm cost in robustness}
+\label{sec:shipfails}
+
+Removing the compensation also removed a guard. The same CUDA branch that
+computes $\rho$ carries \texttt{coef = 0} for a primitive whose projected
+covariance is singular to the tolerance the determinants are clamped at --- a
+numerical guard, not part of the anti-aliasing model. With the compensation
+switched off, degenerate primitives survived at full opacity with an unbounded
+screen-space radius, and two scenes died reproducibly, on both GPUs, with a CUDA
+illegal memory access around iteration $3\,000$. Six trained normally, which is
+what made it look transient.
+
+Hoisting the guard out of the branch fixed one of the two. The other then failed
+in the \emph{backward} pass instead, because the backward kernel still had its
+copy of the guard inside the branch: the forward was contributing nothing for a
+degenerate primitive while a gradient still flowed to its opacity. Zeroing a
+forward contribution and leaving its gradient live is not a consistent pair, and
+matching them is what the C1 switch should have done from the start --- it was
+supposed to isolate one term and it removed three.
+
+\paragraph{\texttt{ship} does not complete, and is reported as such.} With both
+guards matched it fails a third time, and a fourth under instrumentation. The
+first three tracebacks all pointed at \texttt{ssim}, in the \emph{next}
+iteration's loss, which is a red herring: a CUDA fault is reported
+asynchronously, at whichever call next touches the device. Re-run with
+\texttt{CUDA\_LAUNCH\_BLOCKING=1} so that each launch is synchronous, it
+localises instead to the forward rasteriser --- the fault surfaces on the first
+tensor derived from its output, \texttt{radii > 0} in
+\texttt{gaussian\_renderer}, with the backward pass never reached.
+
+Three things that rules out, and one it does not. It is not the backward
+kernel, which the second failure had suggested. It is not memory exhaustion: no
+allocation error is raised in any attempt, and \texttt{ship} completes on arm A
+on the same $15\,360$\,MiB card at a measured peak of $13\,755$\,MiB. And it is
+not a deterministic fault at a fixed point, which is what this section claimed
+before it was instrumented.
+
+The scene has now been attempted nine times on the vanilla arm --- four
+diagnostic runs and then five consecutive attempts in one session, since a fault
+whose onset moves is a fresh draw each time and retrying it is measurement
+rather than hope. \textbf{All nine failed}, every one with
+\texttt{cudaErrorIllegalAddress} and none with an allocation error, at
+iterations
+\[
+  3\,000,\quad 7\,220,\quad 8\,580,\quad 10\,100,\quad 10\,210,\quad
+  10\,320,\quad 11\,820,\quad 12\,100
+\]
+and one earlier still. What varies is \emph{when}, not \emph{whether}: the
+failure is certain and its timing is not. That settles the question retrying was
+asked to settle --- there is no lucky run to be had --- and it is why the scene
+is reported as failed rather than re-attempted further.
+
+What remains is an out-of-bounds access in the forward raster whose onset
+depends on the optimisation trajectory, on much the largest model in the suite:
+\texttt{ship} reaches $442\,235$ primitives on arm A, more than any other
+Blender scene, at $\sim\!90\,\%$ of the card.
+
+It is excluded from the single-scale arm-B rows, and because every between-arm
+table in this chapter is restricted to the scenes both arms have, it is excluded
+from arm A's there too --- a seven-scene mean against an eight-scene one is not a
+comparison. Nothing was reduced to make it fit: the protocol's rule for a scene
+that will not run is to record it and move on, and that rule does not become
+optional when the scene is one of eight rather than one of nine.
+
+Two things make the exclusion narrow rather than convenient. \texttt{ship}
+trains without incident on the \emph{multi-scale} protocol, on all four scales,
+so Table~\ref{tab:mtmt} is a full eight-scene comparison and the failure is
+specific to single-scale training. And it trains without incident on arm A, so
+the fragility belongs to the vanilla band-limit semantics rather than to the
+scene, the data or the harness. Both point the same way: removing the
+compensation costs robustness on the one scene that sits closest to the limits of
+the card, and it does so through the forward raster.
+
+The mechanism is \emph{not} settled beyond that, and the earlier draft of this
+section overstated it. Hoisting the degeneracy guard out of the compensation
+branch was a real defect and a real fix --- it is what recovered \texttt{chair}
+--- but it cannot also be the explanation for the failures that persist after
+it, because the guard now fires identically whether the compensation is on or
+off. What can be said from measurement is the conjunction above: forward raster,
+varying onset, no allocation error, largest model in the suite, vanilla arm
+only. Naming a cause more specific than that would be inference presented as
+result, which is the thing \S\ref{sec:g2} already cost this project once.
+
+\keybox{a switch that is not minimal is not a control}{%
+Each of those three removals was invisible: no assertion covered them, the
+numbers that came back were plausible, and six of eight scenes were unaffected.
+What exposed them was a failure that could not be waved through --- a crash --- and
+then a failure that \emph{moved} from the forward pass to the backward one when
+half the fix was applied, which is what identified the second half. A switch
+meant to isolate a single term has to be checked against what it leaves alone,
+not only against what it changes.}
+
+
+\section{Every cell of this column was two rasterisers, briefly}
+\label{sec:blend}
+
+Arm B's column here was re-measured after C1, and for a while afterwards each of
+its $32$ cells was the mean of the old measurement and the new one rather than
+the new one. The record is append-only by design (Table~\ref{tab:levels}): a
+re-measured configuration leaves its predecessor in the file, marked, and the
+tables skip anything marked. The marking rule identified the rows to retire by
+the rung name in their notes --- and the re-run was the same rung, so its rows
+carried the same name, the rule exempted both, and nothing was retired. Both
+rows then satisfied the table's selector and were averaged.
+
+Nothing about the output looked wrong. The two builds differ only in whether the
+degeneracy guards in the forward and backward passes match, which moves a scene
+by hundredths of a decibel on a capture this well conditioned, so the blended
+column sat exactly where a plausible column sits. The same defect had quietly
+taken hold in the B1 parity rows, where the two builds differed in whether the
+filter floor was Mip-Splatting's own value or a re-derivation of it.
+
+What was missing was not a better rule but any check at all on the invariant the
+rule exists to maintain. There is one now: the generator refuses to emit a table
+if any reported cell draws on more than one build, and it names the cell. It is
+four lines, it would have caught both instances the day they appeared, and it
+subsumes every future variant of the same mistake --- which a third special case
+in the marking rule would not have.
+
+\keybox{append-only is a property of the file, not of the average}{%
+Keeping superseded rows is what makes a result auditable, and this project has
+been strict about it. But a row that is kept and not marked is a row that is
+\emph{used}, and the marking is the only thing standing between an honest
+archive and a silently pooled average. A discipline that depends on a marking
+step needs the pooled average checked, not the marking step trusted.}
+
+
+\section{Two kernels, two protocol definitions, one set of names}
+\label{sec:branchdefect}
+
+The instrument results and the PSNR results of \S\ref{sec:table3} were, for a
+time, measurements of \emph{different captures} reported under the same protocol
+names, and it is worth saying exactly how, because nothing in either run could
+have detected it.
+
+The instrument kernel cloned the repository's default branch. The training kernel
+clones the method branch. Between them, the definition of \texttt{arc} and
+\texttt{cone} had changed: the default branch sizes them by angular \emph{width},
+giving $20$ cameras across $81^\circ$ and $3$ across $30^\circ$; the method
+branch sizes them by camera \emph{count}, giving $25$ across $93^\circ$ and $10$
+across $54^\circ$. The change was deliberate and its stated reason is sound --- a
+$20^\circ$ wedge catches three cameras on a Blender capture, and three views is a
+sparse-reconstruction experiment rather than a conditioning one. What was missed
+is that only one of the two kernels was updated.
+
+Each run was internally consistent, each printed the span it had built, and each
+was correct about its own capture. The error was in reading them side by side,
+and it survived because both numbers looked reasonable: a cone \emph{is} narrower
+than an arc under either definition, so the ordering the chapter argues for held
+either way.
+
+\keybox{what it cost, and what it bought}{%
+It cost the first reading of gates G3 and G4 --- and it bought the \texttt{pencil}
+protocol. Rather than choose between the two definitions, both are kept: the
+count-based \texttt{cone} at $51^\circ$, which is a trainable subset, and the
+width-based \texttt{pencil} at $20^\circ$, which is the regime the derivation is
+about. The crossover between them is where the estimation term overtakes the
+floor, and with both in the table that crossover is a measurement rather than an
+extrapolation. The instrument kernel is now pinned to the branch the training
+kernel clones, and every protocol table carries the span the session that
+produced the row actually built.}
+
+\section{A constant that was carried on one side only}
+\label{sec:m2defect}
+
+One more defect has to be stated before the numbers, because it changed them.
+The estimation term is $(s\,\sigma_{\mathrm{pix}})^2/\lambda_i$, and
+Proposition~\ref{prop:constant} fixes $(s\,\sigma_{\mathrm{pix}})^2 = 0.2$ ---
+the same constant Mip-Splatting's floor $f_k^2 = 0.2\,(d_{\min}/f_{\max})^2$ is
+built from. Both sides of the I-1 comparison therefore carry it. The instrument
+carried it on the floor and dropped it from the estimation term, which inflated
+that side by a factor of five, or $\sqrt{5} = 2.24$ in $\sigma$. The filter's own
+implementation had always applied it.
+
+The symptom was two measurements of one quantity disagreeing --- on the arc and
+the cone, and not at the extremes, where a factor of five changes no verdict.
+Nothing raised, and both numbers were plausible on their own.
+
+\keybox{Proposition~1 is a test, not only a statement}{%
+The identity that fixes the constant is checkable: at one view, on the optical
+axis, the estimation term must \emph{equal} the floor. It now does, to
+$1.6\times10^{-16}$, and \texttt{tools/test\_instruments.py} asserts it on every
+run. Without the $0.2$ it is exactly five times the floor, so the test cannot
+pass either way by accident. This is the over-determination the audit's M-2
+named --- ``$s$ defaults to 1'' and ``$s\,\sigma_{\mathrm{pix}} = \sqrt{0.2}$''
+cannot both be free --- surfacing as a live numerical error rather than as an
+ambiguity in the prose, which is the more useful way for it to surface.}
+
+
+\section{Getting there: three bugs the parity requirement caught}
+\label{sec:b1bugs}
+
+The first implementation of B1 reported exactly what
+\S\ref{sec:instrumentresults} predicts internally --- the floor binding on
+$100\,\%$ of primitives, the filter isotropic to two decimals --- and still
+differed from Mip-Splatting by up to $1.22$\,dB, thirty times the seed spread of
+\S\ref{sec:spread}. Section~\ref{ch:discussion} names that case in advance: a
+loss on the full-orbit row is a bug, not a result, because
+Proposition~\ref{prop:reduction} forbids it. Diagnosing it took three passes,
+and the sequence is worth recording because each step ruled something out.
+
+\begin{enumerate}[leftmargin=1.4em,itemsep=3pt]
+  \item \textbf{The floor.} B1 re-derives $f_k$ from the camera geometry, so the
+        first suspect was that its floor was not Mip-Splatting's. A cross-check
+        was added --- \texttt{compute\_3D\_filter} runs alongside and the two are
+        compared on every call --- and they agree to $1.16\times10^{-10}$
+        absolute, $10^{-7}$ relative, for the whole run. Not the cause. B1 now
+        takes their floor verbatim anyway, since \S\ref{sec:proposition2} floors
+        at ``Mip-Splatting's own value'' and a re-derivation is a needless
+        opportunity to differ.
+  \item \textbf{The covariance path.} B1 passed $\Sigma + \Sigma_{\mathrm{filt}}$
+        through the rasteriser's precomputed-covariance input while
+        Mip-Splatting passes scales and rotations. The two are algebraically the
+        same, but they are different code. Where the filter is isotropic on
+        every primitive, B1 now takes Mip-Splatting's own path ---
+        Proposition~\ref{prop:reduction} used as a computational identity rather
+        than only as an argument. The gap did not move: $1.245$\,dB. Not the
+        cause either.
+  \item \textbf{The opacity.} What both paths share is
+        Equation~\eqref{eq:filter}'s compensation, and it contained
+        \texttt{clamp\_min(1e-12)} on both determinants. $|\Sigma|$ is
+        $\prod s_i^2$: a primitive with $s = 0.005$ has $|\Sigma| = 1.6\times
+        10^{-14}$, and one with $s=0.001$ has $10^{-18}$. Both determinants
+        clamped to the same floor, their ratio became exactly $1$, and the
+        compensation switched itself off for most of the model. B1 was rendering
+        with uncompensated opacity while every baseline number in this thesis
+        was produced with it --- which is precisely the observed signature:
+        denser and sharper at full resolution, worse at every reduced scale.
+\end{enumerate}
+
+With the clamp reduced to a division guard, $|\Sigma|$ taken from the scale
+vector where $\prod s_i^2$ is exact, and the isotropic regime using
+Mip-Splatting's own scalar expression, the largest difference over the two scenes
+then measured fell from $1.245$\,dB to $0.136$\,dB. Over the
+$\methodParityScenes$ scenes for which a \emph{paired} measurement exists it is
+now $\mathbf{\methodParityMax}$\,dB, comfortably below the seed spread of
+\S\ref{sec:spread}.
+
+\keybox{what ``paired'' has to mean here}{%
+Proposition~\ref{prop:reduction} says B1 \emph{becomes} Mip-Splatting when the
+floor dominates, so the two numbers being subtracted have to come from the same
+capture, the same harness invocation and the same build; otherwise the
+difference also contains whatever separates two runs. That is a stricter
+requirement than it sounds, and this table did not meet it. The selector behind
+the macro accepted the standard single-scale rows as a stand-in for
+Mip-Splatting at the full protocol, so B1 was being differenced against a sweep
+from three commits earlier that had never used the protocol, with two scenes
+entering twice on one side and once on the other. It reported $0.021$\,dB. The
+figure was not wrong by much, and that is the point: a comparison can be
+mis-specified and still land on a plausible number, which is why the pairing is
+now enforced in the generator rather than assumed, and why the scene count is a
+macro rather than the word ``eight''.}
+
+\keybox{what made this findable}{%
+The unit test of \S\ref{sec:proposition2} passed throughout, because its scales
+were $0.01$--$0.06$, where $\prod s_i^2$ sits at the clamp and the fault is
+nearly invisible. A test whose inputs do not span the real range will certify a
+broken component. It now covers $|\Sigma|$ down to $1.4\times10^{-18}$ and prints
+that range in its own output. The bug itself was silent --- no error, plausible
+numbers, the wrong shape --- and what exposed it was requiring parity to hold
+\emph{exactly} rather than approximately.}

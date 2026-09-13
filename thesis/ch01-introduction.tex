@@ -97,9 +97,28 @@ retention of its \emph{spectrum}.
   \item An exact-reduction theorem making parity on well-conditioned benchmarks
         structural (\S\ref{sec:proposition2}).
   \item An angular identifiability criterion for spherical-harmonic
-        coefficients --- 76\,\% of the model (Chapter~\ref{ch:method2}).
+        coefficients --- $76\,\%$ of the model (Chapter~\ref{ch:method2}) ---
+        together with the measurement that \textbf{refutes it}. At matched
+        structure and matched budget it loses to magnitude pruning
+        (\S\ref{sec:btwo}). The criterion still describes the geometry it was
+        derived from; it is a poor rule for deciding what to keep, and is
+        reported as such.
   \item A verified, executed reproduction of both baselines on free compute,
         with the twelve pre-flight assertions and the per-scale recovery that
         the shipped pipeline cannot produce (Chapters~\ref{ch:design} and
         \ref{ch:results}).
+  \item A measured cost for the method, paired in one session on one card:
+        $2.8\times$ peak VRAM and $1.32\times$ training time for a model whose
+        primitive count matches the baseline's to $0.2\,\%$
+        (\S\ref{sec:methodcost}). A reduction theorem says the output is
+        identical; only a measurement says what the identity costs.
+  \item Four defects in this project's own measurement, found by checks built
+        for the purpose and reported with the corrections they forced: an arm
+        that was not the baseline it was labelled (\S\ref{sec:g2}), a column
+        averaged across two builds (\S\ref{sec:blend}), a reproduction error
+        that was a seven-scene mean compared against an eight-scene published
+        figure (\S\ref{sec:table1}), and an explanation for that error which
+        was asserted for months and is now measured to be wrong
+        (\S\ref{sec:densification}). Each was invisible in the numbers it
+        produced; each is now covered by a check that fails the build.
 \end{enumerate}

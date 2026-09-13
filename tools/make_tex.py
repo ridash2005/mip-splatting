@@ -1651,7 +1651,7 @@ def b2_protocol_table(proto, sweep, label, caption):
 
 # ------------------------------------------------------------------- macros
 def macros(rows, summaries, inst=None, raw=None, b2c_for_macros=None,
-           all_rows_for_macros=None, runs_path=None):
+           all_rows_for_macros=None, runs_path=None, fps=None):
     """Inline numbers, as \\newcommand. Undefined data yields a visible marker."""
     M = {}
 
@@ -1856,6 +1856,24 @@ def macros(rows, summaries, inst=None, raw=None, b2c_for_macros=None,
             _tv.append(100.0 * (_m - _t) / _m)
     put("twoViewLowMin", min(_tv) if _tv else None, "{:.0f}")
     put("twoViewLowMax", max(_tv) if _tv else None, "{:.0f}")
+    # Render cost, from the same C9 result the table is built from. Typed into
+    # the prose as 0.987x and 2.47 s, which were the figures from an earlier C9
+    # session; the table beside them had since been regenerated at 0.990x and
+    # 2.35 s and the two had quietly diverged.
+    _fr = (fps or {}).get("results") or {}
+    _b = (_fr.get("mip") or {}).get("fps")
+    _m = _fr.get("b1") or {}
+    if _b and _m.get("fps"):
+        put("bOneFpsRatio", _m["fps"] / _b, "{:.3f}")
+        put("bOneFpsSlowerPct", 100.0 * (1.0 - _m["fps"] / _b), "{:.1f}")
+    else:
+        put("bOneFpsRatio", None)
+        put("bOneFpsSlowerPct", None)
+    put("bOneFilterSetup", _m.get("filter_setup_seconds"),
+        "{:.2f}")
+    _np, _nb = (_fr.get("mip") or {}).get("n_gaussians"), _m.get("n_gaussians")
+    put("bOnePrimFewerPct",
+        (100.0 * (1.0 - _nb / _np)) if (_np and _nb) else None, "{:.1f}")
     put("stressBindSigma",
         (max(_bind) / _rep) if (_bind and _rep) else None, "{:.1f}")
     armA = [s for k, s in sds.items() if k[1] == "A"]
@@ -2160,7 +2178,7 @@ def main():
         "measured.tex": macros(rows, summaries, inst, raw=raw,
                                b2c_for_macros=b2c,
                                all_rows_for_macros=load_all(a.runs),
-                               runs_path=a.runs),
+                               runs_path=a.runs, fps=fps),
     }
     for name, body in written.items():
         with open(os.path.join(a.out, name), "w", encoding="utf-8") as f:

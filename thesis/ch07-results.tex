@@ -584,10 +584,11 @@ graphics audience asks deserves a measurement.
 
 \input{generated/table-fps}
 
-B1 renders at $0.987\times$ Mip-Splatting --- $1.3\,\%$ slower, on a model with
-$0.6\,\%$ fewer primitives, which is within the variation two training runs of
-the same configuration produce in primitive count alone. The filter's own
-construction costs $2.47$\,s, paid once before the loop begins, and $\Lambda_k$
+B1 renders at $\bOneFpsRatio\times$ Mip-Splatting --- $\bOneFpsSlowerPct\,\%$
+slower, on a model with $\bOnePrimFewerPct\,\%$ fewer primitives, which is
+within the variation two training runs of the same configuration produce in
+primitive count alone. The filter's own construction costs $\bOneFilterSetup$\,s,
+paid once before the loop begins, and $\Lambda_k$
 is never touched inside it. The claim of \S\ref{sec:implcost} is therefore
 measured rather than argued.
 

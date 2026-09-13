@@ -58,6 +58,9 @@ thesis:
 	# message rather than failing if results/renders is empty, since a fresh
 	# clone has no pictures until tools/fetch_renders.py has run.
 	python tools/make_qualitative.py --out thesis/figures
+	# The explanatory diagrams: concepts, not measurements. They depend on
+	# nothing but the palette, so they are cheap and always regenerated.
+	python tools/make_diagrams.py --out thesis/figures
 	cd thesis && pdflatex -interaction=nonstopmode main.tex >/dev/null
 	cd thesis && pdflatex -interaction=nonstopmode main.tex >/dev/null
 	cd thesis && pdflatex -interaction=nonstopmode main.tex | grep -E "^!|Reference .* undefined" || true

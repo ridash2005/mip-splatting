@@ -27,6 +27,22 @@ allowed to be. This chapter sets out where each published method puts that floor
 and what it is made of. The rest of the thesis argues that the floor should be a
 matrix rather than a number, and measures what happens when you make it one.}
 
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.95\linewidth]{figures/d1-aliasing.pdf}
+  \caption{The failure in one picture. The orange discs are primitives; they are
+  a property of the fitted model and do not change when you change the camera.
+  The grid is the pixel grid, and it does. At the rate the model was fitted at,
+  the marked pixel receives three primitives and the fit has set each one's
+  opacity so that the total is right. Sample half as finely and the same pixel
+  receives nine --- each still contributing what was correct when it had a pixel
+  to itself. The pixel gets roughly three times the light it should. Repeat over
+  the whole image and the reconstruction does not merely blur; it brightens and
+  thickens, which is exactly what Figure~\ref{fig:ladder} shows happening to a
+  real scene.}
+  \label{fig:aliasing}
+\end{figure}
+
 \section{Image formation}
 Both baselines assume the same emission--absorption model. Along a ray
 $r(t)=o+td$ with density $\sigma$ and colour $c$, the rendered radiance is

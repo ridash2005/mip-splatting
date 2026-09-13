@@ -14,6 +14,20 @@ what information it throws away in becoming a scalar.}
 
 \section{Where the band-limit lives}
 
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.99\linewidth]{figures/d2-where-the-limit-lives.pdf}
+  \caption{There are two places a limit can sit, and they answer different
+  questions. A screen-space limit asks how small a primitive's \emph{image} may
+  be, and is applied afresh for every view; both baselines have one and this
+  thesis does not touch it. A world-space limit asks how small the primitive
+  \emph{itself} may be, is fixed once, and is the subject of everything that
+  follows. 3DGS has no world-space limit at all. Mip-Splatting has one, and it
+  is a single number derived from one camera. The proposal is to make it a
+  matrix derived from all of them.}
+  \label{fig:wherelimit}
+\end{figure}
+
 \begin{table}[htbp]
   \centering
   \caption{The same quantity --- the finest structure the capture can determine
@@ -98,9 +112,9 @@ gap, and not buried in the discussion.
 \begin{table}[htbp]
   \centering
   \caption{The five papers that could have pre-empted this work, and the line of
-  separation in each case. The review is recorded in full in
-  \texttt{docs/C12-related-work.md}, three lines per paper: the claim, the
-  mechanism, and the evidence that settled it.}
+  separation in each case. Each was read in full and recorded the same way ---
+  the claim, the mechanism, and the evidence that settled whether it pre-empts
+  this one.}
   \label{tab:related}
   \small
   \begin{tabular}{p{0.21\linewidth}p{0.34\linewidth}p{0.37\linewidth}}

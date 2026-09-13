@@ -62,7 +62,7 @@ This is forced as well as desirable. The multi-scale benchmark data is written
 in mip-NeRF's multiscale format, and only Mip-Splatting's loader can read it;
 the original 3DGS repository cannot open the dataset at all --- it falls
 through every branch of the dispatch and dies. It also could not work in
-principle: \texttt{readMultiScale} sets the field of view \emph{per frame},
+principle: the multi-scale loader sets the field of view \emph{per frame},
 whereas the Blender reader takes one global \texttt{camera\_angle\_x}.
 
 The benefit is methodological: both arms share one dataloader, one metrics
@@ -113,6 +113,23 @@ The third was added after \S\ref{sec:g2} found it missing.
 
 \section{The stress suite}
 \label{sec:stress}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.99\linewidth]{figures/d4-protocols.pdf}
+  \caption{The six capture protocols, drawn as what they are. The black dot is
+  the object; the coloured dots are the training cameras. Only the training set
+  changes --- the test set is the full orbit in every case, so the model is
+  always asked about viewpoints it was not fitted from, and the six differ only
+  in how much the capture knew. Two of them look alike on purpose: \emph{mixed
+  focal} has the same camera positions as the full orbit and differs only in
+  that half the images are downsampled (drawn hollow), which is a defect of
+  camera \emph{settings} rather than of geometry; and \emph{grazing} keeps a wide
+  span but selects only high-incidence views, which a top-down drawing cannot
+  show. The bottom row is where the capture becomes genuinely
+  ill-conditioned.}
+  \label{fig:protocols}
+\end{figure}
 Equation~\eqref{eq:cap} predicts that the method's advantage is a function of
 the angular span of the training cameras. Testing that requires captures of
 varying conditioning, which are constructed as camera subsets of images already
@@ -145,11 +162,12 @@ reproduction. Together they test the method's premise before the method exists.
   \end{tabular}
 \end{table}
 
-One implementation detail with a real failure mode:
-\texttt{compute\_3D\_filter} assigns primitives that no camera sees
-\texttt{distance[valid].max()}. These must be excluded or flagged in I-1's
-histogram, or they form a spurious right tail that would be misread as the floor
-binding --- the exact wrong answer at gate G3.
+One detail here has a real failure mode. A primitive that no training camera
+sees has no distance to any camera, and the published code gives it the largest
+distance in the scene rather than leaving it undefined. Those primitives must be
+excluded from the instrument's histogram, or they pile up in its right tail and
+read as though the resolution floor were binding hard --- which is precisely the
+wrong answer at gate G3, and an encouraging-looking one.
 
 \section{Metrics, baselines, statistics}
 Quality is PSNR, SSIM and LPIPS (VGG) per scene and averaged, at test scales
@@ -160,16 +178,18 @@ floor, and the mean anisotropy of $\Sigma_{\mathrm{filt}}$; this is what makes a
 parity result interpretable rather than mysterious. Statistics are three seeds
 minimum, mean $\pm$ standard deviation, paired per-scene deltas.
 
-\paragraph{One measurement the shipped pipeline cannot make.}
-\texttt{render.py} writes every test view into a single directory named by the
-\texttt{-r} flag, not by the per-image scale, and \texttt{metrics.py} averages
-that directory into one number. The shipped pipeline therefore produces one
-figure where the paper reports four, and the per-scale table of
-Chapter~\ref{ch:results} does not exist without recovering the mapping.
-\texttt{tools/split\_by\_scale.py} recovers it from
-\texttt{metadata.json} order, which \texttt{readMultiScale} preserves and
-\texttt{render\_set} indexes by enumeration. Re-rendering at
-\texttt{-r 1 2 4 8} would \emph{resample} the images and answer a different
-question; it is not done. The recovery is validated by requiring the
-count-weighted mean of the four groups to reproduce \texttt{metrics.py}'s single
-pooled number, which is asserted on every scene of every run.
+\paragraph{One measurement the published code cannot make.} The multi-scale
+test set holds all four resolutions mixed together, and the evaluation that ships
+with both methods averages the whole mixture into a single number. But the papers
+report four numbers, one per scale, and so does this thesis --- the entire
+argument is about what happens as the test resolution leaves the training
+resolution, which a single pooled average hides completely.
+
+The four groups therefore have to be recovered. They can be, exactly and without
+re-rendering, because the loader preserves the order in which the test views were
+written and that order records which scale each view came from. Re-rendering at
+each scale instead would \emph{resample} the images and answer a different
+question, so it is not done. The recovery is checked rather than trusted: the
+count-weighted mean of the four recovered groups must reproduce the pooled
+number the shipped evaluation reports, and that is asserted on every scene of
+every run.

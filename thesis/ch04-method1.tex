@@ -31,6 +31,21 @@ exactly, not approximately. That last point is why the standard benchmarks in
 Chapter~\ref{ch:results} show no improvement, and why a gain there would have
 indicated a bug rather than a success.}
 
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.97\linewidth]{figures/d3-one-camera-two-cameras.pdf}
+  \caption{Why the limit has to be a matrix. A single camera fixes a point well
+  across its line of sight and badly along it, so the region consistent with its
+  measurement is a long thin cigar pointing back at the lens --- the familiar
+  fact that one photograph gives you direction but not distance. A second camera
+  from elsewhere is precise exactly where the first is vague, and the region
+  consistent with both is compact. Accumulating this over every camera that saw
+  the primitive is what $\Lambda_k$ does, and its eigenvectors are these axes.
+  A scalar limit cannot distinguish the long axis from the short one; that is
+  the whole of the argument.}
+  \label{fig:cameras}
+\end{figure}
+
 \section{The estimation problem}
 Regard the position $p_k$ of a primitive as a parameter to be estimated from
 image measurements. Camera $n$ observes the primitive's projection at
@@ -344,6 +359,25 @@ against a measured span in this thesis therefore uses Equation~\eqref{eq:cap}.}
 \section{Exact reduction to the baseline}
 \label{sec:proposition2}
 
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.97\linewidth]{figures/d5-floor-vs-estimate.pdf}
+  \caption{Why a benchmark result of ``no change'' is the correct outcome rather
+  than a disappointing one. Two limits are in play and the method takes whichever
+  is larger. The flat blue line is the resolution floor: no capture, however
+  generous, lets you resolve structure finer than a pixel. The rising orange
+  curve is the estimation limit of this chapter, which grows as the cameras
+  crowd into a narrower window. On a standard benchmark --- a hundred cameras
+  around a full circle --- the floor is far above the estimation limit, the
+  method returns the floor, and it \emph{is} Mip-Splatting, exactly and provably
+  (Proposition~\ref{prop:reduction}). Only when the capture narrows past the
+  crossing does anything change. The four marks are the protocols of
+  \S\ref{sec:stress} at their measured widths; the crossing falls between the
+  cone and the pencil, which is where the measurement of \S\ref{sec:table3} puts
+  it.}
+  \label{fig:floorvsest}
+\end{figure}
+
 \begin{proposition}[Exact reduction]
 \label{prop:reduction}
 If $s^2/\lambda_i \le f_k^2$ for every $i$, then Equation~\eqref{eq:filter} is
@@ -384,7 +418,7 @@ $V$ diagonalises $\Lambda_k$ and $R$ diagonalises $\Sigma_k$, and nothing aligns
 them. So $\Sigma_k + \Sigma_{\mathrm{filt}}$ is not expressible as a per-axis
 update of the scale vector, and the summed covariance has to be formed in full
 and passed through the rasteriser's precomputed-covariance input. The
-implementation does exactly this, via \texttt{cov3D\_precomp}; where the filter
+the implementation does exactly this. Where the filter
 comes out isotropic --- which Proposition~\ref{prop:reduction} makes the
 common case --- it takes Mip-Splatting's own scalar path instead, so parity is
 not merely algebraic but a shared code path.

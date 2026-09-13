@@ -170,11 +170,12 @@ and the first was wrong.
 
 \paragraph{The first diagnosis, and why it was wrong.} With those three
 eliminated, the explanation offered was densification: this repository's
-\texttt{densify\_and\_prune} splits on a quantile over accumulated
-\emph{absolute} gradients, which is the Gaussian Opacity Fields criterion added
-to \texttt{mip-splatting} in commit \texttt{24af724} (April 2024), after the
-Mip-Splatting paper's numbers were produced. Original 3DGS splits on
-$\lVert\nabla\rVert \ge \tau_{\mathrm{pos}}$ alone. The argument was that a
+The public Mip-Splatting repository changed how it decides when to subdivide a
+primitive, roughly a year after the paper was published: it adopted a criterion
+from Gaussian Opacity Fields, which splits on a quantile over accumulated
+gradient magnitudes rather than on a fixed gradient threshold. The original
+3DGS rule is the fixed threshold, $\lVert\nabla\rVert \ge \tau_{\mathrm{pos}}$
+alone. The argument was that a
 better densification recovers most of what the missing band-limit costs, so the
 collapse G2's thresholds were calibrated against could not occur in this
 codebase --- and that G2 was therefore unmeetable here as a property of the
@@ -274,14 +275,16 @@ imply.
 \keybox{the repository's densification is still not 3DGS's}{%
 \texttt{densify\_and\_prune} in this codebase splits on a quantile over
 accumulated \emph{absolute} gradients:
-\texttt{grads\_abs} is taken from \texttt{viewspace\_point\_tensor.grad[:,\,2:]}
+The quantity it thresholds is the accumulated magnitude of the screen-space
+position gradient
 and thresholded at $Q = \mathrm{quantile}(\texttt{grads\_abs},\,1-\varrho)$,
 where $\varrho$ is the fraction of primitives passing the ordinary gradient
-test. That is the Gaussian Opacity Fields criterion, added to
-\texttt{mip-splatting} in commit \texttt{24af724} (April 2024) --- \emph{after}
-the Mip-Splatting paper's numbers were produced. Original 3DGS splits on
-$\lVert\nabla\rVert \geq \tau_{\mathrm{pos}}$ alone. This is a real difference
-from published 3DGS and it is shared by both arms.}
+test. This is the Gaussian Opacity Fields rule, and it entered the public
+Mip-Splatting repository about a year \emph{after} the paper's numbers were
+produced. Original 3DGS splits on $\lVert\nabla\rVert \geq \tau_{\mathrm{pos}}$
+alone. So the code every reproduction of Mip-Splatting now starts from does not
+densify the way the published numbers did --- a real difference from both
+published methods, and one both arms of this project share.}
 
 What it does \emph{not} explain is arm A's distance from its published figure,
 and for two independent reasons. The first is that there is no longer much
@@ -294,10 +297,9 @@ The second is that the hypothesis has now been tested directly, and it fails.
 
 \input{generated/table-pregof}
 
-Commit \texttt{1ecf7d5} is the last before ``add GOF densification'' landed. It
-differs from the checkout every other table in this chapter was measured on by
-$45$ lines across two files and nothing else; it is the configuration
-Mip-Splatting's published table was produced at. Arm A was re-run on it, all
+The probe reverts exactly that one change and nothing else --- $45$ lines across
+two files --- which puts the code back in the state Mip-Splatting's published
+table was produced from. Arm A was re-run on it, all
 $\pregofScenes$ scenes, same data, same
 seed, same iterations.
 
@@ -473,7 +475,7 @@ session on one GPU.
 
 \keybox{the \texttt{render\_fps} column of Table~\ref{tab:cost} does not measure
 rendering}{%
-It is views divided by the wall time of a whole \texttt{render.py} invocation,
+It is views divided by the wall time of a whole rendering pass,
 so it carries the process start, the scene load, the PLY parse, PNG encoding and
 the disk writes --- which is why it reads $8$--$10$ against a published
 $180$--$300$, and why quoting it as a rendering result would be a serious

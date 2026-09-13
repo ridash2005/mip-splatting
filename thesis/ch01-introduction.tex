@@ -1,31 +1,42 @@
 \chapter{Introduction --- the question, and why it is a signal-processing question}
 \label{ch:intro}
 
-A radiance field is reconstructed from a finite set of photographs. The
-photographs sample the scene non-uniformly: closer surfaces are sampled more
-densely than distant ones, some regions are seen from many directions and others
-from a narrow cone, and different cameras contribute different pixel footprints.
-Any reconstruction is therefore subject to a limit on resolvable detail, and
-that limit is a property of the capture, not of the representation chosen to
-hold it.
+Suppose you are handed eighty photographs of an object and asked to produce a
+picture of it from a viewpoint nobody stood at. This is the problem a radiance
+field solves, and the last few years have made it look easy. It is worth
+pausing, before any of the machinery, on what the photographs can and cannot
+tell you.
 
-The originators of NeRF understood this and said so. Their positional encoding
-uses $L$ frequency bands, and they set $L$ from, in their words, ``the maximum
-frequency present in the sampled input images''. That is the right instinct
-applied with the bluntest possible instrument: one scalar, chosen by hand, for
-an entire scene.
+They sample the scene, and they sample it unevenly. A surface close to the
+cameras is covered by many more pixels than one far away. Some parts of the
+object are seen from many directions, others only from a narrow range, and a few
+may be seen from a single grazing angle or not at all. Different cameras may not
+even have the same focal length, so their pixels do not correspond to the same
+patch of surface. Whatever you reconstruct from such a set, there is a limit on
+how fine the detail can be, and that limit belongs to the capture. It is not a
+property of the representation you happen to store the answer in, and no choice
+of representation can lift it.
 
-3D Gaussian Splatting removed even that. Its authors state plainly that no
-regularisation is applied. A primitive may shrink without bound; nothing in the
-objective prevents it. The consequence is visible the moment the test sampling
-rate departs from the training one --- Section~\ref{sec:cost} quantifies it, in
-the published numbers at $15.64$\,dB and in our own reproduction at
-\StmtArmBDrop\,dB.
+The authors of NeRF understood this and acted on it. Their positional encoding
+uses $L$ frequency bands, and they chose $L$ from, in their words, ``the maximum
+frequency present in the sampled input images''. The instinct is exactly right.
+The instrument is as blunt as an instrument can be: one number, picked by hand,
+applied to an entire scene.
 
-Mip-Splatting restored a limit, and the restoration works. But the limit it
-restores is a single scalar per primitive, added in quadrature to all three axes
-of the covariance. This thesis asks what that scalar should have been, and
-answers that it should not have been a scalar at all.
+3D Gaussian Splatting dropped even that. Its authors say plainly that no
+regularisation is applied, and they mean it: a primitive may shrink without
+bound, because nothing in the objective gives it a reason not to. As long as the
+model is evaluated at the resolution it was fitted at, this does no visible
+harm, and that is precisely why it went unnoticed for so long. Change the
+resolution and the damage appears at once. Section~\ref{sec:cost} puts a number
+on it: $15.64$\,dB in the published figures, and \StmtArmBDrop\,dB in this
+project's own reproduction.
+
+Mip-Splatting restored a limit, and the restoration works; the numbers in
+Chapter~\ref{ch:results} confirm it comfortably. But the limit it restores is a
+single scalar per primitive, added in quadrature to all three axes of the
+covariance. This thesis asks what that scalar ought to have been, and arrives at
+the answer that it ought not to have been a scalar.
 
 \section{The claim}
 

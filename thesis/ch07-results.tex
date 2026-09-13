@@ -36,12 +36,13 @@ by hand (Appendix~\ref{app:record}).}
 \label{sec:preflight}
 
 A reproduction that has not checked its own instrument is a reproduction of
-nothing in particular. Twelve assertions run before the first training step ---
-that the GPU is one the code can run on, that both arms load the same images,
-that the metric uses the backbone the papers used, that the two checkouts differ
-by exactly the intended diff and nothing else --- and the session aborts if any
-fails. They are listed, with what each protects against, in
-Appendix~\ref{app:harness}. All twelve pass.
+nothing in particular. Twelve assertions therefore run before the first training
+step, and the session aborts if any of them fails. They check that the GPU is
+one the code can actually run on, that both arms load the same images, that the
+perceptual metric uses the backbone the papers used rather than the library's
+default, and that the two checkouts differ by exactly the intended change and
+nothing else. Appendix~\ref{app:harness} lists all twelve with what each one
+protects against. All twelve pass.
 \section{Baseline reproduction --- Blender, single-scale train}
 \label{sec:table1}
 
@@ -64,9 +65,9 @@ it is mostly the missing scene.}
 
 \keybox{this table used to say something weaker, and the weakness was an artefact}{%
 Both \emph{ours} columns were computed on the matched seven scenes, and compared
-against published figures that are means over eight. \texttt{ship} is arm A's
-weakest scene at full resolution --- $30.48$\,dB against a set mean of
-$33.44$ --- so excluding it lifted arm A's mean by $0.42$\,dB, and that entire
+against published figures that are means over eight. \texttt{ship} happens to be
+arm A's weakest scene at full resolution, at $30.48$\,dB against a set mean of
+$33.44$, so excluding it lifted arm A's mean by $0.42$\,dB, and that entire
 lift was being reported as reproduction error. Arm A read $0.50$\,dB from its
 published figure and was written up as L2.
 
@@ -193,9 +194,10 @@ The three checks above say the gate failed. They do not say why, and the first
 answer this project gave was wrong.
 
 Arm B was built by zeroing Mip-Splatting's 3D smoothing filter, which makes the
-world-space band-limit 3DGS's. But Mip-Splatting has a \emph{second}
-band-limit --- a screen-space dilation with an opacity compensation
-$\rho = \sqrt{\det\Sigma' / \det(\Sigma' + k I)}$ --- and that one lives in CUDA,
+world-space band-limit 3DGS's. What that overlooks is that Mip-Splatting has a
+\emph{second} band-limit: a screen-space dilation carrying an opacity
+compensation $\rho = \sqrt{\det\Sigma' / \det(\Sigma' + k I)}$. That one lives in
+CUDA,
 where zeroing a Python attribute does not reach it. The arm labelled 3DGS was
 therefore anti-aliasing better than 3DGS, at exactly the scales where the gate
 was scored.
@@ -234,9 +236,10 @@ wrong.}
 \subsection*{What the vanilla arm cost in robustness}
 \label{sec:shipfails}
 
-Removing the compensation cost something the protocol had not budgeted for.
-\texttt{ship} --- much the largest scene in the suite at $442\,235$ primitives
-and $90\,\%$ of the card --- does not train on the vanilla arm at all. It has
+Removing the compensation cost something the protocol had not budgeted for. The
+scene \texttt{ship} is much the largest in the suite, at $442\,235$ primitives
+and $90\,\%$ of the card, and it does not train on the vanilla arm at all. It
+has
 been attempted nine times and has failed nine times, always with a CUDA illegal
 memory access and never with an allocation error, at iterations spread from
 $3\,000$ to $12\,100$. What varies is \emph{when}, not \emph{whether}.
@@ -297,9 +300,9 @@ The second is that the hypothesis has now been tested directly, and it fails.
 
 \input{generated/table-pregof}
 
-The probe reverts exactly that one change and nothing else --- $45$ lines across
-two files --- which puts the code back in the state Mip-Splatting's published
-table was produced from. Arm A was re-run on it, all
+The probe reverts exactly that one change and nothing else, $45$ lines across
+two files, which puts the code back in the state Mip-Splatting's published table
+was produced from. Arm A was re-run on it, all
 $\pregofScenes$ scenes, same data, same
 seed, same iterations.
 
@@ -311,11 +314,12 @@ post-GOF column would sit clearly above this one. It does not: the effect of
 that change is at most $\gofMaxEffect$\,dB and it is not consistently signed,
 $+0.07$ at full resolution and $-0.11$ at $\tfrac18$.
 
-So the densification difference is real, it is shared by both arms, and it is
-\emph{not} why arm A sits where it sits. It was never tested until now, and it
-was wrong. The sentence it replaces --- ``a better densification plausibly
-accounts for standing above the published level'' --- was doing the work of a
-measurement while being an assertion, and the word \emph{plausibly} was carrying
+So the densification difference is real, and it is shared by both arms, but it
+is \emph{not} why arm A sits where it sits. The explanation had never been
+tested, and when it finally was, it turned out to be wrong. The sentence it
+replaces read: ``a better densification plausibly accounts for standing above
+the published level''. That sentence was doing the work of a measurement while
+being an assertion, and the word \emph{plausibly} was carrying
 all of it.}
 
 The earlier version of this section also argued the point from arm B's
@@ -420,9 +424,9 @@ of headroom, at up to $\realMaxGauss$ primitives. The envelope binds, but it has
 not yet been exceeded, and no scene was made to fit by reducing anything.
 
 \paragraph{The arms agree, which is the prediction.} On every one of these
-scenes the two arms land within $0.2$\,dB of each other, in both directions ---
-3DGS ahead on \texttt{bonsai}, \texttt{counter} and \texttt{kitchen},
-Mip-Splatting ahead on \texttt{room}. That is what Proposition~\ref{prop:reduction}
+scenes the two arms land within $0.2$\,dB of each other, and they do so in both
+directions: 3DGS is ahead on \texttt{bonsai}, \texttt{counter} and
+\texttt{kitchen}, Mip-Splatting on \texttt{room}. That is what Proposition~\ref{prop:reduction}
 plus the I-1 measurement of \S\ref{sec:instrumentresults} together require: these
 are well-conditioned full-orbit captures, the Nyquist floor binds, and where it
 binds the two filters are identical. It is a second confirmation of the
@@ -530,10 +534,11 @@ protocols, it rises monotonically as the capture closes: $0.16$ on the full
 orbit, $0.21$ under mixed focal, $0.24$ under grazing, $0.48$ on the arc, and
 past unity only on the cone ($1.35$) and the pencil ($5.52$).
 
-On the standard benchmark the floor dominates by a factor of six, on
-\textbf{zero} primitives in \emph{any} direction of \emph{every} scene. By
-Proposition~\ref{prop:reduction} that makes B1 \emph{be} Mip-Splatting there ---
-exactly, not approximately --- and it is worth stating plainly:
+On the standard benchmark the floor dominates by a factor of six, and the
+estimation term exceeds it on \textbf{zero} primitives, in \emph{any} direction,
+of \emph{every} scene. By Proposition~\ref{prop:reduction} that makes B1
+\emph{be} Mip-Splatting on this benchmark, exactly rather than approximately,
+which is worth stating plainly:
 
 \keybox{no gain is available on the standard Blender benchmark}{%
 The eight Blender scenes are 100-camera full orbits, the best-conditioned capture
@@ -551,17 +556,21 @@ filtering. They are independent implementations of the same comparison, and
 Table~\ref{tab:stress}'s \emph{above floor} column can be read against
 Table~\ref{tab:instruments}'s \emph{worst dir} column directly.
 
-They agree on five of six protocols: $0\,\%$ on the full orbit, grazing, mixed
-focal and the arc, and the pencil above the floor on essentially everything
-($100\,\%$ against the filter's $93\,\%$). The one disagreement is the cone,
-where the instrument reads $100\,\%$ and the filter $0\,\%$ --- and the ratio
-there is $1.35$, within $35\,\%$ of unity, which is precisely where a finely
-balanced verdict should be sensitive to what it is computed on. The instrument
-reads a model trained on the \emph{full orbit} and asks what the cone's cameras
-would have determined about it; the filter reads the model the cone's cameras
-actually produced, which has different primitives at different depths and
-therefore a different floor. Both are correct about their own question, and the
-operative one --- the one that decides what the filter does --- is the filter's.
+They agree on five protocols of the six. Both read $0\,\%$ on the full orbit,
+on grazing, on mixed focal and on the arc, and both put the pencil above the
+floor on essentially everything, at $100\,\%$ against the filter's $93\,\%$.
+
+The one disagreement is the cone, where the instrument reads $100\,\%$ and the
+filter $0\,\%$. That looks alarming until you notice that the ratio of
+estimation term to floor is $1.35$ there, which is within $35\,\%$ of unity. A
+verdict balanced that finely ought to be sensitive to exactly what it is
+computed on, and the two are not computed on the same thing. The instrument
+takes a model trained on the \emph{full orbit} and asks what the cone's ten
+cameras would have been able to determine about it. The filter takes the model
+those ten cameras actually produced, which has different primitives sitting at
+different depths and therefore a different floor. Each is right about its own
+question. The one that decides what the filter does at training time is the
+filter's, and that is the one the stress table reports.
 
 \keybox{this agreement is what the 0.2 bought}{%
 Before the constant was corrected (\S\ref{sec:m2defect}) these two columns
@@ -596,22 +605,31 @@ prediction across a factor of eight:
 \end{itemize}
 
 \keybox{the prediction has to be the cap form, and then it holds}{%
-Every measured anisotropy exceeds the two-view prediction of
-Equation~\eqref{eq:anisotropy}, and by roughly the same factor throughout. That
-is not five independent discrepancies; it is one, and \S\ref{sec:capprediction}
-names it. A protocol is a distribution of cameras over an angular window, not two
-cameras at its ends, and for a cap the correct $\lambda_3/\lambda_1$ is
-asymptotically \emph{half} the two-view value --- so the two-view form
-understates $\sigma_D/\sigma_L$ by $\sqrt{2}$. Against Equation~\eqref{eq:cap},
-evaluated at each protocol's own measured span, the $\capAgreeN$ protocols the
-cap model is built for agree to $\capAgreeMin$--$\capAgreeMax\,\%$, where the
-two-view form falls short by up to $\twoViewLowMax\,\%$. The sixth,
-\emph{grazing}, sits at $\capAgreeGrazing\,\%$, and is precisely the protocol
-the cap model does not describe: it was built to test obliquity at near-full
-parallax, and the cap form is parallax-only. The residual is one-signed ---
-measurement always above prediction --- which is what \S\ref{sec:offaxis} leads
-one to expect: the cap model is parallax-only, and perspective adds anisotropy of
-its own that a cap of ray directions does not contain.}
+Every measured anisotropy comes out above the two-view prediction of
+Equation~\eqref{eq:anisotropy}, and by roughly the same factor each time. The
+fact that the factor is roughly constant is the clue: this is one discrepancy
+observed five times, not five separate ones, and \S\ref{sec:capprediction} says
+what it is. A capture protocol is a whole distribution of cameras spread over an
+angular window, not two cameras sitting at its ends. For such a distribution the
+correct $\lambda_3/\lambda_1$ is asymptotically half the two-view value, which
+means the two-view form understates $\sigma_D/\sigma_L$ by a factor of
+$\sqrt{2}$.
+
+Scored against the cap form instead, at each protocol's own measured span, the
+$\capAgreeN$ protocols that form is built for agree to
+$\capAgreeMin$--$\capAgreeMax\,\%$. The two-view expression, scored the same way
+on the same measurements, falls short by as much as $\twoViewLowMax\,\%$.
+
+The sixth protocol, \emph{grazing}, sits at $\capAgreeGrazing\,\%$, and it is
+worth being clear that this is not an embarrassment but the expected one. The
+cap form describes parallax and nothing else, and grazing is the protocol built
+specifically to test obliquity at close to full parallax. It is the row the model
+does not claim to cover.
+
+One detail supports the same reading. The residual is one-signed: measurement
+sits above prediction every time, never below. That is what
+\S\ref{sec:offaxis} would lead you to expect, because perspective contributes
+anisotropy of its own that a cap of ray directions does not contain.}
 
 So gates G3 and G4 are both passed, and the regime table of
 \S\ref{sec:anisotropy} is confirmed as a measurement rather than left as a
@@ -757,15 +775,15 @@ exceeding $0.8\sigma$. That
 is not a weak result; it is the proposition holding, on five independently
 degraded captures, to the precision of the instrument.
 
-On the narrow pencil the filter engages for the first time in this project: the
-estimation term exceeds the floor on $93\,\%$ of primitives and the filter comes
-out genuinely anisotropic at $1.47\times$. And there B1 is ahead --- by
-$\stressBindDelta$\,dB on the mean --- $\stressBindSigma\times$ the run-to-run
-spread --- and, more to
-the point, \emph{on every one of the eight paired cells}, two scenes by four test
-scales, with per-cell gains from $+0.163$ to $+0.217$\,dB. A sign that is
-consistent across all eight pairings is not a mean that happens to come out
-positive.
+The narrow pencil is the first capture in this project on which the filter
+actually engages. The estimation term exceeds the floor on $93\,\%$ of
+primitives, and the filter comes out genuinely anisotropic, at $1.47\times$.
+There, and only there, B1 is ahead. The margin is $\stressBindDelta$\,dB on the
+mean, which is $\stressBindSigma$ times the run-to-run spread, and it is worth
+saying what that mean is made of: eight paired cells, two scenes by four test
+scales, and B1 leads in every one of them, with per-cell gains running from
+$+0.163$ to $+0.217$\,dB. A mean can come out positive by luck. A sign that
+holds across all eight pairings cannot.
 
 \begin{figure}[htbp]
   \centering

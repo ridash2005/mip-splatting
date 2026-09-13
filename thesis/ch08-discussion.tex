@@ -84,17 +84,22 @@ is a named limitation with a figure.
 Because it aggregates over many views, graceful degradation is expected; the
 pose-perturbation experiment tests it rather than assuming it.
 
-\paragraph{Compute.} 16\,GB against a stated requirement of 24\,GB removes the
-five Mip-NeRF 360 outdoor scenes from the L1 claim. On the Blender scenes the
-baselines fit comfortably --- $\rZeroPeakVram$\,MB at R0 --- but the constraint
-binds in two places that were not anticipated, and both are measured rather than
-argued. \texttt{ship} is the heaviest scene in the suite at $442\,235$
-primitives and $13\,755$\,MB, $90\,\%$ of the card; it does not train at all on
-the vanilla arm (\S\ref{sec:shipfails}), and at B1's measured memory multiple it
-does not fit either (\S\ref{sec:methodcost}). The three arguments that carry the
-thesis --- the exact reduction, the stress suite and the floor diagnostic --- are
-resolution-independent, so the argument survives; the scene count does not, and
-is reported everywhere it shrinks.
+\paragraph{Compute.} The available card holds 16\,GB where the published
+requirement is 24\,GB, which removes the five outdoor Mip-NeRF 360 scenes from
+the reproduction claim at the outset. On the Blender scenes the baselines fit
+comfortably, at $\rZeroPeakVram$\,MB. But the constraint turned out to bind in
+two places nobody had budgeted for, and in both cases it was found by
+measurement rather than foreseen.
+
+The scene \texttt{ship} is much the heaviest in the suite: $442\,235$ primitives
+and $13\,755$\,MB, which is $90\,\%$ of the card. It does not train at all on
+the vanilla arm (\S\ref{sec:shipfails}), and at the memory multiple B1 was
+later measured to need, it does not fit there either (\S\ref{sec:methodcost}).
+
+None of this touches the three arguments the thesis actually rests on. The exact
+reduction, the stress suite and the floor diagnostic are all
+resolution-independent, so they survive a smaller card intact. The scene count
+does not survive it, and every table that loses a scene says so.
 
 \paragraph{B1 costs $2.8\times$ the memory for a result that is, by design,
 identical.} On a well-conditioned capture Proposition~\ref{prop:reduction} makes

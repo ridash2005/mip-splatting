@@ -239,14 +239,19 @@ predicts.
 
 \section{The anisotropy, exactly}
 \label{sec:anisotropy}
-Consider two cameras at distance $z$, symmetric about the primitive, subtending
-a parallax angle $\theta$. Evaluating Equation~\eqref{eq:lambda}
-(Appendix~\ref{app:twoview}) gives $\Lambda \propto 2I - d_1d_1^{\!\top} -
-d_2d_2^{\!\top}$, whose spectrum is exactly
-$\{2,\ 2\cos^2(\theta/2),\ 2\sin^2(\theta/2)\}$ --- three distinct values, so the
-correct filter is \emph{triaxial}: the in-plane lateral direction is degraded as
-well as depth, and only the direction perpendicular to the plane of the two rays
-is fully constrained. Taking the extreme pair,
+Take the simplest case that still has something to say: two cameras at the same
+distance $z$, placed symmetrically about the primitive, so that the angle
+between their lines of sight is $\theta$. Evaluating
+Equation~\eqref{eq:lambda} for this arrangement (the algebra is in
+Appendix~\ref{app:twoview}) gives $\Lambda \propto 2I - d_1d_1^{\!\top} -
+d_2d_2^{\!\top}$, and this has the exact spectrum
+$\{2,\ 2\cos^2(\theta/2),\ 2\sin^2(\theta/2)\}$.
+
+Notice that these are three distinct numbers, not two. The right filter is
+therefore triaxial rather than merely elongated along depth: the lateral
+direction lying in the plane of the two rays is degraded as well, and only the
+direction perpendicular to that plane is fully constrained. Taking the extreme
+pair of eigenvalues,
 \begin{equation}
   \frac{\lambda_3}{\lambda_1} = \sin^2(\theta/2),
   \qquad

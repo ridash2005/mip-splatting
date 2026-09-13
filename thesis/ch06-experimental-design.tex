@@ -75,14 +75,13 @@ Proposition~\ref{prop:reduction} is 3DGS exactly.
 
 This is forced as well as desirable. The multi-scale benchmark data is written
 in mip-NeRF's multiscale format, and only Mip-Splatting's loader can read it;
-the original 3DGS repository cannot open the dataset at all --- it falls
+the original 3DGS repository cannot open the dataset at all. It falls
 through every branch of the dispatch and dies. It also could not work in
 principle: the multi-scale loader sets the field of view \emph{per frame},
 whereas the Blender reader takes one global \texttt{camera\_angle\_x}.
 
 The benefit is methodological: both arms share one dataloader, one metrics
-implementation and one LPIPS backbone (VGG), so any difference between them is
-the method rather than the plumbing. The diff that separates the arms is
+implementation and one LPIPS backbone (VGG), so any difference between them is the method and not the plumbing. The diff that separates the arms is
 enumerated in the kernel and asserted on every run, and a change outside it
 aborts the session before any training starts.
 
@@ -91,7 +90,7 @@ aborts the session before any training starts.
 its \emph{3D} band-limit, exactly, and says nothing about its \emph{2D} one.
 Both arms inherited Mip-Splatting's screen-space opacity compensation, which
 3DGS does not have, so for the first three rungs the arm labelled 3DGS was
-anti-aliasing better than 3DGS --- and the between-arm gap, the quantity this
+anti-aliasing better than 3DGS, and the between-arm gap, the quantity this
 whole construction exists to protect, carried a residual anti-aliasing term.
 Section~\ref{sec:g2} is the diagnosis and the re-measurement. The lesson is not
 that the single-codebase decision was wrong, because it is forced; it is that
@@ -138,8 +137,7 @@ The third was added after \S\ref{sec:g2} found it missing.
   always asked about viewpoints it was not fitted from, and the six differ only
   in how much the capture knew. Two of them look alike on purpose: \emph{mixed
   focal} has the same camera positions as the full orbit and differs only in
-  that half the images are downsampled (drawn hollow), which is a defect of
-  camera \emph{settings} rather than of geometry; and \emph{grazing} keeps a wide
+  that half the images are downsampled (drawn hollow), which is a defect of camera \emph{settings} and not of geometry; and \emph{grazing} keeps a wide
   span but selects only high-incidence views, which a top-down drawing cannot
   show. The bottom row is where the capture becomes genuinely
   ill-conditioned.}
@@ -151,8 +149,7 @@ varying conditioning, which are constructed as camera subsets of images already
 downloaded --- no new data, no extra GPU time. Each protocol is versioned as a
 JSON index list and carries its \emph{measured} span, because a subset built
 with a nominal target of $6^\circ$ that comes out at $20^\circ$ is not the
-capture the prediction was made for, and the prediction must then be re-evaluated
-at the span that was actually built rather than the one that was asked for.
+capture the prediction was made for, and the prediction must then be re-evaluated at the span that was built, not the one that was asked for.
 
 \input{generated/table-protocols}
 
@@ -178,10 +175,9 @@ reproduction. Together they test the method's premise before the method exists.
 \end{table}
 
 One detail here has a real failure mode. A primitive that no training camera
-sees has no distance to any camera, and the published code gives it the largest
-distance in the scene rather than leaving it undefined. Those primitives must be
+sees has no distance to any camera, and the published code gives it the largest distance in the scene instead of leaving it undefined. Those primitives must be
 excluded from the instrument's histogram, or they pile up in its right tail and
-read as though the resolution floor were binding hard --- which is precisely the
+read as though the resolution floor were binding hard, which is precisely the
 wrong answer at gate G3, and an encouraging-looking one.
 
 \section{Metrics, baselines, statistics}
@@ -189,8 +185,7 @@ Quality is PSNR, SSIM and LPIPS (VGG) per scene and averaged, at test scales
 $1\times$, $\tfrac12$, $\tfrac14$, $\tfrac18$. Cost is primitive count, model
 MB, peak training VRAM, wall-clock and render fps --- same GPU, same run.
 Diagnostics are the fraction of primitives where the estimation term exceeds the
-floor, and the mean anisotropy of $\Sigma_{\mathrm{filt}}$; this is what makes a
-parity result interpretable rather than mysterious. Statistics are three seeds
+floor, and the mean anisotropy of $\Sigma_{\mathrm{filt}}$; this is what makes a parity result interpretable instead of mysterious. Statistics are three seeds
 minimum, mean $\pm$ standard deviation, paired per-scene deltas.
 
 \paragraph{One measurement the published code cannot make.} The multi-scale
@@ -204,7 +199,6 @@ The four groups therefore have to be recovered. They can be, exactly and without
 re-rendering, because the loader preserves the order in which the test views were
 written and that order records which scale each view came from. Re-rendering at
 each scale instead would \emph{resample} the images and answer a different
-question, so it is not done. The recovery is checked rather than trusted: the
-count-weighted mean of the four recovered groups must reproduce the pooled
-number the shipped evaluation reports, and that is asserted on every scene of
-every run.
+question, so it is not done. The recovery is checked, not trusted: the
+count-weighted mean of the four recovered groups must reproduce the pooled number the shipped evaluation reports, and this is asserted
+on every scene of every run.

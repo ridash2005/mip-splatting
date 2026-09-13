@@ -24,8 +24,7 @@ bright smear at one-eighth.
 
 The fix, in general terms, is a \emph{band-limit}: a floor on how small a blob is
 allowed to be. This chapter sets out where each published method puts that floor
-and what it is made of. The rest of the thesis argues that the floor should be a
-matrix rather than a number, and measures what happens when you make it one.}
+and what it is made of. The rest of the thesis argues that the floor should be a matrix and not a number, and measures what happens when you make it one.}
 
 \begin{figure}[htbp]
   \centering
@@ -37,9 +36,8 @@ matrix rather than a number, and measures what happens when you make it one.}
   opacity so that the total is right. Sample half as finely and the same pixel
   receives nine --- each still contributing what was correct when it had a pixel
   to itself. The pixel gets roughly three times the light it should. Repeat over
-  the whole image and the reconstruction does not merely blur; it brightens and
-  thickens, which is exactly what Figure~\ref{fig:ladder} shows happening to a
-  real scene.}
+  the whole image and the reconstruction does not merely blur; it brightens and thickens, which is what Figure~\ref{fig:ladder} shows happening
+  to a real scene.}
   \label{fig:aliasing}
 \end{figure}
 
@@ -69,9 +67,8 @@ chosen --- one scalar for the entire scene.
   \includegraphics[width=0.99\linewidth]{figures/d6-splatting.pdf}
   \caption{Splatting, in the three stages a reader needs before anything else in
   this thesis makes sense. A primitive is an ellipsoid sitting in the world,
-  carrying a colour and an opacity. To render it, the ellipsoid is projected to
-  an ellipse on the image plane, which is what the EWA transform of
-  Equation~\eqref{eq:ewa} does. Many such ellipses are then blended into each
+  carrying a colour and an opacity. To render it, the ellipsoid is projected to an ellipse on the image plane, and the EWA transform of
+  Equation~\eqref{eq:ewa} is what performs that projection. Many such ellipses are then blended into each
   pixel, nearest first. Both baselines already place a limit at stage 2, on how
   small a primitive's \emph{image} may be. This thesis is about a limit at
   stage 1, on how small the primitive \emph{itself} may be, and the two are not
@@ -98,9 +95,8 @@ they are separate objects.
 \paragraph{The 2D Mip filter} is a render-side reconstruction prefilter matched
 to the display sampling rate. It dilates the projected covariance by $kI$ and
 compensates the opacity by $\rho = \sqrt{\lvert\Sigma'\rvert / \lvert\Sigma' +
-kI\rvert}$, so that widening the splat does not brighten it. Vanilla 3DGS
-performs the same fixed dilation --- $k = 0.3$ --- and applies \emph{no}
-compensation at all. The proposed method does not change this filter; but the
+kI\rvert}$, so that widening the splat does not brighten it. Vanilla 3DGS performs the same fixed dilation, with $k = 0.3$, and applies
+\emph{no} compensation at all. The proposed method does not change this filter; but the
 distinction is not cosmetic, because an arm that keeps $\rho$ is anti-aliasing
 better than 3DGS in screen space whatever its 3D filter does, and
 \S\ref{sec:g2} reports what that cost before it was found.

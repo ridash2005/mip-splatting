@@ -30,8 +30,8 @@ what information it throws away in becoming a scalar.}
 
 \begin{table}[htbp]
   \centering
-  \caption{The same quantity --- the finest structure the capture can determine
-           --- estimated with successively more of the available geometry.}
+  \caption{One quantity, the finest structure the capture can determine, estimated
+  with successively more of the available geometry.}
   \small
   \begin{tabular}{p{0.2\linewidth}p{0.24\linewidth}p{0.26\linewidth}p{0.2\linewidth}}
     \toprule
@@ -68,8 +68,7 @@ Mip-Splatting used one view's worth; this work uses all of it.
   rate, because primitives have shrunk below what any view resolves;
   Mip-Splatting loses $4.69$\,dB. \emph{Right:} when the training set already
   spans all four scales, 3DGS partly recovers but still trails everywhere ---
-  the representation absorbs the scale mismatch into the fit rather than into a
-  prefilter.}
+  the representation absorbs the scale mismatch into the fit instead of into a prefilter.}
   \label{fig:degradation}
 \end{figure}
 
@@ -104,8 +103,7 @@ quantity, which is the control for everything that follows.
 
 A due-diligence review was run before the stress suite, with one question: has
 anyone already made the \emph{3D} filter anisotropic or per-direction? The answer
-is partly yes, and the contribution stated in \S\ref{ch:intro} has been narrowed
-accordingly rather than defended. Two of the five papers below change what this
+is partly yes, and the contribution stated in \S\ref{ch:intro} has been narrowed accordingly, not defended. Two of the five papers below change what this
 thesis may claim; the change is recorded here, in the chapter that sets up the
 gap, and not buried in the discussion.
 
@@ -166,10 +164,8 @@ second-order information matrix'' --- PUP 3D-GS builds one. The claim that
 survives, and the only one the experiments are asked to support, is a
 \emph{per-primitive band-limit read off the conditioning of the training
 capture}: a quantity fixed once per primitive by the cameras that saw it, rather
-than by the camera now looking at it, and retaining the spectrum rather than a
-scalar summary of it. A primitive seen from a narrow baseline is
+than by the camera now looking at it, and keeping the whole spectrum instead of a scalar summary of it. A primitive seen from a narrow baseline is
 under-determined along depth no matter which view renders it, and a filter
 derived from the render-time ray carries no memory of that. The \texttt{cone} and
-\texttt{arc} protocols of \S\ref{sec:stress} exist to isolate exactly that
-regime, and nobody has tested it, because nobody else's filter is a function of
+\texttt{arc} protocols of \S\ref{sec:stress} exist to isolate that regime, and nobody has tested it, because nobody else's filter is a function of
 the training-camera spread.}

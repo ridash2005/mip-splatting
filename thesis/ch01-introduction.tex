@@ -19,15 +19,14 @@ of representation can lift it.
 
 The authors of NeRF understood this and acted on it. Their positional encoding
 uses $L$ frequency bands, and they chose $L$ from, in their words, ``the maximum
-frequency present in the sampled input images''. The instinct is exactly right.
+frequency present in the sampled input images''. The instinct is right.
 The instrument is as blunt as an instrument can be: one number, picked by hand,
 applied to an entire scene.
 
 3D Gaussian Splatting dropped even that. Its authors say plainly that no
 regularisation is applied, and they mean it: a primitive may shrink without
 bound, because nothing in the objective gives it a reason not to. As long as the
-model is evaluated at the resolution it was fitted at, this does no visible
-harm, and that is precisely why it went unnoticed for so long. Change the
+model is evaluated at the resolution it was fitted at, this does no visible harm, which is why it went unnoticed for so long. Change the
 resolution and the damage appears at once. Section~\ref{sec:cost} puts a number
 on it: $15.64$\,dB in the published figures, and \StmtArmBDrop\,dB in this
 project's own reproduction.
@@ -72,8 +71,7 @@ signal-processing failure mode. The objects involved are familiar ones.
   \end{tabular}
 \end{table}
 
-The contribution is to compute the acquisition-side prefilter from the
-conditioning of the capture rather than choosing it, and to keep it anisotropic
+The contribution is to compute the acquisition-side prefilter from the conditioning of the capture instead of choosing it by hand, and to keep it anisotropic
 because the information is. \emph{An} anisotropic 3D filter is not itself new
 --- AAA-Gaussians (2025) has one, derived from the view being rendered --- and
 neither is a per-primitive second-order information matrix, which PUP 3D-GS
@@ -90,8 +88,7 @@ retention of its \emph{spectrum}.
         accumulated from the same Jacobian the renderer already forms
         (\S\ref{sec:jacobian}--\S\ref{sec:accumulation}). The novelty is that
         the band-limit is a function of the cameras that \emph{saw} the
-        primitive, not of the camera now rendering it, and that its whole
-        spectrum is used rather than a scalar summary
+        primitive, not of the camera now rendering it, and that its whole spectrum is used, not a scalar summary
         (\S\ref{sec:relatedwork}).
   \item A proof that Mip-Splatting's scalar filter is the single-view,
         lateral-only, isotropised special case, with its constant $\sqrt{0.2}$
@@ -101,15 +98,14 @@ retention of its \emph{spectrum}.
         $\lambda_2/\lambda_1 = \cos^2\varphi$ off-axis (\S\ref{sec:offaxis});
         across two views, the triaxial spectrum
         $\{2, 2\cos^2(\theta/2), 2\sin^2(\theta/2)\}$
-        (\S\ref{sec:anisotropy}); and over a distribution of views, the cap
-        form of \S\ref{sec:capprediction}, which is what a real protocol obeys and
+        (\S\ref{sec:anisotropy}); and over a distribution of views, the cap form of \S\ref{sec:capprediction}, the one a real protocol obeys and
         which the two-view form understates by $\sqrt{2}$. Together they predict
         where the method must help and where it must not.
   \item An exact-reduction theorem making parity on well-conditioned benchmarks
         structural (\S\ref{sec:proposition2}).
-  \item An angular identifiability criterion for spherical-harmonic
-        coefficients --- $76\,\%$ of the model (Chapter~\ref{ch:method2}) ---
-        together with the measurement that \textbf{refutes it}. At matched
+  \item An angular identifiability criterion for spherical-harmonic coefficients, which are $76\,\%$ of the model
+  (Chapter~\ref{ch:method2}), together with the measurement that \textbf{refutes
+  it}. At matched
         structure and matched budget it loses to magnitude pruning
         (\S\ref{sec:btwo}). The criterion still describes the geometry it was
         derived from; it is a poor rule for deciding what to keep, and is

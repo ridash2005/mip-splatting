@@ -44,9 +44,8 @@ observed cone.
 
 \keybox{why this is a separate contribution, not a footnote}{%
 B2 is independent of B1. It survives even if the floor-occupancy diagnostic of
-\S\ref{sec:instruments} kills the positional band-limit: the two share a
-principle --- do not fit what the capture does not determine --- but not a
-mechanism, and not a failure mode. B2 also carries a memory result that B1 does
+\S\ref{sec:instruments} kills the positional band-limit: the two share a principle, which is not to fit what the capture does not
+determine, but they share neither a mechanism nor a failure mode. B2 also carries a memory result that B1 does
 not, since masked coefficients need not be stored.}
 
 \section{Making $\tau$ mean the same thing everywhere}
@@ -97,20 +96,18 @@ rendered-quality and model-size columns.
 
 The criterion does what this chapter says it does in the \emph{geometric}
 sense: it retains everything on a full orbit, nothing on a pencil, and responds
-gradually in between. What it does not do is decide well \emph{which}
-coefficients to keep at a fixed budget, and that is the claim the standard set
-below actually tests. Section~\ref{sec:btwo} reports the test and the criterion
-fails it: against magnitude pruning restricted to B2's own nested degrees ---
-same structure, same budget, only the criterion differing --- B2 loses by up to
+gradually in between. What it does not do is decide well \emph{which} coefficients to keep at a fixed budget, which is the claim the
+standard set below tests. Section~\ref{sec:btwo} reports the test and the criterion
+fails it: against magnitude pruning restricted to B2's own nested degrees, so that the structure and the budget are
+the same and only the criterion differs, B2 loses by up to
 $\btwoBlockedGapMax$\,dB. The derivation that follows is therefore presented as
 a proposal that was carried through to measurement and did not survive it, which
-is the reason it is kept in full rather than trimmed to a paragraph: the
+is why it is kept in full instead of trimmed to a paragraph: the
 argument is sound and the conclusion is still wrong, and the gap between those
 two is the interesting part.
 
 One caveat carries through to every statement about memory: masking coefficients
 to zero does not shrink a fixed-width PLY, so \emph{no model-size saving is
 claimed from these numbers}. Realising it needs variable-length SH storage,
-which Chapter~\ref{ch:plan} schedules for Spring --- and which, given
-\S\ref{sec:btwo}, should be scheduled for a criterion that works rather than for
-this one.
+which Chapter~\ref{ch:plan} schedules for Spring, and which, given
+\S\ref{sec:btwo}, should be scheduled for a criterion that works, not for this one.

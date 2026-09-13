@@ -1420,6 +1420,104 @@ def pregof_table(rows, probe, label, caption):
     return "\n".join(L)
 
 
+def method_cost_table(summaries, summaries_dir, label, caption):
+    r"""What B1 costs, paired against Mip-Splatting on the same scenes.
+
+    Table~\ref{tab:cost} compares the two baselines. It does not say what the
+    method costs, and until the paired R7 session there was no run in which B1
+    and Mip-Splatting trained the same scenes in the same session on the same
+    card -- so cost could only have been compared across runs, which is exactly
+    the comparison this project has had to correct three times.
+
+    Every figure here is a ratio within one scene, then averaged, so a scene
+    that is simply large cannot dominate.
+    """
+    # The FULL protocol only, and the session with the most scenes paired on it.
+    # The stress sessions also carry both methods, but over five protocols of
+    # two scenes -- keying on the scene alone collapses those into five rows all
+    # labelled "chair", which is what the first version of this table printed.
+    def paired_at_full(s):
+        d = (s or {}).get("done") or {}
+        return {k.split("/")[1] for k in d
+                if k.startswith("b1/") and k.endswith("/full")
+                and f"mip/{k.split('/')[1]}/full" in d}
+    # Walk the run directories rather than the by-rung dict: the paired session
+    # and the earlier two-scene one are both RUNG=R7, so the dict keeps one and
+    # silently drops the other -- and the one it kept was the smaller.
+    cands = list(summaries.values())
+    for d, _, files in os.walk(summaries_dir):
+        for fn_ in files:
+            if fn_ not in ("summary.json", "method_summary.json"):
+                continue
+            try:
+                cands.append(json.load(open(os.path.join(d, fn_))))
+            except Exception:
+                continue
+    src = max(cands, key=lambda s: len(paired_at_full(s)), default=None)
+    done = (src or {}).get("done") or {}
+    pairs = []
+    for scene in sorted(paired_at_full(src)):
+        pairs.append((scene, done[f"mip/{scene}/full"], done[f"b1/{scene}/full"]))
+    if not pairs:
+        return placeholder(label, caption,
+                           "no session has trained both methods on the same "
+                           "scenes, so cost can only be compared across runs.")
+    pairs.sort(key=lambda t: t[0])
+    rows_ = []
+    for scene, m, b in pairs:
+        rows_.append((
+            scene,
+            m.get("peak_vram_mb"), b.get("peak_vram_mb"),
+            m.get("train_seconds"), b.get("train_seconds"),
+            m.get("n_gaussians"), b.get("n_gaussians"),
+        ))
+    L = [r"\begin{table}[htbp]", r"  \centering",
+         r"  \caption{" + caption + "}", r"  \label{tab:" + label + "}",
+         r"  \small", r"  \begin{tabular}{lrrrrrr}", r"    \toprule",
+         r"    & \multicolumn{2}{c}{peak VRAM (MB)} "
+         r"& \multicolumn{2}{c}{train (s)} & \multicolumn{2}{c}{primitives} \\",
+         r"    \cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-7}",
+         r"    scene & Mip-Spl. & B1 & Mip-Spl. & B1 & Mip-Spl. & B1 \\",
+         r"    \midrule"]
+    vr, tr, pr = [], [], []
+    for scene, mv, bv, mt, bt, mn, bn in rows_:
+        if mv and bv:
+            vr.append(bv / mv)
+        if mt and bt:
+            tr.append(bt / mt)
+        if mn and bn:
+            pr.append(bn / mn)
+        L.append("    " + " & ".join([
+            r"\texttt{" + scene + "}",
+            f"{mv:,}".replace(",", "\\,") if mv else NOT_MEASURED,
+            f"{bv:,}".replace(",", "\\,") if bv else NOT_MEASURED,
+            f"{mt:.0f}" if mt else NOT_MEASURED,
+            f"{bt:.0f}" if bt else NOT_MEASURED,
+            f"{mn:,}".replace(",", "\\,") if mn else NOT_MEASURED,
+            f"{bn:,}".replace(",", "\\,") if bn else NOT_MEASURED,
+        ]) + r" \\")
+    L += [r"    \midrule",
+          "    ratio, B1/Mip & " + r"\multicolumn{2}{c}{"
+          + (f"{mean(vr):.1f}$\\times$" if vr else NOT_MEASURED) + "} & "
+          + r"\multicolumn{2}{c}{"
+          + (f"{mean(tr):.2f}$\\times$" if tr else NOT_MEASURED) + "} & "
+          + r"\multicolumn{2}{c}{"
+          + (f"{mean(pr):.3f}$\\times$" if pr else NOT_MEASURED) + r"} \\",
+          r"    \bottomrule", r"  \end{tabular}",
+          r"  \par\vspace{2pt}\footnotesize Both methods trained in the same "
+          r"session on the same two GPUs, one scene each, at the full protocol "
+          r"and $30\,000$ iterations. Ratios are formed within a scene and then "
+          r"averaged. The primitive count is unchanged to three decimal places, "
+          r"which is Proposition~\ref{prop:reduction} again from a different "
+          r"direction: where the floor dominates, B1 \emph{is} Mip-Splatting, "
+          r"so it densifies identically. The memory is not: B1 accumulates a "
+          r"$3\times3$ observability matrix per primitive over every training "
+          r"camera, and the peak does not track the primitive count, which is "
+          r"what a large transient in that accumulation looks like.",
+          r"\end{table}", ""]
+    return "\n".join(L)
+
+
 def b2_matched_table(b2c, label, caption):
     """B2 against magnitude pruning at matched size, where both actually prune.
 
@@ -2003,6 +2101,9 @@ def main():
         "table-b2-protocols.tex": b2_protocol_table(
             b2proto, b2sweep, "btwoproto",
             r"B2 --- the identifiability criterion across capture protocols."),
+        "table-method-cost.tex": method_cost_table(
+            summaries, a.summaries, "methodcost",
+            r"What B1 costs, paired against Mip-Splatting in one session."),
         "table-pregof.tex": pregof_table(
             rows, load_probe(a.runs, "pregof"), "pregof",
             r"L1 probe --- does GOF densification account for arm A's offset "

@@ -835,6 +835,56 @@ lose. A gain here would indicate a bug, and the exact-reduction unit test is run
 inside the same session that produces these numbers, aborting the run if it
 fails.}
 
+\subsection*{What parity costs}
+\label{sec:methodcost}
+
+Parity is only half a result. A method that matches its baseline exactly and
+costs nothing to run is free; one that matches it exactly and costs three times
+the memory has to justify itself somewhere else. Until the paired session of
+\S\ref{sec:table2m} there was no run in which both methods trained the same
+scenes on the same card in the same session, so cost could only have been
+compared across runs --- the comparison this project has had to correct three
+times.
+
+\input{generated/table-method-cost}
+
+\keybox{the primitive count is unchanged; the memory is not}{%
+B1 densifies to within $0.2\,\%$ of Mip-Splatting's primitive count, which is
+Proposition~\ref{prop:reduction} arriving from a third direction: where the
+floor dominates the filter is the same filter, so the optimisation follows the
+same trajectory and produces the same model. The model on disk is the same size,
+and rendering is unaffected --- the filter is applied once at construction, not
+per frame (\S\ref{sec:fps}).
+
+Training is another matter. B1 costs $2.8\times$ the peak VRAM and $1.32\times$
+the wall-clock time, for a result that is by construction identical. The
+accumulation of $\Lambda_k = \sum_n w_{nk}(J_nW_n)^{\!\top}\Sigma_{\mathrm{pix}}^{-1}(J_nW_n)$
+is a $3\times3$ symmetric matrix per primitive over every training camera, and
+the peak does not track the primitive count --- \texttt{ficus} at $187$k
+primitives and \texttt{mic} at $406$k both peak near $13$\,GB --- which is what
+a large transient in that accumulation looks like rather than a persistent
+allocation.
+
+That is the honest cost line, and it is not a small one. A practitioner reading
+this table on a well-conditioned capture should not use B1: it is the same
+model, slower, in more memory. The case for it is confined to the regime of
+\S\ref{sec:table3}, and \S\ref{ch:discussion} does not argue otherwise.}
+
+\keybox{one scene of the eight is missing here, and why}{%
+\texttt{ship} was scheduled in this session and only Mip-Splatting completed it.
+The failure was not the method's: both jobs started on \texttt{ship}
+simultaneously on the two GPUs, the first pair in the queue to share a scene,
+and raced on the point cloud the loader writes into the source directory --- B1
+aborted in \texttt{create\_from\_pcd} with a null point cloud, four seconds in.
+That is a harness defect, since fixed by ordering the job list so that adjacent
+jobs never share a scene.
+
+It is not re-run, and the reason is this table rather than the schedule.
+Mip-Splatting alone peaks at $14\,459$\,MB on \texttt{ship}, against a
+$15\,360$\,MB card. At the $2.8\times$ measured here, B1 on \texttt{ship} does
+not fit, and no ordering of the queue changes that. The paired parity figure is
+therefore over $\methodParityScenes$ scenes and says so.}
+
 \subsection*{Getting there: three bugs the parity requirement caught}
 \label{sec:b1bugs}
 
@@ -1034,6 +1084,7 @@ definitions of \S\ref{sec:branchdefect} disagreed and both were kept.}
 \end{figure}
 
 \section{B2 --- angular identifiability of spherical harmonics}
+\label{sec:btwo}
 \label{sec:table4}
 
 Equation~\eqref{eq:gram} depends on primitive positions and training view
@@ -1206,20 +1257,32 @@ verified on the saved models rather than argued from source. Every later
 comparison is against these numbers and not against the published ones, which is
 the L3 discipline of Table~\ref{tab:levels}.
 
-About the proposed method they establish three things and leave one open. B1 is
+About the proposed method they establish four things and refute one. B1 is
 implemented and reduces to its baseline exactly where the theory says it must,
 verified to $1.4\times10^{-21}$ in the unit test and to $\methodParityMax$\,dB
 --- well below the seed spread --- over $\methodParityScenes$ scenes and four
-test scales in full training runs. B2 is implemented and masks nothing on
-well-conditioned captures, which is the same result in the angular domain. And
-the conditioning that both methods depend on varies across capture protocols
-exactly as Equation~\eqref{eq:cap} predicts.
+test scales in paired training runs. The conditioning both methods depend on
+varies across capture protocols exactly as Equation~\eqref{eq:cap} predicts.
+The stress suite has been run, and the prediction recorded before it holds: on
+the $\stressFlatCount$ protocols where the Nyquist floor still dominates the
+difference is $\stressFlatMin$ to $\stressFlatMax$\,dB and the filter is
+isotropic to two decimals, and on the one where the estimation term binds B1
+leads by $\stressBindDelta$\,dB, on the mean and on every paired cell. And the
+cost of that is now measured rather than assumed: $2.8\times$ peak VRAM and
+$1.32\times$ training time for a model with the same primitive count
+(\S\ref{sec:methodcost}).
 
-What remains open is whether that translates into rendered quality. Table~
-\ref{tab:stress}'s PSNR columns are the test, they need GPU time the weekly
-quota no longer has (\S\ref{sec:budget}), and the prediction recorded against
-them stands unmarked and unhedged so that the comparison, when it comes, is not
-retrospective.
+What is refuted is B2. At matched structure and matched budget it loses to
+magnitude pruning, by $\btwoBlockedGapMax$\,dB at worst, and the criterion is
+reported as failing the standard Chapter~\ref{ch:method2} set for it
+(\S\ref{sec:btwo}).
+
+What is \emph{not} established is that B1 is useful. The regime where it helps
+is one in which both methods produce reconstructions nobody would ship
+(Figure~\ref{fig:qualpencil}), and on well-conditioned captures it is the same
+model for three times the memory. Chapter~\ref{ch:discussion} takes that up;
+this chapter's job is the measurement, and the measurement is that the mechanism
+is the one the derivation names.
 
 \section{Compute budget}
 \label{sec:budget}

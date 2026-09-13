@@ -71,6 +71,18 @@ SUPERSEDES = [
              "on the first call and seeded a different densification "
              "trajectory. 22a5fbba takes theirs, which is what makes "
              "Proposition 2 exact in the floor as well."),
+    dict(by="R7-paired",
+         where=["arm=C", "dataset=blender", "iterations=30000",
+                "train_scale=1x/full"],
+         unless_commit="998c5863", require=20, only_cells=True,
+         why="B1 at the full protocol on the five scenes the paired run "
+             "re-measured. Proposition 2 is a claim about two methods on the "
+             "same capture in the same run, so the R7 paired session measured "
+             "Mip-Splatting AND B1 together; that makes its B1 rows the "
+             "current ones for those scenes and retires the table2 rows they "
+             "replace. ship is deliberately not covered: only Mip-Splatting "
+             "completed it there, so its old B1 row stays and the pair does "
+             "not form."),
     dict(by="T3M", where=["train_scale=1x/mixed", "dataset=blender"],
          unless="T3M", require=16,
          why="the mixed-focal protocol: the first stress run passed only the "

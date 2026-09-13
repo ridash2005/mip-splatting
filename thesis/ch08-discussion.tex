@@ -85,11 +85,34 @@ Because it aggregates over many views, graceful degradation is expected; the
 pose-perturbation experiment tests it rather than assuming it.
 
 \paragraph{Compute.} 16\,GB against a stated requirement of 24\,GB removes the
-five Mip-NeRF 360 outdoor scenes from the L1 claim. Measured peak VRAM on the
-Blender scenes is $\rZeroPeakVram$\,MB, so the constraint does not bind there ---
-it binds on the real scenes, and the scene count shrinks accordingly. The three
-arguments that carry the thesis --- the exact reduction, the stress suite and the
-floor diagnostic --- are all resolution-independent, so the argument survives.
+five Mip-NeRF 360 outdoor scenes from the L1 claim. On the Blender scenes the
+baselines fit comfortably --- $\rZeroPeakVram$\,MB at R0 --- but the constraint
+binds in two places that were not anticipated, and both are measured rather than
+argued. \texttt{ship} is the heaviest scene in the suite at $442\,235$
+primitives and $13\,755$\,MB, $90\,\%$ of the card; it does not train at all on
+the vanilla arm (\S\ref{sec:shipfails}), and at B1's measured memory multiple it
+does not fit either (\S\ref{sec:methodcost}). The three arguments that carry the
+thesis --- the exact reduction, the stress suite and the floor diagnostic --- are
+resolution-independent, so the argument survives; the scene count does not, and
+is reported everywhere it shrinks.
+
+\paragraph{B1 costs $2.8\times$ the memory for a result that is, by design,
+identical.} On a well-conditioned capture Proposition~\ref{prop:reduction} makes
+B1 \emph{be} Mip-Splatting, and Table~\ref{tab:methodcost} shows what that
+costs: $2.8\times$ peak VRAM and $1.32\times$ training time, for the same
+primitive count and the same rendered image. This is not an implementation
+detail to be optimised away later and then reported as though it had been --- it
+is the shape of the method. $\Lambda_k$ accumulates a $3\times3$ symmetric
+matrix per primitive over every training camera, and that accumulation is the
+method. An implementation could stream it or compute it in blocks; none of that
+changes the arithmetic, and none of it has been done here.
+
+The honest consequence is that B1 should not be used on a well-conditioned
+capture, and this thesis does not recommend it there. Its case is confined to
+the regime of \S\ref{sec:table3} --- and there, as
+Figure~\ref{fig:qualpencil} shows, both methods produce reconstructions nobody
+would ship. What the project establishes is that the mechanism is the one the
+derivation names, not that the method earns its cost.
 
 \paragraph{$\beta$ is a prior, not an estimate.} Where the capture constrains a
 direction not at all, no amount of estimation theory supplies a scale; $\beta$

@@ -246,7 +246,17 @@ def build_summary():
             "complete": len(done) == len(SCENES) * len(PROTOCOLS) * len(METHODS)}
 
 
-jobs = [(m, s, p) for s in SCENES for p in PROTOCOLS for m in METHODS]
+# Method-major, so that two jobs running concurrently never share a scene.
+# Scene-major put mip/<scene> and b1/<scene> adjacent, the two workers took them
+# at the same instant, and both loaders raced on the point cloud the first one
+# writes into the shared source directory: b1/ship died in create_from_pcd with
+# a null point cloud four seconds in, while mip/ship trained normally. Only the
+# first pair in the queue can race -- after that the workers have drifted out of
+# step -- which is why it cost exactly one scene and looked like a method fault.
+jobs = [(m, s, p) for m in METHODS for s in SCENES for p in PROTOCOLS]
+if len({s for _, s, _ in jobs[:2]}) < 2 and len(SCENES) > 1:
+    raise SystemExit("ABORT: the first two jobs share a scene and would race "
+                     "on its point cloud; reorder SCENES or METHODS.")
 qi = [0]
 
 

@@ -73,12 +73,28 @@ a result: it is a change to the method that only measurement could have
 produced, and \S\ref{sec:b2amend} reports the measurement that forced it rather
 than folding it silently into the derivation.
 
-\paragraph{Status.} B2 is implemented and measured. The criterion is evaluated on
-all eight Blender scenes and across the five capture protocols of
+\paragraph{Status: implemented, measured, and refuted.} B2 is evaluated on all
+eight Blender scenes and across the six capture protocols of
 \S\ref{sec:stress} without a GPU, since Equation~\eqref{eq:gram} depends only on
 primitive positions and training view directions; Table~\ref{tab:b2} adds the
-rendered-quality and model-size columns. One caveat carries through to every
-statement about memory: masking coefficients to zero does not shrink a
-fixed-width PLY, so \emph{no model-size saving is claimed from these numbers}.
-Realising it needs variable-length SH storage, which Chapter~\ref{ch:plan}
-schedules for Spring.
+rendered-quality and model-size columns.
+
+The criterion does what this chapter says it does in the \emph{geometric}
+sense: it retains everything on a full orbit, nothing on a pencil, and responds
+gradually in between. What it does not do is decide well \emph{which}
+coefficients to keep at a fixed budget, and that is the claim the standard set
+below actually tests. Section~\ref{sec:btwo} reports the test and the criterion
+fails it: against magnitude pruning restricted to B2's own nested degrees ---
+same structure, same budget, only the criterion differing --- B2 loses by up to
+$\btwoBlockedGapMax$\,dB. The derivation that follows is therefore presented as
+a proposal that was carried through to measurement and did not survive it, which
+is the reason it is kept in full rather than trimmed to a paragraph: the
+argument is sound and the conclusion is still wrong, and the gap between those
+two is the interesting part.
+
+One caveat carries through to every statement about memory: masking coefficients
+to zero does not shrink a fixed-width PLY, so \emph{no model-size saving is
+claimed from these numbers}. Realising it needs variable-length SH storage,
+which Chapter~\ref{ch:plan} schedules for Spring --- and which, given
+\S\ref{sec:btwo}, should be scheduled for a criterion that works rather than for
+this one.

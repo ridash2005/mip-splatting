@@ -782,8 +782,12 @@ names it. A protocol is a distribution of cameras over an angular window, not tw
 cameras at its ends, and for a cap the correct $\lambda_3/\lambda_1$ is
 asymptotically \emph{half} the two-view value --- so the two-view form
 understates $\sigma_D/\sigma_L$ by $\sqrt{2}$. Against Equation~\eqref{eq:cap},
-evaluated at each protocol's own measured span, the six rows agree to
-$10$--$27\,\%$ instead of being low by $60$. The residual is one-signed ---
+evaluated at each protocol's own measured span, the $\capAgreeN$ protocols the
+cap model is built for agree to $\capAgreeMin$--$\capAgreeMax\,\%$, where the
+two-view form falls short by up to $\twoViewLowMax\,\%$. The sixth,
+\emph{grazing}, sits at $\capAgreeGrazing\,\%$, and is precisely the protocol
+the cap model does not describe: it was built to test obliquity at near-full
+parallax, and the cap form is parallax-only. The residual is one-signed ---
 measurement always above prediction --- which is what \S\ref{sec:offaxis} leads
 one to expect: the cap model is parallax-only, and perspective adds anisotropy of
 its own that a cap of ray directions does not contain.}
@@ -1090,7 +1094,7 @@ definitions of \S\ref{sec:branchdefect} disagreed and both were kept.}
 Equation~\eqref{eq:gram} depends on primitive positions and training view
 directions alone, so the criterion is measurable from a trained model with no
 retraining and no GPU. It was evaluated on all eight Blender scenes and then, for
-the same reason B1 had to be, across the five capture protocols.
+the same reason B1 had to be, across all six capture protocols.
 
 \keybox{on the standard benchmark B2 masks nothing at all}{%
 Every primitive in all eight scenes is seen from $100$ well-spread directions,

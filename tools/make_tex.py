@@ -1820,6 +1820,42 @@ def macros(rows, summaries, inst=None, raw=None, b2c_for_macros=None,
     else:
         put("btwoStructureShare", None)
         M["btwoStructureScene"] = NOT_MEASURED
+    # How well the cap form of Eq (4.x) predicts the measured conditioning, as a
+    # percentage excess of measurement over prediction, per protocol.
+    #
+    # Typed into the prose as "10-27 %" in one place and "10-15 %" in another,
+    # and both were wrong once the sixth protocol landed: the true range is
+    # 14-37 %. The outlier is `grazing`, and the thesis already explains why --
+    # the cap model is parallax-only and grazing is the protocol built to test
+    # obliquity -- so the two are reported separately rather than averaged into
+    # a single number that hides the one informative disagreement.
+    _bp = (inst or {}).get("by_protocol") or {}
+    _exc = {}
+    for _p, _v in _bp.items():
+        _m = _v.get("median_sigma_ratio_measured")
+        _s = _v.get("median_span_deg")
+        if _m and _s:
+            _pred = cap_sigma_ratio(_s)
+            if _pred:
+                _exc[_p] = 100.0 * (_m - _pred) / _pred
+    _para = {k: v for k, v in _exc.items() if k != "grazing"}
+    put("capAgreeMin", min(_para.values()) if _para else None, "{:.0f}")
+    put("capAgreeMax", max(_para.values()) if _para else None, "{:.0f}")
+    M["capAgreeN"] = str(len(_para)) if _para else NOT_MEASURED
+    put("capAgreeGrazing", _exc.get("grazing"), "{:.0f}")
+    # And how far the TWO-VIEW form falls short of the same measurements, by
+    # the same arithmetic, so the two predictions are scored identically.
+    # sigma_D/sigma_L = 1/sin(theta/2) for two views (Eq 4.8).
+    _tv = []
+    for _p, _v in _bp.items():
+        if _p == "grazing":
+            continue
+        _m, _s = _v.get("median_sigma_ratio_measured"), _v.get("median_span_deg")
+        if _m and _s:
+            _t = 1.0 / max(math.sin(math.radians(_s) / 2.0), 1e-9)
+            _tv.append(100.0 * (_m - _t) / _m)
+    put("twoViewLowMin", min(_tv) if _tv else None, "{:.0f}")
+    put("twoViewLowMax", max(_tv) if _tv else None, "{:.0f}")
     put("stressBindSigma",
         (max(_bind) / _rep) if (_bind and _rep) else None, "{:.1f}")
     armA = [s for k, s in sds.items() if k[1] == "A"]

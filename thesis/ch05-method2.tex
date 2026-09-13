@@ -1,6 +1,22 @@
 \chapter{Method II --- angular identifiability of spherical harmonics}
 \label{ch:method2}
 
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.99\linewidth]{figures/d7-sh-coverage.pdf}
+  \caption{The argument of this chapter, before the algebra. A primitive's
+  colour is allowed to depend on the direction it is viewed from, and that
+  dependence is stored as a short series in the viewing direction. A
+  degree-$\ell$ term oscillates $\ell$ times around the sphere, so telling the
+  degrees apart requires seeing the primitive from enough different directions.
+  Seen from all around (left) that is easy. Seen from an eleven-degree window
+  (right) it is impossible: rescaled to the window, all three curves are the
+  same gentle arc, and no fit can say which of them the data was asking for.
+  Fitting all three anyway does not produce an error; it produces three
+  coefficients that trade off against one another arbitrarily.}
+  \label{fig:shcoverage}
+\end{figure}
+
 The same argument applies on the sphere of directions. Each primitive carries
 view-dependent colour as spherical harmonics to degree $3$: $16$ coefficients per
 channel, $48$ floats, against $11$ for position, scale, rotation and opacity

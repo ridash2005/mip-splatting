@@ -63,6 +63,22 @@ images. The band-limit is therefore present, explicit, global, and manually
 chosen --- one scalar for the entire scene.
 
 \section{3DGS and EWA splatting}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.99\linewidth]{figures/d6-splatting.pdf}
+  \caption{Splatting, in the three stages a reader needs before anything else in
+  this thesis makes sense. A primitive is an ellipsoid sitting in the world,
+  carrying a colour and an opacity. To render it, the ellipsoid is projected to
+  an ellipse on the image plane, which is what the EWA transform of
+  Equation~\eqref{eq:ewa} does. Many such ellipses are then blended into each
+  pixel, nearest first. Both baselines already place a limit at stage 2, on how
+  small a primitive's \emph{image} may be. This thesis is about a limit at
+  stage 1, on how small the primitive \emph{itself} may be, and the two are not
+  interchangeable: a stage-2 limit is recomputed for every view, whereas a
+  stage-1 limit is a property of the model.}
+  \label{fig:splatting}
+\end{figure}
 3DGS represents the field as anisotropic Gaussians with mean $p_k$ and covariance
 $\Sigma_k = RSS^{\!\top}R^{\!\top}$. Projection follows EWA volume splatting: with
 viewing transform $W_n$ and the Jacobian $J_n$ of the affine approximation to the

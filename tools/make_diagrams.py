@@ -306,6 +306,167 @@ def d_floor_vs_estimate(out):
     _save(fig, out, "d5-floor-vs-estimate")
 
 
+# ===================================================================== D6
+def d_splatting(out):
+    """What splatting actually does, for a reader meeting it for the first time.
+
+    Three stages, left to right: an ellipsoid in the world, its projection to an
+    ellipse on the image plane, and the accumulation of many such ellipses into
+    pixels. The band-limit this thesis is about acts at stage one; the one both
+    baselines already have acts at stage two.
+    """
+    fig, axes = plt.subplots(1, 3, figsize=(7.2, 2.5))
+
+    # --- 1: the primitive in space
+    ax = axes[0]
+    for (cx, cy, w, h, a, al) in [(-0.35, 0.25, 1.5, 0.62, 28, 0.30),
+                                  (0.45, -0.30, 1.1, 0.48, -18, 0.30),
+                                  (0.05, 0.55, 0.8, 0.34, 62, 0.26)]:
+        ax.add_patch(Ellipse((cx, cy), w, h, angle=a, facecolor=S2, alpha=al,
+                             ec=S2, lw=1.1))
+    ax.text(0, -1.32, "a primitive is an ellipsoid\nwith a colour and an opacity",
+            ha="center", va="top", fontsize=7.3, color=INK_2, linespacing=1.35)
+    ax.set_title("1. in the world", fontsize=8.4, color=INK, pad=6)
+    ax.set_xlim(-1.5, 1.5); ax.set_ylim(-1.5, 1.5)
+
+    # --- 2: projection
+    ax = axes[1]
+    ax.plot([-1.25, 1.25], [-0.95, -0.95], color=INK_2, lw=1.1)
+    ax.text(0, -1.14, "image plane", ha="center", va="top", fontsize=7.0,
+            color=INK_2)
+    ax.add_patch(Ellipse((0, 0.45), 1.5, 0.62, angle=28, facecolor=S2,
+                         alpha=0.28, ec=S2, lw=1.1))
+    for s in (-1, 1):
+        ax.plot([s * 0.72, s * 0.42], [0.62, -0.95], color=MUTED, lw=0.7,
+                ls=(0, (3, 2)))
+    ax.add_patch(Ellipse((0, -0.95), 0.84, 0.17, angle=0, facecolor=S1,
+                         alpha=0.45, ec=S1, lw=1.1))
+    ax.text(0, -1.42, "it projects to an ellipse\n(the EWA transform)",
+            ha="center", va="top", fontsize=7.3, color=INK_2, linespacing=1.35)
+    ax.set_title("2. onto the image", fontsize=8.4, color=INK, pad=6)
+    ax.set_xlim(-1.5, 1.5); ax.set_ylim(-1.5, 1.5)
+
+    # --- 3: accumulation into pixels
+    ax = axes[2]
+    for g in np.arange(-1.2, 1.21, 0.4):
+        ax.axvline(g, color=GRID, lw=0.8); ax.axhline(g, color=GRID, lw=0.8)
+    rng = np.random.default_rng(3)
+    for _ in range(14):
+        c = rng.normal(0, 0.45, 2)
+        ax.add_patch(Ellipse(c, 0.42, 0.20, angle=rng.uniform(0, 180),
+                             facecolor=S1, alpha=0.30, ec="none"))
+    ax.text(0, -1.32, "many ellipses are blended,\nnearest first, into each pixel",
+            ha="center", va="top", fontsize=7.3, color=INK_2, linespacing=1.35)
+    ax.set_title("3. into pixels", fontsize=8.4, color=INK, pad=6)
+    ax.set_xlim(-1.3, 1.3); ax.set_ylim(-1.3, 1.3)
+
+    for ax in axes:
+        _bare(ax)
+    fig.suptitle("Splatting in three stages. This thesis is about a limit at "
+                 "stage 1; both baselines already have one at stage 2.",
+                 fontsize=8.6, color=INK, y=1.04)
+    _save(fig, out, "d6-splatting")
+
+
+# ===================================================================== D7
+def d_sh_coverage(out):
+    """Why a narrow capture cannot determine high-degree view dependence.
+
+    Spherical harmonics of degree l oscillate l times around the sphere. If every
+    camera that saw a primitive lies inside a small angular window, then over
+    that window the basis functions are nearly the same shape, and no fit can
+    tell which of them the data is asking for. The right panel is the same three
+    curves as the left, drawn over the window alone.
+    """
+    fig, axes = plt.subplots(1, 2, figsize=(6.8, 2.9))
+    curves = ((1, S1, "degree 1"), (2, S2, "degree 2"), (3, INK, "degree 3"))
+    half = np.radians(11.0)
+
+    ax = axes[0]
+    th = np.linspace(-np.pi, np.pi, 700)
+    for l, col, lab in curves:
+        ax.plot(th, np.cos(l * th), color=col, lw=1.6, label=lab)
+    ax.axvspan(-half, half, color=INK, alpha=0.12, zorder=0)
+    ax.annotate("this window", xy=(0, -1.16), xytext=(1.5, -1.33),
+                fontsize=7.1, color=INK_2,
+                arrowprops=dict(arrowstyle="->", color=INK_2, lw=0.8))
+    ax.set_xlim(-np.pi, np.pi); ax.set_ylim(-1.55, 1.9)
+    ax.set_xticks([-np.pi, 0, np.pi])
+    ax.set_xticklabels(["$-\pi$", "0", "$\pi$"], fontsize=7.2)
+    ax.set_title("seen from all around", fontsize=8.4, color=INK, pad=6)
+    ax.text(0, -2.30, "the three are easy to tell apart, so a fit" + chr(10) +
+                      "can say how much of each the data wants",
+            ha="center", va="top", fontsize=7.3, color=INK_2, linespacing=1.35)
+    ax.legend(frameon=False, fontsize=7.0, ncol=3, loc="upper center",
+              labelcolor=INK_2, columnspacing=1.1, handlelength=1.3)
+
+    ax = axes[1]
+    thz = np.linspace(-half, half, 400)
+    # Drawn with different dash patterns and widths: the three curves lie on top
+    # of one another, and the reader needs to see that there are three of them
+    # rather than assume only one was plotted.
+    styles = [("-", 3.4), ((0, (5, 3)), 2.2), ((0, (1.2, 2.2)), 1.6)]
+    for (l, col, lab), (ls, lw) in zip(curves, styles):
+        y = np.cos(l * thz)
+        ax.plot(np.degrees(thz), (y - y.mean()) / max(np.ptp(y), 1e-9),
+                color=col, lw=lw, ls=ls)
+    ax.set_xlim(-np.degrees(half), np.degrees(half)); ax.set_ylim(-1.55, 1.9)
+    ax.set_xticks([-10, 0, 10])
+    ax.set_xticklabels(["$-10^\circ$", "0", "$+10^\circ$"], fontsize=7.2)
+    ax.set_title("seen from an 11-degree window", fontsize=8.4, color=INK, pad=6)
+    ax.text(0, -2.30, "rescaled to the window, all three are the" + chr(10) +
+                      "same downward arc: the data cannot separate them",
+            ha="center", va="top", fontsize=7.3, color=INK_2, linespacing=1.35)
+
+    for ax in axes:
+        ax.set_yticks([])
+        for sp in ("top", "right", "left"):
+            ax.spines[sp].set_visible(False)
+        ax.set_xlabel("viewing direction", fontsize=7.6)
+    fig.suptitle("View-dependent colour is a series in the viewing direction. "
+                 "A narrow capture samples too little of it.",
+                 fontsize=8.6, color=INK, y=1.04)
+    _save(fig, out, "d7-sh-coverage")
+
+
+# ===================================================================== D8
+def d_two_arms(out):
+    """The experimental construction: what is held fixed, and what is varied."""
+    fig, ax = plt.subplots(figsize=(6.9, 3.1))
+    shared = ["the same dataloader", "the same metrics code",
+              "the same perceptual backbone (VGG)",
+              "the same densification", "the same seed and iteration count"]
+    ax.add_patch(plt.Rectangle((0.03, 0.05), 0.94, 0.34, facecolor=GRID,
+                               alpha=0.45, ec="none"))
+    ax.text(0.5, 0.335, "held fixed — one checkout, one set of flags apart",
+            ha="center", fontsize=8.0, color=INK, weight="bold")
+    for i, t in enumerate(shared):
+        ax.text(0.5, 0.255 - i * 0.045, t, ha="center", fontsize=7.2,
+                color=INK_2)
+
+    boxes = [(0.05, "arm A", "Mip-Splatting\nas published", S1),
+             (0.29, "arm B", "3DGS's band-limit\nsemantics exactly", S2),
+             (0.53, "B1", "the proposed\nanisotropic filter", INK),
+             (0.77, "B2", "the proposed\nSH masking", MUTED)]
+    for x, name, what, col in boxes:
+        ax.add_patch(plt.Rectangle((x, 0.52), 0.18, 0.30, facecolor=SURFACE,
+                                   ec=col, lw=1.4))
+        ax.text(x + 0.09, 0.755, name, ha="center", fontsize=8.6, color=col,
+                weight="bold")
+        ax.text(x + 0.09, 0.635, what, ha="center", fontsize=7.1, color=INK_2,
+                linespacing=1.3)
+        ax.annotate("", xy=(x + 0.09, 0.40), xytext=(x + 0.09, 0.52),
+                    arrowprops=dict(arrowstyle="-", color=GRID, lw=1.0))
+    ax.text(0.5, 0.92, "varied: the band-limit, and nothing else",
+            ha="center", fontsize=8.2, color=INK, weight="bold")
+    ax.set_xlim(0, 1); ax.set_ylim(0, 1)
+    _bare(ax); ax.set_aspect("auto")
+    ax.text(0.5, -0.06, "Any difference between two of these columns is the "
+            "band-limit, because it is the only thing that differs.",
+            ha="center", fontsize=7.4, color=MUTED, transform=ax.transAxes)
+    _save(fig, out, "d8-two-arms")
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", default="thesis/figures")
@@ -315,6 +476,9 @@ def main():
     d_one_camera(a.out)
     d_protocols(a.out)
     d_floor_vs_estimate(a.out)
+    d_splatting(a.out)
+    d_sh_coverage(a.out)
+    d_two_arms(a.out)
     return 0
 
 

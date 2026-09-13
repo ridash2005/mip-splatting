@@ -54,6 +54,21 @@ the L1 tolerance.
 
 \section{Reproduction, and the single-codebase decision}
 \label{sec:onecodebase}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.99\linewidth]{figures/d8-two-arms.pdf}
+  \caption{The construction every comparison in this thesis rests on. Four
+  configurations, one checkout, and the only thing that differs between any two
+  of them is the band-limit. Running each published method from its own
+  repository would have been easier and would have meant that the difference
+  between two numbers also contained the difference between two dataloaders, two
+  metric implementations and two perceptual backbones, with no way to say which
+  part was the method. Note that the published figures are used only as targets
+  to check the reproduction against; every comparison reported in
+  Chapter~\ref{ch:results} is between two of these columns.}
+  \label{fig:twoarms}
+\end{figure}
 Both baselines run inside the Mip-Splatting codebase. The 3DGS arm is that
 codebase with the 3D filter zeroed and \texttt{kernel\_size}~$=0.3$, which by
 Proposition~\ref{prop:reduction} is 3DGS exactly.

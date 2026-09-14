@@ -1,4 +1,4 @@
-\chapter{The reproduction harness}
+\chapter{The Reproduction Harness}
 \label{app:harness}
 
 \keybox{what this appendix is for}{%
@@ -9,7 +9,7 @@ allowed. A reader who takes Chapter~\ref{ch:results} at face value can skip it.
 A reader who wants to know whether the numbers can be trusted --- or who wants
 to re-run them --- will find the answer here.}
 
-\section{Where the work runs}
+\section{Where The Work Runs}
 
 There is no local GPU. Every training run in this thesis was executed on Kaggle's
 free tier: two NVIDIA T4s, $15\,360$\,MiB each, in sessions capped at twelve
@@ -24,7 +24,7 @@ else so that the session's output fits in what the platform will hand back. The
 scripts are \texttt{kaggle/*.py}; the launcher that pushes them and collects
 their output is \texttt{tools/kaggle\_push.py}.
 
-\section{Pre-flight assertions}
+\section{Pre-Flight Assertions}
 \label{app:preflight}
 
 An instrument has to be checked before it is used. Twelve assertions run before
@@ -54,7 +54,7 @@ Three of them:
         published figure without the comparison being checkable.
 \end{itemize}
 
-\section{The record}
+\section{The Record}
 \label{app:record}
 
 Every measurement lands in one file, \texttt{results/runs.csv}, one row per
@@ -70,20 +70,20 @@ not marked is a row that is silently \emph{used}. The marking is the only thing
 standing between an honest archive and a pooled average, and the marking is now checked --- the generator refuses to emit any table whose
 cells draw on more than one build.
 
-\paragraph{From the record to the document.} No measured number in this thesis is
+\paragraph{From The Record To The Document.} No measured number in this thesis is
 typed by hand. \texttt{tools/make\_tex.py} reads \texttt{results/runs.csv} and
 writes every table and every inline figure as a LaTeX macro; an unmeasured quantity expands to a visible marker that a reader cannot mistake
 for a result. The same loader feeds the figures and the slide deck, so the three cannot
 disagree --- and a test asserts that they do not, because for a while they did.
 
-\section{The apparatus}
+\section{The Apparatus}
 \label{app:artefacts}
 
 \begin{table}[htbp]
   \centering
   \caption{What exists, and what each artefact is for.}
   \small
-  \begin{tabular}{lp{0.62\linewidth}}
+  \begin{tabularx}{\linewidth}{L{0.70}L{1.30}}
     \toprule
     artefact & purpose \\
     \midrule
@@ -94,10 +94,10 @@ disagree --- and a test asserts that they do not, because for a while they did.
     \texttt{tools/selftest\_pipeline.py} & Runs the whole reporting chain against a fixture with planted, known-in-advance answers, on a machine with no GPU. It is what caught the two silent defects described below. \\
     \texttt{kaggle/*.py} & The rung kernels, each printing every assertion it makes and ending in a single machine-readable summary line. \\
     \bottomrule
-  \end{tabular}
+  \end{tabularx}
 \end{table}
 
-\paragraph{Two defects the self-test caught.} The
+\paragraph{Two Defects The Self-Test Caught.} The
 figure generator's ``measured'' mode was drawing the \emph{published} curve under
 a measured filename, because \texttt{runs.csv} stores the method as
 \texttt{3dgs} while the figures key off \texttt{3DGS}: every lookup missed, the
@@ -108,7 +108,7 @@ have raised an error where it happened. They are recorded here because a
 reproducibility claim that has never been tested against a fixture with known
 answers is an assertion, not a property.
 
-\section{Cost per rung}
+\section{Cost Per Rung}
 \label{app:ladder}
 
 \input{generated/table-budget}
@@ -131,7 +131,7 @@ Three entries need a sentence each, because they carry the project's real costs.
         cameras and is the fastest run in the table.
 \end{itemize}
 
-\paragraph{The allowance was exhausted, twice.} The first time stalled the
+\paragraph{The Allowance Was Exhausted, Twice.} The first time stalled the
 programme for three days and is the reason a second account exists. The binding
 constraint on this project has been compute, not code, throughout; the ladder is
 ordered so that the cheapest falsifications come first, and the two that could

@@ -1,4 +1,4 @@
-\chapter{Limitations of a scalar band-limit}
+\chapter{Limitations Of A Scalar Band-Limit}
 \label{ch:gap}
 
 \keybox{the idea}{%
@@ -12,7 +12,7 @@ generous sideways and strict in depth. A scalar cannot say that. This chapter
 shows precisely where each method's scalar lives, what it is computed from, and
 what information it throws away in becoming a scalar.}
 
-\section{World-space and screen-space limits}
+\section{World-Space And Screen-Space Limits}
 
 \begin{figure}[htbp]
   \centering
@@ -33,7 +33,7 @@ what information it throws away in becoming a scalar.}
   \caption{One quantity, the finest structure the capture can determine, estimated
   with successively more of the available geometry.}
   \small
-  \begin{tabular}{p{0.2\linewidth}p{0.24\linewidth}p{0.26\linewidth}p{0.2\linewidth}}
+  \begin{tabularx}{\linewidth}{L{0.89}L{1.07}L{1.15}L{0.89}}
     \toprule
     method & where the limit lives & how it is set & granularity \\
     \midrule
@@ -42,13 +42,13 @@ what information it throws away in becoming a scalar.}
     Mip-Splatting (2024) & variance added to the covariance & $f_k^2$ from nearest depth and largest focal, $s=0.2$ & one scalar per primitive \\
     \textbf{this work} & covariance added to the covariance, floored at the above & accumulated sampling Fisher information & per primitive, per direction \\
     \bottomrule
-  \end{tabular}
+  \end{tabularx}
 \end{table}
 
 One quantity orders the progression: how much of the capture geometry each
 method reads. NeRF takes a global glance at the images; 3DGS reads nothing; Mip-Splatting reads one view's worth; this work reads all of it.
 
-\section{The cost of a missing limit}
+\section{The Cost Of A Missing Limit}
 \label{sec:cost}
 
 \begin{figure}[htbp]
@@ -78,7 +78,7 @@ work. The question is then whether the \emph{right} band-limit does more.
 Chapter~\ref{ch:results} reports this project's own measurement of the same
 quantity, which is the control for everything that follows.
 
-\section{Three defects of the scalar filter}
+\section{Three Defects Of The Scalar Filter}
 \label{sec:defects}
 
 \begin{enumerate}[leftmargin=1.4em,itemsep=3pt]
@@ -97,7 +97,7 @@ quantity, which is the control for everything that follows.
         branch.
 \end{enumerate}
 
-\section{Concurrent work}
+\section{Concurrent Work}
 \label{sec:relatedwork}
 
 A due-diligence review was run before the stress suite, with one question: has
@@ -113,7 +113,7 @@ thesis may claim; and the change is recorded here, in the chapter that sets up t
   this one.}
   \label{tab:related}
   \small
-  \begin{tabular}{p{0.21\linewidth}p{0.34\linewidth}p{0.37\linewidth}}
+  \begin{tabularx}{\linewidth}{L{0.68}L{1.11}L{1.21}}
     \toprule
     work & what it does & relation to this thesis \\
     \midrule
@@ -152,7 +152,7 @@ thesis may claim; and the change is recorded here, in the chapter that sets up t
       & Improves the \emph{2D} half of Mip-Splatting; this thesis changes the
         \emph{3D} half. Directly composable. \\
     \bottomrule
-  \end{tabular}
+  \end{tabularx}
 \end{table}
 
 \keybox{the actual claim}{%

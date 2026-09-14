@@ -1,4 +1,4 @@
-\chapter{Experimental design}
+\chapter{Experimental Design}
 \label{ch:design}
 
 \keybox{why the experiment is shaped like this}{%
@@ -24,7 +24,7 @@ This chapter states the design: what is held fixed, what is varied, what would
 count as success and what would count as failure. The commands that carry it
 out, and the machinery that runs them, are Appendix~\ref{app:harness}.
 
-\section{Compute envelope}
+\section{Compute Envelope}
 Free tier: Kaggle $2\times$T4, 16\,GB each, compute capability 7.5. 3DGS states
 that 24\,GB is required for paper-quality training, so numerical identity with
 the published tables is unavailable for the largest scenes. Three acceptance
@@ -35,7 +35,7 @@ levels are declared in advance.
   \caption{Acceptance levels, declared before any run.}
   \label{tab:levels}
   \small
-  \begin{tabular}{llp{0.42\linewidth}l}
+  \begin{tabularx}{\linewidth}{lL{0.77}L{1.62}L{0.61}}
     \toprule
     level & claim & criterion & where attainable \\
     \midrule
@@ -43,7 +43,7 @@ levels are declared in advance.
     L2 & phenomenon reproduction & the claimed effect reappears with correct sign, ordering and order of magnitude under a stated deviation & everywhere \\
     L3 & harness parity & own re-run baselines are the control for all method comparisons; published numbers cited, never used as the control & everywhere; governs the thesis tables \\
     \bottomrule
-  \end{tabular}
+  \end{tabularx}
 \end{table}
 
 L3 is standard practice: 3DGS itself marks its Mip-NeRF 360 row as copied and
@@ -52,7 +52,7 @@ independent prior on implementation identity is the ${\sim}0.6$\,dB spread
 between faithful splatting implementations on the same benchmark --- three times
 the L1 tolerance.
 
-\section{The single-codebase decision}
+\section{The Single-Codebase Decision}
 \label{sec:onecodebase}
 
 \begin{figure}[htbp]
@@ -95,13 +95,13 @@ Section~\ref{sec:g2} is the diagnosis and the re-measurement. The single-codebas
 claim made for it: ``both arms share everything but the diff'' is a statement
 about what the diff \emph{omits}, and omissions are what a diff hides.}
 
-\paragraph{The arms, as run.} The Mip-Splatting arm is Mip-Splatting unmodified. The 3DGS arm is the
+\paragraph{The Arms, As Run.} The Mip-Splatting arm is Mip-Splatting unmodified. The 3DGS arm is the
 same codebase with \texttt{filter\_3D} identically zero, \texttt{kernel\_size}
 $=0.3$, \emph{and} the 2D opacity compensation disabled in the rasteriser --- all
 three, which together are vanilla 3DGS's band-limit semantics in both domains.
 The third was added after \S\ref{sec:g2} found it missing.
 
-\section{The ladder of runs}
+\section{The Ladder Of Runs}
 \begin{table}[htbp]
   \centering
   \caption{The rungs, their budgets and their exit criteria. GPU-hours for R0
@@ -109,7 +109,7 @@ The third was added after \S\ref{sec:g2} found it missing.
   replace.}
   \label{tab:ladder}
   \small
-  \begin{tabular}{llp{0.44\linewidth}}
+  \begin{tabularx}{\linewidth}{lL{0.95}L{1.05}}
     \toprule
     rung & run & exit criterion \\
     \midrule
@@ -120,10 +120,10 @@ The third was added after \S\ref{sec:g2} found it missing.
     R5 & seed spread --- 3 seeds $\times$ 2 scenes $\times$ 2 arms & $\sigma$, without which parity is not a testable claim \\
     R4 & Mip-NeRF 360 outdoor at \texttt{images\_8} --- the only authorised deviation & L2 only, separate table, resolution in the caption \\
     \bottomrule
-  \end{tabular}
+  \end{tabularx}
 \end{table}
 
-\section{Six capture protocols}
+\section{Six Capture Protocols}
 \label{sec:stress}
 
 \begin{figure}[htbp]
@@ -151,7 +151,7 @@ capture from the one the prediction was made for, and the prediction must then b
 
 \input{generated/table-protocols}
 
-\section{Three instruments}
+\section{Three Instruments}
 \label{sec:instruments}
 All read-only with respect to the optimiser, so the reproduction remains a
 reproduction. Together they test the method's premise before the method exists.
@@ -161,7 +161,7 @@ reproduction. Together they test the method's premise before the method exists.
   \caption{The instruments and what each decides.}
   \label{tab:instrumentplan}
   \small
-  \begin{tabular}{lp{0.34\linewidth}p{0.42\linewidth}}
+  \begin{tabularx}{\linewidth}{L{0.70}L{1.05}L{1.25}}
     \toprule
     & measurement & what it decides \\
     \midrule
@@ -169,7 +169,7 @@ reproduction. Together they test the method's premise before the method exists.
     the conditioning instrument & $\lambda_3/\lambda_1$ per primitive on trained, unmodified checkpoints, per capture protocol; pure PyTorch, no CUDA & whether the regime table of Equation~\eqref{eq:cap} holds on real scenes. Turns \S\ref{sec:anisotropy} from prediction into evidence before any method code is written. \\
     the repeatability measurement & per-scene mean and standard deviation across seeds, both baselines & the $\sigma$ that makes ``parity'' a quantity. Parity is then reported as within $k\sigma$ of the self-run baseline. \\
     \bottomrule
-  \end{tabular}
+  \end{tabularx}
 \end{table}
 
 One detail here has a real failure mode. A primitive that no training camera
@@ -178,7 +178,7 @@ excluded from the instrument's histogram, or they pile up in its right tail and
 read as though the resolution floor were binding hard, which is precisely the
 wrong answer at the floor-binding gate, and an encouraging-looking one.
 
-\section{Metrics and statistics}
+\section{Metrics And Statistics}
 Quality is PSNR, SSIM and LPIPS (VGG) per scene and averaged, at test scales
 $1\times$, $\tfrac12$, $\tfrac14$, $\tfrac18$. Cost is primitive count, model
 MB, peak training VRAM, wall-clock and render fps --- same GPU, same run.
@@ -186,7 +186,7 @@ Diagnostics are the fraction of primitives where the estimation term exceeds the
 floor, and the mean anisotropy of $\Sigma_{\mathrm{filt}}$; this is what makes a parity result interpretable instead of mysterious. Statistics are three seeds
 minimum, mean $\pm$ standard deviation, paired per-scene deltas.
 
-\paragraph{One measurement the published code cannot make.} The multi-scale
+\paragraph{One Measurement The Published Code Cannot Make.} The multi-scale
 test set holds all four resolutions mixed together, and the evaluation that ships
 with both methods averages the whole mixture into a single number. But the papers
 report four numbers, one per scale, and so does this thesis --- the entire

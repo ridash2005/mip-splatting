@@ -451,7 +451,7 @@ def preflight_table(summary, label, caption):
         return placeholder(label, caption, "The rung has not been run.")
     L = [r"\begin{table}[htbp]", r"  \centering",
          r"  \caption{" + caption + "}", r"  \label{tab:" + label + "}",
-         r"  \footnotesize", r"  \begin{tabular}{clp{0.62\linewidth}}", r"    \toprule",
+         r"  \footnotesize", r"  \begin{tabularx}{\linewidth}{clX}", r"    \toprule",
          r"    \# & result & check \\", r"    \midrule"]
     for c in summary.get("checks", []):
         tag = {True: r"\pass", False: r"\fail", None: r"\skipped"}[c["passed"]]
@@ -1045,7 +1045,7 @@ PROTO_SELECTION = {
 
 
 def protocol_table(inst, label, caption):
-    """The five capture protocols at the spans and camera counts they realise.
+    """The capture protocols at the spans and camera counts they realise.
 
     Generated because they were not what they were asked for: `arc` and `cone`
     select by angular EXTENT, so the camera count is an outcome and varies by
@@ -1062,7 +1062,7 @@ def protocol_table(inst, label, caption):
             counts.setdefault(proto, []).append(int(v["n_cameras"]))
     L = [r"\begin{table}[htbp]", r"  \centering",
          r"  \caption{" + caption + "}", r"  \label{tab:" + label + "}",
-         r"  \small", r"  \begin{tabular}{llrrp{0.29\linewidth}}", r"    \toprule",
+         r"  \small", r"  \begin{tabularx}{\linewidth}{lL{0.85}rrL{1.15}}", r"    \toprule",
          r"    protocol & selection & cameras & span & what it tests \\",
          r"    \midrule"]
     for k in PROTO_ORDER:
@@ -1976,6 +1976,29 @@ def macros(rows, summaries, inst=None, raw=None, b2c_for_macros=None,
     return "\n".join(lines) + "\n"
 
 
+def fit_to_margin(body):
+    """Keep a generated table inside the text block.
+
+    A tabularx solves for its own column widths, so it cannot overflow; it
+    only needs its closing tag to match. A plain tabular of numbers can
+    overflow once a column grows, so every generated table is emitted with a
+    tighter column separation than the 6pt default, which buys 3pt per column
+    boundary.
+    """
+    n_open = body.count(r"\begin{tabularx}")
+    if n_open:
+        body = body.replace(r"\end{tabular}",
+                            r"\end{tabularx}", n_open)
+    tighten = r"  \setlength{\tabcolsep}{4.5pt}"
+    out = []
+    for line in body.split(chr(10)):
+        if line.lstrip().startswith((r"\begin{tabular}",
+                                     r"\begin{tabularx}")):
+            out.append(tighten)
+        out.append(line)
+    return chr(10).join(out)
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--runs", default="results/runs.csv")
@@ -2142,7 +2165,7 @@ def main():
             sigma=seed_sigma),
         "table-geometry.tex": geometry_tables(geo, inst),
         "table-protocols.tex": protocol_table(inst, "protocols",
-            r"The five capture protocols, as built."),
+            r"The capture protocols, as built."),
         "table-budget.tex": budget_table(a.summaries, "budget",
             r"Every GPU session this project ran, and what it cost."),
         "table-g2.tex": g2_table(rows, "g2",
@@ -2177,7 +2200,7 @@ def main():
             r"R3 --- real scenes that fit 16\,GB, both arms."),
         "table-instruments.tex": instruments_table(
             inst, "instruments",
-            r"I-1 (floor occupancy) and I-2 (conditioning) across the five "
+            r"I-1 (floor occupancy) and I-2 (conditioning) across the "
             r"capture protocols of \S\ref{sec:stress}. Computed from trained "
             r"point clouds and camera geometry; no retraining."),
         "measured.tex": macros(rows, summaries, inst, raw=raw,
@@ -2186,6 +2209,8 @@ def main():
                                runs_path=a.runs, fps=fps),
     }
     for name, body in written.items():
+        if name != "measured.tex":
+            body = fit_to_margin(body)
         with open(os.path.join(a.out, name), "w", encoding="utf-8") as f:
             f.write(body)
         print(f"wrote {os.path.join(a.out, name)}")

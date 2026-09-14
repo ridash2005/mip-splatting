@@ -6,7 +6,7 @@ The thesis compares two published methods and two proposed ones. All four run
 from a single checkout, differing only by command-line flags, and this appendix
 says exactly what each flag does and where in the code it acts. It answers ``how do I know the 3DGS arm is really 3DGS?'' at the level of code.}
 
-\section{Four configurations}
+\section{Four Configurations}
 
 Running each method from its own repository would mean the difference between two
 numbers contained the difference between two dataloaders, two metric
@@ -15,7 +15,7 @@ therefore between configurations of one checkout, and the comparison is the
 flags.
 
 \begin{center}\small
-\begin{tabular}{llp{0.44\linewidth}}
+\begin{tabularx}{\linewidth}{L{0.65}L{1.25}L{1.10}}
   \toprule
   configuration & flags & what it is \\
   \midrule
@@ -33,10 +33,10 @@ flags.
     Reads a trained model and the training view directions; masks spherical-harmonic
     degrees. \\
   \bottomrule
-\end{tabular}
+\end{tabularx}
 \end{center}
 
-\section{Two switches for the 3DGS arm}
+\section{Two Switches For The 3DGS Arm}
 
 Mip-Splatting has \emph{two} band-limits and they live in different places.
 
@@ -55,8 +55,8 @@ Appendix~\ref{app:defects}: the arm labelled 3DGS was still anti-aliasing with
 Mip-Splatting's screen-space term, at exactly the scales where the falsification
 gate was scored.
 
-\paragraph{What \texttt{--disable\_2D\_mip\_compensation} touches.} The flag is
-threaded from \texttt{arguments/\_\_init\_\_.py} through
+\paragraph{What The Compensation Switch Touches.} The flag is
+threaded from \texttt{arguments/\allowbreak\_\_init\_\_.py} through
 \texttt{gaussian\_renderer} into the rasteriser's settings tuple, and read in
 both the forward and the backward CUDA kernels:
 
@@ -71,7 +71,7 @@ Because the switch reaches the binary, the pre-flight asserts that the
 \emph{compiled} rasteriser carries the field --- checking the source would prove
 nothing about what was built.
 
-\section{The degeneracy guard}
+\section{The Degeneracy Guard}
 
 Both kernels carry a numerical guard: a primitive whose projected covariance is
 singular to the tolerance the determinants are clamped at contributes nothing.
@@ -84,7 +84,7 @@ This is the second lesson of Appendix~\ref{app:defects} and the more general one
 a switch meant to isolate a single term has to be checked against what it leaves
 alone, not only against what it changes.
 
-\section{The anisotropic filter in code}
+\section{The Anisotropic Filter In Code}
 
 The anisotropic filter needed no CUDA change. The rasteriser already accepts a precomputed
 covariance, so replacing a scalar variance with a matrix changes how the covariance is built
@@ -109,7 +109,7 @@ $\Lambda_k$ is never touched inside the loop, which is why rendering is
 unaffected (\S\ref{sec:fps}) and why the cost is a construction cost
 (\S\ref{sec:methodcost}).
 
-\section{Capture protocols}
+\section{Capture Protocols}
 
 A protocol is a rule for selecting a subset of the training cameras. The test set
 is never touched --- only the capture the model is fitted from. This is what makes

@@ -1,4 +1,4 @@
-\chapter{Measurement defects}
+\chapter{Measurement Defects}
 \label{app:defects}
 
 \keybox{what this appendix is for}{%
@@ -14,10 +14,10 @@ point. A defect that is fixed but not covered by a check is a defect that will
 recur under a different name --- and two of the eight below are the same mistake
 at different denominators.}
 
-\section*{The eight, in one table}
+\section*{The Eight, In One Table}
 
 \begin{center}\small
-\begin{tabular}{p{0.30\linewidth}p{0.30\linewidth}p{0.30\linewidth}}
+\begin{tabularx}{\linewidth}{L{1}L{1}L{1}}
   \toprule
   what looked right & what was wrong & what catches it now \\
   \midrule
@@ -62,7 +62,7 @@ at different denominators.}
   structure the margin is $\btwoBlockedGapMin$--$\btwoBlockedGapMax$\,dB &
   The control carries the angular mask's own nested-degree structure \\
   \bottomrule
-\end{tabular}
+\end{tabularx}
 \end{center}
 
 \medskip
@@ -72,7 +72,7 @@ from the results they correct, so they are told where those results are:
 \S\ref{sec:table1}, \S\ref{sec:densification} and \S\ref{sec:btwo}
 respectively.
 
-\paragraph{One pattern, six times.} Six of the eight are the same error: two
+\paragraph{One Pattern, Six Times.} Six of the eight are the same error: two
 quantities were compared that were not measured over the same thing. Two
 rasterisers averaged into one cell. A seven-scene mean against an eight-scene
 figure. A protocol name meaning two captures. A constant present on one side and
@@ -82,7 +82,7 @@ the result looked plausible --- which is why none of them was caught by reading
 the numbers, and all of them were caught by a check that asked what the numbers
 were means \emph{over}.
 
-\section{The fourth check: the rasteriser on the 3DGS arm}
+\section{The Fourth Check: The Rasteriser On The 3DGS Arm}
 
 The single-codebase construction of \S\ref{sec:onecodebase} gives both arms
 Mip-Splatting's rasteriser, and sets the 3DGS arm apart by zeroing \texttt{filter\_3D}
@@ -101,12 +101,14 @@ the term it kept is precisely the one that protects a dilated primitive from
 losing energy as the test sampling rate falls. An arm that anti-aliases better
 than 3DGS degrades less than 3DGS, which is what the scale-collapse gate measured.
 
-\paragraph{The opacity-compensation fix --- the test that separates the two explanations.} $\rho$ is
+\paragraph{The Test That Separates The Two Explanations.} $\rho$ is
 computed in CUDA, so the switch is a rasteriser change: a
 \texttt{mip\_compensation} flag threaded through
-\texttt{GaussianRasterizationSettings} into \texttt{computeCov2D}, which skips
+\texttt{Gaussian\allowbreak Rasterization\allowbreak Settings} into
+\texttt{computeCov2D}, which skips
 the $\rho$ term while keeping the dilation. Everything else in that function is
-identical to \texttt{graphdeco-inria/diff-gaussian-rasterization} line for line.
+identical to \texttt{graphdeco-inria/\allowbreak diff-gaussian-\allowbreak rasterization} line
+for line.
 The build asserts the compiled binary carries the field before any training
 starts, because checking the source would prove nothing about the binary.
 
@@ -140,7 +142,7 @@ term moved $\tfrac18$ by $\cOneCollapse$\,dB and full resolution by less than
 $0.05$.}
 
 
-\section{What the vanilla arm cost in robustness}
+\section{What The Vanilla Arm Cost In Robustness}
 \label{sec:shipfails}
 
 Removing the compensation also removed a guard. The same CUDA branch that
@@ -160,7 +162,7 @@ forward contribution and leaving its gradient live is not a consistent pair, and
 matching them is what the opacity-compensation fix switch should have done from the start --- it was
 supposed to isolate one term and it removed three.
 
-\paragraph{\texttt{ship} does not complete, and is reported as such.} With both
+\paragraph{\texttt{ship} Does Not Complete, And Is Reported As Such.} With both
 guards matched it fails a third time, and a fourth under instrumentation. The
 first three tracebacks all pointed at \texttt{ssim}, in the \emph{next}
 iteration's loss, which is a red herring: a CUDA fault is reported
@@ -233,7 +235,7 @@ meant to isolate a single term has to be checked against what it leaves alone,
 not only against what it changes.}
 
 
-\section{A column averaged over two rasterisers}
+\section{A Column Averaged Over Two Rasterisers}
 \label{sec:blend}
 
 The 3DGS arm's column here was re-measured after the opacity-compensation fix, and for a while afterwards each of
@@ -267,7 +269,7 @@ archive and a silently pooled average. A discipline that depends on a marking
 step needs the pooled average checked, not the marking step trusted.}
 
 
-\section{Two kernels, one set of protocol names}
+\section{Two Kernels, One Set Of Protocol Names}
 \label{sec:branchdefect}
 
 The instrument results and the PSNR results of \S\ref{sec:table3} were, for a
@@ -301,7 +303,7 @@ floor, and with both in the table that crossover is measured directly. The instr
 kernel clones, and every protocol table carries the span the session that
 produced the row actually built.}
 
-\section{A constant that was carried on one side only}
+\section{A Constant That Was Carried On One Side Only}
 \label{sec:m2defect}
 
 One more defect has to be stated before the numbers, because it changed them.
@@ -328,7 +330,7 @@ cannot both be free --- surfacing as a live numerical error, the most useful for
 ambiguity in the prose it would have stood for years.}
 
 
-\section{Three bugs the parity requirement caught}
+\section{Three Bugs The Parity Requirement Caught}
 \label{sec:b1bugs}
 
 The first implementation of the anisotropic filter reported exactly what

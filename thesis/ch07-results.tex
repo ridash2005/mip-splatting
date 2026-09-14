@@ -30,7 +30,7 @@ the original wording. Every table and figure in this chapter is regenerated
 mechanically from the measurement record; no number is typed into this document
 by hand (Appendix~\ref{app:record}).}
 
-\section{Pre-flight assertions}
+\section{Pre-Flight Assertions}
 \label{sec:preflight}
 
 A reproduction that has not checked its own instrument is a reproduction of
@@ -40,7 +40,7 @@ one the code can actually run on, that both arms load the same images, that the
 perceptual metric uses the backbone the papers used, and that the two checkouts differ by exactly the intended change and
 nothing else. Appendix~\ref{app:harness} lists all twelve with what each one
 protects against. All twelve pass.
-\section{Single-scale training}
+\section{Single-Scale Training}
 \label{sec:table1}
 
 \input{generated/table1-stmt}
@@ -75,7 +75,7 @@ matched set made the second correct and the first wrong, and the error was
 invisible because it moved the number in the direction a reproduction error
 would move it.}
 
-\subsection*{The same result, as a picture}
+\subsection*{The Same Result, As A Picture}
 \label{sec:qualitative}
 
 A decibel is a summary, and a $10$\,dB gap in a table is a claim the reader has
@@ -136,7 +136,7 @@ The tables remain the claim; these show what the claim looks like.}
 
 \input{generated/table-cost}
 
-\section{The scale-collapse gate}
+\section{The Scale-Collapse Gate}
 \label{sec:g2}
 
 The scale-collapse gate was declared in advance as: 3DGS falls $\gtrsim13$\,dB from full to
@@ -146,7 +146,7 @@ where $13$ was required, and the gap at $\tfrac18$ was $4.07$\,dB against a
 published $10.98$. The protocol's instruction when the scale-collapse gate fails is to stop and
 diagnose in a stated order. That took two attempts, and the first was wrong.
 
-\subsection*{The protocol's three checks, and a fourth}
+\subsection*{The Protocol's Three Checks, And A Fourth}
 
 \begin{enumerate}[leftmargin=1.4em,itemsep=2pt]
   \item \textbf{The per-scale recovery.} Its count-weighted mean reproduces
@@ -160,7 +160,7 @@ diagnose in a stated order. That took two attempts, and the first was wrong.
         arms. Not the cause.
 \end{enumerate}
 
-\paragraph{The first diagnosis, and why it was wrong.} With those three
+\paragraph{The First Diagnosis, And Why It Was Wrong.} With those three
 eliminated, the explanation offered was densification. The public Mip-Splatting repository
 changed how it decides when to subdivide a primitive, roughly a year after the
 paper was published: it adopted a criterion from Gaussian Opacity Fields, which
@@ -176,7 +176,7 @@ and it was \emph{wrong}. It also had the shape a wrong diagnosis usually has:
 it explained the failure as unfixable, and it did so without a test that could
 have refuted it.
 
-\subsection*{The fourth check: the rasteriser on the 3DGS arm}
+\subsection*{The Fourth Check: The Rasteriser On The 3DGS Arm}
 \label{sec:c1}
 
 The three checks above say the gate failed. They do not say why, and the first
@@ -193,7 +193,7 @@ scored on.
 Isolating that term is what the opacity-compensation fix does. Appendix~\ref{app:impl} gives the switch and
 what it touches; Appendix~\ref{app:defects} gives how it was found, including the
 two further things the switch turned out to remove that nobody had asked it to.
-\subsection*{The scale-collapse gate, re-scored}
+\subsection*{The Scale-Collapse Gate, Re-Scored}
 
 Every 3DGS-arm row produced with the compensation active is superseded. They are
 marked as such in the record and retained --- every table in this document
@@ -217,7 +217,7 @@ fragility that had been hidden by the compensation (\S\ref{sec:shipfails}). It b
 between-arm comparison was the one thing the earlier diagnosis insisted was
 safe, and it was the thing that was wrong.}
 
-\subsection*{What the vanilla arm cost in robustness}
+\subsection*{What The Vanilla Arm Cost In Robustness}
 \label{sec:shipfails}
 
 Removing the compensation cost something the protocol had not budgeted for. The
@@ -237,18 +237,18 @@ It is excluded from the single-scale 3DGS-arm rows, and the protocol's rule for
 a scene that will not run is to record it and move on. The instrumentation that
 localised the fault, and the three explanations it ruled out, are in
 Appendix~\ref{app:defects}.
-\section{Multi-scale training}
+\section{Multi-Scale Training}
 \label{sec:table2}
 
 \input{generated/table2-mtmt}
 
-\paragraph{This column was two rasterisers, briefly.} The 3DGS arm was re-measured
+\paragraph{This Column Was Two Rasterisers, Briefly.} The 3DGS arm was re-measured
 after the opacity-compensation fix, and for a period each of its $32$ cells was the mean of the old measurement and the new one instead of the new one alone --- the rows the re-run
 replaced were never retired, because the rule that retires them keyed on a name
 the re-run shared. Nothing about the output looked wrong. The generator now
 refuses to emit a table whose cells draw on more than one build, and names the
 cell; the account is in Appendix~\ref{app:defects}.
-\section{The densification explanation}
+\section{The Densification Explanation}
 \label{sec:densification}
 
 Section~\ref{sec:g2} settles the cause of the $\tfrac18$-scale shortfall: it was
@@ -338,7 +338,7 @@ It was defended on the grounds that pinning the pre-GOF commit would move the
 difference between the arms out of the filter and back into the plumbing, which
 is still true. What has changed is that the cost of keeping GOF has now been measured instead of assumed, and it is $\gofMaxEffect$\,dB at worst.
 
-\section{Run-to-run spread}
+\section{Run-To-Run Spread}
 \label{sec:spread}
 Parity needs a $\sigma$ before it is a testable claim. Repeats of an identical
 configuration bound the harness's own nondeterminism, and repeats at different
@@ -381,14 +381,14 @@ arm without a band-limit is the less stable one under reseeding, which is
 consistent with the mechanism this thesis proposes, though two scenes are far
 too few to claim it as a finding.
 
-\section{Real scenes}
+\section{Real Scenes}
 \label{sec:real}
 
 \input{generated/table-real}
 
 Two results here, neither of which is a PSNR.
 
-\paragraph{The compute envelope, resolved.} Section~\ref{ch:design} recorded 16\,GB
+\paragraph{The Compute Envelope, Resolved.} Section~\ref{ch:design} recorded 16\,GB
 against a stated requirement of 24\,GB, and \S8.1 of the protocol listed
 ``whether \texttt{counter} and \texttt{drjohnson} fit 16\,GB'' as one of only two
 facts that could not be settled without running. They can be settled now:
@@ -397,7 +397,7 @@ $14.5$ and $\realPeakVram$\,MB against a $15\,360$\,MB card --- under a gigabyte
 of headroom, at up to $\realMaxGauss$ primitives. The envelope binds, and it holds: every scene ran at full settings, with nothing
 reduced to make one fit.
 
-\paragraph{The arms agree, which is the prediction.} On every one of these
+\paragraph{The Arms Agree, Which Is The Prediction.} On every one of these
 scenes the two arms land within $0.2$\,dB of each other, and they do so in both
 directions: 3DGS is ahead on \texttt{bonsai}, \texttt{counter} and
 \texttt{kitchen}, Mip-Splatting on \texttt{room}. That is what Proposition~\ref{prop:reduction}
@@ -407,14 +407,14 @@ binds the two filters are identical. It is a second confirmation of the instrume
 of rendered quality, and it is why no gain is available here for a method that
 improves the filter only where the floor stops binding.
 
-\paragraph{On comparison to published figures.} None is made. The published
+\paragraph{On Comparison To Published Figures.} None is made. The published
 Mip-NeRF 360 average is over nine scenes including the five outdoor ones, which
 are excluded here by the memory envelope; a four-indoor subset average is a
 different quantity and setting the two side by side is precisely the error
 \S\ref{ch:discussion} records as having already occurred once in this project's
 earlier write-up. These rows are L2 and are the self-run control for later work.
 
-\section{Training cost and model size}
+\section{Training Cost And Model Size}
 \label{sec:measuredcost}
 The estimates in the protocol's \S7 were replaced by measurement at R0, on the
 same free-tier hardware every later rung uses: $\rZeroItersPerSec$ iterations per
@@ -423,7 +423,7 @@ peak of $\rZeroPeakVram$\,MB of VRAM. The last of these matters for scope: 16\,G
 is nowhere near binding on the Blender scenes, so the compute envelope of
 \S\ref{ch:design} constrains the \emph{real} scenes.
 
-\section{Render speed}
+\section{Render Speed}
 \label{sec:fps}
 
 Section~\ref{sec:implcost} argues that the anisotropic filter cannot cost anything at render time:
@@ -440,7 +440,7 @@ primitive count alone. The filter's own construction costs $\bOneFilterSetup$\,s
 paid once before the loop begins, and $\Lambda_k$
 is never touched inside it. So the claim of \S\ref{sec:implcost} rests on a measurement.
 
-\paragraph{The missing 3DGS row.} The benchmark mounts each arm's own
+\paragraph{The Missing 3DGS Row.} The benchmark mounts each arm's own
 trained model and scores whichever it finds. The vanilla 3DGS model was to come from the C2 session, which ended in error with six of eight scenes complete
 (\S\ref{sec:budget}); the mount did not carry a \texttt{lego} model the
 benchmark could discover, so that row is absent, and it has not been estimated. Nothing
@@ -460,13 +460,13 @@ answers the question is Table~\ref{tab:fps}, and what it defends is the
 \emph{ratio}, since every cost shared by the three arms has been excluded from
 all of them equally.}
 
-\section{Floor occupancy and conditioning}
+\section{Floor Occupancy And Conditioning}
 \label{sec:instrumentresults}
 
 Both instruments are functions of the primitive positions and the capture
 geometry alone, so neither needs the images, the rasteriser, or a training run
-of its own. Both were therefore run over every trained scene, and over the five
-capture protocols of \S\ref{sec:stress}, at a total cost of two minutes.
+of its own. Both were therefore run over every trained scene, and over all six capture
+protocols of \S\ref{sec:stress}, at a total cost of two minutes.
 
 \input{generated/table-instruments}
 
@@ -485,7 +485,7 @@ capture protocols of \S\ref{sec:stress}, at a total cost of two minutes.
   \label{fig:floorbinding}
 \end{figure}
 
-\paragraph{Two defects sit behind these numbers.} The instruments and the
+\paragraph{Two Defects Sit Behind These Numbers.} The instruments and the
 training kernels were, for a period, cloning different branches, so a protocol
 named \texttt{cone} meant one capture to the instrument and another to the run
 that rendered it; and the constant $0.2$ of Equation~\eqref{eq:mipfilter} was carried
@@ -494,7 +494,7 @@ appear five times larger than it is. Both are reported in
 Appendix~\ref{app:defects}; the numbers in this section are from after both were
 fixed, and the agreement between the instrument and the filter's own diagnostic
 is the check that confirms it.
-\subsection*{The floor-occupancy instrument}
+\subsection*{The Floor-Occupancy Instrument}
 
 The estimation term $0.2/\lambda_i$ and Mip-Splatting's floor $f_k^2$ are the two
 sides of Proposition~\ref{prop:reduction}'s hypothesis, and the ratio between
@@ -515,7 +515,7 @@ falsification the project had, it was run before a line of method code existed,
 and Table~\ref{tab:method} is the confirmation at the level of rendered quality:
 $\methodParityMax$\,dB over $\methodParityScenes$ scenes and four test scales.}
 
-\subsection*{Agreement between the two diagnostics}
+\subsection*{Agreement Between The Two Diagnostics}
 
 The floor-occupancy instrument is computed off a trained point cloud by a NumPy instrument; the filter
 prints its own occupancy during training, from the model it is actually
@@ -544,7 +544,7 @@ difference could explain. Two implementations of one comparison agreeing on five
 of six protocols, and differing only where the quantity sits within a third of
 its decision threshold, is a much stronger statement than either makes alone.}
 
-\subsection*{The conditioning instrument across the stress suite}
+\subsection*{The Conditioning Instrument Across The Stress Suite}
 
 The refutation condition at the floor-binding gate is that the floor exceeds the estimation
 term on nearly every primitive in \emph{every} scene, which would make Proposition~\ref{prop:reduction} apply universally and collapse
@@ -597,7 +597,7 @@ table of \S\ref{sec:anisotropy} rests on measurement --- before a line of method
 code exists. This is the cheapest
 falsification the project had available, and it did not fire.
 
-\paragraph{The mixed-focal prediction.} Section~\ref{sec:defects} argues that
+\paragraph{The Mixed-Focal Prediction.} Section~\ref{sec:defects} argues that
 mixing cameras is the third defect of the scalar filter, and \S\ref{sec:stress}
 expected the mixed-focal protocol to expose it. The measurement shows otherwise. The anisotropy moves
 from $\instFullAniso\times$ to $\instMixedAniso\times$, which is nothing, and the
@@ -609,7 +609,7 @@ $+0.017$\,dB. The honest reading is that the mixed-camera defect is a statement 
 protocol needs a wider spread or the defect is real but small; this measurement
 does not distinguish those, and it is not reported as though it did.
 
-\section{The standard benchmark}
+\section{The Standard Benchmark}
 \label{sec:table2m}
 
 \input{generated/table-method}
@@ -636,7 +636,7 @@ would indicate a bug, and the exact-reduction unit test is run
 inside the same session that produces these numbers, aborting the run if it
 fails.}
 
-\subsection*{What parity costs}
+\subsection*{What Parity Costs}
 \label{sec:methodcost}
 
 Parity is only half a result. A method that matches its baseline exactly and
@@ -683,13 +683,13 @@ $15\,360$\,MB card. At the $2.8\times$ measured here, the anisotropic filter on 
 not fit, and no ordering of the queue changes that. The paired parity figure is
 therefore over $\methodParityScenes$ scenes and says so.}
 
-\paragraph{Three bugs on the way here.} Requiring parity \emph{exactly} turned the reduction theorem into a test, and the test
+\paragraph{Three Bugs On The Way Here.} Requiring parity \emph{exactly} turned the reduction theorem into a test, and the test
 failed three times before it passed --- a clamp that was doing real work, a
 determinant computed in a way that lost precision at realistic scales, and an
 isotropic branch that re-derived a quantity it should have taken. Each produced
 plausible numbers and the wrong shape. The diagnosis of each, and the unit test
 that now covers the range where they hid, is Appendix~\ref{app:defects}.
-\section{The stress suite}
+\section{The Stress Suite}
 \label{sec:table3}
 
 Where the claim lives. Training cameras are restricted to each protocol's subset
@@ -708,7 +708,7 @@ On such a row $\Delta$ is a measurement of CUDA atomics and nothing else, and a 
 diagnostic column decides whether the PSNR column is an experiment at all, which
 is why it is printed by the filter during training and carried here beside the result instead of reconstructed afterwards.}
 
-\subsection*{What the table says}
+\subsection*{What The Table Says}
 
 Read down the \emph{above floor} column and the $\Delta$ column together and the
 result is a single sentence: \textbf{the method does nothing on five protocols
@@ -771,7 +771,7 @@ crossover is between the count-based cone at $54^\circ$ and the pencil at
 $29^\circ$, and the suite contains both only because the two protocol
 definitions of \S\ref{sec:branchdefect} disagreed and both were kept.}
 
-\subsection*{The limits of this result}
+\subsection*{The Limits Of This Result}
 
 \begin{enumerate}[leftmargin=1.4em,itemsep=3pt]
   \item \textbf{The regime is narrow, and the absolute numbers say so.} A
@@ -804,7 +804,7 @@ definitions of \S\ref{sec:branchdefect} disagreed and both were kept.}
   \label{fig:stress}
 \end{figure}
 
-\section{The angular mask}
+\section{The Angular Mask}
 \label{sec:btwo}
 \label{sec:table4}
 
@@ -838,7 +838,7 @@ primitive seen from a narrow cone cannot support degree 3, and is not given it.
 The retained fraction falls monotonically with the conditioning, from $100\,\%$
 on the full orbit to $16.6\,\%$ in the cone.
 
-\subsection*{An amendment to Equation~\eqref{eq:lmax}}
+\subsection*{An Amendment To Equation~\eqref{eq:lmax}}
 \label{sec:b2amend}
 
 As \S\ref{ch:method2} writes it, the criterion thresholds
@@ -873,7 +873,7 @@ the criterion should at a single threshold, which is why it is the default in th
 implementation and why Equation~\eqref{eq:lmax} should be restated in that form.
 This is a change to the method that only measurement could have produced, and it is recorded as such instead of folded silently into the derivation.
 
-\subsection*{The full-orbit comparison}
+\subsection*{The Full-Orbit Comparison}
 
 \input{generated/table-b2}
 
@@ -893,7 +893,7 @@ three equal rows as evidence that the angular mask matches magnitude pruning wou
 constrained to be satisfied. So the comparison was run again on a capture where
 the criterion does mask.}
 
-\subsection*{The comparison on a capture where the angular mask prunes}
+\subsection*{The Comparison On A Capture Where The Angular Mask Prunes}
 \label{sec:b2loses}
 
 Restricting the cameras the \emph{criterion} reads to the low-parallax cone, and
@@ -914,14 +914,14 @@ the criterion fails, on the fair comparison
 as well as the unfair one. The row at $0\,\%$ is both methods discarding
 everything and agreeing by definition; it is not evidence either way.}
 
-\paragraph{Why, and what survives.} Identifiability and importance are different
+\paragraph{Why, And What Survives.} Identifiability and importance are different
 quantities, and the metric rewards the second. A coefficient can be badly
 conditioned by the capture and still carry most of the fitted energy for that
 primitive; zeroing it costs more PSNR than zeroing a well-determined coefficient
 that happens to be tiny. Magnitude pruning optimises directly for what PSNR measures; the angular mask
 optimises for something else and is then scored on PSNR.
 
-\paragraph{The confound in the first comparison.} A second asymmetry sits in the
+\paragraph{The Confound In The First Comparison.} A second asymmetry sits in the
 free control, and it is a large one: the angular mask masks whole
 \emph{degrees}, removing coefficients in blocks of $2\ell+1$ nested from the top
 down, while free magnitude pruning ranks individual coefficients and keeps the
@@ -955,12 +955,12 @@ supported is the step from there to rendered quality at matched size. On the
 evidence here, identifiability is a good description of what the capture
 determines and a poor rule for deciding what to keep.
 
-\paragraph{Model size on disk.} Model size holds still, and has to: masking coefficients to zero leaves a fixed-width PLY the same size on
+\paragraph{Model Size On Disk.} Model size holds still, and has to: masking coefficients to zero leaves a fixed-width PLY the same size on
 disk. Realising the saving needs variable-length SH storage, which
 Chapter~\ref{ch:plan} schedules for Spring. The $74.8$\,MB in all three rows is
 the same file written three times.
 
-\section{What is established}
+\section{What Is Established}
 
 The reproduction rungs establish a control. Both baselines now exist as this project's own
 measurements, on known hardware, from pinned commits, with the arm separation verified on the saved models. Every later comparison is against these numbers, which is
@@ -991,7 +991,7 @@ model for three times the memory. Chapter~\ref{ch:discussion} takes that up;
 this chapter's job is the measurement, and the measurement is that the mechanism
 is the one the derivation names.
 
-\section{Compute expenditure}
+\section{Compute Expenditure}
 \label{sec:budget}
 
 Every number in this chapter was produced on free cloud GPUs, within a weekly

@@ -508,7 +508,7 @@ def build(prs, D):
 
     # 11 --------------------------------------------------------------- the angular mask
     s = slide(prs)
-    header(s, "result 5 \u00b7 method II",
+    header(s, "result 5 \u00b7 the angular mask",
            "The same argument in the angular domain")
     picture(s, "fig10-b2-retention", M, Inches(1.95), Inches(7.0))
     text(s, Inches(8.1), Inches(2.05), W - Inches(8.1) - M, Inches(4.4),
@@ -595,7 +595,7 @@ def build(prs, D):
         "exactly where the theory requires \u2014 verified to 1.4\u00d710\u207b\u00b2\u00b9 "
         "in the unit test.",
         "The regime structure the method depends on is measured, not assumed, "
-        "across five capture protocols and eight scenes.",
+        "across six capture protocols and eight scenes.",
         "Every table and figure in the thesis and in this deck regenerates from "
         "one CSV by one command.",
     ]

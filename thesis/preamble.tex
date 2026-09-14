@@ -13,6 +13,15 @@
 \usepackage{graphicx}
 \usepackage{booktabs}
 \usepackage{array}
+\usepackage{tabularx}
+% Proportional text columns. tabularx solves for the widths so that they sum
+% to the given total, so a table declared this way cannot overflow the
+% margin whatever lands in a cell. The argument is the column's share; the
+% shares in one table must add up to the number of such columns.
+\newcolumntype{L}[1]{>{\hsize=#1\hsize\raggedright\arraybackslash}X}
+\newcolumntype{C}[1]{>{\hsize=#1\hsize\centering\arraybackslash}X}
+\newcolumntype{R}[1]{>{\hsize=#1\hsize\raggedleft\arraybackslash}X}
+
 \usepackage{multirow}
 \usepackage{caption}
 \usepackage{enumitem}
@@ -32,6 +41,11 @@
 \captionsetup{font=small, labelfont={bf,color=ink}, textfont={color=ink2},
               width=0.94\linewidth, skip=6pt}
 \captionsetup[table]{position=top, skip=4pt}
+
+% Last-resort stretch. A paragraph carrying an unbreakable file path or
+% command-line flag comes out slightly loose instead of past the margin;
+% TeX reaches for this only after the ordinary passes have failed.
+\emergencystretch=2em
 
 \setlength{\parskip}{0.45em}
 \setlength{\parindent}{0pt}

@@ -1,4 +1,4 @@
-\chapter{Splatting and existing band-limits}
+\chapter{Splatting And Existing Band-Limits}
 \label{ch:background}
 
 \keybox{the idea}{%
@@ -41,7 +41,7 @@ and what it is made of. The rest of the thesis argues that the floor should be a
   \label{fig:aliasing}
 \end{figure}
 
-\section{The emission--absorption model}
+\section{The Emission--Absorption Model}
 Both baselines assume the same emission--absorption model. Along a ray
 $r(t)=o+td$ with density $\sigma$ and colour $c$, the rendered radiance is
 \begin{equation}
@@ -52,14 +52,14 @@ Discretised, this is the $\alpha$-blending sum both methods use. 3DGS states the
 equivalence between its $\alpha$-blending and NeRF's ray marching directly; the two differ in how the field is parameterised and evaluated; what is being
 rendered is the same in both. This is what allows a single argument to span both.
 
-\section{NeRF's frequency limit}
+\section{NeRF's Frequency Limit}
 NeRF stores the field in an MLP applied to a positional encoding $\gamma(x)$ with
 $L$ frequency bands. The MLP's spectral bias means the encoding band sets the
 finest structure representable. The authors set $L$ by hand from the input
 images. The band-limit is therefore present, explicit, global, and manually
 chosen --- one scalar for the entire scene.
 
-\section{3D Gaussian Splatting and EWA projection}
+\section{3D Gaussian Splatting And EWA Projection}
 
 \begin{figure}[htbp]
   \centering
@@ -87,11 +87,11 @@ This pair $(J_n, W_n)$ is the object Chapter~\ref{ch:method1} reuses. No
 regularisation is applied to $\Sigma_k$; nothing bounds how small a primitive
 may become.
 
-\section{Mip-Splatting's scalar floor}
+\section{Mip-Splatting's Scalar Floor}
 Mip-Splatting adds two filters, and it matters for Chapter~\ref{ch:results} that
 they are separate objects.
 
-\paragraph{The 2D Mip filter} is a render-side reconstruction prefilter matched
+\paragraph{The 2D Mip Filter} is a render-side reconstruction prefilter matched
 to the display sampling rate. It dilates the projected covariance by $kI$ and
 compensates the opacity by $\rho = \sqrt{\lvert\Sigma'\rvert / \lvert\Sigma' +
 kI\rvert}$, so that widening the splat does not brighten it. Vanilla 3DGS performs the same fixed dilation, with $k = 0.3$, and applies
@@ -100,7 +100,7 @@ an arm that keeps $\rho$ is anti-aliasing better than 3DGS in screen space
 whatever its 3D filter does, and \S\ref{sec:g2} reports the price this project
 paid before the difference was noticed.
 
-\paragraph{The 3D smoothing filter} is the acquisition-side limit at issue here:
+\paragraph{The 3D Smoothing Filter} is the acquisition-side limit at issue here:
 a scalar variance
 \begin{equation}
   f_k^2 \;=\; 0.2\,\Big(\frac{d_{\min,k}}{f_{\max}}\Big)^{\!2},

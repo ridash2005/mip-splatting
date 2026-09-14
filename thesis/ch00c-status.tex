@@ -1,5 +1,5 @@
-\chapter*{Current status}
-\addcontentsline{toc}{chapter}{Current status}
+\chapter*{Current Status}
+\addcontentsline{toc}{chapter}{Current Status}
 
 \paragraph{Reproduction.} Both baselines are reproduced end to end on free cloud
 compute. Mip-Splatting lands within $\stmtArmAMaxDelta$\,dB of its published
@@ -10,19 +10,19 @@ is the quantity the two-arm construction exists to produce. The 3DGS column
 claims nothing: one scene will not train on that arm, leaving a seven-scene mean
 standing against an eight-scene published figure.
 
-\paragraph{Falsification gates.} Two were run before any method code existed,
+\paragraph{Falsification Gates.} Two were run before any method code existed,
 since either could have ended the project: does the resolution floor already
 bind everywhere, and is real capture geometry anisotropic enough to matter? Both
 passed on measurement.
 
-\paragraph{The anisotropic filter.} Implemented, and it reduces to its baseline
+\paragraph{The Anisotropic Filter.} Implemented, and it reduces to its baseline
 where the theory requires: to $1.4\times10^{-21}$ in the unit test, and to
 $\methodParityMax$\,dB over $\methodParityScenes$ scenes in paired training
 runs, below the run-to-run spread. It costs $2.8\times$ the peak memory and
 $1.32\times$ the training time of the baseline it equals on a well-conditioned
 capture, so on such a capture it should not be used.
 
-\paragraph{The stress suite.} On the $\stressFlatCount$ protocols where the
+\paragraph{The Stress Suite.} On the $\stressFlatCount$ protocols where the
 resolution floor dominates, the estimation term exceeds it on zero primitives,
 the filter is isotropic to two decimals, and the difference from Mip-Splatting
 runs between $\stressFlatMin$ and $\stressFlatMax$\,dB. On the sixth, a
@@ -35,14 +35,14 @@ reconstructs at $14$\,dB against the full orbit's $34$, so what is established i
 the mechanism and not the method's usefulness at that operating point; and eight
 consistent pairings are eight cells of one run on two scenes.
 
-\paragraph{The angular mask.} Refuted. Against a control carrying its own
+\paragraph{The Angular Mask.} Refuted. Against a control carrying its own
 nested-degree structure and its own budget, so that only the criterion differs,
 magnitude pruning wins by up to $\btwoBlockedGapMax$\,dB.
 Chapter~\ref{ch:method2} set the standard that a criterion unable to beat
 magnitude pruning at matched size is not worth the machinery, and by that
 standard it fails.
 
-\paragraph{Corrections made during the work.} Four, each reported where it
+\paragraph{Corrections Made During The Work.} Four, each reported where it
 happened. The arm labelled 3DGS had kept Mip-Splatting's screen-space opacity
 compensation, so it was anti-aliasing better than 3DGS at the scales the gate
 was scored on; rebuilt and re-measured, the gate passes on all three criteria.

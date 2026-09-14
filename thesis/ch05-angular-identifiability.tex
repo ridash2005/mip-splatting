@@ -1,4 +1,4 @@
-\chapter{Angular identifiability of spherical harmonics}
+\chapter{Angular Identifiability Of Spherical Harmonics}
 \label{ch:method2}
 
 \begin{figure}[htbp]
@@ -48,7 +48,7 @@ The angular mask is independent of the anisotropic filter. It survives even if t
 share neither a mechanism nor a failure mode. The angular mask also opens a memory result the anisotropic filter has no route
 to, since masked coefficients can go unstored.}
 
-\section{Normalising the threshold}
+\section{Normalising The Threshold}
 \label{sec:b2scale}
 
 Equation~\eqref{eq:lmax} as written thresholds $\lambda_{\min}(A_k(\ell))$
@@ -56,7 +56,7 @@ against an absolute $\tau$, and that does not survive contact with a real
 capture. Two separate scale dependencies are at fault, and they need separate
 fixes.
 
-\paragraph{View count.} $A_k$ is a \emph{sum} over views, so a primitive seen by
+\paragraph{View Count.} $A_k$ is a \emph{sum} over views, so a primitive seen by
 $100$ cameras has eigenvalues an order of magnitude larger than one seen by $10$,
 before any question of conditioning arises. The normalised form
 \begin{equation}
@@ -69,7 +69,7 @@ with different view counts. Without this, $\tau$ silently encodes a preference
 for well-observed primitives that has nothing to do with whether their angular
 sampling is well spread.
 
-\paragraph{Angular spread.} Normalising is necessary, and on its own it is insufficient. Even on
+\paragraph{Angular Spread.} Normalising is necessary, and on its own it is insufficient. Even on
 $\bar A_k$, $\lambda_{\min}$ still scales with how widely the directions are
 spread, so one $\tau$ cannot serve a $100$-camera orbit and a $10$-camera cone.
 Section~\ref{sec:b2amend} measures this: at $\tau = 0.01$ the absolute form keeps
@@ -87,7 +87,7 @@ a result: it is a change to the method that only measurement could have
 produced, and \S\ref{sec:b2amend} reports the measurement that forced it, with the
 derivation amended in the open.
 
-\paragraph{Status: implemented, measured, and refuted.} The angular mask is evaluated on all
+\paragraph{Status: Implemented, Measured, And Refuted.} The angular mask is evaluated on all
 eight Blender scenes and across the six capture protocols of
 \S\ref{sec:stress} without a GPU, since Equation~\eqref{eq:gram} depends only on
 primitive positions and training view directions; Table~\ref{tab:b2} adds the

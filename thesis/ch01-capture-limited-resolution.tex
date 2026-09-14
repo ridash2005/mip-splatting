@@ -1,4 +1,4 @@
-\chapter{Capture-limited resolution}
+\chapter{Capture-Limited Resolution}
 \label{ch:intro}
 
 Suppose you are handed eighty photographs of an object and asked to produce a
@@ -33,7 +33,7 @@ single scalar per primitive, added in quadrature to all three axes of the
 covariance. This thesis asks what that scalar ought to have been, and answers that the right
 object is a matrix.
 
-\section{The claim}
+\section{The Claim}
 
 \keybox{thesis}{%
 ``The maximum frequency present in the sampled input images'' varies from place
@@ -43,7 +43,7 @@ local, directional generalisation. Floored at the per-view Nyquist limit, it
 reduces to Mip-Splatting exactly where the capture is well conditioned, and
 departs from it precisely where the capture is ill conditioned.}
 
-\section{The signal-processing problem}
+\section{The Signal-Processing Problem}
 
 Stripped of its graphics vocabulary, the problem is reconstruction from
 non-uniform samples without a matched prefilter --- a classical
@@ -53,7 +53,7 @@ signal-processing failure mode. The objects involved are familiar ones.
   \centering
   \caption{The same objects, in two vocabularies.}
   \small
-  \begin{tabular}{p{0.42\linewidth}p{0.5\linewidth}}
+  \begin{tabularx}{\linewidth}{L{0.91}L{1.09}}
     \toprule
     graphics term & signal-processing object \\
     \midrule
@@ -64,7 +64,7 @@ signal-processing failure mode. The objects involved are familiar ones.
     Floaters and depth artefacts & Fitting components along directions the data does not constrain \\
     Spherical-harmonic view dependence & Basis expansion whose Gram matrix may be rank-deficient \\
     \bottomrule
-  \end{tabular}
+  \end{tabularx}
 \end{table}
 
 The contribution is to compute the acquisition-side prefilter from the conditioning of the capture instead of choosing it by hand, and to keep it anisotropic

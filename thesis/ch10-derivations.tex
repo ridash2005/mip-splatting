@@ -3,7 +3,7 @@
 \begin{table}[htbp]
   \centering
   \small
-  \begin{tabular}{llp{0.32\linewidth}}
+  \begin{tabularx}{\linewidth}{L{0.85}L{1.60}L{0.55}}
     \toprule
     symbol & meaning & from \\
     \midrule
@@ -20,13 +20,13 @@
     $w_{nk} = T_{nk}\alpha_k \in [0,1]$ & view $n$'s blending contribution to primitive $k$; a heuristic occlusion weight & this work \\
     $A_k, \ell_{\max}(k), \tau$ & angular Gram matrix, per-primitive SH degree, conditioning threshold & this work \\
     \bottomrule
-  \end{tabular}
+  \end{tabularx}
 \end{table}
 
 \chapter{Derivations}
 \label{app:derivations}
 
-\section{Rank of a single view}
+\section{Rank Of A Single View}
 \label{app:rank}
 For a pinhole camera of focal length $f$, a primitive at camera-frame
 coordinates $(0,0,z)$ projects with Jacobian
@@ -39,7 +39,7 @@ the camera frame. The third eigenvalue is exactly zero: a single view carries no
 depth information. The lateral scale $s\,\sigma_{\mathrm{pix}}z/f$ of
 \S\ref{sec:proposition1} follows immediately from the first two.
 
-\section{Two symmetric views --- the exact spectrum}
+\section{Two Symmetric Views --- The Exact Spectrum}
 \label{app:twoview}
 Place two cameras at distance $z$, symmetric about the primitive, subtending
 parallax angle $\theta$, with unit ray directions $d_1, d_2$. Each view
@@ -61,7 +61,7 @@ $\Lambda$ is diagonal with
   \underbrace{2\sin^2(\theta/2)}_{\text{along the bisector (depth)}}\,\big\}.
   \label{eq:twoviewspectrum}
 \end{equation}
-\paragraph{The filter is triaxial.} All three values differ
+\paragraph{The Filter Is Triaxial.} All three values differ
 at a generic $\theta$. The in-plane lateral direction carries
 $2\cos^2(\theta/2)$, strictly less than the $2$ available perpendicular to the
 plane, so a two-view capture degrades \emph{two} directions: depth, and one direction
@@ -71,7 +71,7 @@ would be wrong along one. This is why $\Sigma_{\mathrm{filt}}$ is built from the
 of $\Lambda_k$: a depth axis and a lateral scalar would leave one of the two
 degraded directions unfiltered.
 
-\paragraph{The ordering caveat.} $\lambda_3/\lambda_1 = \sin^2(\theta/2)$ is the
+\paragraph{The Ordering Caveat.} $\lambda_3/\lambda_1 = \sin^2(\theta/2)$ is the
 ratio of \emph{smallest} to \emph{largest} only while
 $\sin^2(\theta/2) \le \cos^2(\theta/2)$, that is for $\theta \le 90^\circ$. Past
 that the depth direction is better constrained than the in-plane lateral one and
@@ -81,7 +81,7 @@ Equation~\eqref{eq:anisotropy} is stated with the restriction for this reason;
 Table~\ref{tab:twoviewspectrum} shows the two forms diverging by a factor of
 three at $\theta = 120^\circ$.
 
-\section{A distribution of views}
+\section{A Distribution Of Views}
 \label{app:cap}
 Equation~\eqref{eq:twoviewspectrum} is exact for two cameras and is applied in
 this thesis only to two cameras. For a protocol --- ten or a hundred cameras over
@@ -102,7 +102,7 @@ numerically at $0.500013$ for a $1^\circ$ span. The closed form agrees with
 $2\times10^5$ sampled directions per span to $3\times10^{-3}$ relative
 (Table~\ref{tab:cap}).
 
-\section{The opacity compensation carries over unchanged}
+\section{The Opacity Compensation Carries Over Unchanged}
 \label{app:mass}
 \begin{lemma}[Mass preservation]
 \label{lem:mass}
@@ -126,7 +126,7 @@ and to $6\times10^{-17}$ against Mip-Splatting's own scalar expression in the
 isotropic case, by \texttt{tools/test\_geometry\_claims.py}.
 
 
-\section{Proposition~\ref{prop:constant}, in full}
+\section{Proposition~\ref{prop:constant}, In Full}
 \label{app:prop1}
 From \S\ref{app:rank}, the single-view lateral standard deviation at confidence
 $s$ is $s\,\sigma_{\mathrm{pix}}z/f$. Mip-Splatting sets
@@ -142,14 +142,14 @@ The identification holds for every $d_{\min}$ and $f_{\max}$, so the two formula
 formula; the proposed method uses each view's own $(d,f)$ pair and so is also
 correctly coupled.
 
-\chapter{Per-scene results}
+\chapter{Per-Scene Results}
 \label{app:perscene}
 Every cell below is one logged run, identified by \texttt{run\_id} in
 \texttt{results/runs.csv}.
 
 \input{generated/table-perscene-stmt}
 
-\chapter{Reading list and provenance}
+\chapter{Reading List And Provenance}
 \label{app:reading}
 Entries marked \textsc{cited} have author, venue and year taken from the
 reference list of the NeRF or 3DGS paper, or from the Mip-Splatting repository,
@@ -159,7 +159,7 @@ point at the work; bibliographic details are to be confirmed on retrieval.
 \begin{table}[htbp]
   \centering
   \small
-  \begin{tabular}{cp{0.36\linewidth}p{0.44\linewidth}}
+  \begin{tabularx}{\linewidth}{cL{0.90}L{1.10}}
     \toprule
     pri. & work & why it is on the list \\
     \midrule
@@ -177,10 +177,10 @@ point at the work; bibliographic details are to be confirmed on retrieval.
     3 & \textsc{cited} Gaussian Opacity Fields (arXiv 2404.10772). & Source of the improved densification metric later integrated into the Mip-Splatting repository --- a reproduction hazard if the commit is not pinned. \\
     3 & \textsc{unchecked} 3DGS compression survey (CGF 2025) and the methods it covers. & Where the angular mask memory result must be positioned. \\
     \bottomrule
-  \end{tabular}
+  \end{tabularx}
 \end{table}
 
-\paragraph{Scope of verification.} Published figures come from the 3DGS paper as
+\paragraph{Scope Of Verification.} Published figures come from the 3DGS paper as
 recorded in the BTP Handbook \S02 and from the Mip-Splatting paper
 (arXiv:2311.16493). Implementation facts --- the form of
 \texttt{compute\_3D\_filter}, the loader dispatch, the metrics backbone, the

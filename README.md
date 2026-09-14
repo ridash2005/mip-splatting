@@ -56,10 +56,25 @@ results/runs.csv append-only, one row per (arm, scene, test-scale, seed).
                  table generator refuses any cell drawing on two builds.
 results/         alongside runs.csv: session summaries, renders, contact sheets.
 slides/          the built panel deck. Build output, not committed.
+submission/      what is handed to the panel: the thesis PDF and the deck, in
+                 both formats. `make deliver` writes them here. Committed, so
+                 the exact files submitted are recoverable at the tag that
+                 submitted them.
 docs/            planning documents and the operating prompts, kept as the
                  record of what was asked for and when.
-Makefile         `make all` rebuilds the thesis and the deck from the CSV.
+docs/prior-work/ what this project produced before the thesis: the course
+                 project it grew out of, the seminar, and the reproduction
+                 report and audit that Chapter 7 and Appendix G supersede.
+Makefile         `make all` rebuilds the thesis and the deck from the CSV;
+                 `make deliver` copies them into submission/;
+                 `make check-arms` verifies the arm refs still resolve.
 ```
+
+One folder sits outside this repository, beside it as `../reference/`: the
+published papers the work is built on, and the department handbook. They are
+other people's documents, they come to 45 MB, and a public fork would carry
+that weight in every clone forever, so they are kept out of git. Appendix C of
+the thesis records the provenance of every reference actually relied on.
 
 Refs. The two baselines are published methods, so they are pinned to tags and
 never move. The method is the work, so it lives on `main`.

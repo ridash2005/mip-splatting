@@ -81,14 +81,17 @@ slides:
 # Everything a submission needs, from one CSV.
 all: thesis slides
 
-# The two files the panel is handed, under the names it expects. They live
-# one level up because that is where the rest of the submission sits.
-DELIVER ?= ..
+# The files the panel is handed, under the names it expects. They are
+# committed, so what was submitted stays recoverable at the tag that
+# submitted it. The PDF export of the deck needs PowerPoint and is the one
+# step this cannot do.
+DELIVER ?= submission
 
 deliver: all
 	cp thesis/main.pdf $(DELIVER)/BTP-Thesis.pdf
 	cp slides/BTP-Panel.pptx $(DELIVER)/BTP-Panel-Presentation.pptx
 	@echo "--> $(DELIVER)/BTP-Thesis.pdf and $(DELIVER)/BTP-Panel-Presentation.pptx"
+	@echo "    re-export $(DELIVER)/BTP-Panel-Presentation.pdf from the .pptx"
 
 clean-slides:
 	rm -rf slides

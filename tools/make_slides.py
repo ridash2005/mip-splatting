@@ -558,7 +558,7 @@ def build(prs, D):
     s = slide(prs)
     header(s, "what ran against expectation", "Reported, not restated")
     items = [
-        ("Gate G2 failed, and was diagnosed rather than guessed",
+        ("The scale-collapse gate failed, and was diagnosed",
          "The 3DGS arm did not collapse as far as the published numbers do. The "
          "cause was found in the rasteriser, not rationalised: the arm kept the "
          "2D Mip filter's opacity compensation, which vanilla 3DGS does not "
@@ -571,7 +571,7 @@ def build(prs, D):
         ("Three bugs the parity requirement caught",
          "A clamp at 1e-12 silently switched off the opacity compensation for "
          "most of the model \u2014 no error, plausible numbers, the wrong shape. "
-         "What exposed it was requiring parity to hold exactly rather than "
+         "What exposed it was requiring parity to hold "
          "approximately."),
         ("The two-view prediction was the wrong model for a protocol",
          "Every measured anisotropy sat above it, by a consistent factor. That "

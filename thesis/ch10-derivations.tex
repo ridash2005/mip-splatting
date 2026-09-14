@@ -66,11 +66,12 @@ Two lines, and stronger than the descriptive argument it replaces.
 \paragraph{The filter is triaxial, not merely elongated.} All three values differ
 at a generic $\theta$. The in-plane lateral direction carries
 $2\cos^2(\theta/2)$, strictly less than the $2$ available perpendicular to the
-plane, so a two-view capture degrades \emph{two} directions and not only depth.
+plane, so a two-view capture degrades \emph{two} directions: depth, and one direction
+in the plane of the two cameras.
 An isotropic filter is wrong along both; a filter elongated only along depth
-would be wrong along one. This is why $\Sigma_{\mathrm{filt}}$ is built from the
-full eigendecomposition of $\Lambda_k$ rather than from a depth axis and a
-lateral scalar.
+would be wrong along one. This is why $\Sigma_{\mathrm{filt}}$ is built from the full eigendecomposition
+of $\Lambda_k$: a depth axis and a lateral scalar would leave one of the two
+degraded directions unfiltered.
 
 \paragraph{The ordering caveat.} $\lambda_3/\lambda_1 = \sin^2(\theta/2)$ is the
 ratio of \emph{smallest} to \emph{largest} only while
@@ -120,8 +121,8 @@ exactly. Nothing in the argument uses the form of $\Sigma_{\mathrm{filt}}$
 beyond positive-definiteness.
 \end{proof}
 So Mip-Splatting's compensation needs no modification for the anisotropic case:
-it is not a scalar identity that happens to hold, it is the general one they
-instantiated at $\Sigma_{\mathrm{filt}} = f_k^2 I$. Verified to
+their identity is the general one, instantiated at $\Sigma_{\mathrm{filt}} =
+f_k^2 I$, and it holds for any positive-definite $\Sigma_{\mathrm{filt}}$. Verified to
 $4\times10^{-16}$ relative over 500 random anisotropic $\Sigma_{\mathrm{filt}}$,
 and to $6\times10^{-17}$ against Mip-Splatting's own scalar expression in the
 isotropic case, by \texttt{tools/test\_geometry\_claims.py}.
@@ -139,10 +140,7 @@ and equating,
   \;\Longrightarrow\;
   s\,\sigma_{\mathrm{pix}} = \sqrt{0.2} = 0.4472\ \text{px}.
 \end{equation}
-The identification holds for every $d_{\min}$ and $f_{\max}$, so it is an
-identity between the two formulations rather than a coincidence at one operating
-point. Note that because Mip-Splatting takes $d_{\min}$ and $f_{\max}$ from
-different cameras, the substitution above is the most favourable reading of their
+The identification holds for every $d_{\min}$ and $f_{\max}$, so the two formulations agree identically, at every operating point. Because Mip-Splatting takes $d_{\min}$ and $f_{\max}$ from different cameras, the substitution above is the most favourable reading of their
 formula; the proposed method uses each view's own $(d,f)$ pair and so is also
 correctly coupled.
 

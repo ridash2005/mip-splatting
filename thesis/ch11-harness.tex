@@ -7,7 +7,7 @@ runs where, what is checked before anything is measured, how a measurement gets
 into the record and how it gets out again, and what the compute allowance
 allowed. A reader who takes Chapter~\ref{ch:results} at face value can skip it.
 A reader who wants to know whether the numbers can be trusted --- or who wants
-to re-run them --- will find the answer here rather than there.}
+to re-run them --- will find the answer here.}
 
 \section{Where the work runs}
 
@@ -27,14 +27,13 @@ their output is \texttt{tools/kaggle\_push.py}.
 \section{Pre-flight assertions}
 \label{app:preflight}
 
-A reproduction that has not checked its own instrument is a reproduction of
-nothing in particular. Twelve assertions run before the first training step and
-abort the session if any fails. They are not defensive programming; each one
-exists because the thing it checks can fail silently, and several of them have.
+An instrument has to be checked before it is used. Twelve assertions run before
+the first training step and abort the session if any fails. Each one exists
+because the thing it checks can fail silently, and several of them have.
 
 \input{generated/table-preflight}
 
-Three are worth singling out.
+Three of them:
 
 \begin{itemize}[leftmargin=1.4em,itemsep=3pt]
   \item \textbf{The accelerator check.} Kaggle allocates whichever GPU is free.
@@ -42,8 +41,8 @@ Three are worth singling out.
         landing on one would fail forty minutes in with a message that looks like
         a code fault. It now aborts in thirty seconds with a marker the launcher
         recognises and relaunches on.
-  \item \textbf{The \S3 diff check.} The 3DGS arm must differ from the Mip-Splatting arm by exactly the
-        intended change and nothing else. The check enumerates the files that
+  \item \textbf{The arm-separation diff check.} The 3DGS arm must differ from the
+  Mip-Splatting arm by exactly the intended change and nothing else. The check enumerates the files that
         change and refuses anything outside the list. It has fired twice in
         anger --- once on a runtime state file that a careless \texttt{git add}
         had committed, and once when the switch of Appendix~\ref{app:impl}
@@ -68,15 +67,13 @@ That discipline exists because a deleted row is a measurement that cannot be
 re-examined, and this project has needed to re-examine several. It also has a
 failure mode, which Appendix~\ref{app:defects} describes: a row that is kept but
 not marked is a row that is silently \emph{used}. The marking is the only thing
-standing between an honest archive and a pooled average, and it is now checked
-rather than trusted --- the generator refuses to emit any table whose cells draw
-on more than one build.
+standing between an honest archive and a pooled average, and the marking is now checked --- the generator refuses to emit any table whose
+cells draw on more than one build.
 
 \paragraph{From the record to the document.} No measured number in this thesis is
 typed by hand. \texttt{tools/make\_tex.py} reads \texttt{results/runs.csv} and
-writes every table and every inline figure as a LaTeX macro; a quantity that has
-not been measured expands to a visible marker rather than to a plausible-looking
-number. The same loader feeds the figures and the slide deck, so the three cannot
+writes every table and every inline figure as a LaTeX macro; an unmeasured quantity expands to a visible marker that a reader cannot mistake
+for a result. The same loader feeds the figures and the slide deck, so the three cannot
 disagree --- and a test asserts that they do not, because for a while they did.
 
 \section{The apparatus}
@@ -100,7 +97,7 @@ disagree --- and a test asserts that they do not, because for a while they did.
   \end{tabular}
 \end{table}
 
-\paragraph{Two defects the self-test caught, and why they matter here.} The
+\paragraph{Two defects the self-test caught.} The
 figure generator's ``measured'' mode was drawing the \emph{published} curve under
 a measured filename, because \texttt{runs.csv} stores the method as
 \texttt{3dgs} while the figures key off \texttt{3DGS}: every lookup missed, the
@@ -116,8 +113,7 @@ answers is an assertion, not a property.
 
 \input{generated/table-budget}
 
-Three entries are worth a sentence each, because they are the project's real
-costs rather than its planned ones.
+Three entries need a sentence each, because they carry the project's real costs.
 
 \begin{itemize}[leftmargin=1.4em,itemsep=3pt]
   \item \texttt{r3\_real} is the largest single session and did not complete. It
@@ -125,7 +121,7 @@ costs rather than its planned ones.
         twelve-hour cap arrived. What it produced is kept and reported as a
         four-scene subset, clearly labelled; what it did not produce is not
         estimated.
-  \item The arm-B re-runs after the opacity-compensation fix --- \texttt{c2\_armb} and its continuations
+  \item The 3DGS-arm re-runs after the opacity-compensation fix --- \texttt{c2\_armb} and its continuations
         --- are pure re-measurement cost, incurred because the arm had been built
         wrong. They are the price of the defect in Appendix~\ref{app:defects},
         and they are itemised so that the price is visible.

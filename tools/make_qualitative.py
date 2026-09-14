@@ -215,7 +215,7 @@ def fig_pencil(out, scenes=("chair", "lego"), index=0):
         axes[r][0].set_ylabel(sc, fontsize=7.8, color=INK, labelpad=6)
         label(axes[r][0], "ground truth", MUTED)
         label(axes[r][1], f"Mip-Splatting   {vm:.2f} dB", S1, weight="bold")
-        label(axes[r][2], f"B1   {vb:.2f} dB   ({vb - vm:+.2f})", INK,
+        label(axes[r][2], f"anisotropic filter   {vb:.2f} dB   ({vb - vm:+.2f})", INK,
               weight="bold")
     fig.suptitle("Three cameras spanning 29° — where the estimation term binds",
                  fontsize=8.6, color=INK, y=0.995)

@@ -3,124 +3,50 @@ small translucent ellipsoids, fitted by gradient descent to a set of
 photographs. Nothing in that procedure sets a lower bound on how small a
 primitive may become. Mip-Splatting supplies one: a scalar variance floor,
 $f_k^2 = 0.2\,(d_{\min}/f_{\max})^2$, added in quadrature to all three axes of
-every primitive. The argument of this thesis is that the correct bound is
-neither scalar nor isotropic, and that both of those properties matter.
+every primitive. This thesis argues that the correct bound is neither scalar nor
+isotropic.
 
-The reasoning starts by treating a primitive's position not as something the
-optimiser chooses but as something the photographs measure. Each camera that
-sees the primitive contributes one noisy observation of where it is, and the
-precision of that observation is strongly direction-dependent: a camera pins a
-point down well across its line of sight and poorly along it. Accumulating over
-all the cameras that saw it gives a $3\times3$ matrix,
+The reasoning treats a primitive's position as something the photographs
+measure. Each camera that sees it contributes one noisy observation, and the
+precision of that observation is direction-dependent: a camera pins a point down
+well across its line of sight and poorly along it. Accumulating over all the
+cameras that saw the primitive gives a $3\times3$ matrix,
 \[
   \Lambda_k \;=\; \sum_n w_{nk}\,(J_nW_n)^{\!\top}\,\Sigma_{\mathrm{pix}}^{-1}\,(J_nW_n),
 \]
-which is the Fisher information of that measurement model at unit weights. Its
+the Fisher information of that measurement model at unit weights. Its
 eigenvectors are the directions the capture constrained well and badly, and its
-eigenvalues say by how much. Cram\'er--Rao motivates reading it as a precision
-bound, though the claim actually tested here is weaker: that structure finer
-than $1/\sqrt{\lambda_i}$ along eigendirection $i$ is not identifiable from
-these particular images.
+eigenvalues say by how much. The claim tested is that structure finer than
+$1/\sqrt{\lambda_i}$ along eigendirection $i$ is not identifiable from these
+images.
 
-Three results follow from that expression. The first is that Mip-Splatting's
-filter is not a different idea but a special case of it, obtained by keeping one
-view, discarding the depth direction and averaging what remains. Its constant
-$\sqrt{0.2}$, which the paper introduces without derivation, turns out to be
-exactly the product $s\,\sigma_{\mathrm{pix}}$: a confidence radius of $0.447$
-pixels. The second is that the anisotropy has a closed form in three regimes.
-Within a single view it is already present, falling off as $\cos^2\varphi$ away
-from the optical axis. Across two views separated by an angle $\theta$ the
-spectrum is triaxial, $\{2,\,2\cos^2(\theta/2),\,2\sin^2(\theta/2)\}$. And
-across a \emph{distribution} of views spread over some angular window, as a real capture protocol is, the correct expression is a spherical-cap form
-that the two-view result understates by a factor of $\sqrt{2}$. Measured against
-that form at each protocol's own width, the observed conditioning of the
-$\capAgreeN$ parallax protocols agrees to
+Three results follow. First, Mip-Splatting's filter is a special case of this
+expression, obtained by keeping one view, discarding the depth direction and
+averaging what remains; its constant $\sqrt{0.2}$, introduced without
+derivation, is exactly $s\,\sigma_{\mathrm{pix}}$, a confidence radius of $0.447$
+pixels. Second, the anisotropy has a closed form in three regimes: within a
+single view it falls off as $\cos^2\varphi$ away from the optical axis; across
+two views separated by $\theta$ the spectrum is triaxial,
+$\{2,\,2\cos^2(\theta/2),\,2\sin^2(\theta/2)\}$; and across a distribution of
+views over an angular window, which is what a capture protocol is, the correct
+expression is a spherical-cap form that the two-view result understates by
+$\sqrt{2}$. Measured at each protocol's own width, the observed conditioning of
+the $\capAgreeN$ parallax protocols agrees with the cap form to
 $\capAgreeMin$--$\capAgreeMax\,\%$, where the two-view expression falls short by
-as much as $\twoViewLowMax\,\%$. The third result is a guarantee, not a formula: if the anisotropic floor is itself floored at Mip-Splatting's own
-value, then wherever that value dominates the two methods coincide exactly. On a
-well-conditioned benchmark, parity is therefore structural, and an improvement there would indicate a bug.
+up to $\twoViewLowMax\,\%$. Third, flooring the anisotropic limit at
+Mip-Splatting's own value makes the two methods coincide exactly wherever that
+value dominates, so parity on a well-conditioned benchmark is structural and an
+improvement there would indicate a bug.
 
-A second, smaller proposal applies the same reasoning on the sphere of
-directions instead of in space, masking the spherical-harmonic coefficients a
-capture cannot determine. Those coefficients are $76\,\%$ of the model's
-parameters, so the potential saving is large. It does not survive measurement,
-and \S\ref{sec:btwo} reports why.
+A second proposal applies the same reasoning on the sphere of directions,
+masking the spherical-harmonic coefficients a capture cannot determine. Those
+are $76\,\%$ of the model's parameters. Chapter~\ref{ch:results} reports the
+controlled test of it.
 
-Concurrent work has narrowed what can be claimed for the main idea, and the narrowing is stated here plainly. AAA-Gaussians (2025) already
-makes the 3D filter a full $3\times3$, though derived from the view being rendered instead of from the capture. PUP 3D-GS (2025) already builds a
-per-primitive second-order spatial sensitivity, though it collapses that to a
-scalar and uses it to prune. What remains new is therefore neither the
-anisotropy nor the matrix, but where the anisotropy comes from. It comes from the conditioning of the
-training capture, fixed once per primitive, and it is kept as a whole spectrum
-instead of a summary of one.
-
-\medskip
-\keybox{status of this version}{%
-Both baselines have been reproduced end to end on free cloud compute.
-Mip-Splatting lands within $\stmtArmAMaxDelta$\,dB of its published figures at
-all four test scales, over the $\stmtArmAScenes$ scenes the published mean
-covers, which meets the numerical-reproduction standard this project set for
-itself in advance. So does the gap between the two arms, within
-$\stmtGapMaxDelta$\,dB, and that gap is the quantity the whole two-arm
-construction exists to produce. The 3DGS column claims nothing, because one
-scene will not train on the vanilla arm and the column is therefore a
-seven-scene mean standing against an eight-scene published figure.
-
-Two falsification gates were run before any method code existed, since either
-could have ended the project: does the resolution floor already bind everywhere,
-and is real capture geometry anisotropic enough to matter? Both passed on
-measurement.
-
-Several results ran against expectation, and they are reported where they happened. The scale-collapse gate failed, and the first
-diagnosis of that failure was itself wrong: the arm labelled 3DGS had kept
-Mip-Splatting's screen-space opacity compensation, so it was anti-aliasing better than 3DGS at the very scales the gate was scored
-on. Rebuilt and
-re-measured, the gate passes on all three criteria. Re-measuring then exposed a second problem, this time in the record itself, in which rows that
-a re-run had replaced were never retired and every cell of one column became an
-average of two different builds. A third was a denominator: both measured
-columns of Table~\ref{tab:stmt} were means over the seven scenes both arms have,
-compared against published figures that are means over eight, which inflated
-Mip-Splatting's apparent reproduction error fivefold. A fourth was an
-explanation. This document had attributed the residual offset to a change in the
-densification rule, and said so for months without testing it; measured against
-the commit that predates the change, the effect is $\gofMaxEffect$\,dB and is
-not consistently signed.
-
-Both proposed methods are implemented and measured. The anisotropic filter reduces to its baseline
-exactly where the theory requires, to $1.4\times10^{-21}$ in the unit test and
-to $\methodParityMax$\,dB over $\methodParityScenes$ scenes in full paired
-training runs, comfortably below the run-to-run spread. Measurement also amended
-the second method before refuting it: an absolute threshold on $\lambda_{\min}$
-turns out to have no value that responds gradually across capture regimes, while
-the scale-free condition number does.
-
-Whether any of this shows up in a rendered image is Table~\ref{tab:stress}, and
-it now has an answer with the shape the derivation demands. On the
-$\stressFlatCount$ protocols where the resolution floor still dominates, the
-estimation term exceeds it on zero primitives, the filter comes out isotropic to
-two decimal places, and the anisotropic filter differs from Mip-Splatting by between
-$\stressFlatMin$ and $\stressFlatMax$\,dB. On the sixth, a three-camera pencil
-spanning $29^\circ$, the estimation term exceeds the floor on $93\,\%$ of
-primitives, the filter becomes anisotropic at $1.47\times$, and the anisotropic filter leads by
-$\stressBindDelta$\,dB, on the mean and on every one of the eight paired cells.
-The step falls exactly where the estimation term overtakes the floor, as predicted and recorded
-beforehand.
-
-Two things that result is not. The pencil reconstructs at $14$\,dB against the
-full orbit's $34$, so what has been established is that the mechanism is the one
-claimed, not that the method is useful at that operating point. And eight
-consistent pairings are still eight cells of a single run on two scenes.
-
-\medskip
-Two results are negative, and they belong here.
-\textbf{The angular mask is refuted.} Compared against a control that has the angular mask's own
-nested-degree structure and the angular mask's own budget, so that only the criterion differs,
-magnitude pruning wins by up to $\btwoBlockedGapMax$\,dB. Chapter~\ref{ch:method2}
-had set the standard that a criterion unable to beat magnitude pruning at
-matched size is not worth the machinery, and by that standard it fails. An
-earlier and much larger-looking margin, measured against a control with more
-freedom than the angular mask has, turned out to be mostly a verdict on the shape of the mask, leaving the
-criterion itself barely implicated; that correction is reported too. \textbf{The anisotropic filter costs
-$2.8\times$ the peak memory and $1.32\times$ the training time} of the baseline
-it provably equals on a well-conditioned capture. On such a capture it should
-not be used, and this thesis does not recommend it there.}
+Concurrent work narrows what can be claimed for the main idea, and the narrowing
+is stated here. AAA-Gaussians (2025) already makes the 3D filter a full
+$3\times3$, though derived from the view being rendered. PUP 3D-GS (2025)
+already builds a per-primitive second-order spatial sensitivity, though it
+collapses that to a scalar and uses it to prune. What remains new is where the
+anisotropy comes from: the conditioning of the training capture, fixed once per
+primitive, with its whole spectrum kept.

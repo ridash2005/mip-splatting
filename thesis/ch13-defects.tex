@@ -1,12 +1,12 @@
 \chapter{Measurement defects}
 \label{app:defects}
 
-\keybox{what this appendix is for, and why it is not hidden}{%
+\keybox{what this appendix is for}{%
 Eight defects were found in this project's measurement, by checks built for the
 purpose, and each one produced numbers that looked entirely reasonable while
-being wrong. They are collected here rather than scattered through
-Chapter~\ref{ch:results} because a reader following the argument does not need
-the forensics, and a reader auditing the work needs all of it in one place.
+being wrong. They live in one chapter, away from Chapter~\ref{ch:results}, because a reader
+following the argument wants the argument, and a reader auditing the work wants
+all the forensics in one place.
 
 Each entry follows the same shape: what the number said, what was actually
 happening, how it was found, and what now prevents it. The last of those is the
@@ -42,7 +42,7 @@ at different denominators.}
   inflating it fivefold &
   Proposition~\ref{prop:constant} is a unit test, passing to $1.6\times10^{-16}$ \\
   \addlinespace
-  Table~\ref{tab:mtmt}'s arm-B column &
+  Table~\ref{tab:mtmt}'s 3DGS column &
   Every one of its $32$ cells was the mean of two different rasterisers &
   The generator refuses any table whose cells span more than one build \\
   \addlinespace
@@ -57,7 +57,7 @@ at different denominators.}
   $\gofMaxEffect$\,dB and not consistently signed &
   The pre-GOF commit is a probe in the record (Table~\ref{tab:pregof}) \\
   \addlinespace
-  the angular mask lost heavily to magnitude pruning &
+  The angular mask lost heavily to magnitude pruning &
   Against a \emph{free} control with more freedom than the angular mask has. At matched
   structure the margin is $\btwoBlockedGapMin$--$\btwoBlockedGapMax$\,dB &
   The control carries the angular mask's own nested-degree structure \\
@@ -69,13 +69,10 @@ at different denominators.}
 Five of the eight are given in full below. The other three --- the denominator,
 the densification explanation and the angular mask's unfair control --- cannot be separated
 from the results they correct, so they are told where those results are:
-\S
-ef{sec:table1}, \S
-ef{sec:densification} and \S
-ef{sec:btwo}
+\S\ref{sec:table1}, \S\ref{sec:densification} and \S\ref{sec:btwo}
 respectively.
 
-\paragraph{A pattern worth naming.} Six of the eight are the same error: two
+\paragraph{One pattern, six times.} Six of the eight are the same error: two
 quantities were compared that were not measured over the same thing. Two
 rasterisers averaged into one cell. A seven-scene mean against an eight-scene
 figure. A protocol name meaning two captures. A constant present on one side and
@@ -85,7 +82,7 @@ the result looked plausible --- which is why none of them was caught by reading
 the numbers, and all of them were caught by a check that asked what the numbers
 were means \emph{over}.
 
-\section{The fourth check: the 3DGS arm was not running 3DGS's rasteriser}
+\section{The fourth check: the rasteriser on the 3DGS arm}
 
 The single-codebase construction of \S\ref{sec:onecodebase} gives both arms
 Mip-Splatting's rasteriser, and sets the 3DGS arm apart by zeroing \texttt{filter\_3D}
@@ -102,7 +99,7 @@ fixed $0.3$ dilation and \textbf{no compensation at all}. Setting
 in place, so the 3DGS arm kept an anti-aliasing term that 3DGS does not have --- and
 the term it kept is precisely the one that protects a dilated primitive from
 losing energy as the test sampling rate falls. An arm that anti-aliases better
-than 3DGS degrades less than 3DGS, which is exactly what the scale-collapse gate measured.
+than 3DGS degrades less than 3DGS, which is what the scale-collapse gate measured.
 
 \paragraph{The opacity-compensation fix --- the test that separates the two explanations.} $\rho$ is
 computed in CUDA, so the switch is a rasteriser change: a
@@ -124,19 +121,19 @@ reduced scale collapses, and lands on the shape of the published 3DGS row:
 $\cOneHalf$ against $26.95$, $\cOneQuarter$ against $21.38$, $\cOneEighth$
 against $17.69$. The compensation was the whole of the defect.
 
-\keybox{the densification hypothesis is refuted, not merely superseded}{%
+\keybox{the densification hypothesis}{%
 Both columns of Table~\ref{tab:c1} ran GOF's densification. If densification were
 the cause of the shortfall, the right-hand column could not have collapsed --- and
 it collapses by $\cOneCollapse$\,dB at $\tfrac18$, landing within $0.3$\,dB of
 the published figure at every reduced scale. The earlier diagnosis is therefore
-wrong, and it is left in this chapter rather than deleted because how a wrong
-diagnosis survived matters: it was never given an experiment that could refute
+wrong, and it is left standing in this chapter because how a wrong diagnosis
+survived matters: it was never given an experiment that could refute
 it. It explained the anomaly as a property of the codebase, which is the most
 comfortable kind of explanation and the one that most deserves a test.
 
-Worth stating separately, because it is easy to read the wrong way: the
-comparison that settles this is the one \emph{between the two columns}, not
-between either column and the published row. Both columns are \texttt{lego} and
+One point is easy to read the wrong way. The comparison that settles this runs
+\emph{between the two columns}; either column set against the published row
+settles nothing. Both columns are \texttt{lego} and
 the published row is an eight-scene mean, so the agreement at reduced scales is
 corroboration and not a measurement. The measurement is that switching one CUDA
 term moved $\tfrac18$ by $\cOneCollapse$\,dB and full resolution by less than
@@ -173,17 +170,17 @@ localises instead to the forward rasteriser --- the fault surfaces on the first
 tensor derived from its output, \texttt{radii > 0} in
 \texttt{gaussian\_renderer}, with the backward pass never reached.
 
-Three things that rules out, and one it does not. It is not the backward
-kernel, which the second failure had suggested. It is not memory exhaustion: no
-allocation error is raised in any attempt, and \texttt{ship} completes on the Mip-Splatting arm
-on the same $15\,360$\,MiB card at a measured peak of $13\,755$\,MiB. And it is
-not a deterministic fault at a fixed point, which is what this section claimed
-before it was instrumented.
+That clears three explanations. The backward kernel, which the second failure
+had suggested, is clear: the fault surfaces before the backward pass is reached.
+Memory exhaustion is clear: every attempt raises an illegal address and none
+raises an allocation error, and \texttt{ship} completes on the Mip-Splatting arm
+on the same $15\,360$\,MiB card at a measured peak of $13\,755$\,MiB. And the
+onset moves between attempts, which clears the deterministic fault at a fixed
+point this section claimed before it was instrumented.
 
 The scene has now been attempted nine times on the vanilla arm --- four
 diagnostic runs and then five consecutive attempts in one session, since a fault
-whose onset moves is a fresh draw each time and retrying it is measurement
-rather than hope. \textbf{All nine failed}, every one with
+whose onset moves is a fresh draw each time, so retrying it is a measurement. \textbf{All nine failed}, every one with
 \texttt{cudaErrorIllegalAddress} and none with an allocation error, at
 iterations
 \[
@@ -193,26 +190,26 @@ iterations
 and one earlier still. What varies is \emph{when}, not \emph{whether}: the
 failure is certain and its timing is not. That settles the question retrying was
 asked to settle --- there is no lucky run to be had --- and it is why the scene
-is reported as failed rather than re-attempted further.
+is reported as failed and left there.
 
 What remains is an out-of-bounds access in the forward raster whose onset
 depends on the optimisation trajectory, on much the largest model in the suite:
 \texttt{ship} reaches $442\,235$ primitives on the Mip-Splatting arm, more than any other
 Blender scene, at $\sim\!90\,\%$ of the card.
 
-It is excluded from the single-scale arm-B rows, and because every between-arm
+It is excluded from the single-scale 3DGS-arm rows, and because every
+between-arm
 table in this chapter is restricted to the scenes both arms have, it is excluded
-from the Mip-Splatting arm's there too --- a seven-scene mean against an eight-scene one is not a
-comparison. Nothing was reduced to make it fit: the protocol's rule for a scene
+from the Mip-Splatting arm's there too --- a seven-scene mean set against an eight-scene one compares two different things. Nothing was reduced to make it fit: the protocol's rule for a scene
 that will not run is to record it and move on, and that rule does not become
-optional when the scene is one of eight rather than one of nine.
+optional when the scene is one of eight, as it would be one of nine.
 
-Two things make the exclusion narrow rather than convenient. \texttt{ship}
+Two things keep the exclusion narrow. \texttt{ship}
 trains without incident on the \emph{multi-scale} protocol, on all four scales,
 so Table~\ref{tab:mtmt} is a full eight-scene comparison and the failure is
 specific to single-scale training. And it trains without incident on the Mip-Splatting arm, so
-the fragility belongs to the vanilla band-limit semantics rather than to the
-scene, the data or the harness. Both point the same way: removing the
+the fragility belongs to the vanilla band-limit semantics, with the scene, the
+data and the harness all cleared. Both point the same way: removing the
 compensation costs robustness on the one scene that sits closest to the limits of
 the card, and it does so through the forward raster.
 
@@ -226,7 +223,7 @@ varying onset, no allocation error, largest model in the suite, vanilla arm
 only. Naming a cause more specific than that would be inference presented as
 result, which is the thing \S\ref{sec:g2} already cost this project once.
 
-\keybox{a switch that is not minimal is not a control}{%
+\keybox{what makes a switch a control}{%
 Each of those three removals was invisible: no assertion covered them, the
 numbers that came back were plausible, and six of eight scenes were unaffected.
 What exposed them was a failure that could not be waved through --- a crash --- and
@@ -236,12 +233,12 @@ meant to isolate a single term has to be checked against what it leaves alone,
 not only against what it changes.}
 
 
-\section{Every cell of this column was two rasterisers, briefly}
+\section{A column averaged over two rasterisers}
 \label{sec:blend}
 
 The 3DGS arm's column here was re-measured after the opacity-compensation fix, and for a while afterwards each of
-its $32$ cells was the mean of the old measurement and the new one rather than
-the new one. The record is append-only by design (Table~\ref{tab:levels}): a
+its $32$ cells averaged the old measurement together with the new one, where the
+new one alone belonged there. The record is append-only by design (Table~\ref{tab:levels}): a
 re-measured configuration leaves its predecessor in the file, marked, and the
 tables skip anything marked. The marking rule identified the rows to retire by
 the rung name in their notes --- and the re-run was the same rung, so its rows
@@ -262,7 +259,7 @@ four lines, it would have caught both instances the day they appeared, and it
 subsumes every future variant of the same mistake --- which a third special case
 in the marking rule would not have.
 
-\keybox{append-only is a property of the file, not of the average}{%
+\keybox{what append-only applies to}{%
 Keeping superseded rows is what makes a result auditable, and this project has
 been strict about it. But a row that is kept and not marked is a row that is
 \emph{used}, and the marking is the only thing standing between an honest
@@ -270,13 +267,13 @@ archive and a silently pooled average. A discipline that depends on a marking
 step needs the pooled average checked, not the marking step trusted.}
 
 
-\section{Two kernels, two protocol definitions, one set of names}
+\section{Two kernels, one set of protocol names}
 \label{sec:branchdefect}
 
 The instrument results and the PSNR results of \S\ref{sec:table3} were, for a
 time, measurements of \emph{different captures} reported under the same protocol
-names, and it is worth saying exactly how, because nothing in either run could
-have detected it.
+names, and the mechanism matters, because nothing in either run could have
+detected it.
 
 The instrument kernel cloned the repository's default branch. The training kernel
 clones the method branch. Between them, the definition of \texttt{arc} and
@@ -284,8 +281,8 @@ clones the method branch. Between them, the definition of \texttt{arc} and
 giving $20$ cameras across $81^\circ$ and $3$ across $30^\circ$; the method
 branch sizes them by camera \emph{count}, giving $25$ across $93^\circ$ and $10$
 across $54^\circ$. The change was deliberate and its stated reason is sound --- a
-$20^\circ$ wedge catches three cameras on a Blender capture, and three views is a
-sparse-reconstruction experiment rather than a conditioning one. What was missed
+$20^\circ$ wedge catches three cameras on a Blender capture, and three views turns a conditioning experiment into a sparse-reconstruction
+one. What was missed
 is that only one of the two kernels was updated.
 
 Each run was internally consistent, each printed the span it had built, and each
@@ -294,14 +291,13 @@ and it survived because both numbers looked reasonable: a cone \emph{is} narrowe
 than an arc under either definition, so the ordering the chapter argues for held
 either way.
 
-\keybox{what it cost, and what it bought}{%
-It cost the first reading of gates G3 and G4 --- and it bought the \texttt{pencil}
+\keybox{the cost of this defect}{%
+It cost the first reading of the floor-binding and anisotropy gates --- and it bought the \texttt{pencil}
 protocol. Rather than choose between the two definitions, both are kept: the
 count-based \texttt{cone} at $51^\circ$, which is a trainable subset, and the
 width-based \texttt{pencil} at $20^\circ$, which is the regime the derivation is
 about. The crossover between them is where the estimation term overtakes the
-floor, and with both in the table that crossover is a measurement rather than an
-extrapolation. The instrument kernel is now pinned to the branch the training
+floor, and with both in the table that crossover is measured directly. The instrument kernel is now pinned to the branch the training
 kernel clones, and every protocol table carries the span the session that
 produced the row actually built.}
 
@@ -321,18 +317,18 @@ The symptom was two measurements of one quantity disagreeing --- on the arc and
 the cone, and not at the extremes, where a factor of five changes no verdict.
 Nothing raised, and both numbers were plausible on their own.
 
-\keybox{Proposition~1 is a test, not only a statement}{%
+\keybox{Proposition~1 as a test}{%
 The identity that fixes the constant is checkable: at one view, on the optical
 axis, the estimation term must \emph{equal} the floor. It now does, to
 $1.6\times10^{-16}$, and \texttt{tools/test\_instruments.py} asserts it on every
 run. Without the $0.2$ it is exactly five times the floor, so the test cannot
 pass either way by accident. This is the over-determination the audit's M-2
 named --- ``$s$ defaults to 1'' and ``$s\,\sigma_{\mathrm{pix}} = \sqrt{0.2}$''
-cannot both be free --- surfacing as a live numerical error rather than as an
-ambiguity in the prose, which is the more useful way for it to surface.}
+cannot both be free --- surfacing as a live numerical error, the most useful form it could take; as an
+ambiguity in the prose it would have stood for years.}
 
 
-\section{Getting there: three bugs the parity requirement caught}
+\section{Three bugs the parity requirement caught}
 \label{sec:b1bugs}
 
 The first implementation of the anisotropic filter reported exactly what
@@ -341,11 +337,10 @@ $100\,\%$ of primitives, the filter isotropic to two decimals --- and still
 differed from Mip-Splatting by up to $1.22$\,dB, thirty times the seed spread of
 \S\ref{sec:spread}. Section~\ref{ch:discussion} names that case in advance: a
 loss on the full-orbit row is a bug, not a result, because
-Proposition~\ref{prop:reduction} forbids it. Diagnosing it took three passes,
-and the sequence is worth recording because each step ruled something out.
+Proposition~\ref{prop:reduction} forbids it. Diagnosing it took three passes, and each step ruled something out.
 
 \begin{enumerate}[leftmargin=1.4em,itemsep=3pt]
-  \item \textbf{The floor.} the anisotropic filter re-derives $f_k$ from the camera geometry, so the
+  \item \textbf{The floor.} The anisotropic filter re-derives $f_k$ from the camera geometry, so the
         first suspect was that its floor was not Mip-Splatting's. A cross-check
         was added --- \texttt{compute\_3D\_filter} runs alongside and the two are
         compared on every call --- and they agree to $1.16\times10^{-10}$
@@ -353,13 +348,13 @@ and the sequence is worth recording because each step ruled something out.
         takes their floor verbatim anyway, since \S\ref{sec:proposition2} floors
         at ``Mip-Splatting's own value'' and a re-derivation is a needless
         opportunity to differ.
-  \item \textbf{The covariance path.} the anisotropic filter passed $\Sigma + \Sigma_{\mathrm{filt}}$
+  \item \textbf{The covariance path.} The anisotropic filter passed $\Sigma + \Sigma_{\mathrm{filt}}$
         through the rasteriser's precomputed-covariance input while
         Mip-Splatting passes scales and rotations. The two are algebraically the
         same, but they are different code. Where the filter is isotropic on
         every primitive, the anisotropic filter now takes Mip-Splatting's own path ---
-        Proposition~\ref{prop:reduction} used as a computational identity rather
-        than only as an argument. The gap did not move: $1.245$\,dB. Not the
+        Proposition~\ref{prop:reduction} used as a computational identity in the code,
+        and no longer only as an argument on paper. The gap did not move: $1.245$\,dB. Not the
         cause either.
   \item \textbf{The opacity.} What both paths share is
         Equation~\eqref{eq:filter}'s compensation, and it contained
@@ -393,8 +388,8 @@ from three commits earlier that had never used the protocol, with two scenes
 entering twice on one side and once on the other. It reported $0.021$\,dB. The
 figure was not wrong by much, and that is the point: a comparison can be
 mis-specified and still land on a plausible number, which is why the pairing is
-now enforced in the generator rather than assumed, and why the scene count is a
-macro rather than the word ``eight''.}
+now enforced in the generator, and why the scene count is a macro that reads
+from the record.}
 
 \keybox{what made this findable}{%
 The unit test of \S\ref{sec:proposition2} passed throughout, because its scales
@@ -402,5 +397,4 @@ were $0.01$--$0.06$, where $\prod s_i^2$ sits at the clamp and the fault is
 nearly invisible. A test whose inputs do not span the real range will certify a
 broken component. It now covers $|\Sigma|$ down to $1.4\times10^{-18}$ and prints
 that range in its own output. The bug itself was silent --- no error, plausible
-numbers, the wrong shape --- and what exposed it was requiring parity to hold
-\emph{exactly} rather than approximately.}
+numbers, the wrong shape --- and what exposed it was requiring parity to hold \emph{exactly}.}

@@ -1,7 +1,7 @@
 \chapter{Splatting and existing band-limits}
 \label{ch:background}
 
-\keybox{the idea, before the mathematics}{%
+\keybox{the idea}{%
 A radiance field is a model of a scene that you can photograph from a new angle.
 You give it a few dozen real photographs; it fits something to them; you then ask
 it for a picture from a viewpoint nobody stood at.
@@ -12,13 +12,13 @@ projects to an ellipse, and drawing a few hundred thousand ellipses in depth
 order is something a GPU does very well. Fitting is gradient descent: render,
 compare to the photograph, nudge every blob.
 
-Here is the problem this thesis is about. Nothing in that procedure stops a blob
-from becoming smaller than anything the photographs can resolve. If a blob ends
+Nothing in that procedure stops a blob from becoming smaller than anything the
+photographs can resolve. If a blob ends
 up a tenth of a pixel across, it still gets drawn --- at full opacity, into
-whichever pixel contains its centre. At the resolution you trained on this is
-invisible, because the fit compensates. Change the resolution and it is not: the
-sub-pixel blobs no longer land where the fit assumed, and the image acquires
-energy it should not have. That is what you are seeing in
+whichever pixel contains its centre. At the resolution you trained on this stays invisible, because the fit
+compensates. Change the resolution and it shows: the sub-pixel blobs land
+somewhere other than where the fit assumed, and the image acquires energy it
+should not have. That is what you are seeing in
 Figure~\ref{fig:ladder}, where the same model is fine at full resolution and a
 bright smear at one-eighth.
 
@@ -95,10 +95,10 @@ they are separate objects.
 to the display sampling rate. It dilates the projected covariance by $kI$ and
 compensates the opacity by $\rho = \sqrt{\lvert\Sigma'\rvert / \lvert\Sigma' +
 kI\rvert}$, so that widening the splat does not brighten it. Vanilla 3DGS performs the same fixed dilation, with $k = 0.3$, and applies
-\emph{no} compensation at all. The proposed method does not change this filter; but the
-distinction is not cosmetic, because an arm that keeps $\rho$ is anti-aliasing
-better than 3DGS in screen space whatever its 3D filter does, and
-\S\ref{sec:g2} reports what that cost before it was found.
+\emph{no} compensation at all. The proposed method leaves this filter alone. The distinction matters, because
+an arm that keeps $\rho$ is anti-aliasing better than 3DGS in screen space
+whatever its 3D filter does, and \S\ref{sec:g2} reports the price this project
+paid before the difference was noticed.
 
 \paragraph{The 3D smoothing filter} is the acquisition-side limit at issue here:
 a scalar variance

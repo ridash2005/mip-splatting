@@ -64,8 +64,7 @@ the L1 tolerance.
   repository would have been easier and would have meant that the difference
   between two numbers also contained the difference between two dataloaders, two
   metric implementations and two perceptual backbones, with no way to say which
-  part was the method. Note that the published figures are used only as targets
-  to check the reproduction against; every comparison reported in
+  part was the method. The published figures serve only as targets to check the reproduction against; every comparison reported in
   Chapter~\ref{ch:results} is between two of these columns.}
   \label{fig:twoarms}
 \end{figure}
@@ -85,17 +84,16 @@ implementation and one LPIPS backbone (VGG), so any difference between them is t
 enumerated in the kernel and asserted on every run, and a change outside it
 aborts the session before any training starts.
 
-\keybox{sharing a codebase shares more than the plumbing, and that is the trap}{%
+\keybox{what a shared codebase carries over}{%
 ``The 3D filter zeroed and \texttt{kernel\_size}~$=0.3$'' makes the arm 3DGS in
 its \emph{3D} band-limit, exactly, and says nothing about its \emph{2D} one.
 Both arms inherited Mip-Splatting's screen-space opacity compensation, which
 3DGS does not have, so for the first three rungs the arm labelled 3DGS was
 anti-aliasing better than 3DGS, and the between-arm gap, the quantity this
 whole construction exists to protect, carried a residual anti-aliasing term.
-Section~\ref{sec:g2} is the diagnosis and the re-measurement. The lesson is not
-that the single-codebase decision was wrong, because it is forced; it is that
-``both arms share everything but the diff'' is a claim about what the diff
-\emph{omits}, and omissions are exactly what a diff does not show.}
+Section~\ref{sec:g2} is the diagnosis and the re-measurement. The single-codebase decision stands, since it is forced. The lesson concerns the
+claim made for it: ``both arms share everything but the diff'' is a statement
+about what the diff \emph{omits}, and omissions are what a diff hides.}
 
 \paragraph{The arms, as run.} The Mip-Splatting arm is Mip-Splatting unmodified. The 3DGS arm is the
 same codebase with \texttt{filter\_3D} identically zero, \texttt{kernel\_size}
@@ -148,8 +146,8 @@ the angular span of the training cameras. Testing that requires captures of
 varying conditioning, which are constructed as camera subsets of images already
 downloaded --- no new data, no extra GPU time. Each protocol is versioned as a
 JSON index list and carries its \emph{measured} span, because a subset built
-with a nominal target of $6^\circ$ that comes out at $20^\circ$ is not the
-capture the prediction was made for, and the prediction must then be re-evaluated at the span that was built.
+with a nominal target of $6^\circ$ that comes out at $20^\circ$ is a different
+capture from the one the prediction was made for, and the prediction must then be re-evaluated at the span that was built.
 
 \input{generated/table-protocols}
 

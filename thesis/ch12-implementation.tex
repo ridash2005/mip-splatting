@@ -4,8 +4,7 @@
 \keybox{what this appendix is for}{%
 The thesis compares two published methods and two proposed ones. All four run
 from a single checkout, differing only by command-line flags, and this appendix
-says exactly what each flag does and where in the code it acts. It is the answer
-to ``how do I know the 3DGS arm is really 3DGS?'', and it is a code-level answer.}
+says exactly what each flag does and where in the code it acts. It answers ``how do I know the 3DGS arm is really 3DGS?'' at the level of code.}
 
 \section{Four configurations}
 
@@ -28,11 +27,11 @@ flags.
     3DGS's band-limit semantics exactly: no world-space filter, a fixed $0.3$
     screen-space dilation, no opacity compensation. \\
   the anisotropic filter & \texttt{--kernel\_size 0.1 --use\_fisher\_filter} &
-    Method I. Replaces the scalar 3D filter with the anisotropic one, floored at
+    Replaces the scalar 3D filter with the anisotropic one, floored at
     Mip-Splatting's own value. \\
   the angular mask & post-hoc mask, no training flag &
-    Method II. Reads a trained model and the training view directions; masks
-    spherical-harmonic degrees. \\
+    Reads a trained model and the training view directions; masks spherical-harmonic
+    degrees. \\
   \bottomrule
 \end{tabular}
 \end{center}
@@ -87,9 +86,9 @@ alone, not only against what it changes.
 
 \section{The anisotropic filter in code}
 
-the anisotropic filter needed no CUDA change. The rasteriser already accepts a precomputed
-covariance, so replacing a scalar variance with a matrix is a change to how the
-covariance is built and not to how it is splatted. Three things happen at
+The anisotropic filter needed no CUDA change. The rasteriser already accepts a precomputed
+covariance, so replacing a scalar variance with a matrix changes how the covariance is built
+and leaves the splatting untouched. Three things happen at
 construction, once, before the training loop:
 
 \begin{enumerate}[leftmargin=1.4em,itemsep=2pt]
@@ -98,7 +97,7 @@ construction, once, before the training loop:
         over the training cameras that saw it --- the same Jacobian the renderer
         already forms for the EWA transform.
   \item Invert the spectrum to a covariance floor, and floor \emph{that} at
-        Mip-Splatting's own scalar value rather than at a re-derivation of it.
+        Mip-Splatting's own scalar value, taken straight from their code.
         (Taking theirs is what makes Proposition~\ref{prop:reduction} exact in the
         floor as well as in the covariance; re-deriving it differed by $0.5\,\%$
         at the median on the first call, which is enough to seed a different

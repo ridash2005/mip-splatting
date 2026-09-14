@@ -31,7 +31,7 @@ covariance, and that PUP 3D-GS (CVPR 2025) already builds a per-primitive
 second-order spatial sensitivity accumulated over training views. Either fact
 alone removes part of what \S\ref{ch:intro} originally claimed.
 
-It did not invalidate the project, and the reason is worth stating precisely, and without defensiveness. AAA-Gaussians derives the anisotropy from the
+The project survives both, for reasons that can be stated precisely. AAA-Gaussians derives the anisotropy from the
 \emph{current view ray} and recomputes it every rendered frame; their effective
 sampling rate is $\min(\hat v_{\mathrm{train}}, \hat v)$ with $\hat v$ the rate
 of the camera now looking, so the filter cannot be a quantity stored once per
@@ -56,7 +56,7 @@ Three consequences, all of them applied:
         Chapter~\ref{ch:method1} even as it weakens its novelty claim.
 \end{enumerate}
 
-\keybox{a literature search is an experiment, and this one returned a result}{%
+\keybox{the literature search as an experiment}{%
 The review was scheduled for weeks 1--2 and slipped. It was completed before the
 stress suite spent its GPU budget, which is the deadline that actually mattered:
 the response --- narrowing the contribution and re-framing two chapters --- would
@@ -73,12 +73,15 @@ linearisation 3DGS makes for the EWA transform. It is consistent with the
 renderer; a second-order correction would be an ablation.
 
 \paragraph{A point-feature likelihood for a volumetric primitive.}
-Equation~\eqref{eq:measurement} models the localisation of a point. Real
-primitives are extended and semi-transparent, so $\Lambda$ is a proxy for the photometric information. This is expected to
-degrade in textureless regions, where the point-feature model is worst. It is a named limitation, with a figure.
+Equation~\eqref{eq:measurement} models the localisation of a point. Real primitives are extended and semi-transparent, so $\Lambda$ is a proxy for
+the photometric information. The approximation should be at its worst in
+textureless regions, where a point-feature model has least to work with. No
+scene here was chosen to isolate that, so it stands as an untested limitation.
 
 \paragraph{Pose noise.} $\Lambda$ inherits 3DGS's complete trust in SfM poses.
-Because it aggregates over many views, graceful degradation is expected; the pose-perturbation experiment tests that instead of assuming it.
+Because it aggregates over many views, degradation should be graceful. A
+pose-perturbation experiment would settle it, and Chapter~\ref{ch:plan}
+schedules one for Spring; none was run here.
 
 \paragraph{Compute.} The available card holds 16\,GB where the published
 requirement is 24\,GB, which removes the five outdoor Mip-NeRF 360 scenes from
@@ -100,9 +103,7 @@ does not survive it, and every table that loses a scene says so.
 identical.} On a well-conditioned capture Proposition~\ref{prop:reduction} makes
 the anisotropic filter \emph{be} Mip-Splatting, and Table~\ref{tab:methodcost} shows what that
 costs: $2.8\times$ peak VRAM and $1.32\times$ training time, for the same
-primitive count and the same rendered image. This is not an implementation
-detail to be optimised away later and then reported as though it had been --- it
-is the shape of the method. $\Lambda_k$ accumulates a $3\times3$ symmetric
+primitive count and the same rendered image. This cost is the shape of the method, and it survives any amount of engineering. $\Lambda_k$ accumulates a $3\times3$ symmetric
 matrix per primitive over every training camera, and that accumulation is the
 method. An implementation could stream it or compute it in blocks; none of that
 changes the arithmetic, and none of it has been done here.
@@ -111,8 +112,9 @@ The honest consequence is that the anisotropic filter should not be used on a we
 capture, and this thesis does not recommend it there. Its case is confined to
 the regime of \S\ref{sec:table3}, and there, as
 Figure~\ref{fig:qualpencil} shows, both methods produce reconstructions nobody
-would ship. What the project establishes is that the mechanism is the one the
-derivation names, not that the method earns its cost.
+would ship. What the project establishes is that the mechanism is the one the derivation
+names. Whether the method earns its cost is a separate question, and it stays
+open.
 
 \paragraph{$\beta$ is a prior.} Where the capture constrains a
 direction not at all, no amount of estimation theory supplies a scale; $\beta$
@@ -137,7 +139,9 @@ estimation limit exceeds what is useful there, and the claim narrows accordingly
     alone, and $\Lambda$ is recomputed ${\sim}290$ times across training, never at render time. Table~\ref{tab:fps} times the render call alone for all three arms in one session on one GPU (\S\ref{sec:fps}). The frame-rate column of Table~\ref{tab:cost} is \emph{not} the answer to this question: it is wall time over a whole rendering pass, with image writing and file I/O included. \\
     An anisotropic 3D filter already exists (AAA-Gaussians). What is left? & The source of the anisotropy. Theirs is the ray of the view being rendered, recomputed per frame; this one is the spectrum of the training capture, fixed per primitive. A narrow-baseline primitive is under-determined along depth whichever view renders it, and their filter cannot see that. \S\ref{sec:narrowing} states the separation and the narrowing it forced. \\
     PUP 3D-GS builds the same matrix. Is $\Lambda_k$ new? & The matrix is not; what is done with it is. PUP reduces it to a scalar sensitivity and thresholds that to prune. This method keeps the eigenvectors and uses them to shape a filter. Retaining the spectrum instead of a scalar summary of it is the honest statement of novelty, and \S\ref{sec:relatedwork} makes it before a reader has to. \\
-    Where does it fail? & Captures so degenerate that $\beta$ binds everywhere, where the filter degenerates to a scene-scale prior; and textureless regions, where the point-feature likelihood poorly models the photometric one. Both are in the limitations section with figures. \\
+    Where does it fail? & Captures so degenerate that $\beta$ binds everywhere, where the filter degenerates to a scene-scale prior; and textureless regions, where the point-feature likelihood poorly models the
+    photometric one. Both are named in the limitations section, and neither has
+    been measured here. \\
     \bottomrule
   \end{tabular}
 \end{table}

@@ -117,7 +117,7 @@ def d_bandlimit_locations(out):
          "a fixed dilation of the projected ellipse,\napplied at render time", S2),
         ("Mip-Splatting", "one number per primitive,\nfrom the nearest camera",
          "the same fixed dilation,\nplus an opacity correction", S1),
-        ("this thesis (B1)", "a $3{\\times}3$ matrix per primitive,\n"
+        ("this work", "a $3{\\times}3$ matrix per primitive,\n"
          "from every camera that saw it",
          "unchanged — the screen-space\nterm is not what this touches", INK),
     ]
@@ -444,14 +444,14 @@ def d_two_arms(out):
         ax.text(0.5, 0.255 - i * 0.045, t, ha="center", fontsize=7.2,
                 color=INK_2)
 
-    boxes = [(0.05, "arm A", "Mip-Splatting\nas published", S1),
-             (0.29, "arm B", "3DGS's band-limit\nsemantics exactly", S2),
-             (0.53, "B1", "the proposed\nanisotropic filter", INK),
-             (0.77, "B2", "the proposed\nSH masking", MUTED)]
+    boxes = [(0.05, "Mip-Splatting arm", "the published\nband-limit", S1),
+             (0.29, "3DGS arm", "3DGS's band-limit\nsemantics exactly", S2),
+             (0.53, "anisotropic filter", "the proposed\nworld-space limit", INK),
+             (0.77, "angular mask", "the proposed\nSH criterion", MUTED)]
     for x, name, what, col in boxes:
         ax.add_patch(plt.Rectangle((x, 0.52), 0.18, 0.30, facecolor=SURFACE,
                                    ec=col, lw=1.4))
-        ax.text(x + 0.09, 0.755, name, ha="center", fontsize=8.6, color=col,
+        ax.text(x + 0.09, 0.765, name, ha="center", fontsize=7.2, color=col,
                 weight="bold")
         ax.text(x + 0.09, 0.635, what, ha="center", fontsize=7.1, color=INK_2,
                 linespacing=1.3)

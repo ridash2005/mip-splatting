@@ -283,7 +283,7 @@ def scale_table(rows, protocol, label, caption):
          r"  \caption{" + caption + "}", r"  \label{tab:" + label + "}",
          r"  \small",
          r"  \begin{tabular}{lcccccc}", r"    \toprule",
-         r"    & \multicolumn{2}{c}{3DGS (arm B)} & \multicolumn{2}{c}{Mip-Splatting (arm A)}"
+         r"    & \multicolumn{2}{c}{3DGS} & \multicolumn{2}{c}{Mip-Splatting}"
          r" & \multicolumn{2}{c}{gap, matched} \\",
          r"    \cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-7}",
          r"    test scale & published & \textbf{ours} & published & \textbf{ours}"
@@ -322,7 +322,7 @@ def scale_table(rows, protocol, label, caption):
                      + ", ".join(sorted(common)) + r"}), so it is a difference "
                      r"between the same objects; it is therefore \emph{not} the "
                      r"difference of the two columns to its left. "
-                     r"\texttt{ship} trains only on arm A "
+                     r"\texttt{ship} trains only on the Mip-Splatting arm "
                      r"(\S\ref{sec:shipfails}), which is the whole of the "
                      r"discrepancy, and it leaves the 3DGS column a "
                      + str(n_of["B"]) + r"-scene mean against an eight-scene "
@@ -389,7 +389,7 @@ def cost_table(rows, label, caption):
     L = [r"\begin{table}[htbp]", r"  \centering",
          r"  \caption{" + caption + "}", r"  \label{tab:" + label + "}",
          r"  \small", r"  \begin{tabular}{lrr}", r"    \toprule",
-         r"    & 3DGS (arm B) & Mip-Splatting (arm A) \\", r"    \midrule"]
+         r"    & 3DGS & Mip-Splatting \\", r"    \midrule"]
     for key, name, spec in fields:
         cells = [name]
         for arm in ("B", "A"):
@@ -935,7 +935,7 @@ def c1_table(all_rows, c1, label, caption):
     L = [r"\begin{table}[htbp]", r"  \centering",
          r"  \caption{" + caption + "}", r"  \label{tab:" + label + "}",
          r"  \small", r"  \begin{tabular}{lrrr}", r"    \toprule",
-         r"    test scale & arm B, with $\rho$ & arm B, without $\rho$"
+         r"    test scale & 3DGS arm, with $\rho$ & 3DGS arm, without $\rho$"
          r" & published 3DGS \\", r"    \midrule"]
     for i, sc in enumerate(SCALES):
         a, b = old.get(sc), new.get(sc)
@@ -960,7 +960,7 @@ def c1_table(all_rows, c1, label, caption):
           r"other respect --- same branch but for the rasteriser flag, same "
           r"densification, same data, same seed. The published column is an "
           r"eight-scene mean and \texttt{" + scene + r"} is not the mean, so it "
-          r"is a shape to compare against rather than a target; this is why the "
+          r"is a shape to compare against, and never a target; this is why the "
           r"gate was written scene-relative. The left column is read from the "
           r"rows this run supersedes, which are retained in "
           r"\texttt{results/runs.csv}.",
@@ -1082,8 +1082,9 @@ def protocol_table(inst, label, caption):
           r"8 Blender scenes of the maximum pairwise angle the selected cameras "
           r"subtend at the capture centre --- measured from the subset that was "
           r"built, not specified. \emph{arc} and \emph{cone} select by angular "
-          r"extent rather than by a camera count, so the count is an outcome and "
-          r"differs between scenes; the range is given. A subset asked for at "
+          r"extent, where the others select by camera count, so the count is an "
+          r"outcome here and differs between scenes; the range is given. A "
+          r"subset asked for at "
           r"$6^\circ$ that comes out at $20^\circ$ is not the capture the "
           r"prediction was made for, which is why the prediction is re-evaluated "
           r"at the span actually realised.",
@@ -1199,8 +1200,8 @@ def fps_table(fps, label, caption):
           r"synchronised around each pass. The render \emph{call} only: no scene "
           r"load, no PNG encode, no disk write --- which is why these numbers are "
           r"an order of magnitude above the \texttt{render\_fps} column of "
-          r"Table~\ref{tab:cost}, and why the ratio rather than the absolute "
-          r"figure is what this thesis defends. \emph{filter setup} is the "
+          r"Table~\ref{tab:cost}, and why the ratio is the figure this thesis "
+          r"defends. \emph{filter setup} is the "
           r"one-off cost of building $\Sigma_{\mathrm{filt}}$ from the training "
           r"cameras before the loop begins.",
           r"\end{table}", ""]
@@ -1288,7 +1289,8 @@ def geometry_tables(geo, inst):
          r"$\lambda_3/\lambda_1 = 2(1-E)/(1+E)$ with "
          r"$E = (1+c+c^2)/3$, $c = \cos\alpha$ --- exact, and asymptotically "
          r"\emph{half} the two-view value, because a cap's cameras are spread "
-         r"across the interval rather than sitting at its two ends. The two-view "
+         r"across the interval, where the two-view form places them at its two "
+         r"ends. The two-view "
          r"form therefore \emph{understates} a real capture's depth anisotropy by "
          r"$\sqrt{2}$ in $\sigma$.}",
          r"  \label{tab:cap}", r"  \small",
@@ -1585,8 +1587,7 @@ def b2_matched_table(b2c, label, caption):
           r"row has the same number of coefficients and they differ only in "
           r"\emph{which} ones. \emph{free} ranks individual coefficients, which "
           r"the angular mask cannot do, so that column is an upper bound on what any "
-          r"magnitude rule could reach at this budget rather than a like-for-"
-          r"like control. \emph{blocked} restricts magnitude pruning to the "
+          r"magnitude rule could reach at this budget, and a loose control. \emph{blocked} restricts magnitude pruning to the "
           r"nested whole degrees the angular mask masks: same structure, same budget, "
           r"different criterion. The bolded $\Delta$ is that comparison. A row "
           r"at $0\,\%$ kept is every method discarding every non-DC "
@@ -1637,8 +1638,7 @@ def b2_protocol_table(proto, sweep, label, caption):
     if sweep:
         S = [r"\begin{table}[htbp]", r"  \centering",
              r"  \caption{Sensitivity of Equation~\eqref{eq:lmax} to $\tau$, on the "
-             r"low-parallax cone. The criterion is a cliff rather than a graded "
-             r"response: a tenfold change in $\tau$ moves the retained fraction "
+             r"low-parallax cone. The criterion behaves as a cliff: a tenfold change in $\tau$ moves the retained fraction "
              r"from a fifth of the coefficients to none of them.}",
              r"  \label{tab:btwosweep}", r"  \small",
              r"  \begin{tabular}{rrr}", r"    \toprule",
@@ -2146,7 +2146,8 @@ def main():
         "table-budget.tex": budget_table(a.summaries, "budget",
             r"Every GPU session this project ran, and what it cost."),
         "table-g2.tex": g2_table(rows, "g2",
-            r"Gate G2, scored against the thresholds set before any run."),
+            r"The scale-collapse gate, scored against the thresholds set before "
+            r"any run."),
         "table-c1.tex": c1_table(
             load_all(a.runs), summaries.get("C1") or {}, "c1",
             r"C1 --- the same arm, scene and seed, with and without "
@@ -2164,10 +2165,10 @@ def main():
             r"What the anisotropic filter costs, paired against Mip-Splatting in one session."),
         "table-pregof.tex": pregof_table(
             rows, load_probe(a.runs, "pregof"), "pregof",
-            r"L1 probe --- does GOF densification account for arm A's offset "
-            r"from its published figure?"),
+            r"L1 probe --- does GOF densification account for the "
+            r"Mip-Splatting arm's offset from its published figure?"),
         "table-b2-matched.tex": b2_matched_table(b2c, "btwomatched",
-            r"the angular mask against magnitude pruning at matched model size, on a capture "
+            r"The angular mask against magnitude pruning at matched model size, on a capture "
             r"where the criterion actually masks."),
         "table-b2.tex": b2_table(b2, "b2",
             r"R8 Table 4 --- the angular mask, angular identifiability of spherical harmonics."),

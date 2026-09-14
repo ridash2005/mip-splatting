@@ -1,10 +1,10 @@
 \chapter{Limitations of a scalar band-limit}
 \label{ch:gap}
 
-\keybox{the idea, in one paragraph}{%
+\keybox{the idea}{%
 Both baselines limit how small a primitive may be, and both use a single number
-to do it. A number says ``no finer than this, in every direction''. But a capture
-does not constrain every direction equally. Photograph an object from a narrow
+to do it. A number says ``no finer than this, in every direction''. A capture constrains
+some directions far better than others. Photograph an object from a narrow
 wedge of angles and you will know a great deal about where its surfaces are
 side-to-side and very little about how far away they are --- the classic
 weak-parallax situation, familiar from stereo. The correct limit in that case is
@@ -45,9 +45,8 @@ what information it throws away in becoming a scalar.}
   \end{tabular}
 \end{table}
 
-The progression is not a sequence of unrelated tricks. NeRF used none of the
-geometry beyond a global glance at the images; 3DGS used none at all;
-Mip-Splatting used one view's worth; this work uses all of it.
+One quantity orders the progression: how much of the capture geometry each
+method reads. NeRF takes a global glance at the images; 3DGS reads nothing; Mip-Splatting reads one view's worth; this work reads all of it.
 
 \section{The cost of a missing limit}
 \label{sec:cost}
@@ -62,7 +61,7 @@ Mip-Splatting used one view's worth; this work uses all of it.
   curve it is drawn against; the $\tfrac18$ arrow is annotated from the
   \emph{published} pair, because the two measured curves are means over
   different scene sets (\texttt{ship} trains only on the Mip-Splatting arm,
-  \S\ref{sec:shipfails}) and the distance between them is therefore not a gap.
+  \S\ref{sec:shipfails}) and the distance between them therefore spans two different scene sets.
   \emph{Left:} trained at one scale, tested at four. 3DGS loses $15.64$\,dB in
   the published numbers as the test sampling rate departs from the training
   rate, because primitives have shrunk below what any view resolves;
@@ -104,7 +103,7 @@ quantity, which is the control for everything that follows.
 A due-diligence review was run before the stress suite, with one question: has
 anyone already made the \emph{3D} filter anisotropic or per-direction? The answer
 is partly yes, and the contribution stated in \S\ref{ch:intro} has been narrowed accordingly. Two of the five papers below change what this
-thesis may claim; the change is recorded here, in the chapter that sets up the gap, where a reader meets it first.
+thesis may claim; and the change is recorded here, in the chapter that sets up the gap.
 
 \begin{table}[htbp]
   \centering
@@ -131,7 +130,7 @@ thesis may claim; the change is recorded here, in the chapter that sets up the g
       & A second-order sensitivity of the photometric error in each primitive's
         spatial parameters, accumulated over training views, collapsed to a
         scalar and thresholded to prune $90\,\%$ of primitives.
-      & \textbf{The matrix itself is not new.} It is built from the same
+      & \textbf{The matrix has a precedent.} It is built from the same
         ingredients as $\Lambda_k$. The divergence is what survives: PUP keeps a
         scalar and discards the eigenstructure, which is precisely what the anisotropic filter uses. \\
     \addlinespace[2pt]
@@ -156,13 +155,11 @@ thesis may claim; the change is recorded here, in the chapter that sets up the g
   \end{tabular}
 \end{table}
 
-\keybox{what the claim is, after the narrowing}{%
-Not ``an anisotropic 3D filter'' --- AAA-Gaussians has one. Not ``a per-primitive
-second-order information matrix'' --- PUP 3D-GS builds one. The claim that
-survives, and the only one the experiments are asked to support, is a
-\emph{per-primitive band-limit read off the conditioning of the training
-capture}: a quantity fixed once per primitive by the cameras that saw it, rather
-than by the camera now looking at it, and keeping the whole spectrum instead of a scalar summary of it. A primitive seen from a narrow baseline is
+\keybox{the actual claim}{%
+AAA-Gaussians already has an anisotropic 3D filter, and PUP 3D-GS already builds
+a per-primitive second-order information matrix. This work claims neither. What
+it claims, and all the experiments are asked to support, is a \emph{per-primitive band-limit read off the conditioning of the training capture}: a quantity the cameras that saw the primitive fix once, ahead of any render, and
+that keeps its whole spectrum. A primitive seen from a narrow baseline is
 under-determined along depth no matter which view renders it, and a filter
 derived from the render-time ray carries no memory of that. The \texttt{cone} and
 \texttt{arc} protocols of \S\ref{sec:stress} exist to isolate that regime, and nobody has tested it, because nobody else's filter is a function of

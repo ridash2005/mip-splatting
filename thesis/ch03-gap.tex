@@ -1,4 +1,4 @@
-\chapter{The gap --- where the band-limit lives in each method}
+\chapter{What a single-number band-limit cannot express}
 \label{ch:gap}
 
 \keybox{the idea, in one paragraph}{%
@@ -12,7 +12,7 @@ generous sideways and strict in depth. A scalar cannot say that. This chapter
 shows precisely where each method's scalar lives, what it is computed from, and
 what information it throws away in becoming a scalar.}
 
-\section{Where the band-limit lives}
+\section{Two places a limit can sit: world space and screen space}
 
 \begin{figure}[htbp]
   \centering
@@ -49,7 +49,7 @@ The progression is not a sequence of unrelated tricks. NeRF used none of the
 geometry beyond a global glance at the images; 3DGS used none at all;
 Mip-Splatting used one view's worth; this work uses all of it.
 
-\section{What the missing limit costs}
+\section{What the missing world-space limit costs, in decibels}
 \label{sec:cost}
 
 \begin{figure}[htbp]
@@ -61,7 +61,7 @@ Mip-Splatting used one view's worth; this work uses all of it.
   scenes that arm has, matching the eight-scene denominator of the published
   curve it is drawn against; the $\tfrac18$ arrow is annotated from the
   \emph{published} pair, because the two measured curves are means over
-  different scene sets (\texttt{ship} trains only on arm A,
+  different scene sets (\texttt{ship} trains only on the Mip-Splatting arm,
   \S\ref{sec:shipfails}) and the distance between them is therefore not a gap.
   \emph{Left:} trained at one scale, tested at four. 3DGS loses $15.64$\,dB in
   the published numbers as the test sampling rate departs from the training
@@ -79,7 +79,7 @@ work. The question is then whether the \emph{right} band-limit does more.
 Chapter~\ref{ch:results} reports this project's own measurement of the same
 quantity, which is the control for everything that follows.
 
-\section{The three specific defects of the scalar filter}
+\section{Three ways a single number describes the wrong thing}
 \label{sec:defects}
 
 \begin{enumerate}[leftmargin=1.4em,itemsep=3pt]
@@ -98,7 +98,7 @@ quantity, which is the control for everything that follows.
         branch.
 \end{enumerate}
 
-\section{Concurrent work, and what it leaves for this thesis}
+\section{Concurrent work: what AAA-Gaussians and PUP 3D-GS already claim}
 \label{sec:relatedwork}
 
 A due-diligence review was run before the stress suite, with one question: has
@@ -133,13 +133,13 @@ thesis may claim; the change is recorded here, in the chapter that sets up the g
         scalar and thresholded to prune $90\,\%$ of primitives.
       & \textbf{The matrix itself is not new.} It is built from the same
         ingredients as $\Lambda_k$. The divergence is what survives: PUP keeps a
-        scalar and discards the eigenstructure, which is precisely what B1 uses. \\
+        scalar and discards the eigenstructure, which is precisely what the anisotropic filter uses. \\
     \addlinespace[2pt]
     \textbf{FisherRF} (ECCV 2024)
       & Fisher information over model parameters as an acquisition function for
         next-best-view selection.
       & Same statistical object, opposite direction of use: it chooses which
-        camera to \emph{acquire}; B1 takes the cameras as given. Changes the dataset and leaves the primitive alone. \\
+        camera to \emph{acquire}; the anisotropic filter takes the cameras as given. Changes the dataset and leaves the primitive alone. \\
     \addlinespace[2pt]
     \textbf{3DGS-MCMC} (NeurIPS 2024)
       & Recasts densify/prune/reset as MCMC sampling, removing the heuristics and

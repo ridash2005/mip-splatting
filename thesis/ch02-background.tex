@@ -1,4 +1,4 @@
-\chapter{Background --- image formation, NeRF, 3DGS, EWA splatting, Mip-Splatting}
+\chapter{How splatting renders, and where each method limits primitive size}
 \label{ch:background}
 
 \keybox{the idea, before the mathematics}{%
@@ -41,7 +41,7 @@ and what it is made of. The rest of the thesis argues that the floor should be a
   \label{fig:aliasing}
 \end{figure}
 
-\section{Image formation}
+\section{The emission--absorption model both baselines share}
 Both baselines assume the same emission--absorption model. Along a ray
 $r(t)=o+td$ with density $\sigma$ and colour $c$, the rendered radiance is
 \begin{equation}
@@ -52,14 +52,14 @@ Discretised, this is the $\alpha$-blending sum both methods use. 3DGS states the
 equivalence between its $\alpha$-blending and NeRF's ray marching directly; the two differ in how the field is parameterised and evaluated; what is being
 rendered is the same in both. This is what allows a single argument to span both.
 
-\section{NeRF and its explicit band-limit}
+\section{NeRF: one frequency limit, chosen by hand, for a whole scene}
 NeRF stores the field in an MLP applied to a positional encoding $\gamma(x)$ with
 $L$ frequency bands. The MLP's spectral bias means the encoding band sets the
 finest structure representable. The authors set $L$ by hand from the input
 images. The band-limit is therefore present, explicit, global, and manually
 chosen --- one scalar for the entire scene.
 
-\section{3DGS and EWA splatting}
+\section{3D Gaussian Splatting: ellipsoids, the EWA projection, and no size limit}
 
 \begin{figure}[htbp]
   \centering
@@ -87,7 +87,7 @@ This pair $(J_n, W_n)$ is the object Chapter~\ref{ch:method1} reuses. No
 regularisation is applied to $\Sigma_k$; nothing bounds how small a primitive
 may become.
 
-\section{Mip-Splatting}
+\section{Mip-Splatting: a scalar variance floor and a screen-space dilation}
 Mip-Splatting adds two filters, and it matters for Chapter~\ref{ch:results} that
 they are separate objects.
 

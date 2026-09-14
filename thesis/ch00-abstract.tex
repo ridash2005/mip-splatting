@@ -71,7 +71,7 @@ could have ended the project: does the resolution floor already bind everywhere,
 and is real capture geometry anisotropic enough to matter? Both passed on
 measurement.
 
-Several results ran against expectation, and they are reported where they happened. Gate G2 failed, and the first
+Several results ran against expectation, and they are reported where they happened. The scale-collapse gate failed, and the first
 diagnosis of that failure was itself wrong: the arm labelled 3DGS had kept
 Mip-Splatting's screen-space opacity compensation, so it was anti-aliasing better than 3DGS at the very scales the gate was scored
 on. Rebuilt and
@@ -86,7 +86,7 @@ densification rule, and said so for months without testing it; measured against
 the commit that predates the change, the effect is $\gofMaxEffect$\,dB and is
 not consistently signed.
 
-Both proposed methods are implemented and measured. B1 reduces to its baseline
+Both proposed methods are implemented and measured. The anisotropic filter reduces to its baseline
 exactly where the theory requires, to $1.4\times10^{-21}$ in the unit test and
 to $\methodParityMax$\,dB over $\methodParityScenes$ scenes in full paired
 training runs, comfortably below the run-to-run spread. Measurement also amended
@@ -98,10 +98,10 @@ Whether any of this shows up in a rendered image is Table~\ref{tab:stress}, and
 it now has an answer with the shape the derivation demands. On the
 $\stressFlatCount$ protocols where the resolution floor still dominates, the
 estimation term exceeds it on zero primitives, the filter comes out isotropic to
-two decimal places, and B1 differs from Mip-Splatting by between
+two decimal places, and the anisotropic filter differs from Mip-Splatting by between
 $\stressFlatMin$ and $\stressFlatMax$\,dB. On the sixth, a three-camera pencil
 spanning $29^\circ$, the estimation term exceeds the floor on $93\,\%$ of
-primitives, the filter becomes anisotropic at $1.47\times$, and B1 leads by
+primitives, the filter becomes anisotropic at $1.47\times$, and the anisotropic filter leads by
 $\stressBindDelta$\,dB, on the mean and on every one of the eight paired cells.
 The step falls exactly where the estimation term overtakes the floor, as predicted and recorded
 beforehand.
@@ -113,14 +113,14 @@ consistent pairings are still eight cells of a single run on two scenes.
 
 \medskip
 Two results are negative, and they belong here.
-\textbf{B2 is refuted.} Compared against a control that has B2's own
-nested-degree structure and B2's own budget, so that only the criterion differs,
+\textbf{The angular mask is refuted.} Compared against a control that has the angular mask's own
+nested-degree structure and the angular mask's own budget, so that only the criterion differs,
 magnitude pruning wins by up to $\btwoBlockedGapMax$\,dB. Chapter~\ref{ch:method2}
 had set the standard that a criterion unable to beat magnitude pruning at
 matched size is not worth the machinery, and by that standard it fails. An
 earlier and much larger-looking margin, measured against a control with more
-freedom than B2 has, turned out to be mostly a verdict on the shape of the mask, leaving the
-criterion itself barely implicated; that correction is reported too. \textbf{B1 costs
+freedom than the angular mask has, turned out to be mostly a verdict on the shape of the mask, leaving the
+criterion itself barely implicated; that correction is reported too. \textbf{The anisotropic filter costs
 $2.8\times$ the peak memory and $1.32\times$ the training time} of the baseline
 it provably equals on a well-conditioned capture. On such a capture it should
 not be used, and this thesis does not recommend it there.}

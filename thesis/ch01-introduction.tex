@@ -1,4 +1,4 @@
-\chapter{Introduction --- the question, and why it is a signal-processing question}
+\chapter{Why a radiance field needs a resolution limit}
 \label{ch:intro}
 
 Suppose you are handed eighty photographs of an object and asked to produce a
@@ -37,7 +37,7 @@ single scalar per primitive, added in quadrature to all three axes of the
 covariance. This thesis asks what that scalar ought to have been, and arrives at
 the answer that it ought not to have been a scalar.
 
-\section{The claim}
+\section{The claim: the limit should be a matrix computed from the capture}
 
 \keybox{thesis}{%
 ``The maximum frequency present in the sampled input images'' is not one number.
@@ -47,7 +47,7 @@ local, directional generalisation. Floored at the per-view Nyquist limit, it
 reduces to Mip-Splatting exactly where the capture is well conditioned, and
 departs from it precisely where the capture is not.}
 
-\section{Why this belongs in an Electrical Engineering department}
+\section{The same problem in signal-processing terms: reconstruction from non-uniform samples}
 
 Stripped of its graphics vocabulary, the problem is reconstruction from
 non-uniform samples without a matched prefilter --- a classical
@@ -80,7 +80,7 @@ separation precisely and Chapter~\ref{ch:discussion} returns to it; the short
 form is that what is new here is the \emph{source} of the anisotropy and the
 retention of its \emph{spectrum}.
 
-\section{Contributions}
+\section{Contributions, and what each one rests on}
 
 \begin{enumerate}[leftmargin=1.4em,itemsep=2pt]
   \item A derivation of the per-primitive, per-direction band-limit from the

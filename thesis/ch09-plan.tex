@@ -1,7 +1,7 @@
-\chapter{Plan, deliverables and reproducibility}
+\chapter{Schedule, deliverables, and what a reader needs to reproduce this}
 \label{ch:plan}
 
-\section{Schedule}
+\section{Schedule, and what has been completed against it}
 \begin{table}[htbp]
   \centering
   \caption{Plan and exit criteria. Rows above the rule are complete.}
@@ -12,14 +12,14 @@
     week & work & exit \\
     \midrule
     W1 & Accounts and quotas; the twelve pre-flight assertions; R0. Literature due-diligence begun. & \textbf{done.} Gates G0, G1. Measured throughput replaced the estimates. \\
-    W2 & R1 and R2, both arms. I-1 attached. & \textbf{done.} Arm A is L1 at all four scales; \textbf{G2 fails}, is misdiagnosed once, and is then traced to the arm-B rasteriser and passed on re-measurement (\S\ref{sec:g2}). \\
-    W3 & R5 and R3. I-2 on trained checkpoints. & \textbf{done.} \textbf{Gates G3 and G4 pass} (\S\ref{sec:instrumentresults}); $\sigma$ measured at $\seedSigma$\,dB worst case (\S\ref{sec:spread}); real scenes at \S\ref{sec:real}. \\
+    W2 & R1 and R2, both arms. The floor-occupancy instrument attached. & \textbf{done.} The Mip-Splatting arm is L1 at all four scales; \textbf{The scale-collapse gate fails}, is misdiagnosed once, and is then traced to the arm-B rasteriser and passed on re-measurement (\S\ref{sec:g2}). \\
+    W3 & R5 and R3. The conditioning instrument on trained checkpoints. & \textbf{done.} \textbf{Gates the floor-binding gate and the anisotropy gate pass} (\S\ref{sec:instrumentresults}); $\sigma$ measured at $\seedSigma$\,dB worst case (\S\ref{sec:spread}); real scenes at \S\ref{sec:real}. \\
     W4 & Stress suite constructed from existing images. & \textbf{done.} Six protocols, versioned and seeded; conditioning measured on all of them, and the sixth (a 20-degree pencil) added when the first five all turned out to sit in the floor-dominated regime. \\
     \midrule
-    W5--W6 & Implement $\Lambda$ accumulation; the exact-reduction unit test; wire $\Sigma_{\mathrm{filt}}$ into the covariance path. & \textbf{done, early.} Reduction verified to $1.4\times10^{-21}$ in the unit test and $\methodParityMax$\,dB over $\methodParityScenes$ scenes in training. B1 needed no CUDA change: the rasteriser already accepts a precomputed covariance. \\
-    W9--W10 & Implement B2; sweep $\tau$. & \textbf{done, early.} Criterion measured on 8 scenes and 5 protocols; Equation~\eqref{eq:lmax} amended to a condition number on the evidence (\S\ref{sec:b2amend}). \\
+    W5--W6 & Implement $\Lambda$ accumulation; the exact-reduction unit test; wire $\Sigma_{\mathrm{filt}}$ into the covariance path. & \textbf{done, early.} Reduction verified to $1.4\times10^{-21}$ in the unit test and $\methodParityMax$\,dB over $\methodParityScenes$ scenes in training. The anisotropic filter needed no CUDA change: the rasteriser already accepts a precomputed covariance. \\
+    W9--W10 & Implement the angular mask; sweep $\tau$. & \textbf{done, early.} Criterion measured on 8 scenes and 5 protocols; Equation~\eqref{eq:lmax} amended to a condition number on the evidence (\S\ref{sec:b2amend}). \\
     \midrule
-    C-series & Fix what the September audit found: the 3DGS arm's 2D opacity compensation (C1, C2); the stress-suite PSNR columns (T3); B2's rendered columns (T4); matched render speed (C9); the literature due-diligence (C12). & \textbf{done.} G2's cause found and the arm re-measured (\S\ref{sec:g2}); the contribution narrowed against concurrent work (\S\ref{sec:narrowing}); the cap prediction replaces the two-view one wherever a protocol is involved (\S\ref{sec:capprediction}). \\
+    C-series & Fix what the September audit found: the 3DGS arm's 2D opacity compensation (the opacity-compensation fix, C2); the stress-suite PSNR columns (T3); the angular mask's rendered columns (T4); matched render speed (C9); the literature due-diligence (C12). & \textbf{done.} the scale-collapse gate's cause found and the arm re-measured (\S\ref{sec:g2}); the contribution narrowed against concurrent work (\S\ref{sec:narrowing}); the cap prediction replaces the two-view one wherever a protocol is involved (\S\ref{sec:capprediction}). \\
     \midrule
     W11--W13 & Efficiency curves; variable-length SH storage for the memory result; writing. R4 as optional overflow. & Autumn report. \\
     Spring & B3 sampling-aware densification (stretch); pose-noise sensitivity; variable-length SH storage; composition with a view-side clamp (\S\ref{sec:narrowing}); paper draft. & thesis and submission. \\
@@ -27,7 +27,7 @@
   \end{tabular}
 \end{table}
 
-\section{Reproducibility artefacts}
+\section{What exists, and what a reader would need to re-run it}
 The apparatus that produces this document from that record --- the generator
 that writes every table, the figure pipeline, the per-scale recovery the
 shipped evaluation does not provide, and the self-test that exercises the whole

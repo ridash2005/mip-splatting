@@ -627,7 +627,7 @@ def fig_stress(out):
     ax.invert_yaxis()
     lim = max(0.16, max(abs(v) for v in deltas) * 1.9, 4 * sigma)
     ax.set_xlim(-lim, lim)
-    ax.set_xlabel("PSNR difference, B1 − Mip-Splatting (dB), paired per scene and scale",
+    ax.set_xlabel("PSNR difference, the anisotropic filter − Mip-Splatting (dB), paired per scene and scale",
                   fontsize=7.4)
     # Inside the axes, always. Placed at 3*sigma it lands outside the limits the
     # moment sigma is large, and bbox_inches="tight" then stretches the figure to
@@ -687,8 +687,8 @@ def fig_floor(out):
     # and below the line reads better but puts grey text across three bars.
     ax.text(-0.42, 78,
             "dashed line: the Nyquist floor.\n"
-            "above it the estimation term governs, and B1 can differ;\n"
-            "below it Proposition 2 makes B1 $\\equiv$ Mip-Splatting exactly.",
+            "above it the estimation term governs, and the anisotropic filter can differ;\n"
+            "below it Proposition 2 makes the anisotropic filter $\\equiv$ Mip-Splatting exactly.",
             fontsize=7.0, color=INK_2, ha="left", va="top", linespacing=1.5)
     _clean(ax)
     ax.tick_params(axis="x", pad=4)
@@ -696,7 +696,7 @@ def fig_floor(out):
 
 
 def fig_parity(out):
-    """Proposition 2 as a picture: B1 against its baseline on matched scenes."""
+    """Proposition 2 as a picture: the anisotropic filter against its baseline on matched scenes."""
     rows = [r for r in _rows()
             if r.get("dataset") == "blender" and r.get("iterations") == "30000"
             and r.get("load_allres") == "False" and r.get("seed") == "0"
@@ -730,7 +730,7 @@ def fig_parity(out):
                              gridspec_kw={"width_ratios": [1.25, 1]})
     x = np.arange(len(scales))
     style = {"3dgs": (S2, "3DGS"), "mip-splatting": (S1, "Mip-Splatting"),
-             "b1-fisher": (INK, "B1 — Fisher band-limit")}
+             "b1-fisher": (INK, "the anisotropic filter")}
     for m in order:
         c, lab = style[m]
         vals = [sum(acc[m][s]) / len(acc[m][s]) if acc[m].get(s) else None
@@ -778,7 +778,7 @@ def fig_parity(out):
         axes[1].set_xticks(x); axes[1].set_xticklabels(["full", "½", "¼", "⅛"])
         axes[1].set_ylim(-max(0.25, max(abs(v) for v in d) * 2.2),
                          max(0.25, max(abs(v) for v in d) * 2.2))
-        axes[1].set_ylabel("B1 − Mip-Splatting (dB)", fontsize=7.5)
+        axes[1].set_ylabel("the anisotropic filter − Mip-Splatting (dB)", fontsize=7.5)
         axes[1].set_title(
             f"Proposition 2 requires 0; paired on {n_pair} scene(s); "
             f"shaded band is ±σ = {sigma:.3f} dB",
@@ -795,8 +795,8 @@ def fig_parity(out):
 
 
 def fig_b2(out):
-    """B2: the fraction of non-DC SH the criterion keeps, by capture protocol."""
-    # Prefer the B2 run's own sweep: it is built from the same camera_protocols
+    """the angular mask: the fraction of non-DC SH the criterion keeps, by capture protocol."""
+    # Prefer the angular mask run's own sweep: it is built from the same camera_protocols
     # definition the instruments use, where the checked-in file predates the
     # switch from fixed camera counts to angular extent.
     p = None
@@ -807,8 +807,8 @@ def fig_b2(out):
     if p is None:
         p = "results/b2_protocols/protocols.json"
     if not os.path.exists(p):
-        print("fig10: B2 protocol sweep not present — placeholder")
-        _placeholder_panel(out, "fig10-b2-retention", "the B2 sweep has not run")
+        print("fig10: the angular mask protocol sweep not present — placeholder")
+        _placeholder_panel(out, "fig10-b2-retention", "the angular mask sweep has not run")
         return
     try:
         data = json.load(open(p))
@@ -835,8 +835,8 @@ def fig_b2(out):
                      (sum(lm) / len(lm)) if lm else None,
                      (sum(e["span"]) / len(e["span"])) if e["span"] else None))
     if not rows:
-        print("fig10: no usable B2 rows — placeholder")
-        _placeholder_panel(out, "fig10-b2-retention", "no usable B2 rows")
+        print("fig10: no usable the angular mask rows — placeholder")
+        _placeholder_panel(out, "fig10-b2-retention", "no usable the angular mask rows")
         return
 
     import numpy as np
@@ -861,7 +861,7 @@ def fig_b2(out):
                        fontsize=7.2)
     ax.set_ylim(0, 118)
     ax.set_ylabel("non-DC SH coefficients retained (%)", fontsize=7.5)
-    ax.set_title("B2 keeps degree 3 where the views support it, and not otherwise",
+    ax.set_title("the angular mask keeps degree 3 where the views support it, and not otherwise",
                  fontsize=8.0, loc="left", pad=8)
     _clean(ax)
     _save(fig, out, "fig10-b2-retention")

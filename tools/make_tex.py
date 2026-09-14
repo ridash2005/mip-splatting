@@ -581,7 +581,7 @@ def real_scene_table(rows, label, caption):
 
 
 METHOD_LABEL_TEX = {"3dgs": "3DGS", "mip-splatting": "Mip-Splatting",
-                    "b1-fisher": "B1 --- Fisher band-limit"}
+                    "b1-fisher": "the anisotropic filter"}
 
 
 def method_table(rows, inst, label, caption):
@@ -592,7 +592,7 @@ def method_table(rows, inst, label, caption):
            and r.get("train_scale", "").split("/")[0] == "1x"
            and (r.get("train_scale") == "1x" or r.get("train_scale").endswith("/full"))]
     order = ["3dgs", "mip-splatting", "b1-fisher"]
-    # Matched scenes, or the table is not a comparison. B1 was measured on two
+    # Matched scenes, or the table is not a comparison. the anisotropic filter was measured on two
     # scenes before it was measured on eight; averaging its two against the
     # baselines' eight compares lego and chair to a different set of objects and
     # reads as a gain that is nothing but scene difficulty. Restrict every row to
@@ -646,7 +646,7 @@ def method_table(rows, inst, label, caption):
     d_mip = acc.get("mip-splatting", {})
     if d_b1 and d_mip:
         L.append(r"    \midrule")
-        cells = [r"$\Delta$ (B1 $-$ Mip-Splatting)"]
+        cells = [r"$\Delta$ (anisotropic $-$ Mip-Splatting)"]
         for sc in SCALES:
             a = [float(r["psnr"]) for r in d_b1.get(sc, [])]
             b = [float(r["psnr"]) for r in d_mip.get(sc, [])]
@@ -661,7 +661,7 @@ def method_table(rows, inst, label, caption):
           r"30\,000 iterations, single-scale train. \emph{floor-dominated} is the "
           r"fraction of primitives where the Nyquist floor exceeds the estimation "
           r"term in every direction, measured by I-1 on the same capture; where it "
-          r"is 100\,\% Proposition~\ref{prop:reduction} makes B1 and Mip-Splatting "
+          r"is 100\,\% Proposition~\ref{prop:reduction} makes the anisotropic filter and Mip-Splatting "
           r"identical.",
           r"\end{table}", ""]
     return "\n".join(L)
@@ -759,7 +759,7 @@ def _b1_diagnostics(summaries_dir="results/kaggle_runs"):
 
 
 def stress_deltas(rows):
-    """{protocol: paired B1 - Mip-Splatting delta}, the same figure Table 3 shows.
+    """{protocol: paired the anisotropic filter - Mip-Splatting delta}, the same figure Table 3 shows.
 
     Factored out because the abstract and \S7.12 both quote the range of it, and
     quoting a computed range in prose is how "$-0.041$ to $+0.012$" came to sit
@@ -810,7 +810,7 @@ def stress_table(rows, inst, label, caption, sigma=SIGMA_FALLBACK):
          r"  \caption{" + caption + "}", r"  \label{tab:" + label + "}",
          r"  \small", r"  \setlength{\tabcolsep}{4pt}",
          r"  \begin{tabular}{lrrrrrrrr}", r"    \toprule",
-         r"    protocol & span & $\sigma_D/\sigma_L$ & Mip-Spl. & B1 & $\Delta$"
+         r"    protocol & span & $\sigma_D/\sigma_L$ & Mip-Spl. & aniso. & $\Delta$"
          r" & $\Delta/\sigma$ & above floor & aniso. \\", r"    \midrule"]
     for proto in PROTO_ORDER:
         d = acc.get(proto)
@@ -1168,6 +1168,10 @@ def fps_table(fps, label, caption):
                            "not quoted here in its place.")
     res = fps["results"]
     base = (res.get("mip") or {}).get("fps")
+    # The label is whatever the run wrote into its own JSON, which predates the
+    # naming used in this document. Map it, so the table agrees with the prose.
+    ROW_NAME = {"3dgs": "3DGS", "mip": "Mip-Splatting",
+                "b1": "the anisotropic filter"}
     L = [r"\begin{table}[htbp]", r"  \centering",
          r"  \caption{" + caption + "}", r"  \label{tab:" + label + "}",
          r"  \small", r"  \begin{tabular}{lrrrr}", r"    \toprule",
@@ -1180,7 +1184,7 @@ def fps_table(fps, label, caption):
         ratio = (v["fps"] / base) if base else None
         setup = v.get("filter_setup_seconds") or 0.0
         L.append("    " + " & ".join([
-            v["label"],
+            ROW_NAME.get(key, v["label"]),
             f"{v['n_gaussians']:,}".replace(",", r"\,"),
             f"{v['fps']:.1f}",
             f"{ratio:.3f}$\\times$" if ratio else NOT_MEASURED,
@@ -1312,9 +1316,9 @@ def geometry_tables(geo, inst):
 
 
 def b2_table(b2, label, caption):
-    """Table 4: B2 against the unmasked control and magnitude pruning."""
+    """Table 4: the angular mask against the unmasked control and magnitude pruning."""
     if not b2 or not b2.get("results"):
-        return placeholder(label, caption, "B2 has not been evaluated.")
+        return placeholder(label, caption, "the angular mask has not been evaluated.")
     res = b2["results"]
     rows_by_cfg = {"full": [], "b2": [], "magnitude": []}
     for k, v in res.items():
@@ -1324,7 +1328,7 @@ def b2_table(b2, label, caption):
         if cfg in rows_by_cfg:
             rows_by_cfg[cfg].append(v)
     if not rows_by_cfg["b2"]:
-        return placeholder(label, caption, "B2 has not been evaluated.")
+        return placeholder(label, caption, "the angular mask has not been evaluated.")
 
     def agg(vs, key):
         xs = [v[key] for v in vs if key in v and v[key] is not None]
@@ -1337,7 +1341,7 @@ def b2_table(b2, label, caption):
          r" & mean $\ell_{\max}$ \\", r"    \midrule"]
     labels = [("full", "full degree 3 (control)"),
               ("magnitude", "magnitude pruning, matched size"),
-              ("b2", "B2 --- identifiability masking")]
+              ("b2", "the angular mask")]
     for cfg, name in labels:
         vs = rows_by_cfg[cfg]
         if not vs:
@@ -1357,7 +1361,7 @@ def b2_table(b2, label, caption):
     L += [r"    \bottomrule", r"  \end{tabular}",
           r"  \par\vspace{2pt}\footnotesize Mean over the scenes measured, "
           r"post-hoc on trained models. Magnitude pruning is matched to the exact "
-          r"fraction B2 retained, so the two rows are the same size and differ only "
+          r"fraction the angular mask retained, so the two rows are the same size and differ only "
           r"in WHICH coefficients they keep.",
           r"\end{table}", ""]
     return "\n".join(L)
@@ -1421,10 +1425,10 @@ def pregof_table(rows, probe, label, caption):
 
 
 def method_cost_table(summaries, summaries_dir, label, caption):
-    r"""What B1 costs, paired against Mip-Splatting on the same scenes.
+    r"""What the anisotropic filter costs, paired against Mip-Splatting on the same scenes.
 
     Table~\ref{tab:cost} compares the two baselines. It does not say what the
-    method costs, and until the paired R7 session there was no run in which B1
+    method costs, and until the paired R7 session there was no run in which the anisotropic filter
     and Mip-Splatting trained the same scenes in the same session on the same
     card -- so cost could only have been compared across runs, which is exactly
     the comparison this project has had to correct three times.
@@ -1477,7 +1481,7 @@ def method_cost_table(summaries, summaries_dir, label, caption):
          r"    & \multicolumn{2}{c}{peak VRAM (MB)} "
          r"& \multicolumn{2}{c}{train (s)} & \multicolumn{2}{c}{primitives} \\",
          r"    \cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-7}",
-         r"    scene & Mip-Spl. & B1 & Mip-Spl. & B1 & Mip-Spl. & B1 \\",
+         r"    scene & Mip-Spl. & aniso. & Mip-Spl. & aniso. & Mip-Spl. & aniso. \\",
          r"    \midrule"]
     vr, tr, pr = [], [], []
     for scene, mv, bv, mt, bt, mn, bn in rows_:
@@ -1497,7 +1501,7 @@ def method_cost_table(summaries, summaries_dir, label, caption):
             f"{bn:,}".replace(",", "\\,") if bn else NOT_MEASURED,
         ]) + r" \\")
     L += [r"    \midrule",
-          "    ratio, B1/Mip & " + r"\multicolumn{2}{c}{"
+          "    ratio, aniso./Mip & " + r"\multicolumn{2}{c}{"
           + (f"{mean(vr):.1f}$\\times$" if vr else NOT_MEASURED) + "} & "
           + r"\multicolumn{2}{c}{"
           + (f"{mean(tr):.2f}$\\times$" if tr else NOT_MEASURED) + "} & "
@@ -1509,8 +1513,8 @@ def method_cost_table(summaries, summaries_dir, label, caption):
           r"and $30\,000$ iterations. Ratios are formed within a scene and then "
           r"averaged. The primitive count is unchanged to three decimal places, "
           r"which is Proposition~\ref{prop:reduction} again from a different "
-          r"direction: where the floor dominates, B1 \emph{is} Mip-Splatting, "
-          r"so it densifies identically. The memory is not: B1 accumulates a "
+          r"direction: where the floor dominates, the anisotropic filter \emph{is} Mip-Splatting, "
+          r"so it densifies identically. The memory is not: the anisotropic filter accumulates a "
           r"$3\times3$ observability matrix per primitive over every training "
           r"camera, and the peak does not track the primitive count, which is "
           r"what a large transient in that accumulation looks like.",
@@ -1519,17 +1523,17 @@ def method_cost_table(summaries, summaries_dir, label, caption):
 
 
 def b2_matched_table(b2c, label, caption):
-    """B2 against magnitude pruning at matched size, where both actually prune.
+    """the angular mask against magnitude pruning at matched size, where both actually prune.
 
     This is the comparison Table 4 exists to make and cannot make on a full
     orbit, where the criterion retains everything and both rows are the control.
 
     Two controls, because the first one on its own was not a fair test. Free
-    magnitude pruning ranks individual coefficients and keeps the largest; B2
+    magnitude pruning ranks individual coefficients and keeps the largest; the angular mask
     masks NESTED WHOLE DEGREES. At the same budget the free control has strictly
-    more freedom, so B2 losing to it says something about the structure, not
+    more freedom, so the angular mask losing to it says something about the structure, not
     about the criterion -- and the criterion is what is on trial. The blocked
-    control carries B2's structure and B2's budget and differs only in what it
+    control carries the angular mask's structure and the angular mask's budget and differs only in what it
     ranks by, which is the like-for-like comparison.
     """
     res = (b2c or {}).get("results") or {}
@@ -1548,16 +1552,16 @@ def b2_matched_table(b2c, label, caption):
                       mag["PSNR"], (deg or {}).get("PSNR")))
     if not rows_:
         return placeholder(label, caption,
-                           "B2 has not been evaluated on a capture where it "
+                           "the angular mask has not been evaluated on a capture where it "
                            "masks, so the comparison has no content yet.")
     rows_.sort(key=lambda t: (t[0], -t[2]))
     L = [r"\begin{table}[htbp]", r"  \centering",
          r"  \caption{" + caption + "}", r"  \label{tab:" + label + "}",
          r"  \small", r"  \begin{tabular}{llrrrrrrr}", r"    \toprule",
          r"    & & & & & \multicolumn{2}{c}{magnitude} "
-         r"& \multicolumn{2}{c}{$\Delta$ (B2 $-$ magnitude)} \\",
+         r"& \multicolumn{2}{c}{$\Delta$ (mask $-$ magnitude)} \\",
          r"    \cmidrule(lr){6-7}\cmidrule(lr){8-9}",
-         r"    scene & $\tau$ & kept & control & B2 & free & blocked"
+         r"    scene & $\tau$ & kept & control & mask & free & blocked"
          r" & free & blocked \\", r"    \midrule"]
     deltas, fair = [], []
     for scene, tau, kept, full, b2v, magv, degv in rows_:
@@ -1577,13 +1581,13 @@ def b2_matched_table(b2c, label, caption):
     L += [r"    \bottomrule", r"  \end{tabular}",
           r"  \par\vspace{2pt}\footnotesize PSNR over the whole test set; only "
           r"the capture the \emph{criterion} reads is restricted. Both controls "
-          r"are matched to the exact fraction B2 retained, so every model in a "
+          r"are matched to the exact fraction the angular mask retained, so every model in a "
           r"row has the same number of coefficients and they differ only in "
           r"\emph{which} ones. \emph{free} ranks individual coefficients, which "
-          r"B2 cannot do, so that column is an upper bound on what any "
+          r"the angular mask cannot do, so that column is an upper bound on what any "
           r"magnitude rule could reach at this budget rather than a like-for-"
           r"like control. \emph{blocked} restricts magnitude pruning to the "
-          r"nested whole degrees B2 masks: same structure, same budget, "
+          r"nested whole degrees the angular mask masks: same structure, same budget, "
           r"different criterion. The bolded $\Delta$ is that comparison. A row "
           r"at $0\,\%$ kept is every method discarding every non-DC "
           r"coefficient, where they coincide by definition.",
@@ -1592,7 +1596,7 @@ def b2_matched_table(b2c, label, caption):
 
 
 def b2_protocol_table(proto, sweep, label, caption):
-    """B2's criterion across capture protocols, measured without a GPU.
+    """the angular mask's criterion across capture protocols, measured without a GPU.
 
     Equation 5.1 depends on primitive positions and training view directions
     only, so the retained fraction and mean l_max are measurable from a trained
@@ -1600,7 +1604,7 @@ def b2_protocol_table(proto, sweep, label, caption):
     stays empty rather than estimated.
     """
     if not proto:
-        return placeholder(label, caption, "B2 has not been evaluated.")
+        return placeholder(label, caption, "the angular mask has not been evaluated.")
     by = {}
     for k, v in proto.items():
         by.setdefault(v["protocol"], []).append(v)
@@ -1915,15 +1919,15 @@ def macros(rows, summaries, inst=None, raw=None, b2c_for_macros=None,
         if c1new.get("1x") and c1new.get("1/8") else None)
     M["cOneScene"] = (c1scene or NOT_MEASURED).replace("_", "")
 
-    # Table 2's parity: the largest |B1 - Mip-Splatting| over the matched
+    # Table 2's parity: the largest |the anisotropic filter - Mip-Splatting| over the matched
     # scenes and all four test scales. Quoted in the abstract and in §7.11.
     #
-    # PAIRED, and the pairing is the whole claim. Proposition 2 says B1 becomes
+    # PAIRED, and the pairing is the whole claim. Proposition 2 says the anisotropic filter becomes
     # Mip-Splatting when the floor dominates, so the two numbers being differenced
     # have to come from the same capture, the same harness invocation and the same
     # build -- otherwise the difference also contains whatever separates two runs.
     # This selector used to accept train_scale "1x" as well as ".../full", which
-    # let R1's eight mip scenes stand in for mip at the full protocol: B1 was then
+    # let R1's eight mip scenes stand in for mip at the full protocol: the anisotropic filter was then
     # differenced against a run three commits older that had never used the
     # protocol, two scenes were counted twice on one side and once on the other,
     # and the result read 0.02 dB when the like-for-like figure was not yet
@@ -2008,7 +2012,7 @@ def main():
     # chair -- it moved arm A's full-res figure by nearly a decibel before this
     # filter was added. The seed table below deliberately takes all seeds.
     b2proto, b2sweep = {}, {}
-    # The B2 run rebuilds the protocol sweep from the same camera_protocols.py
+    # The angular mask run rebuilds the protocol sweep from the same camera_protocols.py
     # the instruments use, so it supersedes the local file, which was produced
     # under an earlier definition of arc and cone and disagrees with
     # Table~\ref{tab:instruments} about what a "cone" is.
@@ -2045,7 +2049,7 @@ def main():
             if not (cand.get("protocol") and cand.get("protocol") != "full"
                     and cand.get("results")):
                 continue
-            # Chosen, not stumbled on: two non-full B2 sessions exist and only
+            # Chosen, not stumbled on: two non-full the angular mask sessions exist and only
             # the later one carries the degree-blocked magnitude control, which
             # is the whole point of the table. Prefer a run that has it, then
             # the one with more evaluated configurations.
@@ -2064,7 +2068,7 @@ def main():
                 except Exception:
                     continue
                 # Table 4 is the STANDARD benchmark, so it takes the full-orbit
-                # run specifically. Two B2 sessions exist -- one per protocol --
+                # run specifically. Two the angular mask sessions exist -- one per protocol --
                 # and taking whichever sorts last in the tree silently put cone
                 # numbers under a caption describing the full orbit. The cone
                 # comparison has its own table.
@@ -2154,19 +2158,19 @@ def main():
             r"in one session on one GPU."),
         "table-b2-protocols.tex": b2_protocol_table(
             b2proto, b2sweep, "btwoproto",
-            r"B2 --- the identifiability criterion across capture protocols."),
+            r"the angular mask --- the identifiability criterion across capture protocols."),
         "table-method-cost.tex": method_cost_table(
             summaries, a.summaries, "methodcost",
-            r"What B1 costs, paired against Mip-Splatting in one session."),
+            r"What the anisotropic filter costs, paired against Mip-Splatting in one session."),
         "table-pregof.tex": pregof_table(
             rows, load_probe(a.runs, "pregof"), "pregof",
             r"L1 probe --- does GOF densification account for arm A's offset "
             r"from its published figure?"),
         "table-b2-matched.tex": b2_matched_table(b2c, "btwomatched",
-            r"B2 against magnitude pruning at matched model size, on a capture "
+            r"the angular mask against magnitude pruning at matched model size, on a capture "
             r"where the criterion actually masks."),
         "table-b2.tex": b2_table(b2, "b2",
-            r"R8 Table 4 --- B2, angular identifiability of spherical harmonics."),
+            r"R8 Table 4 --- the angular mask, angular identifiability of spherical harmonics."),
         "table-real.tex": real_scene_table(
             [r for r in rows if r.get("iterations") == "30000"], "real",
             r"R3 --- real scenes that fit 16\,GB, both arms."),

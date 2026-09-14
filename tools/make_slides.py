@@ -470,7 +470,7 @@ def build(prs, D):
            "fire.\n\n", {}),
           ("On the standard benchmark the Nyquist floor dominates the estimation "
            "term by a factor of three, on 100% of primitives, in every "
-           "direction. Proposition 2 then makes B1 and Mip-Splatting the same "
+           "direction. Proposition 2 then makes the anisotropic filter and Mip-Splatting the same "
            "filter there \u2014 ", {}),
           ("no gain is available on the standard benchmark, and one would be a "
            "bug", {"bold": True}),
@@ -484,7 +484,7 @@ def build(prs, D):
     header(s, "result 3 \u00b7 parity", "Proposition 2, as a measurement")
     picture(s, "fig9-parity", M, Inches(2.0), Inches(11.9))
     text(s, M, Inches(5.9), W - 2 * M, Inches(1.2),
-         "B1's curve is drawn dashed on top of Mip-Splatting's and is invisible "
+         "the anisotropic filter's curve is drawn dashed on top of Mip-Splatting's and is invisible "
          "beneath it, because that is what the proposition requires. The "
          "difference the band-limit makes is several decibels; the difference "
          "between which band-limit is hundredths of one.",
@@ -506,14 +506,14 @@ def build(prs, D):
            "cone > arc > full \u2248 0.", {})],
          size=15, colour=INK_2, spacing=1.35)
 
-    # 11 --------------------------------------------------------------- B2
+    # 11 --------------------------------------------------------------- the angular mask
     s = slide(prs)
     header(s, "result 5 \u00b7 method II",
            "The same argument in the angular domain")
     picture(s, "fig10-b2-retention", M, Inches(1.95), Inches(7.0))
     text(s, Inches(8.1), Inches(2.05), W - Inches(8.1) - M, Inches(4.4),
          [("Spherical-harmonic coefficients are 76% of the model. A primitive "
-           "seen from a narrow cone cannot support degree 3, and B2 does not "
+           "seen from a narrow cone cannot support degree 3, and the angular mask does not "
            "give it one.\n\n", {}),
           ("Measurement amended the criterion. ", {"bold": True}),
           ("An absolute \u03bb_min threshold has no value that responds "
@@ -600,7 +600,7 @@ def build(prs, D):
         "one CSV by one command.",
     ]
     right = [
-        "Variable-length SH storage, so the B2 memory saving is real rather "
+        "Variable-length SH storage, so the angular mask memory saving is real rather "
         "than notional \u2014 masking to zero does not shrink a fixed-width PLY.",
         "Pose-noise sensitivity: \u039b inherits 3DGS's complete trust in SfM "
         "poses, and aggregation over views should degrade gracefully. That is a "

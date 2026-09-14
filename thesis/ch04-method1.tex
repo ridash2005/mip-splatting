@@ -1,4 +1,4 @@
-\chapter{Method I --- the sampling-geometry band-limit}
+\chapter{An anisotropic band-limit derived from the capture's conditioning}
 \label{ch:method1}
 
 \keybox{the idea, before the mathematics}{%
@@ -42,7 +42,7 @@ Chapter~\ref{ch:results} show no improvement, and why a gain there would have in
   \label{fig:cameras}
 \end{figure}
 
-\section{The estimation problem}
+\section{Treating primitive position as a quantity the photographs measure}
 Regard the position $p_k$ of a primitive as a parameter to be estimated from
 image measurements. Camera $n$ observes the primitive's projection at
 \begin{equation}
@@ -55,7 +55,7 @@ where $\sigma_{\mathrm{pix}}$ is the localisation noise of an image feature, in
 pixels. The log-likelihood of the measurement from view $n$ is, up to constants,
 $-\tfrac12 (u_n-\pi_n(p))^{\!\top}\Sigma_{\mathrm{pix}}^{-1}(u_n-\pi_n(p))$.
 
-\section{The measurement Jacobian is already computed}
+\section{The measurement Jacobian the renderer already forms}
 \label{sec:jacobian}
 The Fisher information carried by view $n$ about $p$ is
 \begin{equation}
@@ -77,7 +77,7 @@ nothing about depth. For a pinhole camera the eigenvalues of $I_n$ are exactly
 $(0,\ (f/z)^2/\sigma_{\mathrm{pix}}^2,\ (f/z)^2/\sigma_{\mathrm{pix}}^2)$
 (Appendix~\ref{app:rank}). Depth information exists only through parallax.
 
-\section{Accumulation, and what $\Lambda_k$ is}
+\section{Accumulating over views: the observability matrix $\Lambda_k$}
 \label{sec:accumulation}
 Summing over views, weighted by each view's visibility and blending contribution $w_{nk}$, which the rasteriser already accumulates,
 \begin{equation}
@@ -125,7 +125,7 @@ uncertainty with which the capture determines its position along that direction.
 Structure finer than $s/\sqrt{\lambda_i}$ is not identifiable from the
 measurements; fitting it is fitting noise.}
 
-\section{The filter}
+\section{From accumulated information to a covariance floor}
 Hence a per-direction variance, floored at Mip-Splatting's own value and capped
 at a scene-scale fraction:
 \begin{equation}
@@ -191,7 +191,7 @@ method and its baseline from ``similar in spirit'' into ``the baseline is a
 corollary'', and it explains a magic number in a published paper.
 Appendix~\ref{app:prop1} gives the derivation in full.
 
-\section{One view is already anisotropic}
+\section{A single view is already anisotropic, falling off as $\cos^2\varphi$}
 \label{sec:offaxis}
 
 Before parallax enters at all, there is anisotropy the scalar filter discards.
@@ -227,7 +227,7 @@ what it costs. This is also the most likely explanation for the residual in
 towards obliquity, measures more anisotropy than any parallax-only model
 predicts.
 
-\section{The anisotropy, exactly}
+\section{Two views: the exact triaxial spectrum, and where it inverts}
 \label{sec:anisotropy}
 Take the simplest case that still has something to say: two cameras at the same
 distance $z$, placed symmetrically about the primitive, so that the angle
@@ -261,7 +261,7 @@ $90^\circ$, and the full orbit lies so far above it that the ratio is $\approx 1
 either way, so the restriction costs nothing and its absence would have been an
 error.
 
-\subsection{A protocol is a distribution of views}
+\subsection{A capture is a distribution of views, and two views understate it by $\sqrt{2}$}
 \label{sec:capprediction}
 
 Equation~\eqref{eq:anisotropy} is exact for \emph{two} cameras. A capture
@@ -288,7 +288,7 @@ $\sin^2\alpha \to \alpha^2$: the cap's $\lambda_3/\lambda_1$ is
 \textbf{half} the two-view value, because a cap's cameras are spread across the window instead of sitting at its two ends. A smaller $\lambda_3/\lambda_1$ is a
 \emph{worse}-conditioned capture, so Equation~\eqref{eq:anisotropy} applied to a
 protocol \emph{understates} its depth anisotropy by $\sqrt{2}$ in $\sigma$. The
-direction matters: I-2 measuring more anisotropy than the two-view form predicts
+direction matters: the conditioning instrument measuring more anisotropy than the two-view form predicts
 is the model working, not failing, and reporting it against the two-view number
 would have made a confirmation look like a discrepancy. Every prediction quoted
 against a measured span in this thesis therefore uses Equation~\eqref{eq:cap}.}
@@ -314,7 +314,7 @@ against a measured span in this thesis therefore uses Equation~\eqref{eq:cap}.}
   curve is the quantity this thesis exploits. Both forms are drawn because the
   difference between them is a correction this project had to make: the dashed
   curve is Equation~\eqref{eq:anisotropy}, exact for two cameras, and the solid
-  one is Equation~\eqref{eq:cap} for cameras distributed over the span, as a protocol is. The points are I-2 measured on eight scenes
+  one is Equation~\eqref{eq:cap} for cameras distributed over the span, as a protocol is. The points are the conditioning instrument measured on eight scenes
   (\S\ref{sec:instrumentresults}), and they sit above the two-view curve at
   every protocol --- plotted against that curve alone, a confirmation would read
   as a discrepancy.}
@@ -347,7 +347,7 @@ against a measured span in this thesis therefore uses Equation~\eqref{eq:cap}.}
   low, for the reason \S\ref{sec:capprediction} gives.
 \end{table}
 
-\section{Exact reduction to the baseline}
+\section{Exact reduction: why the method equals Mip-Splatting on a good capture}
 \label{sec:proposition2}
 
 \begin{figure}[htbp]
@@ -394,7 +394,7 @@ and with the filter zeroed entirely it must reproduce 3DGS. The second of these
 is already in force. It \emph{is} the arm-B construction of
 \S\ref{sec:onecodebase}, and Chapter~\ref{ch:results} reports it verified on the saved models.
 
-\section{What an anisotropic filter costs the implementation}
+\section{What a matrix filter costs the implementation}
 \label{sec:implcost}
 
 Two consequences follow from $\Sigma_{\mathrm{filt}}$ being a matrix. Both belong to the implementation.
@@ -419,7 +419,7 @@ this idea would have failed. The filter is a piecewise-constant
 band-limit that the optimiser sees as a fixed additive covariance, held constant throughout
 training.
 
-\section{Cost}
+\section{Arithmetic cost per construction, and how often it is paid}
 $\Lambda_k$ is a sum of $N$ outer products of a $2\times3$ matrix, followed by a
 $3\times3$ symmetric eigendecomposition per primitive. It is recomputed on the
 same schedule Mip-Splatting already uses for \texttt{filter\_3D} --- every 100

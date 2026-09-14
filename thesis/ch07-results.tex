@@ -1,4 +1,4 @@
-\chapter{Results}
+\chapter{Results: reproduction, the instruments, and the two proposed methods}
 \label{ch:results}
 
 \keybox{how to read this chapter}{%
@@ -30,7 +30,7 @@ than restated. Every table and figure in this chapter is regenerated
 mechanically from the measurement record; no number is typed into this document
 by hand (Appendix~\ref{app:record}).}
 
-\section{Before any measurement: the pre-flight}
+\section{Before any measurement: twelve assertions the session must pass}
 \label{sec:preflight}
 
 A reproduction that has not checked its own instrument is a reproduction of
@@ -40,7 +40,7 @@ one the code can actually run on, that both arms load the same images, that the
 perceptual metric uses the backbone the papers used, and that the two checkouts differ by exactly the intended change and
 nothing else. Appendix~\ref{app:harness} lists all twelve with what each one
 protects against. All twelve pass.
-\section{Baseline reproduction --- Blender, single-scale train}
+\section{Reproducing both baselines: trained at one scale, tested at four}
 \label{sec:table1}
 
 \input{generated/table1-stmt}
@@ -48,7 +48,7 @@ protects against. All twelve pass.
 \keybox{Mip-Splatting reproduces to L1, and the gap reproduces with it}{%
 Over the $\stmtArmAScenes$ scenes the published mean covers, Mip-Splatting lands
 within $\stmtArmAMaxDelta$\,dB of its published figure at every test scale.
-That is inside the $\pm0.20$\,dB of Table~\ref{tab:levels}, so arm A carries an
+That is inside the $\pm0.20$\,dB of Table~\ref{tab:levels}, so the Mip-Splatting arm carries an
 \textbf{L1} claim on PSNR. The \textbf{gap} between the arms, on the
 $\stmtMatchedScenes$ scenes both measured, is within $\stmtGapMaxDelta$\,dB of
 the published gap at all four scales --- also L1, and it is the quantity the
@@ -62,9 +62,9 @@ such.}
 \keybox{this table used to say something weaker, and the weakness was an artefact}{%
 Both \emph{ours} columns were computed on the matched seven scenes, and compared
 against published figures that are means over eight. \texttt{ship} happens to be
-arm A's weakest scene at full resolution, at $30.48$\,dB against a set mean of
-$33.44$, so excluding it lifted arm A's mean by $0.42$\,dB, and that entire
-lift was being reported as reproduction error. Arm A read $0.50$\,dB from its
+the Mip-Splatting arm's weakest scene at full resolution, at $30.48$\,dB against a set mean of
+$33.44$, so excluding it lifted the Mip-Splatting arm's mean by $0.42$\,dB, and that entire
+lift was being reported as reproduction error. The Mip-Splatting arm read $0.50$\,dB from its
 published figure and was written up as L2.
 
 Two comparisons live in this table and they do not take the same denominator. A
@@ -137,14 +137,14 @@ The tables remain the claim; these show what the claim looks like.}
 
 \input{generated/table-cost}
 
-\section{Gate G2 --- the defect it found}
+\section{The scale-collapse gate, and the mislabelled arm it exposed}
 \label{sec:g2}
 
-G2 was declared in advance as: 3DGS falls $\gtrsim13$\,dB from full to
+the scale-collapse gate was declared in advance as: 3DGS falls $\gtrsim13$\,dB from full to
 $\tfrac18$; Mip-Splatting falls $\lesssim6$\,dB; the gap at $\tfrac18$ exceeds
-$9$\,dB. On R1 it failed, on two of its three criteria: arm B fell $9.09$\,dB
+$9$\,dB. On R1 it failed, on two of its three criteria: the 3DGS arm fell $9.09$\,dB
 where $13$ was required, and the gap at $\tfrac18$ was $4.07$\,dB against a
-published $10.98$. The protocol's instruction on a G2 failure is to stop and diagnose in a stated order, which is what follows. It took two attempts,
+published $10.98$. The protocol's instruction when the scale-collapse gate fails is to stop and diagnose in a stated order, which is what follows. It took two attempts,
 and the first was wrong.
 
 \subsection*{The three checks the protocol names, and a fourth it does not}
@@ -154,9 +154,9 @@ and the first was wrong.
         the shipped evaluation's own pooled figure to within $0.01$\,dB on every
         scene of every run --- asserted per scene, on every scene. Not the
         cause.
-  \item \textbf{Arm B's \texttt{filter\_3D} at step 30\,000.} Read back from all
+  \item \textbf{The 3DGS arm's \texttt{filter\_3D} at step 30\,000.} Read back from all
         eight saved point clouds it is identically zero, and non-zero on all
-        eight of arm A's. The reduction is exact. Not the cause.
+        eight of the Mip-Splatting arm's. The reduction is exact. Not the cause.
   \item \textbf{The white-background setting.} Passed to every job on both
         arms. Not the cause.
 \end{enumerate}
@@ -170,21 +170,21 @@ fixed gradient threshold. The original
 3DGS rule is the fixed threshold, $\lVert\nabla\rVert \ge \tau_{\mathrm{pos}}$
 alone. The argument was that a
 better densification recovers most of what the missing band-limit costs, so the
-collapse G2's thresholds were calibrated against could not occur in this
-codebase, and that G2 was therefore unmeetable here as a property of the gate's premise.
+collapse the scale-collapse gate's thresholds were calibrated against could not occur in this
+codebase, and that the scale-collapse gate was therefore unmeetable here as a property of the gate's premise.
 
 It was a plausible story, it was consistent with every number then available,
 and it was \emph{wrong}. It also had the shape a wrong diagnosis usually has:
 it explained the failure as unfixable, and it did so without a test that could
 have refuted it.
 
-\subsection*{The fourth check: arm B was not running 3DGS's rasteriser}
+\subsection*{The fourth check: the 3DGS arm was not running 3DGS's rasteriser}
 \label{sec:c1}
 
 The three checks above say the gate failed. They do not say why, and the first
 answer this project gave was wrong.
 
-Arm B was built by zeroing Mip-Splatting's 3D smoothing filter, which makes the
+The 3DGS arm was built by zeroing Mip-Splatting's 3D smoothing filter, which makes the
 world-space band-limit 3DGS's. What that overlooks is that Mip-Splatting has a
 \emph{second} band-limit: a screen-space dilation carrying an opacity
 compensation $\rho = \sqrt{\det\Sigma' / \det(\Sigma' + k I)}$. That one lives in
@@ -192,15 +192,15 @@ CUDA,
 where zeroing a Python attribute does not reach it. The arm labelled 3DGS was therefore anti-aliasing better than 3DGS, at the very scales the gate was
 scored on.
 
-Isolating that term is change C1. Appendix~\ref{app:impl} gives the switch and
+Isolating that term is change the opacity-compensation fix. Appendix~\ref{app:impl} gives the switch and
 what it touches; Appendix~\ref{app:defects} gives how it was found, including the
 two further things the switch turned out to remove that nobody had asked it to.
-\subsection*{G2, re-scored}
+\subsection*{The scale-collapse gate, re-scored}
 
 Every arm-B row produced with the compensation active is superseded. They are
 marked as such in the record and retained --- every table in this document
 excludes them, and none of them has been deleted.
-Arm A is untouched and was not re-run: nothing about this defect involves it.
+The Mip-Splatting arm is untouched and was not re-run: nothing about this defect involves it.
 
 \input{generated/table-g2}
 
@@ -210,7 +210,7 @@ the arm rebuilt, Table~\ref{tab:stmt} reproduces \emph{both} baselines rather
 than one. 3DGS lands within $\stmtArmBMaxDelta$\,dB of its published figure at
 every test scale and Mip-Splatting within $\stmtArmAMaxDelta$, and the gap column
 --- the quantity the whole two-arm construction exists to measure --- reproduces
-to within $\stmtGapMaxDelta$\,dB at all four, which is inside the L1 tolerance. This project did not have that before; it had arm A at L1 and an arm
+to within $\stmtGapMaxDelta$\,dB at all four, which is inside the L1 tolerance. This project did not have that before; it had the Mip-Splatting arm at L1 and an arm
 B that was several decibels adrift for a reason it had explained incorrectly.
 
 \keybox{what this cost, and what it bought}{%
@@ -235,24 +235,24 @@ $3\,000$ to $12\,100$. What varies is \emph{when}, not \emph{whether}.
 Two things make the exclusion narrow, and defensible. \texttt{ship} trains
 without incident on the \emph{multi-scale} protocol, so Table~\ref{tab:mtmt} is a
 full eight-scene comparison and the failure is specific to single-scale training.
-And it trains without incident on arm A, so the fragility belongs to the vanilla band-limit semantics.
+And it trains without incident on the Mip-Splatting arm, so the fragility belongs to the vanilla band-limit semantics.
 
 It is excluded from the single-scale arm-B rows, and the protocol's rule for a
 scene that will not run is to record it and move on. The instrumentation that
 localised the fault, and the three explanations it ruled out, are in
 Appendix~\ref{app:defects}.
-\section{Baseline reproduction --- Blender, multi-scale train and test}
+\section{Reproducing both baselines: trained and tested at all four scales}
 \label{sec:table2}
 
 \input{generated/table2-mtmt}
 
-\paragraph{This column was two rasterisers, briefly.} Arm B was re-measured
-after C1, and for a period each of its $32$ cells was the mean of the old measurement and the new one instead of the new one alone --- the rows the re-run
+\paragraph{This column was two rasterisers, briefly.} The 3DGS arm was re-measured
+after the opacity-compensation fix, and for a period each of its $32$ cells was the mean of the old measurement and the new one instead of the new one alone --- the rows the re-run
 replaced were never retired, because the rule that retires them keyed on a name
 the re-run shared. Nothing about the output looked wrong. The generator now
 refuses to emit a table whose cells draw on more than one build, and names the
 cell; the account is in Appendix~\ref{app:defects}.
-\section{What remains of the densification difference}
+\section{Testing the densification explanation against the code that predates it}
 \label{sec:densification}
 
 Section~\ref{sec:g2} settles the cause of the $\tfrac18$-scale shortfall: it was
@@ -275,9 +275,9 @@ alone. So the code every reproduction of Mip-Splatting now starts from does not
 densify the way the published numbers did --- a real difference from both
 published methods, and one both arms of this project share.}
 
-What it does \emph{not} explain is arm A's distance from its published figure,
+What it does \emph{not} explain is the Mip-Splatting arm's distance from its published figure,
 and for two independent reasons. The first is that there is no longer much
-distance to explain: on the eight scenes the published mean covers, arm A is
+distance to explain: on the eight scenes the published mean covers, the Mip-Splatting arm is
 within $\stmtArmAMaxDelta$\,dB at every test scale. The $0.50$\,dB this section
 was written to account for was the artefact of \S\ref{sec:table1} --- a
 seven-scene mean standing against an eight-scene published one.
@@ -288,12 +288,12 @@ The second is that the hypothesis has now been tested directly, and it fails.
 
 The probe reverts exactly that one change and nothing else, $45$ lines across
 two files, which puts the code back in the state Mip-Splatting's published table
-was produced from. Arm A was re-run on it, all
+was produced from. The Mip-Splatting arm was re-run on it, all
 $\pregofScenes$ scenes, same data, same
 seed, same iterations.
 
 \keybox{the densification explanation is refuted}{%
-At the pre-GOF commit arm A reproduces the published figures to
+At the pre-GOF commit the Mip-Splatting arm reproduces the published figures to
 $\pregofMaxDelta$\,dB at every test scale --- effectively exactly, and well
 inside L1. If GOF densification were the cause of a standing offset, the
 post-GOF column would sit clearly above this one. It does not: the effect of
@@ -301,14 +301,14 @@ that change is at most $\gofMaxEffect$\,dB and it is not consistently signed,
 $+0.07$ at full resolution and $-0.11$ at $\tfrac18$.
 
 So the densification difference is real, and it is shared by both arms, but it
-is \emph{not} why arm A sits where it sits. The explanation had never been
+is \emph{not} why the Mip-Splatting arm sits where it sits. The explanation had never been
 tested, and when it finally was, it turned out to be wrong. The sentence it
 replaces read: ``a better densification plausibly accounts for standing above
 the published level''. That sentence was doing the work of a measurement while
 being an assertion, and the word \emph{plausibly} was carrying
 all of it.}
 
-The earlier version of this section also argued the point from arm B's
+The earlier version of this section also argued the point from the 3DGS arm's
 $\cOneBaseFull$\,dB on \texttt{lego} at full scale, set against a published
 eight-scene mean of $33.33$. That comparison is void: \texttt{lego} is one scene
 and an easy one, and a single scene standing above an eight-scene mean says
@@ -318,15 +318,15 @@ different denominator, and finding one is what exposed the other.
 Three consequences, revised:
 
 \begin{enumerate}[leftmargin=1.4em,itemsep=3pt]
-  \item \textbf{Arm A carries an L1 claim on PSNR; arm B carries none.} Arm A is
+  \item \textbf{The Mip-Splatting arm carries an L1 claim on PSNR; the 3DGS arm carries none.} The Mip-Splatting arm is
         within $\stmtArmAMaxDelta$\,dB over the eight scenes the published mean
-        covers. Arm B is missing \texttt{ship}, so its column is a
+        covers. The 3DGS arm is missing \texttt{ship}, so its column is a
         $\stmtArmBScenes$-scene mean against an eight-scene published figure and
         is not a reproduction test at all. Only PSNR is compared: the published
         SSIM and LPIPS are not tabulated per scale in the source, so the L1
         claim is scoped to PSNR and stated that way.
   \item \textbf{The between-arm comparison is now what it was claimed to be.}
-        Before C1 it was not: the arms differed by the 2D compensation as well as
+        Before the opacity-compensation fix it was not: the arms differed by the 2D compensation as well as
         by the 3D filter, so the gap column mixed the method with a residual
         anti-aliasing term. Both arms now share the densification, the
         dataloader, the metrics, the LPIPS backbone \emph{and} the screen-space
@@ -345,7 +345,7 @@ It was defended on the grounds that pinning the pre-GOF commit would move the
 difference between the arms out of the filter and back into the plumbing, which
 is still true. What has changed is that the cost of keeping GOF has now been measured instead of assumed, and it is $\gofMaxEffect$\,dB at worst.
 
-\section{Run-to-run spread (I-3)}
+\section{How much the harness varies between identical runs}
 \label{sec:spread}
 Parity is not a testable claim without a $\sigma$. Repeats of an identical
 configuration bound the harness's own nondeterminism --- CUDA atomics in the
@@ -390,7 +390,7 @@ arm without a band-limit is the less stable one under reseeding, which is
 consistent with the mechanism this thesis proposes, though two scenes are far
 too few to claim it as a finding.
 
-\section{R3 --- real scenes}
+\section{Real scenes: Mip-NeRF 360, Tanks and Temples, Deep Blending}
 \label{sec:real}
 
 \input{generated/table-real}
@@ -410,7 +410,7 @@ not yet been exceeded, and no scene was made to fit by reducing anything.
 scenes the two arms land within $0.2$\,dB of each other, and they do so in both
 directions: 3DGS is ahead on \texttt{bonsai}, \texttt{counter} and
 \texttt{kitchen}, Mip-Splatting on \texttt{room}. That is what Proposition~\ref{prop:reduction}
-plus the I-1 measurement of \S\ref{sec:instrumentresults} together require: these
+plus the floor-occupancy measurement of \S\ref{sec:instrumentresults} together require: these
 are well-conditioned full-orbit captures, the Nyquist floor binds, and where it
 binds the two filters are identical. It is a second confirmation of the
 instrument result, on real data, at the level of rendered quality, and it is the same reason no gain is available here for a method
@@ -423,7 +423,7 @@ different quantity and setting the two side by side is precisely the error
 \S\ref{ch:discussion} records as having already occurred once in this project's
 earlier write-up. These rows are L2 and are the self-run control for later work.
 
-\section{Cost, measured}
+\section{Training cost and model size of the two baselines}
 \label{sec:measuredcost}
 The estimates in the protocol's \S7 were replaced by measurement at R0, on the
 same free-tier hardware every later rung uses: $\rZeroItersPerSec$ iterations per
@@ -432,17 +432,17 @@ peak of $\rZeroPeakVram$\,MB of VRAM. The last of these matters for scope: 16\,G
 is nowhere near binding on the Blender scenes, so the compute envelope of
 \S\ref{ch:design} constrains the \emph{real} scenes.
 
-\section{Render speed, and how it was measured}
+\section{Render speed, timed on the render call alone}
 \label{sec:fps}
 
-Section~\ref{sec:implcost} argues that B1 cannot cost anything at render time:
+Section~\ref{sec:implcost} argues that the anisotropic filter cannot cost anything at render time:
 $\Lambda_k$ is recomputed on the filter's own training schedule and never inside
 the render loop. That is an argument about code, and the first question a
 graphics audience asks deserves a measurement.
 
 \input{generated/table-fps}
 
-B1 renders at $\bOneFpsRatio\times$ Mip-Splatting --- $\bOneFpsSlowerPct\,\%$
+the anisotropic filter renders at $\bOneFpsRatio\times$ Mip-Splatting --- $\bOneFpsSlowerPct\,\%$
 slower, on a model with $\bOnePrimFewerPct\,\%$ fewer primitives, which is
 within the variation two training runs of the same configuration produce in
 primitive count alone. The filter's own construction costs $\bOneFilterSetup$\,s,
@@ -455,7 +455,7 @@ from the C2 session, which ended in error with six of eight scenes complete
 (\S\ref{sec:budget}); the mount did not carry a \texttt{lego} model the
 benchmark could discover, so that row is absent, and it has not been estimated. Nothing
 about the comparison this section defends depends on it: the quantity at issue is
-B1 against \emph{its own baseline}, and both of those are here, measured in one
+the anisotropic filter against \emph{its own baseline}, and both of those are here, measured in one
 session on one GPU.
 
 \keybox{the \texttt{render\_fps} column of Table~\ref{tab:cost} does not measure
@@ -471,7 +471,7 @@ answers the question is Table~\ref{tab:fps}, and what it defends is the
 \emph{ratio}, since every cost shared by the three arms has been excluded from
 all of them equally.}
 
-\section{The instruments --- I-1 and I-2}
+\section{Where the resolution floor binds, and how anisotropic each capture is}
 \label{sec:instrumentresults}
 
 Both instruments are functions of the primitive positions and the capture
@@ -484,7 +484,7 @@ capture protocols of \S\ref{sec:stress}, at a total cost of two minutes.
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.86\linewidth]{figures/fig8-floor-binding.pdf}
-  \caption{The mechanism, measured. B1 can only differ from Mip-Splatting where
+  \caption{The mechanism, measured. The anisotropic filter can only differ from Mip-Splatting where
   the estimation term $s^2/\lambda_i$ exceeds the Nyquist floor $f_k^2$; below
   the dashed line Proposition~\ref{prop:reduction} makes them the same filter to
   numerical precision. On the standard full orbit the floor dominates by a factor
@@ -505,7 +505,7 @@ appear five times larger than it is. Both are reported in
 Appendix~\ref{app:defects}; the numbers in this section are from after both were
 fixed, and the agreement between the instrument and the filter's own diagnostic
 is the check that confirms it.
-\subsection*{I-1: where the floor binds, and where it stops}
+\subsection*{The floor-occupancy instrument: where the floor binds, and where it stops}
 
 The estimation term $0.2/\lambda_i$ and Mip-Splatting's floor $f_k^2$ are the two
 sides of Proposition~\ref{prop:reduction}'s hypothesis, and the ratio between
@@ -516,7 +516,7 @@ past unity only on the cone ($1.35$) and the pencil ($5.52$).
 
 On the standard benchmark the floor dominates by a factor of six, and the
 estimation term exceeds it on \textbf{zero} primitives, in \emph{any} direction,
-of \emph{every} scene. By Proposition~\ref{prop:reduction} that makes B1 \emph{be} Mip-Splatting on this benchmark, exactly, which is worth stating plainly:
+of \emph{every} scene. By Proposition~\ref{prop:reduction} that makes the anisotropic filter \emph{be} Mip-Splatting on this benchmark, exactly, which is worth stating plainly:
 
 \keybox{no gain is available on the standard Blender benchmark}{%
 The eight Blender scenes are 100-camera full orbits, the best-conditioned capture
@@ -528,7 +528,7 @@ $\methodParityMax$\,dB over $\methodParityScenes$ scenes and four test scales.}
 
 \subsection*{The two diagnostics agree, and where they do not is informative}
 
-I-1 is computed off a trained point cloud by a NumPy instrument; the filter
+the floor-occupancy instrument is computed off a trained point cloud by a NumPy instrument; the filter
 prints its own occupancy during training, from the model it is actually
 filtering. They are independent implementations of the same comparison, and
 Table~\ref{tab:stress}'s \emph{above floor} column can be read against
@@ -555,9 +555,9 @@ difference could explain. Two implementations of one comparison agreeing on five
 of six protocols, and differing only where the quantity sits within a third of
 its decision threshold, is a much stronger statement than either makes alone.}
 
-\subsection*{I-2 across the stress suite: the regime structure is real}
+\subsection*{The conditioning instrument across the stress suite: the regime structure is real}
 
-The refutation condition at gate G3 is that the floor exceeds the estimation
+The refutation condition at the floor-binding gate is that the floor exceeds the estimation
 term on nearly every primitive in \emph{every} scene, which would make
 Proposition~\ref{prop:reduction} apply universally and collapse the method to
 its baseline everywhere. It does not. Degrading the capture moves the balance as
@@ -606,7 +606,7 @@ sits above prediction every time, never below. That is what
 \S\ref{sec:offaxis} would lead you to expect, because perspective contributes
 anisotropy of its own that a cap of ray directions does not contain.}
 
-So gates G3 and G4 are both passed, and the regime table of
+So gates the floor-binding gate and the anisotropy gate are both passed, and the regime table of
 \S\ref{sec:anisotropy} has been confirmed by measurement and is no longer a prediction --- before a line of method code exists. This is the cheapest
 falsification the project had available, and it did not fire.
 
@@ -623,7 +623,7 @@ $2$--$4\times$ is not a wide enough focal spread to make it bind. Either the
 protocol needs a wider spread or the defect is real but small; this measurement
 does not distinguish those, and it is not reported as though it did.
 
-\section{The method on the standard benchmark}
+\section{The anisotropic band-limit on the standard benchmark, where parity is required}
 \label{sec:table2m}
 
 \input{generated/table-method}
@@ -632,7 +632,7 @@ does not distinguish those, and it is not reported as though it did.
   \centering
   \includegraphics[width=\linewidth]{figures/fig9-parity.pdf}
   \caption{Proposition~\ref{prop:reduction} as a measurement. \emph{Left:} the
-  three methods over the scenes measured under all of them --- B1's curve is
+  three methods over the scenes measured under all of them --- the anisotropic filter's curve is
   drawn dashed \emph{on top of} Mip-Splatting's, and is invisible beneath it
   because that is what the proposition requires. \emph{Right:} the same thing as
   a difference, against the harness's own run-to-run spread. Every scale sits
@@ -643,9 +643,9 @@ does not distinguish those, and it is not reported as though it did.
 \end{figure}
 
 \keybox{the prediction here was parity, and it was recorded first}{%
-I-1 measured the Nyquist floor binding on $100\,\%$ of primitives on these
+the floor-occupancy instrument measured the Nyquist floor binding on $100\,\%$ of primitives on these
 captures (\S\ref{sec:instrumentresults}), and Proposition~\ref{prop:reduction}
-then makes B1 and Mip-Splatting \emph{identical}. So
+then makes the anisotropic filter and Mip-Splatting \emph{identical}. So
 this table is not where the method is meant to win. It is where it must not
 lose. A gain here would indicate a bug, and the exact-reduction unit test is run
 inside the same session that produces these numbers, aborting the run if it
@@ -665,13 +665,13 @@ times.
 \input{generated/table-method-cost}
 
 \keybox{the primitive count is unchanged; the memory is not}{%
-B1 densifies to within $0.2\,\%$ of Mip-Splatting's primitive count, which is
+the anisotropic filter densifies to within $0.2\,\%$ of Mip-Splatting's primitive count, which is
 Proposition~\ref{prop:reduction} arriving from a third direction: where the
 floor dominates the filter is the same filter, so the optimisation follows the
 same trajectory and produces the same model. The model on disk is the same size,
 and rendering is unaffected --- the filter is applied once at construction (\S\ref{sec:fps}).
 
-Training is another matter. B1 costs $2.8\times$ the peak VRAM and $1.32\times$
+Training is another matter. The anisotropic filter costs $2.8\times$ the peak VRAM and $1.32\times$
 the wall-clock time, for a result that is by construction identical. The
 accumulation of $\Lambda_k = \sum_n w_{nk}(J_nW_n)^{\!\top}\Sigma_{\mathrm{pix}}^{-1}(J_nW_n)$
 is a $3\times3$ symmetric matrix per primitive over every training camera, and
@@ -679,7 +679,7 @@ the peak does not track the primitive count. \texttt{ficus} at $187$k primitives
 and \texttt{mic} at $406$k both peak near $13$\,GB, which is what a large transient in that accumulation looks like.
 
 That is the honest cost line, and it is not a small one. A practitioner reading
-this table on a well-conditioned capture should not use B1: it is the same
+this table on a well-conditioned capture should not use the anisotropic filter: it is the same
 model, slower, in more memory. The case for it is confined to the regime of
 \S\ref{sec:table3}, and \S\ref{ch:discussion} does not argue otherwise.}
 
@@ -687,14 +687,14 @@ model, slower, in more memory. The case for it is confined to the regime of
 \texttt{ship} was scheduled in this session and only Mip-Splatting completed it.
 The failure was not the method's: both jobs started on \texttt{ship}
 simultaneously on the two GPUs, the first pair in the queue to share a scene,
-and raced on the point cloud the loader writes into the source directory --- B1
+and raced on the point cloud the loader writes into the source directory --- the anisotropic filter
 aborted in \texttt{create\_from\_pcd} with a null point cloud, four seconds in.
 That is a harness defect, since fixed by ordering the job list so that adjacent
 jobs never share a scene.
 
 It is not re-run, and the reason is this table.
 Mip-Splatting alone peaks at $14\,459$\,MB on \texttt{ship}, against a
-$15\,360$\,MB card. At the $2.8\times$ measured here, B1 on \texttt{ship} does
+$15\,360$\,MB card. At the $2.8\times$ measured here, the anisotropic filter on \texttt{ship} does
 not fit, and no ordering of the queue changes that. The paired parity figure is
 therefore over $\methodParityScenes$ scenes and says so.}
 
@@ -704,7 +704,7 @@ determinant computed in a way that lost precision at realistic scales, and an
 isotropic branch that re-derived a quantity it should have taken. Each produced
 plausible numbers and the wrong shape. The diagnosis of each, and the unit test
 that now covers the range where they hid, is Appendix~\ref{app:defects}.
-\section{The stress suite --- the decisive experiment}
+\section{The stress suite: six protocols, and the one where the filter engages}
 \label{sec:table3}
 
 Where the claim lives. Training cameras are restricted to each protocol's subset
@@ -718,7 +718,7 @@ means.
 \keybox{read the \emph{above floor} column before the $\Delta$ column}{%
 Proposition~\ref{prop:reduction} is a constraint on this table, which is a stronger thing than a prediction about
 it. Where the estimation term does not exceed the Nyquist floor in
-any direction, $\Sigma_{\mathrm{filt}} = f_k^2 I$ identically and B1 \emph{is} Mip-Splatting: the same filter, taking the same code path.
+any direction, $\Sigma_{\mathrm{filt}} = f_k^2 I$ identically and the anisotropic filter \emph{is} Mip-Splatting: the same filter, taking the same code path.
 On such a row $\Delta$ is a measurement of CUDA atomics and nothing else, and a non-zero value there would be evidence of a bug. So the
 diagnostic column decides whether the PSNR column is an experiment at all, which
 is why it is printed by the filter during training and carried here beside the result instead of reconstructed afterwards.}
@@ -742,19 +742,19 @@ captures, to the precision of the instrument.
 The narrow pencil is the first capture in this project on which the filter
 actually engages. The estimation term exceeds the floor on $93\,\%$ of
 primitives, and the filter comes out genuinely anisotropic, at $1.47\times$.
-There, and only there, B1 is ahead. The margin is $\stressBindDelta$\,dB on the
+There, and only there, the anisotropic filter is ahead. The margin is $\stressBindDelta$\,dB on the
 mean, which is $\stressBindSigma$ times the run-to-run spread, and it is worth
 saying what that mean is made of: eight paired cells, two scenes by four test
-scales, and B1 leads in every one of them, with per-cell gains running from
+scales, and the anisotropic filter leads in every one of them, with per-cell gains running from
 $+0.163$ to $+0.217$\,dB. A mean can come out positive by luck. A sign that
 holds across all eight pairings cannot.
 
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.92\linewidth]{figures/fig13-qualitative-pencil.pdf}
-  \caption{The operating point where B1 acts, rendered. Three training cameras
+  \caption{The operating point where the anisotropic filter acts, rendered. Three training cameras
   spanning $29^\circ$; the test set is the full orbit, so most of what is
-  evaluated was never observed. Numbers are PSNR for the images shown. B1 leads
+  evaluated was never observed. Numbers are PSNR for the images shown. The anisotropic filter leads
   on both scenes, and on all four test scales of each, and the lead is not
   visible.}
   \label{fig:qualpencil}
@@ -763,7 +763,7 @@ holds across all eight pairings cannot.
 \keybox{the honest reading of Figure~\ref{fig:qualpencil}}{%
 Both reconstructions are ruined. The chair is a smear with floaters where the
 unobserved sides should be, the \texttt{lego} bulldozer is barely identifiable,
-and nothing in either image would be accepted as output. B1's advantage is real,
+and nothing in either image would be accepted as output. The anisotropic filter's advantage is real,
 signed consistently, and $\stressBindSigma\times$ the run-to-run spread --- and
 it is also a fifth of a decibel on a $14$\,dB reconstruction, which is invisible.
 
@@ -812,7 +812,7 @@ definitions of \S\ref{sec:branchdefect} disagreed and both were kept.}
   \centering
   \includegraphics[width=0.9\linewidth]{figures/fig7-stress-delta.pdf}
   \caption{The central empirical claim, in one panel. Paired PSNR difference
-  between B1 and Mip-Splatting per capture protocol, with the harness's own
+  between the anisotropic filter and Mip-Splatting per capture protocol, with the harness's own
   run-to-run spread shaded at $\pm3\sigma$; a bar inside the shaded band is not a
   result. Protocols are ordered by conditioning, best at the top, and each
   carries the fraction of primitives on which the estimation term exceeded the Nyquist floor, the quantity that determines whether the two arms
@@ -820,20 +820,20 @@ definitions of \S\ref{sec:branchdefect} disagreed and both were kept.}
   \label{fig:stress}
 \end{figure}
 
-\section{B2 --- angular identifiability of spherical harmonics}
+\section{The angular mask, measured against magnitude pruning at matched size}
 \label{sec:btwo}
 \label{sec:table4}
 
 Equation~\eqref{eq:gram} depends on primitive positions and training view
 directions alone, so the criterion is measurable from a trained model with no
 retraining and no GPU. It was evaluated on all eight Blender scenes and then, for
-the same reason B1 had to be, across all six capture protocols.
+the same reason the anisotropic filter had to be, across all six capture protocols.
 
-\keybox{on the standard benchmark B2 masks nothing at all}{%
+\keybox{on the standard benchmark the angular mask masks nothing at all}{%
 Every primitive in all eight scenes is seen from $100$ well-spread directions,
 and the criterion keeps degree 3 everywhere: mean $\ell_{\max} = 3.00$,
 $100\,\%$ of non-DC coefficients retained. That is the correct answer, and it is
-the same shape as I-1's result for B1 --- on a well-conditioned capture the
+the same shape as the floor-occupancy instrument's result for the anisotropic filter --- on a well-conditioned capture the
 proposed criterion reduces to the baseline. Neither contribution can be
 demonstrated on a full orbit, and this has now been measured for both, where before it was argued for one.}
 
@@ -842,7 +842,7 @@ demonstrated on a full orbit, and this has now been measured for both, where bef
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.82\linewidth]{figures/fig10-b2-retention.pdf}
-  \caption{B2 across the capture protocols. The same shape as
+  \caption{The angular mask across the capture protocols. The same shape as
   Figure~\ref{fig:floorbinding}, in the angular domain instead of the spatial one: on a well-conditioned capture the criterion keeps every coefficient and
   the method reduces to its baseline, and it removes coefficients only where the
   views cannot support them. A criterion that pruned on the full orbit would be wrong.}
@@ -905,21 +905,21 @@ Table~\ref{tab:b2} exists to ask whether identifiability masking beats magnitude
 pruning \emph{at matched model size}. That question has no content when the
 criterion prunes nothing: both rows keep everything, so both score identically,
 and the table cannot distinguish a good criterion from a bad one. Reporting the
-three equal rows as evidence that B2 matches magnitude pruning would be the error this chapter warns about elsewhere --- a condition tested where it was
+three equal rows as evidence that the angular mask matches magnitude pruning would be the error this chapter warns about elsewhere --- a condition tested where it was
 constrained to be satisfied. So the comparison was run again on a capture where
 the criterion does mask.}
 
-\subsection*{The comparison, on a capture where B2 prunes --- and it loses}
+\subsection*{The comparison, on a capture where the angular mask prunes --- and it loses}
 \label{sec:b2loses}
 
 Restricting the cameras the \emph{criterion} reads to the low-parallax cone, and
-leaving the test set whole, B2 retains $13$--$20\,\%$ of non-DC coefficients.
+leaving the test set whole, the angular mask retains $13$--$20\,\%$ of non-DC coefficients.
 Magnitude pruning is then matched to that exact fraction, so the two models are
 the same size and differ only in which coefficients survive.
 
 \input{generated/table-b2-matched}
 
-\keybox{B2, as specified, is worse than the trivial baseline}{%
+\keybox{The angular mask, as specified, is worse than the trivial baseline}{%
 On every configuration where both methods actually prune, magnitude pruning
 wins. Against the free control it wins by $0.60$ and $0.82$\,dB on \texttt{lego}
 and by $1.82$\,dB on \texttt{chair}; against the \emph{fair} control below, by
@@ -935,10 +935,10 @@ quantities, and the metric rewards the second. A coefficient can be badly
 conditioned by the capture and still carry most of the fitted energy for that
 primitive; zeroing it costs more PSNR than zeroing a well-determined coefficient
 that happens to be tiny. Magnitude pruning optimises directly for what PSNR
-measures, and B2 optimises for something else and is then scored on PSNR.
+measures, and the angular mask optimises for something else and is then scored on PSNR.
 
 \paragraph{Most of the first answer was the wrong comparison.} There is a second
-asymmetry in the free control, and it is not small: B2 masks whole
+asymmetry in the free control, and it is not small: the angular mask masks whole
 \emph{degrees}, removing coefficients in blocks of $2\ell+1$ nested from the top
 down, while free magnitude pruning ranks individual coefficients and keeps the
 largest anywhere. At the same budget that is strictly more freedom, so a loss
@@ -947,11 +947,11 @@ on trial. The first version of this
 section noted the confound and left it, which was the right thing to notice and
 the wrong place to stop.
 
-The control that separates them is magnitude pruning restricted to B2's own
+The control that separates them is magnitude pruning restricted to the angular mask's own
 nested degrees: same structure, same budget, and the only remaining difference
 is what the two rank by. It is the \emph{blocked} column of
 Table~\ref{tab:btwomatched}, and it moves the answer a long way. On
-\btwoStructureScene, where the free control had beaten B2 by
+\btwoStructureScene, where the free control had beaten the angular mask by
 $\btwoFreeGap$\,dB, the fair one beats it by $\btwoBlockedGapMin$ --- inside the
 seed spread of $\seedSigma$\,dB, so on that scene the criterion is not
 distinguishable from magnitude at all. $\btwoStructureShare\,\%$ of what looked
@@ -978,12 +978,12 @@ disk. Realising the saving needs variable-length SH storage, which
 Chapter~\ref{ch:plan} schedules for Spring. The $74.8$\,MB in all three rows is
 the same file written three times.
 
-\section{What these results do and do not establish}
+\section{What these results establish, and the limit on each}
 They establish a control. Both baselines now exist as this project's own
 measurements, on known hardware, from pinned commits, with the arm separation verified on the saved models. Every later comparison is against these numbers, which is
 the L3 discipline of Table~\ref{tab:levels}.
 
-About the proposed method they establish four things and refute one. B1 is
+About the proposed method they establish four things and refute one. The anisotropic filter is
 implemented and reduces to its baseline exactly where the theory says it must,
 verified to $1.4\times10^{-21}$ in the unit test and to $\methodParityMax$\,dB, comfortably below the seed spread, over
 $\methodParityScenes$ scenes and four test scales in paired training runs. The conditioning both methods depend on
@@ -991,24 +991,24 @@ varies across capture protocols as Equation~\eqref{eq:cap} predicts.
 The stress suite has been run, and the prediction recorded before it holds: on
 the $\stressFlatCount$ protocols where the Nyquist floor still dominates the
 difference is $\stressFlatMin$ to $\stressFlatMax$\,dB and the filter is
-isotropic to two decimals, and on the one where the estimation term binds B1
+isotropic to two decimals, and on the one where the estimation term binds the anisotropic filter
 leads by $\stressBindDelta$\,dB, on the mean and on every paired cell. And the cost of that has now been measured, where before it was assumed: $2.8\times$ peak VRAM and
 $1.32\times$ training time for a model with the same primitive count
 (\S\ref{sec:methodcost}).
 
-What is refuted is B2. At matched structure and matched budget it loses to
+What is refuted is the angular mask. At matched structure and matched budget it loses to
 magnitude pruning, by $\btwoBlockedGapMax$\,dB at worst, and the criterion is
 reported as failing the standard Chapter~\ref{ch:method2} set for it
 (\S\ref{sec:btwo}).
 
-What is \emph{not} established is that B1 is useful. The regime where it helps
+What is \emph{not} established is that the anisotropic filter is useful. The regime where it helps
 is one in which both methods produce reconstructions nobody would ship
 (Figure~\ref{fig:qualpencil}), and on well-conditioned captures it is the same
 model for three times the memory. Chapter~\ref{ch:discussion} takes that up;
 this chapter's job is the measurement, and the measurement is that the mechanism
 is the one the derivation names.
 
-\section{What it cost to run}
+\section{What the whole programme cost in GPU-hours}
 \label{sec:budget}
 
 Every number in this chapter was produced on free cloud GPUs, within a weekly

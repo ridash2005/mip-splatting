@@ -3,8 +3,8 @@ small translucent ellipsoids, fitted by gradient descent to a set of
 photographs. Nothing in that procedure sets a lower bound on how small a
 primitive may become. Mip-Splatting supplies one: a scalar variance floor,
 $f_k^2 = 0.2\,(d_{\min}/f_{\max})^2$, added in quadrature to all three axes of
-every primitive. This thesis argues that the correct bound is neither scalar nor
-isotropic.
+every primitive. This thesis argues that the correct bound is a matrix, with a separate limit
+along each direction.
 
 The reasoning treats a primitive's position as something the photographs
 measure. Each camera that sees it contributes one noisy observation, and the
@@ -39,9 +39,9 @@ value dominates, so parity on a well-conditioned benchmark is structural and an
 improvement there would indicate a bug.
 
 A second proposal applies the same reasoning on the sphere of directions,
-masking the spherical-harmonic coefficients a capture cannot determine. Those
-are $76\,\%$ of the model's parameters. Chapter~\ref{ch:results} reports the
-controlled test of it.
+masking the spherical-harmonic coefficients a capture cannot determine. Those are $76\,\%$ of the model's parameters. Chapter~\ref{ch:results} reports
+the controlled test: at matched structure and matched budget the criterion loses
+to magnitude pruning, and it is reported as refuted.
 
 Concurrent work narrows what can be claimed for the main idea, and the narrowing
 is stated here. AAA-Gaussians (2025) already makes the 3D filter a full

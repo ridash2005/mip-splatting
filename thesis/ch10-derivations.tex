@@ -15,7 +15,7 @@
     $\tau_{\mathrm{pos}}=0.0002,\ \varphi=1.6$ & densification gradient threshold and split divisor & 3DGS \\
     $f_k^2 = 0.2\,(d_{\min}/f_{\max})^2$ & inherited per-primitive Nyquist floor, the 3D smoothing filter variance & Mip-Splatting \\
     $\Lambda_k, \lambda_i, V$ & per-primitive observability matrix, its eigenvalues and eigenvectors; the Fisher information at unit weights (\S\ref{sec:accumulation}) & this work \\
-    $\sigma_{\mathrm{pix}} = \sqrt{0.2}$\,px & pixel localisation noise, inherited from $f_k$ by Proposition~\ref{prop:constant}, not chosen & this work \\
+    $\sigma_{\mathrm{pix}} = \sqrt{0.2}$\,px & pixel localisation noise, inherited from $f_k$ by Proposition~\ref{prop:constant} & this work \\
     $s = 1,\ \beta = 0.01$ & dimensionless confidence multiplier; scene-scale cap fraction & this work \\
     $w_{nk} = T_{nk}\alpha_k \in [0,1]$ & view $n$'s blending contribution to primitive $k$; a heuristic occlusion weight & this work \\
     $A_k, \ell_{\max}(k), \tau$ & angular Gram matrix, per-primitive SH degree, conditioning threshold & this work \\
@@ -61,9 +61,7 @@ $\Lambda$ is diagonal with
   \underbrace{2\sin^2(\theta/2)}_{\text{along the bisector (depth)}}\,\big\}.
   \label{eq:twoviewspectrum}
 \end{equation}
-Two lines, and stronger than the descriptive argument it replaces.
-
-\paragraph{The filter is triaxial, not merely elongated.} All three values differ
+\paragraph{The filter is triaxial.} All three values differ
 at a generic $\theta$. The in-plane lateral direction carries
 $2\cos^2(\theta/2)$, strictly less than the $2$ available perpendicular to the
 plane, so a two-view capture degrades \emph{two} directions: depth, and one direction
@@ -172,7 +170,7 @@ point at the work; bibliographic details are to be confirmed on retrieval.
     2 & \textsc{cited} Fridovich-Keil, Yu, Tancik, Chen, Recht, Kanazawa. Plenoxels. CVPR 2022. & Speed baseline; the ``no neural network needed'' result. \\
     2 & \textsc{unchecked} Durand, Holzschuch, Soler, Chan, Sillion. A Frequency Analysis of Light Transport. SIGGRAPH 2005. & Frequency-domain treatment of light transport; likely relevant to the sampling argument. \\
     1 & \textsc{checked} AAA-Gaussians: Anti-Aliased and Artifact-Free 3D Gaussian Rendering. arXiv:2504.12811, 2025. & \textbf{Concurrent prior art for the anisotropic 3D filter.} Theirs is derived from the current view ray and recomputed per frame; this thesis's is derived from the training capture and fixed per primitive. Forced the narrowing recorded in \S\ref{sec:relatedwork}. \\
-    1 & \textsc{checked} Hanson et al. PUP 3D-GS: Principled Uncertainty Pruning for 3D Gaussian Splatting. CVPR 2025. & \textbf{The matrix is not new.} Same second-order spatial sensitivity accumulated over training views --- collapsed to a scalar and thresholded for pruning. The anisotropic filter's novelty is retaining the spectrum. \\
+    1 & \textsc{checked} Hanson et al. PUP 3D-GS: Principled Uncertainty Pruning for 3D Gaussian Splatting. CVPR 2025. & \textbf{A precedent for the matrix.} Same second-order spatial sensitivity accumulated over training views --- collapsed to a scalar and thresholded for pruning. The anisotropic filter's novelty is retaining the spectrum. \\
     2 & \textsc{checked} Kheradmand et al. 3D Gaussian Splatting as Markov Chain Monte Carlo. NeurIPS 2024. & Nearest principled density-control work. Orthogonal: no filter, no band-limit, no covariance floor. No collision. \\
     2 & \textsc{checked} Jiang et al. FisherRF: Active View Selection and Mapping with Radiance Fields Using Fisher Information. ECCV 2024. & Same statistical object, opposite use: scores candidate cameras for acquisition, never a primitive's covariance. Changes the dataset, not the primitive. \\
     2 & \textsc{checked} Liang et al. Analytic-Splatting. ECCV 2024. & Replaces the 2D pixel-window approximation with a closed-form integral. Improves the \emph{2D} half of Mip-Splatting; composable with this work, which changes the 3D half. \\

@@ -16,7 +16,7 @@ provenance stays yours -- the commit hashes in every row are the same ones.
         --data /scratch/nerf_synthetic --work /scratch/btp/c1 \
         --out results/kaggle_runs/c1_verify \
         --set SCENES=lego --set ARMS_ENABLED=B \
-        --set ARM_B_BRANCH=arm-b-3dgs-vanilla \
+        --set ARM_B_REF=arm-3dgs-vanilla \
         --set ARM_B_EXTRA=--disable_2D_mip_compensation
 
 On a cluster this is the body of the sbatch script; nothing else changes.

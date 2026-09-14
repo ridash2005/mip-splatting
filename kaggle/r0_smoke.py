@@ -289,7 +289,7 @@ blender_dir = resolve_blender_dir()
 
 # =============================================================== clone the arms
 sh(f"git clone --recursive -b main {REPO} {WORK}/armA", log_name="clone")
-sh(f"git clone --recursive -b arm-b-3dgs-baseline {REPO} {WORK}/armB", log_name="clone")
+sh(f"git clone --recursive -b arm-3dgs-baseline {REPO} {WORK}/armB", log_name="clone")
 armA_commit = git_hash(f"{WORK}/armA")
 armB_commit = git_hash(f"{WORK}/armB")
 print("armA commit", armA_commit, "armB commit", armB_commit)

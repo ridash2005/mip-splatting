@@ -50,15 +50,17 @@ SEEDS = [0]                # R5 sweeps these; see tools/seeded_train.py.
                            # anchors to the R1/R2 numbers rather than redrawing.
 SCENES = ["ship", "drums", "ficus", "hotdog", "lego", "materials", "mic", "chair"]
 ITERS = 30000
-ARM_A_BRANCH = "main"                   # L1 probe: "pre-gof-baseline" is the
-                                       # last commit before GOF densification
-                                       # landed, which is the configuration
-                                       # Mip-Splatting's published table was
-                                       # produced at. Both arms move together.
-ARM_B_BRANCH = "arm-b-3dgs-baseline"   # "arm-b-3dgs-vanilla" drops the 2D Mip
-                                       # opacity compensation as well (C1). The
-                                       # branch decides what arm B *is*, so it
-                                       # is recorded in every CSV row's notes.
+ARM_A_REF = "arm-mip-splatting"        # A tag, not a branch: arm A is
+                                       # Mip-Splatting as published and must
+                                       # not move when main does. The L1 probe
+                                       # is "probe-pre-gof", the last commit
+                                       # before GOF densification landed, which
+                                       # is what Mip-Splatting's published
+                                       # table was produced at.
+ARM_B_REF = "arm-3dgs-baseline"        # "arm-3dgs-vanilla" drops the 2D Mip
+                                       # opacity compensation as well. The ref
+                                       # decides what arm B *is*, so it is
+                                       # recorded in every CSV row's notes.
 ARM_B_EXTRA = ""                       # "--disable_2D_mip_compensation" with
                                        # the vanilla branch; the flag exists
                                        # nowhere else and would be rejected.
@@ -112,9 +114,9 @@ if cap < (7, 0):
     raise SystemExit(f"ABORT: {gpu_name} has compute capability {cap}, below 7.0 (F15).")
 
 # ============================================================ clone + build
-subprocess.run(f"git clone --recursive -b {ARM_A_BRANCH} {REPO} {WORK}/armA",
+subprocess.run(f"git clone --recursive -b {ARM_A_REF} {REPO} {WORK}/armA",
                shell=True, check=True)
-subprocess.run(f"git clone --recursive -b {ARM_B_BRANCH} {REPO} {WORK}/armB",
+subprocess.run(f"git clone --recursive -b {ARM_B_REF} {REPO} {WORK}/armB",
                shell=True, check=True)
 
 # The harness -- kernel_common, split_by_scale -- is this project's, not
@@ -122,7 +124,7 @@ subprocess.run(f"git clone --recursive -b {ARM_B_BRANCH} {REPO} {WORK}/armB",
 # supplies it. The L1 probe points arm A at an upstream commit that predates
 # this project entirely and has no tools/ directory, so the harness is cloned
 # separately rather than taken from whatever arm A happens to be.
-HARNESS = f"{WORK}/armA" if ARM_A_BRANCH == "main" else f"{WORK}/harness"
+HARNESS = f"{WORK}/armA" if ARM_A_REF == "arm-mip-splatting" else f"{WORK}/harness"
 if HARNESS != f"{WORK}/armA":
     subprocess.run(f"git clone --depth 1 -b main {REPO} {HARNESS}", shell=True, check=True)
 sys.path.insert(0, f"{HARNESS}/tools")

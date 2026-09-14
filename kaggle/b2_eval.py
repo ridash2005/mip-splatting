@@ -36,7 +36,7 @@ REPO = "https://github.com/ridash2005/mip-splatting.git"
 # overrides both so the same kernel runs on a cluster node unchanged.
 DATA_MOUNT = "/kaggle/input/nerf-synthetic-dataset"
 DATA_ROOT = "/kaggle/input"
-BRANCH = "method-b1-b2"
+BRANCH = "main"
 LOGDIR = f"{WORK}/logs"
 RESULTS = f"{WORK}/results"
 

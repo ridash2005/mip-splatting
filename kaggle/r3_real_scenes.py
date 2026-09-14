@@ -77,7 +77,7 @@ if cap < (7, 0):
     raise SystemExit(f"ABORT: {gpu_name} capability {cap}, below 7.0 (F15).")
 
 subprocess.run(f"git clone --recursive -b main {REPO} {WORK}/armA", shell=True, check=True)
-subprocess.run(f"git clone --recursive -b arm-b-3dgs-baseline {REPO} {WORK}/armB",
+subprocess.run(f"git clone --recursive -b arm-3dgs-baseline {REPO} {WORK}/armB",
                shell=True, check=True)
 sys.path.insert(0, f"{WORK}/armA/tools")
 import kernel_common as kc        # noqa: E402

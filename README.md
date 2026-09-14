@@ -16,7 +16,7 @@ not the original `graphdeco-inria/gaussian-splatting`:
 - **Arm B — 3DGS**: the same repository with the 3D smoothing filter zeroed
   (`--disable_3D_filter`), `--kernel_size 0.3`, **and** the 2D Mip filter's
   opacity compensation disabled in the rasteriser
-  (`--disable_2D_mip_compensation`, branch `arm-b-3dgs-vanilla`). See §3 of the
+  (`--disable_2D_mip_compensation`, tag `arm-3dgs-vanilla`). See §3 of the
   prompt for why the first two are exactly 3DGS's *3D* band-limit, and why the
   original repo cannot read the multi-scale Blender format at all.
 
@@ -31,23 +31,50 @@ not the original `graphdeco-inria/gaussian-splatting`:
 
 ## Repo layout
 
+Upstream mip-splatting, unchanged except where the method needs it:
+
 ```
-arguments/ scene/ gaussian_renderer/ ...   mip-splatting, as forked (arm A)
-scripts/                                    benchmark drivers shipped upstream
-tools/split_by_scale.py                     recovers the per-scale table (§4) —
-                                             never re-render at -r 1 2 4 8, it resamples
-tools/make_table.py                         renders Table 1 / Table 2 from results/runs.csv
-tools/make_figures.py                       renders every report figure; --mode measured
-                                             refuses to draw without usable CSV rows
-results/runs.csv                            append-only, one row per (arm, scene, test-scale, seed)
-docs/REPRODUCTION-PROMPT.md                 the operating prompt this repo implements
+arguments/  scene/  gaussian_renderer/  utils/  lpipsPyTorch/  submodules/
+train.py  render.py  metrics.py  full_eval.py  convert*.py  scripts/
 ```
 
-Branches:
-- `main` — arm A (repo as shipped) plus the tooling above.
-- `arm-b-3dgs-baseline` — main plus **only** the §3 diff (2 files, 2 edit sites
-  each: `arguments/__init__.py`, `scene/gaussian_model.py`, and the one-line
-  wiring in `train.py` / `render.py`). Nothing else. Diff printed in git history.
+Everything the project added:
+
+```
+thesis/          the document. One .tex per chapter, plus preamble.tex.
+                 generated/ and figures/ are build output and are not committed;
+                 `make thesis` writes them from results/runs.csv.
+tools/           the apparatus. make_tex.py writes every measured table and
+                 macro, make_figures.py and make_diagrams.py every figure,
+                 make_slides.py the panel deck, selftest_pipeline.py exercises
+                 the whole chain against a fixture with known answers, and
+                 test_*.py verify the closed forms against the implementation.
+kaggle/          one kernel per rung. Each clones a pinned ref, builds the CUDA
+                 rasteriser, trains, evaluates, and writes CSV rows back out.
+results/runs.csv append-only, one row per (arm, scene, test-scale, seed).
+                 Nothing is ever deleted; a re-measured row is marked, and the
+                 table generator refuses any cell drawing on two builds.
+results/         alongside runs.csv: session summaries, renders, contact sheets.
+slides/          the built panel deck. Build output, not committed.
+docs/            planning documents and the operating prompts, kept as the
+                 record of what was asked for and when.
+Makefile         `make all` rebuilds the thesis and the deck from the CSV.
+```
+
+Refs. The two baselines are published methods, so they are pinned to tags and
+never move. The method is the work, so it lives on `main`.
+
+| ref | what it is |
+|---|---|
+| `main` | the method: the anisotropic band-limit and the angular mask, plus all the tooling |
+| `arm-mip-splatting` | arm A — Mip-Splatting as published |
+| `arm-3dgs-baseline` | arm B — 3DGS's 3D band-limit only, and the rows measured on it are marked superseded |
+| `arm-3dgs-vanilla` | arm B — 3DGS's band-limit semantics in both domains; every current arm-B number |
+| `probe-pre-gof` | the last commit before GOF densification landed; Table 7.5 is measured here |
+| `probe-c1-rasteriser` | the rasteriser work that produced `--disable_2D_mip_compensation` |
+
+`make check-arms` prints what each arm introduces and fails if a ref has gone
+missing.
 
 Remotes: `origin` = https://github.com/ridash2005/mip-splatting (this fork),
 `upstream` = https://github.com/autonomousvision/mip-splatting (read-only reference).
@@ -232,8 +259,8 @@ splitter expected — a fixture that encodes the bug cannot detect it.
 ## Running the ladder on Kaggle
 
 Training cannot happen on the local machine (see Environment). The plan is to
-push a Kaggle kernel that clones this repo's `main` (arm A) and
-`arm-b-3dgs-baseline` (arm B), runs §6 and the rung currently in scope, and
+push a Kaggle kernel that clones this repo's `arm-mip-splatting` (arm A) and
+`arm-3dgs-baseline` (arm B), runs §6 and the rung currently in scope, and
 writes checkpoints + `results/runs.csv` rows back out — pulled down here via
 the Kaggle API, and pushed to Hugging Face Hub before the session ends (§12).
 No credentials are stored in this repository; they are read from Kaggle

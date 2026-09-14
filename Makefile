@@ -1,7 +1,7 @@
 RUNS   := results/runs.csv
 FIGDIR := figures
 
-.PHONY: selftest sync-armb table1 table2 figures figures-published report thesis slides all clean-figures clean-thesis clean-slides
+.PHONY: selftest check-arms deliver table1 table2 figures figures-published report thesis slides all clean-figures clean-thesis clean-slides
 
 # The reporting chain, verified against a fixture with known answers. Needs no
 # GPU, so it runs on the dev machine as well as inside the Kaggle kernel.
@@ -10,13 +10,17 @@ selftest:
 	python tools/test_instruments.py
 	python tools/test_kaggle_accounts.py
 
-# arm-b-3dgs-baseline must differ from main by the §3 diff and nothing else.
-# Run this after every push to main: the kernel clones both branches, and a
-# stale arm B silently runs old code.
-sync-armb:
-	git checkout arm-b-3dgs-baseline && git merge main && git push origin arm-b-3dgs-baseline && git checkout main
-	@echo "--- arm B introduces (must be 4 files, 7 insertions, 1 deletion) ---"
-	@git diff main...arm-b-3dgs-baseline --stat | tail -1
+# The arms are tags, so they cannot drift. This checks they are all still
+# there and prints what arm B introduces over arm A, which is the whole of
+# the difference between the two columns every comparison rests on.
+check-arms:
+	@for r in arm-mip-splatting arm-3dgs-baseline arm-3dgs-vanilla probe-pre-gof probe-c1-rasteriser; do \
+		git rev-parse -q --verify "$$r^{commit}" >/dev/null \
+			|| { echo "MISSING ref: $$r"; exit 1; }; \
+		printf "  %-22s %s\n" "$$r" "$$(git rev-parse --short $$r)"; \
+	done
+	@echo "--- arm B over arm A (expect 4 files, 7 insertions, 1 deletion) ---"
+	@git diff arm-mip-splatting...arm-3dgs-baseline --stat | tail -1
 
 # ITERS selects which runs to average: 30000 is the R1/R2 target, 7000 the R0
 # smoke rows. Mixing them would produce a number describing neither run.
@@ -76,6 +80,15 @@ slides:
 
 # Everything a submission needs, from one CSV.
 all: thesis slides
+
+# The two files the panel is handed, under the names it expects. They live
+# one level up because that is where the rest of the submission sits.
+DELIVER ?= ..
+
+deliver: all
+	cp thesis/main.pdf $(DELIVER)/BTP-Thesis.pdf
+	cp slides/BTP-Panel.pptx $(DELIVER)/BTP-Panel-Presentation.pptx
+	@echo "--> $(DELIVER)/BTP-Thesis.pdf and $(DELIVER)/BTP-Panel-Presentation.pptx"
 
 clean-slides:
 	rm -rf slides

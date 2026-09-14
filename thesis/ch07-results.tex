@@ -1,4 +1,4 @@
-\chapter{Results: reproduction, the instruments, and the two proposed methods}
+\chapter{Results}
 \label{ch:results}
 
 \keybox{how to read this chapter}{%
@@ -30,7 +30,7 @@ than restated. Every table and figure in this chapter is regenerated
 mechanically from the measurement record; no number is typed into this document
 by hand (Appendix~\ref{app:record}).}
 
-\section{Before any measurement: twelve assertions the session must pass}
+\section{Pre-flight assertions}
 \label{sec:preflight}
 
 A reproduction that has not checked its own instrument is a reproduction of
@@ -40,7 +40,7 @@ one the code can actually run on, that both arms load the same images, that the
 perceptual metric uses the backbone the papers used, and that the two checkouts differ by exactly the intended change and
 nothing else. Appendix~\ref{app:harness} lists all twelve with what each one
 protects against. All twelve pass.
-\section{Reproducing both baselines: trained at one scale, tested at four}
+\section{Single-scale training}
 \label{sec:table1}
 
 \input{generated/table1-stmt}
@@ -137,7 +137,7 @@ The tables remain the claim; these show what the claim looks like.}
 
 \input{generated/table-cost}
 
-\section{The scale-collapse gate, and the mislabelled arm it exposed}
+\section{The scale-collapse gate}
 \label{sec:g2}
 
 the scale-collapse gate was declared in advance as: 3DGS falls $\gtrsim13$\,dB from full to
@@ -241,7 +241,7 @@ It is excluded from the single-scale arm-B rows, and the protocol's rule for a
 scene that will not run is to record it and move on. The instrumentation that
 localised the fault, and the three explanations it ruled out, are in
 Appendix~\ref{app:defects}.
-\section{Reproducing both baselines: trained and tested at all four scales}
+\section{Multi-scale training}
 \label{sec:table2}
 
 \input{generated/table2-mtmt}
@@ -252,7 +252,7 @@ replaced were never retired, because the rule that retires them keyed on a name
 the re-run shared. Nothing about the output looked wrong. The generator now
 refuses to emit a table whose cells draw on more than one build, and names the
 cell; the account is in Appendix~\ref{app:defects}.
-\section{Testing the densification explanation against the code that predates it}
+\section{The densification explanation}
 \label{sec:densification}
 
 Section~\ref{sec:g2} settles the cause of the $\tfrac18$-scale shortfall: it was
@@ -345,7 +345,7 @@ It was defended on the grounds that pinning the pre-GOF commit would move the
 difference between the arms out of the filter and back into the plumbing, which
 is still true. What has changed is that the cost of keeping GOF has now been measured instead of assumed, and it is $\gofMaxEffect$\,dB at worst.
 
-\section{How much the harness varies between identical runs}
+\section{Run-to-run spread}
 \label{sec:spread}
 Parity is not a testable claim without a $\sigma$. Repeats of an identical
 configuration bound the harness's own nondeterminism --- CUDA atomics in the
@@ -390,7 +390,7 @@ arm without a band-limit is the less stable one under reseeding, which is
 consistent with the mechanism this thesis proposes, though two scenes are far
 too few to claim it as a finding.
 
-\section{Real scenes: Mip-NeRF 360, Tanks and Temples, Deep Blending}
+\section{Real scenes}
 \label{sec:real}
 
 \input{generated/table-real}
@@ -423,7 +423,7 @@ different quantity and setting the two side by side is precisely the error
 \S\ref{ch:discussion} records as having already occurred once in this project's
 earlier write-up. These rows are L2 and are the self-run control for later work.
 
-\section{Training cost and model size of the two baselines}
+\section{Training cost and model size}
 \label{sec:measuredcost}
 The estimates in the protocol's \S7 were replaced by measurement at R0, on the
 same free-tier hardware every later rung uses: $\rZeroItersPerSec$ iterations per
@@ -432,7 +432,7 @@ peak of $\rZeroPeakVram$\,MB of VRAM. The last of these matters for scope: 16\,G
 is nowhere near binding on the Blender scenes, so the compute envelope of
 \S\ref{ch:design} constrains the \emph{real} scenes.
 
-\section{Render speed, timed on the render call alone}
+\section{Render speed}
 \label{sec:fps}
 
 Section~\ref{sec:implcost} argues that the anisotropic filter cannot cost anything at render time:
@@ -471,7 +471,7 @@ answers the question is Table~\ref{tab:fps}, and what it defends is the
 \emph{ratio}, since every cost shared by the three arms has been excluded from
 all of them equally.}
 
-\section{Where the resolution floor binds, and how anisotropic each capture is}
+\section{Floor occupancy and conditioning}
 \label{sec:instrumentresults}
 
 Both instruments are functions of the primitive positions and the capture
@@ -516,7 +516,7 @@ past unity only on the cone ($1.35$) and the pencil ($5.52$).
 
 On the standard benchmark the floor dominates by a factor of six, and the
 estimation term exceeds it on \textbf{zero} primitives, in \emph{any} direction,
-of \emph{every} scene. By Proposition~\ref{prop:reduction} that makes the anisotropic filter \emph{be} Mip-Splatting on this benchmark, exactly, which is worth stating plainly:
+of \emph{every} scene. By Proposition~\ref{prop:reduction} that makes the anisotropic filter \emph{be} Mip-Splatting on this benchmark, exactly:
 
 \keybox{no gain is available on the standard Blender benchmark}{%
 The eight Blender scenes are 100-camera full orbits, the best-conditioned capture
@@ -623,7 +623,7 @@ $2$--$4\times$ is not a wide enough focal spread to make it bind. Either the
 protocol needs a wider spread or the defect is real but small; this measurement
 does not distinguish those, and it is not reported as though it did.
 
-\section{The anisotropic band-limit on the standard benchmark, where parity is required}
+\section{The standard benchmark}
 \label{sec:table2m}
 
 \input{generated/table-method}
@@ -678,7 +678,7 @@ is a $3\times3$ symmetric matrix per primitive over every training camera, and
 the peak does not track the primitive count. \texttt{ficus} at $187$k primitives
 and \texttt{mic} at $406$k both peak near $13$\,GB, which is what a large transient in that accumulation looks like.
 
-That is the honest cost line, and it is not a small one. A practitioner reading
+That is the cost line. A practitioner reading
 this table on a well-conditioned capture should not use the anisotropic filter: it is the same
 model, slower, in more memory. The case for it is confined to the regime of
 \S\ref{sec:table3}, and \S\ref{ch:discussion} does not argue otherwise.}
@@ -704,7 +704,7 @@ determinant computed in a way that lost precision at realistic scales, and an
 isotropic branch that re-derived a quantity it should have taken. Each produced
 plausible numbers and the wrong shape. The diagnosis of each, and the unit test
 that now covers the range where they hid, is Appendix~\ref{app:defects}.
-\section{The stress suite: six protocols, and the one where the filter engages}
+\section{The stress suite}
 \label{sec:table3}
 
 Where the claim lives. Training cameras are restricted to each protocol's subset
@@ -741,7 +741,7 @@ captures, to the precision of the instrument.
 
 The narrow pencil is the first capture in this project on which the filter
 actually engages. The estimation term exceeds the floor on $93\,\%$ of
-primitives, and the filter comes out genuinely anisotropic, at $1.47\times$.
+primitives, and the filter comes out anisotropic, at $1.47\times$.
 There, and only there, the anisotropic filter is ahead. The margin is $\stressBindDelta$\,dB on the
 mean, which is $\stressBindSigma$ times the run-to-run spread, and it is worth
 saying what that mean is made of: eight paired cells, two scenes by four test
@@ -820,7 +820,7 @@ definitions of \S\ref{sec:branchdefect} disagreed and both were kept.}
   \label{fig:stress}
 \end{figure}
 
-\section{The angular mask, measured against magnitude pruning at matched size}
+\section{The angular mask}
 \label{sec:btwo}
 \label{sec:table4}
 
@@ -978,7 +978,7 @@ disk. Realising the saving needs variable-length SH storage, which
 Chapter~\ref{ch:plan} schedules for Spring. The $74.8$\,MB in all three rows is
 the same file written three times.
 
-\section{What these results establish, and the limit on each}
+\section{What is established}
 They establish a control. Both baselines now exist as this project's own
 measurements, on known hardware, from pinned commits, with the arm separation verified on the saved models. Every later comparison is against these numbers, which is
 the L3 discipline of Table~\ref{tab:levels}.
@@ -1008,7 +1008,7 @@ model for three times the memory. Chapter~\ref{ch:discussion} takes that up;
 this chapter's job is the measurement, and the measurement is that the mechanism
 is the one the derivation names.
 
-\section{What the whole programme cost in GPU-hours}
+\section{Compute expenditure}
 \label{sec:budget}
 
 Every number in this chapter was produced on free cloud GPUs, within a weekly

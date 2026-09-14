@@ -1,5 +1,5 @@
 % ===========================================================================
-%  Sampling-Geometry Band-Limits for Radiance Fields
+%  Sampling Geometries and Band-Limits for Radiance Fields
 %  B.Tech Project · Department of Electrical Engineering · IIT Kharagpur
 %
 %  Build:  make thesis      (from the repository root)
@@ -24,7 +24,7 @@
   {\footnotesize\color{ink2}\MakeUppercase{Department of Electrical Engineering \textperiodcentered\ IIT Kharagpur}}
 
   \vspace{22mm}
-  {\Huge\bfseries\color{ink} Sampling-Geometry\\[4pt] Band-Limits for\\[4pt] Radiance Fields\par}
+  {\Huge\bfseries\color{ink} Sampling Geometries\\[4pt] and Band-Limits for\\[4pt] Radiance Fields\par}
 
   \vspace{10mm}
   \begin{minipage}{0.82\linewidth}\centering\itshape\color{ink2}
@@ -38,8 +38,6 @@
     \color{ink2}\footnotesize Candidate & Rickarya Das \textperiodcentered\ 23EE30019\\
     \color{ink2}\footnotesize Degree    & B.Tech EE + M.Tech spec.\ Signal Processing \& ML\\
     \color{ink2}\footnotesize Baselines & 3D Gaussian Splatting (2023) \textperiodcentered\ Mip-Splatting (2024)\\
-    \color{ink2}\footnotesize Version   & v3 \textperiodcentered\ \today\\
-    \color{ink2}\footnotesize Status    & Complete \textperiodcentered\ both baselines reproduced \textperiodcentered\ both methods measured\\
   \end{tabular}
   \vfill
 \end{center}
@@ -51,20 +49,20 @@
 \input{ch00-abstract}
 \clearpage
 
-\input{ch00b-guide}
+\input{ch00b-reading-guide}
 \clearpage
 
 \tableofcontents
 \clearpage
 
 \part{Problem}
-\input{ch01-introduction}
-\input{ch02-background}
-\input{ch03-gap}
+\input{ch01-capture-limited-resolution}
+\input{ch02-splatting-and-band-limits}
+\input{ch03-scalar-limitations}
 
 \part{Method}
-\input{ch04-method1}
-\input{ch05-method2}
+\input{ch04-anisotropic-band-limit}
+\input{ch05-angular-identifiability}
 
 \part{Evidence}
 \input{ch06-experimental-design}
@@ -72,13 +70,13 @@
 
 \part{Assessment}
 \input{ch08-discussion}
-\input{ch09-plan}
+\input{ch09-schedule}
 
 \appendix
 \part{Technical record}
-\input{ch10-appendix}
-\input{ch11-app-harness}
-\input{ch12-app-impl}
-\input{ch13-app-defects}
+\input{ch10-derivations}
+\input{ch11-harness}
+\input{ch12-implementation}
+\input{ch13-defects}
 
 \end{document}

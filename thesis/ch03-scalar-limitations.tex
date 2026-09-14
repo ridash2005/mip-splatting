@@ -1,4 +1,4 @@
-\chapter{What a single-number band-limit cannot express}
+\chapter{Limitations of a scalar band-limit}
 \label{ch:gap}
 
 \keybox{the idea, in one paragraph}{%
@@ -12,7 +12,7 @@ generous sideways and strict in depth. A scalar cannot say that. This chapter
 shows precisely where each method's scalar lives, what it is computed from, and
 what information it throws away in becoming a scalar.}
 
-\section{Two places a limit can sit: world space and screen space}
+\section{World-space and screen-space limits}
 
 \begin{figure}[htbp]
   \centering
@@ -49,7 +49,7 @@ The progression is not a sequence of unrelated tricks. NeRF used none of the
 geometry beyond a global glance at the images; 3DGS used none at all;
 Mip-Splatting used one view's worth; this work uses all of it.
 
-\section{What the missing world-space limit costs, in decibels}
+\section{The cost of a missing limit}
 \label{sec:cost}
 
 \begin{figure}[htbp]
@@ -79,7 +79,7 @@ work. The question is then whether the \emph{right} band-limit does more.
 Chapter~\ref{ch:results} reports this project's own measurement of the same
 quantity, which is the control for everything that follows.
 
-\section{Three ways a single number describes the wrong thing}
+\section{Three defects of the scalar filter}
 \label{sec:defects}
 
 \begin{enumerate}[leftmargin=1.4em,itemsep=3pt]
@@ -98,7 +98,7 @@ quantity, which is the control for everything that follows.
         branch.
 \end{enumerate}
 
-\section{Concurrent work: what AAA-Gaussians and PUP 3D-GS already claim}
+\section{Concurrent work}
 \label{sec:relatedwork}
 
 A due-diligence review was run before the stress suite, with one question: has

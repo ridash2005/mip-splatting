@@ -1,4 +1,4 @@
-\chapter{Defects found in this project's own measurement}
+\chapter{Measurement defects}
 \label{app:defects}
 
 \keybox{what this appendix is for, and why it is not hidden}{%
@@ -21,12 +21,12 @@ at different denominators.}
   \toprule
   what looked right & what was wrong & what catches it now \\
   \midrule
-  Arm B reproduced 3DGS's published full-resolution figure &
+  The 3DGS arm reproduced 3DGS's published full-resolution figure &
   It still carried Mip-Splatting's screen-space opacity compensation, so it was
   anti-aliasing better than 3DGS at reduced scales &
   The switch is asserted on the \emph{compiled} rasteriser, not the source \\
   \addlinespace
-  The C1 switch isolated one term &
+  The opacity-compensation fix switch isolated one term &
   It removed three: the compensation, and a degeneracy guard in each of the
   forward and backward kernels &
   The guard is hoisted out of the branch in both kernels \\
@@ -57,19 +57,22 @@ at different denominators.}
   $\gofMaxEffect$\,dB and not consistently signed &
   The pre-GOF commit is a probe in the record (Table~\ref{tab:pregof}) \\
   \addlinespace
-  B2 lost heavily to magnitude pruning &
-  Against a \emph{free} control with more freedom than B2 has. At matched
+  the angular mask lost heavily to magnitude pruning &
+  Against a \emph{free} control with more freedom than the angular mask has. At matched
   structure the margin is $\btwoBlockedGapMin$--$\btwoBlockedGapMax$\,dB &
-  The control carries B2's own nested-degree structure \\
+  The control carries the angular mask's own nested-degree structure \\
   \bottomrule
 \end{tabular}
 \end{center}
 
 \medskip
 Five of the eight are given in full below. The other three --- the denominator,
-the densification explanation and B2's unfair control --- cannot be separated
+the densification explanation and the angular mask's unfair control --- cannot be separated
 from the results they correct, so they are told where those results are:
-\Sef{sec:table1}, \Sef{sec:densification} and \Sef{sec:btwo}
+\S
+ef{sec:table1}, \S
+ef{sec:densification} and \S
+ef{sec:btwo}
 respectively.
 
 \paragraph{A pattern worth naming.} Six of the eight are the same error: two
@@ -82,10 +85,10 @@ the result looked plausible --- which is why none of them was caught by reading
 the numbers, and all of them were caught by a check that asked what the numbers
 were means \emph{over}.
 
-\section{The fourth check: arm B was not running 3DGS's rasteriser}
+\section{The fourth check: the 3DGS arm was not running 3DGS's rasteriser}
 
 The single-codebase construction of \S\ref{sec:onecodebase} gives both arms
-Mip-Splatting's rasteriser, and sets arm B apart by zeroing \texttt{filter\_3D}
+Mip-Splatting's rasteriser, and sets the 3DGS arm apart by zeroing \texttt{filter\_3D}
 and taking \texttt{kernel\_size}~$=0.3$. That reproduces 3DGS's \emph{3D}
 band-limit exactly --- which is what check~2 verifies --- and says nothing about
 the \emph{2D} one. Mip-Splatting's screen-space filter dilates the projected
@@ -96,12 +99,12 @@ covariance by $k$ and then compensates the opacity by
 so that dilation does not brighten the primitive. Vanilla 3DGS applies the same
 fixed $0.3$ dilation and \textbf{no compensation at all}. Setting
 \texttt{kernel\_size}~$=0.3$ reproduces the dilation magnitude and leaves $\rho$
-in place, so arm B kept an anti-aliasing term that 3DGS does not have --- and
+in place, so the 3DGS arm kept an anti-aliasing term that 3DGS does not have --- and
 the term it kept is precisely the one that protects a dilated primitive from
 losing energy as the test sampling rate falls. An arm that anti-aliases better
-than 3DGS degrades less than 3DGS, which is exactly what G2 measured.
+than 3DGS degrades less than 3DGS, which is exactly what the scale-collapse gate measured.
 
-\paragraph{C1 --- the test that separates the two explanations.} $\rho$ is
+\paragraph{The opacity-compensation fix --- the test that separates the two explanations.} $\rho$ is
 computed in CUDA, so the switch is a rasteriser change: a
 \texttt{mip\_compensation} flag threaded through
 \texttt{GaussianRasterizationSettings} into \texttt{computeCov2D}, which skips
@@ -157,7 +160,7 @@ in the \emph{backward} pass instead, because the backward kernel still had its
 copy of the guard inside the branch: the forward was contributing nothing for a
 degenerate primitive while a gradient still flowed to its opacity. Zeroing a
 forward contribution and leaving its gradient live is not a consistent pair, and
-matching them is what the C1 switch should have done from the start --- it was
+matching them is what the opacity-compensation fix switch should have done from the start --- it was
 supposed to isolate one term and it removed three.
 
 \paragraph{\texttt{ship} does not complete, and is reported as such.} With both
@@ -172,7 +175,7 @@ tensor derived from its output, \texttt{radii > 0} in
 
 Three things that rules out, and one it does not. It is not the backward
 kernel, which the second failure had suggested. It is not memory exhaustion: no
-allocation error is raised in any attempt, and \texttt{ship} completes on arm A
+allocation error is raised in any attempt, and \texttt{ship} completes on the Mip-Splatting arm
 on the same $15\,360$\,MiB card at a measured peak of $13\,755$\,MiB. And it is
 not a deterministic fault at a fixed point, which is what this section claimed
 before it was instrumented.
@@ -194,12 +197,12 @@ is reported as failed rather than re-attempted further.
 
 What remains is an out-of-bounds access in the forward raster whose onset
 depends on the optimisation trajectory, on much the largest model in the suite:
-\texttt{ship} reaches $442\,235$ primitives on arm A, more than any other
+\texttt{ship} reaches $442\,235$ primitives on the Mip-Splatting arm, more than any other
 Blender scene, at $\sim\!90\,\%$ of the card.
 
 It is excluded from the single-scale arm-B rows, and because every between-arm
 table in this chapter is restricted to the scenes both arms have, it is excluded
-from arm A's there too --- a seven-scene mean against an eight-scene one is not a
+from the Mip-Splatting arm's there too --- a seven-scene mean against an eight-scene one is not a
 comparison. Nothing was reduced to make it fit: the protocol's rule for a scene
 that will not run is to record it and move on, and that rule does not become
 optional when the scene is one of eight rather than one of nine.
@@ -207,7 +210,7 @@ optional when the scene is one of eight rather than one of nine.
 Two things make the exclusion narrow rather than convenient. \texttt{ship}
 trains without incident on the \emph{multi-scale} protocol, on all four scales,
 so Table~\ref{tab:mtmt} is a full eight-scene comparison and the failure is
-specific to single-scale training. And it trains without incident on arm A, so
+specific to single-scale training. And it trains without incident on the Mip-Splatting arm, so
 the fragility belongs to the vanilla band-limit semantics rather than to the
 scene, the data or the harness. Both point the same way: removing the
 compensation costs robustness on the one scene that sits closest to the limits of
@@ -236,7 +239,7 @@ not only against what it changes.}
 \section{Every cell of this column was two rasterisers, briefly}
 \label{sec:blend}
 
-Arm B's column here was re-measured after C1, and for a while afterwards each of
+The 3DGS arm's column here was re-measured after the opacity-compensation fix, and for a while afterwards each of
 its $32$ cells was the mean of the old measurement and the new one rather than
 the new one. The record is append-only by design (Table~\ref{tab:levels}): a
 re-measured configuration leaves its predecessor in the file, marked, and the
@@ -249,7 +252,7 @@ Nothing about the output looked wrong. The two builds differ only in whether the
 degeneracy guards in the forward and backward passes match, which moves a scene
 by hundredths of a decibel on a capture this well conditioned, so the blended
 column sat exactly where a plausible column sits. The same defect had quietly
-taken hold in the B1 parity rows, where the two builds differed in whether the
+taken hold in the anisotropic filter parity rows, where the two builds differed in whether the
 filter floor was Mip-Splatting's own value or a re-derivation of it.
 
 What was missing was not a better rule but any check at all on the invariant the
@@ -309,7 +312,7 @@ One more defect has to be stated before the numbers, because it changed them.
 The estimation term is $(s\,\sigma_{\mathrm{pix}})^2/\lambda_i$, and
 Proposition~\ref{prop:constant} fixes $(s\,\sigma_{\mathrm{pix}})^2 = 0.2$ ---
 the same constant Mip-Splatting's floor $f_k^2 = 0.2\,(d_{\min}/f_{\max})^2$ is
-built from. Both sides of the I-1 comparison therefore carry it. The instrument
+built from. Both sides of the floor-occupancy instrument comparison therefore carry it. The instrument
 carried it on the floor and dropped it from the estimation term, which inflated
 that side by a factor of five, or $\sqrt{5} = 2.24$ in $\sigma$. The filter's own
 implementation had always applied it.
@@ -332,7 +335,7 @@ ambiguity in the prose, which is the more useful way for it to surface.}
 \section{Getting there: three bugs the parity requirement caught}
 \label{sec:b1bugs}
 
-The first implementation of B1 reported exactly what
+The first implementation of the anisotropic filter reported exactly what
 \S\ref{sec:instrumentresults} predicts internally --- the floor binding on
 $100\,\%$ of primitives, the filter isotropic to two decimals --- and still
 differed from Mip-Splatting by up to $1.22$\,dB, thirty times the seed spread of
@@ -342,19 +345,19 @@ Proposition~\ref{prop:reduction} forbids it. Diagnosing it took three passes,
 and the sequence is worth recording because each step ruled something out.
 
 \begin{enumerate}[leftmargin=1.4em,itemsep=3pt]
-  \item \textbf{The floor.} B1 re-derives $f_k$ from the camera geometry, so the
+  \item \textbf{The floor.} the anisotropic filter re-derives $f_k$ from the camera geometry, so the
         first suspect was that its floor was not Mip-Splatting's. A cross-check
         was added --- \texttt{compute\_3D\_filter} runs alongside and the two are
         compared on every call --- and they agree to $1.16\times10^{-10}$
-        absolute, $10^{-7}$ relative, for the whole run. Not the cause. B1 now
+        absolute, $10^{-7}$ relative, for the whole run. Not the cause. The anisotropic filter now
         takes their floor verbatim anyway, since \S\ref{sec:proposition2} floors
         at ``Mip-Splatting's own value'' and a re-derivation is a needless
         opportunity to differ.
-  \item \textbf{The covariance path.} B1 passed $\Sigma + \Sigma_{\mathrm{filt}}$
+  \item \textbf{The covariance path.} the anisotropic filter passed $\Sigma + \Sigma_{\mathrm{filt}}$
         through the rasteriser's precomputed-covariance input while
         Mip-Splatting passes scales and rotations. The two are algebraically the
         same, but they are different code. Where the filter is isotropic on
-        every primitive, B1 now takes Mip-Splatting's own path ---
+        every primitive, the anisotropic filter now takes Mip-Splatting's own path ---
         Proposition~\ref{prop:reduction} used as a computational identity rather
         than only as an argument. The gap did not move: $1.245$\,dB. Not the
         cause either.
@@ -364,7 +367,7 @@ and the sequence is worth recording because each step ruled something out.
         $\prod s_i^2$: a primitive with $s = 0.005$ has $|\Sigma| = 1.6\times
         10^{-14}$, and one with $s=0.001$ has $10^{-18}$. Both determinants
         clamped to the same floor, their ratio became exactly $1$, and the
-        compensation switched itself off for most of the model. B1 was rendering
+        compensation switched itself off for most of the model. The anisotropic filter was rendering
         with uncompensated opacity while every baseline number in this thesis
         was produced with it --- which is precisely the observed signature:
         denser and sharper at full resolution, worse at every reduced scale.
@@ -379,13 +382,13 @@ now $\mathbf{\methodParityMax}$\,dB, comfortably below the seed spread of
 \S\ref{sec:spread}.
 
 \keybox{what ``paired'' has to mean here}{%
-Proposition~\ref{prop:reduction} says B1 \emph{becomes} Mip-Splatting when the
+Proposition~\ref{prop:reduction} says the anisotropic filter \emph{becomes} Mip-Splatting when the
 floor dominates, so the two numbers being subtracted have to come from the same
 capture, the same harness invocation and the same build; otherwise the
 difference also contains whatever separates two runs. That is a stricter
 requirement than it sounds, and this table did not meet it. The selector behind
 the macro accepted the standard single-scale rows as a stand-in for
-Mip-Splatting at the full protocol, so B1 was being differenced against a sweep
+Mip-Splatting at the full protocol, so the anisotropic filter was being differenced against a sweep
 from three commits earlier that had never used the protocol, with two scenes
 entering twice on one side and once on the other. It reported $0.021$\,dB. The
 figure was not wrong by much, and that is the point: a comparison can be

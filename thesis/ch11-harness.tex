@@ -24,7 +24,7 @@ else so that the session's output fits in what the platform will hand back. The
 scripts are \texttt{kaggle/*.py}; the launcher that pushes them and collects
 their output is \texttt{tools/kaggle\_push.py}.
 
-\section{The twelve pre-flight assertions}
+\section{Pre-flight assertions}
 \label{app:preflight}
 
 A reproduction that has not checked its own instrument is a reproduction of
@@ -42,7 +42,7 @@ Three are worth singling out.
         landing on one would fail forty minutes in with a message that looks like
         a code fault. It now aborts in thirty seconds with a marker the launcher
         recognises and relaunches on.
-  \item \textbf{The \S3 diff check.} Arm B must differ from arm A by exactly the
+  \item \textbf{The \S3 diff check.} The 3DGS arm must differ from the Mip-Splatting arm by exactly the
         intended change and nothing else. The check enumerates the files that
         change and refuses anything outside the list. It has fired twice in
         anger --- once on a runtime state file that a careless \texttt{git add}
@@ -79,7 +79,7 @@ not been measured expands to a visible marker rather than to a plausible-looking
 number. The same loader feeds the figures and the slide deck, so the three cannot
 disagree --- and a test asserts that they do not, because for a while they did.
 
-\section{The apparatus, artefact by artefact}
+\section{The apparatus}
 \label{app:artefacts}
 
 \begin{table}[htbp]
@@ -111,7 +111,7 @@ have raised an error where it happened. They are recorded here because a
 reproducibility claim that has never been tested against a fixture with known
 answers is an assertion, not a property.
 
-\section{The ladder, and what each rung cost}
+\section{Cost per rung}
 \label{app:ladder}
 
 \input{generated/table-budget}
@@ -125,7 +125,7 @@ costs rather than its planned ones.
         twelve-hour cap arrived. What it produced is kept and reported as a
         four-scene subset, clearly labelled; what it did not produce is not
         estimated.
-  \item The arm-B re-runs after C1 --- \texttt{c2\_armb} and its continuations
+  \item The arm-B re-runs after the opacity-compensation fix --- \texttt{c2\_armb} and its continuations
         --- are pure re-measurement cost, incurred because the arm had been built
         wrong. They are the price of the defect in Appendix~\ref{app:defects},
         and they are itemised so that the price is visible.

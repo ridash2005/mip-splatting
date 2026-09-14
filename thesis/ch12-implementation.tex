@@ -1,13 +1,13 @@
-\chapter{Implementation --- the two arms, and the switches between them}
+\chapter{Implementation}
 \label{app:impl}
 
 \keybox{what this appendix is for}{%
 The thesis compares two published methods and two proposed ones. All four run
 from a single checkout, differing only by command-line flags, and this appendix
 says exactly what each flag does and where in the code it acts. It is the answer
-to ``how do I know arm B is really 3DGS?'', and it is a code-level answer.}
+to ``how do I know the 3DGS arm is really 3DGS?'', and it is a code-level answer.}
 
-\section{One codebase, four configurations}
+\section{Four configurations}
 
 Running each method from its own repository would mean the difference between two
 numbers contained the difference between two dataloaders, two metric
@@ -20,24 +20,24 @@ flags.
   \toprule
   configuration & flags & what it is \\
   \midrule
-  arm A & \texttt{--kernel\_size 0.1} &
+  the Mip-Splatting arm & \texttt{--kernel\_size 0.1} &
     Mip-Splatting as published: 3D smoothing filter on, 2D dilation with the
     opacity compensation. \\
-  arm B & \texttt{--kernel\_size 0.3 --disable\_3D\_filter
+  the 3DGS arm & \texttt{--kernel\_size 0.3 --disable\_3D\_filter
                   --disable\_2D\_mip\_compensation} &
     3DGS's band-limit semantics exactly: no world-space filter, a fixed $0.3$
     screen-space dilation, no opacity compensation. \\
-  B1 & \texttt{--kernel\_size 0.1 --use\_fisher\_filter} &
+  the anisotropic filter & \texttt{--kernel\_size 0.1 --use\_fisher\_filter} &
     Method I. Replaces the scalar 3D filter with the anisotropic one, floored at
     Mip-Splatting's own value. \\
-  B2 & post-hoc mask, no training flag &
+  the angular mask & post-hoc mask, no training flag &
     Method II. Reads a trained model and the training view directions; masks
     spherical-harmonic degrees. \\
   \bottomrule
 \end{tabular}
 \end{center}
 
-\section{Why arm B needs two switches, not one}
+\section{Two switches for the 3DGS arm}
 
 Mip-Splatting has \emph{two} band-limits and they live in different places.
 
@@ -51,7 +51,7 @@ $\rho = \sqrt{\det \Sigma' / \det(\Sigma' + kI)}$, which lives in CUDA. Vanilla
 3DGS dilates the projected covariance by a fixed $0.3$ and applies no such term.
 A Python attribute cannot reach it.
 
-For a long time arm B carried only the first switch. That is the defect of
+For a long time the 3DGS arm carried only the first switch. That is the defect of
 Appendix~\ref{app:defects}: the arm labelled 3DGS was still anti-aliasing with
 Mip-Splatting's screen-space term, at exactly the scales where the falsification
 gate was scored.
@@ -72,7 +72,7 @@ Because the switch reaches the binary, the pre-flight asserts that the
 \emph{compiled} rasteriser carries the field --- checking the source would prove
 nothing about what was built.
 
-\section{The degeneracy guard, and why it is not part of the switch}
+\section{The degeneracy guard}
 
 Both kernels carry a numerical guard: a primitive whose projected covariance is
 singular to the tolerance the determinants are clamped at contributes nothing.
@@ -85,9 +85,9 @@ This is the second lesson of Appendix~\ref{app:defects} and the more general one
 a switch meant to isolate a single term has to be checked against what it leaves
 alone, not only against what it changes.
 
-\section{B1, in code}
+\section{The anisotropic filter in code}
 
-B1 needed no CUDA change. The rasteriser already accepts a precomputed
+the anisotropic filter needed no CUDA change. The rasteriser already accepts a precomputed
 covariance, so replacing a scalar variance with a matrix is a change to how the
 covariance is built and not to how it is splatted. Three things happen at
 construction, once, before the training loop:
@@ -118,7 +118,7 @@ the stress suite cheap: no new images are rendered and no dataset is regenerated
 
 The subsets are computed in \texttt{tools/camera\_protocols.py} and passed to the
 trainer as an index list. \texttt{mixed focal} additionally downsamples the
-selected images, which is a genuinely different operation and was, for a while,
+selected images, which is a different operation and was, for a while,
 not being applied at all --- the protocol passed its index list and nothing else,
 so it trained a full orbit under another name. \texttt{tools/test\_camera\_subset.py}
 now asserts that each protocol selects what it claims to.

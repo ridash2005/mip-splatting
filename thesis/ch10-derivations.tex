@@ -174,12 +174,12 @@ point at the work; bibliographic details are to be confirmed on retrieval.
     2 & \textsc{cited} Fridovich-Keil, Yu, Tancik, Chen, Recht, Kanazawa. Plenoxels. CVPR 2022. & Speed baseline; the ``no neural network needed'' result. \\
     2 & \textsc{unchecked} Durand, Holzschuch, Soler, Chan, Sillion. A Frequency Analysis of Light Transport. SIGGRAPH 2005. & Frequency-domain treatment of light transport; likely relevant to the sampling argument. \\
     1 & \textsc{checked} AAA-Gaussians: Anti-Aliased and Artifact-Free 3D Gaussian Rendering. arXiv:2504.12811, 2025. & \textbf{Concurrent prior art for the anisotropic 3D filter.} Theirs is derived from the current view ray and recomputed per frame; this thesis's is derived from the training capture and fixed per primitive. Forced the narrowing recorded in \S\ref{sec:relatedwork}. \\
-    1 & \textsc{checked} Hanson et al. PUP 3D-GS: Principled Uncertainty Pruning for 3D Gaussian Splatting. CVPR 2025. & \textbf{The matrix is not new.} Same second-order spatial sensitivity accumulated over training views --- collapsed to a scalar and thresholded for pruning. B1's novelty is retaining the spectrum. \\
+    1 & \textsc{checked} Hanson et al. PUP 3D-GS: Principled Uncertainty Pruning for 3D Gaussian Splatting. CVPR 2025. & \textbf{The matrix is not new.} Same second-order spatial sensitivity accumulated over training views --- collapsed to a scalar and thresholded for pruning. The anisotropic filter's novelty is retaining the spectrum. \\
     2 & \textsc{checked} Kheradmand et al. 3D Gaussian Splatting as Markov Chain Monte Carlo. NeurIPS 2024. & Nearest principled density-control work. Orthogonal: no filter, no band-limit, no covariance floor. No collision. \\
     2 & \textsc{checked} Jiang et al. FisherRF: Active View Selection and Mapping with Radiance Fields Using Fisher Information. ECCV 2024. & Same statistical object, opposite use: scores candidate cameras for acquisition, never a primitive's covariance. Changes the dataset, not the primitive. \\
     2 & \textsc{checked} Liang et al. Analytic-Splatting. ECCV 2024. & Replaces the 2D pixel-window approximation with a closed-form integral. Improves the \emph{2D} half of Mip-Splatting; composable with this work, which changes the 3D half. \\
     3 & \textsc{cited} Gaussian Opacity Fields (arXiv 2404.10772). & Source of the improved densification metric later integrated into the Mip-Splatting repository --- a reproduction hazard if the commit is not pinned. \\
-    3 & \textsc{unchecked} 3DGS compression survey (CGF 2025) and the methods it covers. & Where a B2 memory result must be positioned. \\
+    3 & \textsc{unchecked} 3DGS compression survey (CGF 2025) and the methods it covers. & Where the angular mask memory result must be positioned. \\
     \bottomrule
   \end{tabular}
 \end{table}

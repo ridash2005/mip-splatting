@@ -1,11 +1,9 @@
-\chapter{Why a radiance field needs a resolution limit}
+\chapter{Capture-limited resolution}
 \label{ch:intro}
 
 Suppose you are handed eighty photographs of an object and asked to produce a
-picture of it from a viewpoint nobody stood at. This is the problem a radiance
-field solves, and the last few years have made it look easy. It is worth
-pausing, before any of the machinery, on what the photographs can and cannot
-tell you.
+picture of it from a viewpoint nobody stood at. This is the problem a radiance field solves. Before any of the machinery,
+consider what the photographs can and cannot tell you.
 
 They sample the scene, and they sample it unevenly. A surface close to the
 cameras is covered by many more pixels than one far away. Some parts of the
@@ -17,15 +15,14 @@ how fine the detail can be, and that limit belongs to the capture. It is not a
 property of the representation you happen to store the answer in, and no choice
 of representation can lift it.
 
-The authors of NeRF understood this and acted on it. Their positional encoding
-uses $L$ frequency bands, and they chose $L$ from, in their words, ``the maximum
-frequency present in the sampled input images''. The instinct is right.
-The instrument is as blunt as an instrument can be: one number, picked by hand,
-applied to an entire scene.
+NeRF acts on this directly. Its positional encoding uses $L$ frequency bands,
+and $L$ is chosen from, in the authors' words, ``the maximum frequency present
+in the sampled input images''. The quantity is the right one; the instrument is
+one number, picked by hand, applied to an entire scene.
 
-3D Gaussian Splatting dropped even that. Its authors say plainly that no
-regularisation is applied, and they mean it: a primitive may shrink without
-bound, because nothing in the objective gives it a reason not to. As long as the
+3D Gaussian Splatting drops even that. Its authors state that no regularisation
+is applied, and a primitive may therefore shrink without bound: nothing in the
+objective opposes it. As long as the
 model is evaluated at the resolution it was fitted at, this does no visible harm, which is why it went unnoticed for so long. Change the
 resolution and the damage appears at once. Section~\ref{sec:cost} puts a number
 on it: $15.64$\,dB in the published figures, and \StmtArmBDrop\,dB in this
@@ -37,7 +34,7 @@ single scalar per primitive, added in quadrature to all three axes of the
 covariance. This thesis asks what that scalar ought to have been, and arrives at
 the answer that it ought not to have been a scalar.
 
-\section{The claim: the limit should be a matrix computed from the capture}
+\section{The claim}
 
 \keybox{thesis}{%
 ``The maximum frequency present in the sampled input images'' is not one number.
@@ -47,7 +44,7 @@ local, directional generalisation. Floored at the per-view Nyquist limit, it
 reduces to Mip-Splatting exactly where the capture is well conditioned, and
 departs from it precisely where the capture is not.}
 
-\section{The same problem in signal-processing terms: reconstruction from non-uniform samples}
+\section{Signal-processing framing}
 
 Stripped of its graphics vocabulary, the problem is reconstruction from
 non-uniform samples without a matched prefilter --- a classical
@@ -80,7 +77,7 @@ separation precisely and Chapter~\ref{ch:discussion} returns to it; the short
 form is that what is new here is the \emph{source} of the anisotropy and the
 retention of its \emph{spectrum}.
 
-\section{Contributions, and what each one rests on}
+\section{Contributions}
 
 \begin{enumerate}[leftmargin=1.4em,itemsep=2pt]
   \item A derivation of the per-primitive, per-direction band-limit from the

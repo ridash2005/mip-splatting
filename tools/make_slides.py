@@ -233,7 +233,7 @@ def build(prs, D):
          "B.TECH PROJECT  \u00b7  DEPARTMENT OF ELECTRICAL ENGINEERING  \u00b7  IIT KHARAGPUR",
          size=12, colour=MUTED, bold=True)
     text(s, M, Inches(2.1), W - 2 * M, Inches(1.8),
-         "Sampling-Geometry Band-Limits\nfor Radiance Fields", size=44, bold=True,
+         "Sampling Geometries and Band-Limits" + chr(10) + "for Radiance Fields", size=40, bold=True,
          spacing=1.05)
     rule(s, Inches(4.25))
     text(s, M, Inches(4.5), Inches(8.6), Inches(1.2),

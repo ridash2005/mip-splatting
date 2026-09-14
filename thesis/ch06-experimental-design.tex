@@ -1,4 +1,4 @@
-\chapter{Experimental design: one codebase, four configurations, gates fixed in advance}
+\chapter{Experimental design}
 \label{ch:design}
 
 \keybox{why the experiment is shaped like this}{%
@@ -24,7 +24,7 @@ This chapter states the design: what is held fixed, what is varied, what would
 count as success and what would count as failure. The commands that carry it
 out, and the machinery that runs them, are Appendix~\ref{app:harness}.
 
-\section{The compute envelope, and which experiments it rules out}
+\section{Compute envelope}
 Free tier: Kaggle $2\times$T4, 16\,GB each, compute capability 7.5. 3DGS states
 that 24\,GB is required for paper-quality training, so numerical identity with
 the published tables is unavailable for the largest scenes. Three acceptance
@@ -52,7 +52,7 @@ independent prior on implementation identity is the ${\sim}0.6$\,dB spread
 between faithful splatting implementations on the same benchmark --- three times
 the L1 tolerance.
 
-\section{Why every configuration runs from a single codebase}
+\section{The single-codebase decision}
 \label{sec:onecodebase}
 
 \begin{figure}[htbp]
@@ -103,7 +103,7 @@ $=0.3$, \emph{and} the 2D opacity compensation disabled in the rasteriser --- al
 three, which together are vanilla 3DGS's band-limit semantics in both domains.
 The third was added after \S\ref{sec:g2} found it missing.
 
-\section{The ladder of runs, and the exit criterion for each}
+\section{The ladder of runs}
 \begin{table}[htbp]
   \centering
   \caption{The rungs, their budgets and their exit criteria. GPU-hours for R0
@@ -125,7 +125,7 @@ The third was added after \S\ref{sec:g2} found it missing.
   \end{tabular}
 \end{table}
 
-\section{The stress suite: six capture protocols of decreasing parallax}
+\section{Six capture protocols}
 \label{sec:stress}
 
 \begin{figure}[htbp]
@@ -153,7 +153,7 @@ capture the prediction was made for, and the prediction must then be re-evaluate
 
 \input{generated/table-protocols}
 
-\section{Three instruments that measure the capture itself}
+\section{Three instruments}
 \label{sec:instruments}
 All read-only with respect to the optimiser, so the reproduction remains a
 reproduction. Together they test the method's premise before the method exists.
@@ -180,7 +180,7 @@ excluded from the instrument's histogram, or they pile up in its right tail and
 read as though the resolution floor were binding hard, which is precisely the
 wrong answer at the floor-binding gate, and an encouraging-looking one.
 
-\section{Metrics, controls, and how many seeds}
+\section{Metrics and statistics}
 Quality is PSNR, SSIM and LPIPS (VGG) per scene and averaged, at test scales
 $1\times$, $\tfrac12$, $\tfrac14$, $\tfrac18$. Cost is primitive count, model
 MB, peak training VRAM, wall-clock and render fps --- same GPU, same run.

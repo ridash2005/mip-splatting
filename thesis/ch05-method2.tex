@@ -42,7 +42,7 @@ cannot support degree $3$; fitting it produces coefficients that encode noise
 and, worse, produce visible artefacts under novel views that fall outside the
 observed cone.
 
-\keybox{why this is a separate contribution, not a footnote}{%
+\keybox{why this is a separate contribution}{%
 B2 is independent of B1. It survives even if the floor-occupancy diagnostic of
 \S\ref{sec:instruments} kills the positional band-limit: the two share a principle, which is not to fit what the capture does not
 determine, but they share neither a mechanism nor a failure mode. B2 also carries a memory result that B1 does
@@ -69,13 +69,12 @@ with different view counts. Without this, $\tau$ silently encodes a preference
 for well-observed primitives that has nothing to do with whether their angular
 sampling is well spread.
 
-\paragraph{Angular spread.} Normalising is necessary and not sufficient. Even on
+\paragraph{Angular spread.} Normalising is necessary, and on its own it is insufficient. Even on
 $\bar A_k$, $\lambda_{\min}$ still scales with how widely the directions are
 spread, so one $\tau$ cannot serve a $100$-camera orbit and a $10$-camera cone.
 Section~\ref{sec:b2amend} measures this: at $\tau = 0.01$ the absolute form keeps
 everything on a full orbit and nothing on either degraded protocol, and at
-$\tau = 0.001$ it keeps $82\,\%$ on the arc. It is a cliff, not a graded
-response. The scale-free condition number
+$\tau = 0.001$ it keeps $82\,\%$ on the arc. It is a cliff. The scale-free condition number
 \begin{equation}
   \ell_{\max}(k) \;=\; \max\Big\{\, \ell \;:\;
   \frac{\lambda_{\min}\big(\bar A_k(\ell)\big)}{\lambda_{\max}\big(\bar A_k(\ell)\big)} > \tau \,\Big\}
@@ -110,4 +109,4 @@ One caveat carries through to every statement about memory: masking coefficients
 to zero does not shrink a fixed-width PLY, so \emph{no model-size saving is
 claimed from these numbers}. Realising it needs variable-length SH storage,
 which Chapter~\ref{ch:plan} schedules for Spring, and which, given
-\S\ref{sec:btwo}, should be scheduled for a criterion that works, not for this one.
+\S\ref{sec:btwo}, should be scheduled for a criterion that works.

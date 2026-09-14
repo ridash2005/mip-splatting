@@ -38,7 +38,7 @@ $\capAgreeN$ parallax protocols agrees to
 $\capAgreeMin$--$\capAgreeMax\,\%$, where the two-view expression falls short by
 as much as $\twoViewLowMax\,\%$. The third result is a guarantee, not a formula: if the anisotropic floor is itself floored at Mip-Splatting's own
 value, then wherever that value dominates the two methods coincide exactly. On a
-well-conditioned benchmark, parity is therefore structural, and an improvement there would indicate a bug, not a success.
+well-conditioned benchmark, parity is therefore structural, and an improvement there would indicate a bug.
 
 A second, smaller proposal applies the same reasoning on the sphere of
 directions instead of in space, masking the spherical-harmonic coefficients a
@@ -46,7 +46,7 @@ capture cannot determine. Those coefficients are $76\,\%$ of the model's
 parameters, so the potential saving is large. It does not survive measurement,
 and \S\ref{sec:btwo} reports why.
 
-Concurrent work has narrowed what can be claimed for the main idea, and the narrowing is stated here plainly, not argued away. AAA-Gaussians (2025) already
+Concurrent work has narrowed what can be claimed for the main idea, and the narrowing is stated here plainly. AAA-Gaussians (2025) already
 makes the 3D filter a full $3\times3$, though derived from the view being rendered instead of from the capture. PUP 3D-GS (2025) already builds a
 per-primitive second-order spatial sensitivity, though it collapses that to a
 scalar and uses it to prune. What remains new is therefore neither the
@@ -71,11 +71,11 @@ could have ended the project: does the resolution floor already bind everywhere,
 and is real capture geometry anisotropic enough to matter? Both passed on
 measurement.
 
-Several results ran against expectation, and they are reported where they happened, not collected into a footnote. Gate G2 failed, and the first
+Several results ran against expectation, and they are reported where they happened. Gate G2 failed, and the first
 diagnosis of that failure was itself wrong: the arm labelled 3DGS had kept
 Mip-Splatting's screen-space opacity compensation, so it was anti-aliasing better than 3DGS at the very scales the gate was scored
 on. Rebuilt and
-re-measured, the gate passes on all three criteria. Re-measuring then exposed a second problem, this time in the record and not in the code, in which rows that
+re-measured, the gate passes on all three criteria. Re-measuring then exposed a second problem, this time in the record itself, in which rows that
 a re-run had replaced were never retired and every cell of one column became an
 average of two different builds. A third was a denominator: both measured
 columns of Table~\ref{tab:stmt} were means over the seven scenes both arms have,
@@ -112,15 +112,15 @@ claimed, not that the method is useful at that operating point. And eight
 consistent pairings are still eight cells of a single run on two scenes.
 
 \medskip
-Two results are negative, and they belong here and not in a later chapter.
+Two results are negative, and they belong here.
 \textbf{B2 is refuted.} Compared against a control that has B2's own
 nested-degree structure and B2's own budget, so that only the criterion differs,
 magnitude pruning wins by up to $\btwoBlockedGapMax$\,dB. Chapter~\ref{ch:method2}
 had set the standard that a criterion unable to beat magnitude pruning at
 matched size is not worth the machinery, and by that standard it fails. An
 earlier and much larger-looking margin, measured against a control with more
-freedom than B2 has, turned out to be mostly a verdict on the shape of the mask
-and not on the criterion; that correction is reported too. \textbf{B1 costs
+freedom than B2 has, turned out to be mostly a verdict on the shape of the mask, leaving the
+criterion itself barely implicated; that correction is reported too. \textbf{B1 costs
 $2.8\times$ the peak memory and $1.32\times$ the training time} of the baseline
 it provably equals on a well-conditioned capture. On such a capture it should
 not be used, and this thesis does not recommend it there.}

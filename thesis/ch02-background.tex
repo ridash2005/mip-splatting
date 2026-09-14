@@ -24,7 +24,7 @@ bright smear at one-eighth.
 
 The fix, in general terms, is a \emph{band-limit}: a floor on how small a blob is
 allowed to be. This chapter sets out where each published method puts that floor
-and what it is made of. The rest of the thesis argues that the floor should be a matrix and not a number, and measures what happens when you make it one.}
+and what it is made of. The rest of the thesis argues that the floor should be a matrix, with a separate limit along every direction, and measures what happens when you make it one.}
 
 \begin{figure}[htbp]
   \centering
@@ -36,7 +36,7 @@ and what it is made of. The rest of the thesis argues that the floor should be a
   opacity so that the total is right. Sample half as finely and the same pixel
   receives nine --- each still contributing what was correct when it had a pixel
   to itself. The pixel gets roughly three times the light it should. Repeat over
-  the whole image and the reconstruction does not merely blur; it brightens and thickens, which is what Figure~\ref{fig:ladder} shows happening
+  the whole image and the reconstruction brightens and thickens as well as blurring, which is what Figure~\ref{fig:ladder} shows happening
   to a real scene.}
   \label{fig:aliasing}
 \end{figure}
@@ -49,9 +49,8 @@ $r(t)=o+td$ with density $\sigma$ and colour $c$, the rendered radiance is
   \qquad T(t)=\exp\!\Big(-\!\int_0^t\!\sigma\,\mathrm{d}u\Big).
 \end{equation}
 Discretised, this is the $\alpha$-blending sum both methods use. 3DGS states the
-equivalence between its $\alpha$-blending and NeRF's ray marching directly; the
-two differ in how the field is parameterised and evaluated, not in what is being
-rendered. This is what allows a single argument to span both.
+equivalence between its $\alpha$-blending and NeRF's ray marching directly; the two differ in how the field is parameterised and evaluated; what is being
+rendered is the same in both. This is what allows a single argument to span both.
 
 \section{NeRF and its explicit band-limit}
 NeRF stores the field in an MLP applied to a positional encoding $\gamma(x)$ with

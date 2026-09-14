@@ -13,7 +13,7 @@
     gate & observation that would refute & response \\
     \midrule
     G3 & I-1 shows the Nyquist floor exceeds the estimation term on nearly every primitive in every scene & by Proposition~\ref{prop:reduction} the method is the baseline everywhere. Narrow the claim to mixed-focal and one-sided regimes, or pivot to B2, which this result does not touch. Cost of learning it in week 2: two weeks. In March: the project. \\
-    G4 & I-2 shows $\lambda_3/\lambda_1 \approx 1$ on every protocol, including the narrow cone & Equation~\eqref{eq:anisotropy} would be contradicted by measurement, which would indicate an error in the visibility weighting $w_{nk}$ and not in the geometry. Diagnose before proceeding. \\
+    G4 & I-2 shows $\lambda_3/\lambda_1 \approx 1$ on every protocol, including the narrow cone & Equation~\eqref{eq:anisotropy} would be contradicted by measurement, which would indicate an error in the visibility weighting $w_{nk}$. Diagnose before proceeding. \\
     --- & Table~\ref{tab:stress}'s full-orbit row shows a loss against Mip-Splatting & a bug, not a result: Proposition~\ref{prop:reduction} forbids it. The filter never smooths less than the baseline in any direction. \\
     --- & Table~\ref{tab:stress} shows uniform gains across all protocols & also suspicious. The derivation predicts a regime structure; uniform improvement would suggest the comparison is not controlled. \\
     --- & prior work has already made the 3D filter anisotropic or per-direction & the only finding that invalidates the project outright, and the reason the literature due-diligence is scheduled in week 1--2, when it costs nothing, instead of in March. \textbf{This one fired}; see \S\ref{sec:narrowing}. \\
@@ -42,7 +42,7 @@ capture}, which is what the stress suite tests. A primitive seen only from a
 narrow baseline is under-determined along depth no matter which view renders it,
 and a filter derived from the render-time ray carries no memory of that.
 
-Three consequences, all of them applied and not merely noted:
+Three consequences, all of them applied:
 
 \begin{enumerate}[leftmargin=1.4em,itemsep=3pt]
   \item Chapter~\ref{ch:intro} no longer claims ``an anisotropic 3D filter'' as a
@@ -70,11 +70,11 @@ training-camera spread, so there was still an untested claim to test.}
 \paragraph{First-order approximation.} $\Lambda_k$ is evaluated at the primitive
 centre using the affine approximation of the projective map --- the same
 linearisation 3DGS makes for the EWA transform. It is consistent with the
-renderer; a second-order correction is an ablation, not a fix.
+renderer; a second-order correction would be an ablation.
 
 \paragraph{A point-feature likelihood for a volumetric primitive.}
 Equation~\eqref{eq:measurement} models the localisation of a point. Real
-primitives are extended and semi-transparent, so $\Lambda$ is a proxy for the photometric information, not a derivation from it. This is expected to
+primitives are extended and semi-transparent, so $\Lambda$ is a proxy for the photometric information. This is expected to
 degrade in textureless regions, where the point-feature model is worst. It is a named limitation, with a figure.
 
 \paragraph{Pose noise.} $\Lambda$ inherits 3DGS's complete trust in SfM poses.
@@ -84,7 +84,7 @@ Because it aggregates over many views, graceful degradation is expected; the pos
 requirement is 24\,GB, which removes the five outdoor Mip-NeRF 360 scenes from
 the reproduction claim at the outset. On the Blender scenes the baselines fit
 comfortably, at $\rZeroPeakVram$\,MB. But the constraint turned out to bind in
-two places nobody had budgeted for, and in both cases it was found by measurement and not foreseen.
+two places nobody had budgeted for, and in both cases it was found by measurement.
 
 The scene \texttt{ship} is much the heaviest in the suite: $442\,235$ primitives
 and $13\,755$\,MB, which is $90\,\%$ of the card. It does not train at all on
@@ -114,7 +114,7 @@ Figure~\ref{fig:qualpencil} shows, both methods produce reconstructions nobody
 would ship. What the project establishes is that the mechanism is the one the
 derivation names, not that the method earns its cost.
 
-\paragraph{$\beta$ is a prior, not an estimate.} Where the capture constrains a
+\paragraph{$\beta$ is a prior.} Where the capture constrains a
 direction not at all, no amount of estimation theory supplies a scale; $\beta$
 imports one. If $\beta$ binds widely, the honest conclusion is that the
 estimation limit exceeds what is useful there, and the claim narrows accordingly.
@@ -129,11 +129,12 @@ estimation limit exceeds what is useful there, and the claim narrows accordingly
     \toprule
     question & answer \\
     \midrule
-    Is this Mip-Splatting with more parameters? & It adds two and removes none, and it replaces a scalar chosen from one view with a matrix computed from all of them. By Proposition~\ref{prop:reduction} it reduces to Mip-Splatting exactly when the floor dominates --- a unit test in the repository, not a claim. \\
-    Why Fisher information, and not ``resolution''? & Per-view precisions add, and Fisher information is the object that adds. It also carries the right rank structure: one view contributes rank 2, so depth resolution appears only once there is baseline. \\
+    Is this Mip-Splatting with more parameters? & It adds two and removes none, and it replaces a scalar chosen from one view with a matrix computed from all of them. By Proposition~\ref{prop:reduction} it reduces to Mip-Splatting exactly when the floor dominates --- a unit test in the repository. \\
+    Why Fisher information? & Per-view precisions add, and Fisher information is the object that adds. It also carries the right rank structure: one view contributes rank 2, so depth resolution appears only once there is baseline. \\
     You are smoothing --- does that not lose detail? & Never below the floor, which is the baseline's own limit, so lateral detail is untouched by construction. Extra smoothing appears only along unconstrained directions. Training PSNR is expected to fall slightly and held-out PSNR to rise; both are reported. \\
     More views make the filter smaller. Is the anti-aliasing limit not set by the sharpest view alone? & Two filters are in play. The render-side anti-alias filter is set by the sharpest sampling rate --- that is Mip-Splatting's 2D Mip filter, unchanged here. The representation-side limit is an estimation question and genuinely improves with parallax. Conflating them is the error in the scalar 3D filter; the floor keeps them separate. \\
-    Did you slow rendering down? & No, and that is a measurement, not an argument. The filter changes covariance values, not the rasterisation algorithm, and $\Lambda$ is recomputed ${\sim}290$ times across training, never at render time. Table~\ref{tab:fps} times the render call alone for all three arms in one session on one GPU (\S\ref{sec:fps}). The frame-rate column of Table~\ref{tab:cost} is \emph{not} the answer to this question: it is wall time over a whole rendering pass, with image writing and file I/O included. \\
+    Did you slow rendering down? & No, and that is a measurement. The filter changes covariance values and leaves the rasterisation algorithm
+    alone, and $\Lambda$ is recomputed ${\sim}290$ times across training, never at render time. Table~\ref{tab:fps} times the render call alone for all three arms in one session on one GPU (\S\ref{sec:fps}). The frame-rate column of Table~\ref{tab:cost} is \emph{not} the answer to this question: it is wall time over a whole rendering pass, with image writing and file I/O included. \\
     An anisotropic 3D filter already exists (AAA-Gaussians). What is left? & The source of the anisotropy. Theirs is the ray of the view being rendered, recomputed per frame; this one is the spectrum of the training capture, fixed per primitive. A narrow-baseline primitive is under-determined along depth whichever view renders it, and their filter cannot see that. \S\ref{sec:narrowing} states the separation and the narrowing it forced. \\
     PUP 3D-GS builds the same matrix. Is $\Lambda_k$ new? & The matrix is not; what is done with it is. PUP reduces it to a scalar sensitivity and thresholds that to prune. This method keeps the eigenvectors and uses them to shape a filter. Retaining the spectrum instead of a scalar summary of it is the honest statement of novelty, and \S\ref{sec:relatedwork} makes it before a reader has to. \\
     Where does it fail? & Captures so degenerate that $\beta$ binds everywhere, where the filter degenerates to a scene-scale prior; and textureless regions, where the point-feature likelihood poorly models the photometric one. Both are in the limitations section with figures. \\

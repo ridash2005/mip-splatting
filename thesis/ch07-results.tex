@@ -37,7 +37,7 @@ A reproduction that has not checked its own instrument is a reproduction of
 nothing in particular. Twelve assertions therefore run before the first training
 step, and the session aborts if any of them fails. They check that the GPU is
 one the code can actually run on, that both arms load the same images, that the
-perceptual metric uses the backbone the papers used and not the library's default, and that the two checkouts differ by exactly the intended change and
+perceptual metric uses the backbone the papers used, and that the two checkouts differ by exactly the intended change and
 nothing else. Appendix~\ref{app:harness} lists all twelve with what each one
 protects against. All twelve pass.
 \section{Baseline reproduction --- Blender, single-scale train}
@@ -56,9 +56,8 @@ two-arm construction exists to produce.
 
 The 3DGS column is a different matter and claims nothing. \texttt{ship} does not
 train on the vanilla arm (\S\ref{sec:shipfails}), so that column is a
-$\stmtArmBScenes$-scene mean standing against an eight-scene published one. Its
-$\stmtArmBMaxDelta$\,dB is not a reproduction error and is not reported as one;
-it is mostly the missing scene.}
+$\stmtArmBScenes$-scene mean standing against an eight-scene published one. Its $\stmtArmBMaxDelta$\,dB is mostly the missing scene, and is reported as
+such.}
 
 \keybox{this table used to say something weaker, and the weakness was an artefact}{%
 Both \emph{ours} columns were computed on the matched seven scenes, and compared
@@ -90,8 +89,7 @@ both arms.
   \includegraphics[width=0.92\linewidth]{figures/fig11-qualitative-ladder.pdf}
   \caption{One view of \texttt{lego}, single-scale training, four test scales.
   Left: ground truth at that scale. Middle: 3DGS. Right: Mip-Splatting. The
-  numbers are PSNR for the two images shown, recomputed from those pixels, not
-  scene means, which is why they differ from Table~\ref{tab:stmt}, a mean
+  numbers are PSNR for the two images shown, recomputed from those pixels, which is why they differ from Table~\ref{tab:stmt}, a mean
   over $\stmtMatchedScenes$ scenes and every test view. Renders are magnified
   with nearest-neighbour interpolation so that a rendered pixel is a visible
   block: a $\tfrac18$-scale render is $100\times100$, and any smooth resampler
@@ -130,8 +128,7 @@ column is what that buys.
 \keybox{what these figures are, and what they are not}{%
 They are the pixels the PSNR column was computed from. Each rung deletes all but
 the first few rendered views once the metrics have consumed them, and what
-survives is a matched set of predictions and ground truths per model; these are
-those files, not a re-render made for the figure. The ground-truth image is
+survives is a matched set of predictions and ground truths per model; these are those files, carried straight out of the run that produced them. The ground-truth image is
 byte-identical between the two arms at every index, and we checked that instead of assuming it,
 so the two predictions are of the same view.
 
@@ -155,7 +152,7 @@ and the first was wrong.
 \begin{enumerate}[leftmargin=1.4em,itemsep=2pt]
   \item \textbf{The per-scale recovery.} Its count-weighted mean reproduces
         the shipped evaluation's own pooled figure to within $0.01$\,dB on every
-        scene of every run --- asserted per scene, not spot-checked. Not the
+        scene of every run --- asserted per scene, on every scene. Not the
         cause.
   \item \textbf{Arm B's \texttt{filter\_3D} at step 30\,000.} Read back from all
         eight saved point clouds it is identically zero, and non-zero on all
@@ -174,7 +171,7 @@ fixed gradient threshold. The original
 alone. The argument was that a
 better densification recovers most of what the missing band-limit costs, so the
 collapse G2's thresholds were calibrated against could not occur in this
-codebase, and that G2 was therefore unmeetable here as a property of the gate's premise and not of the experiment.
+codebase, and that G2 was therefore unmeetable here as a property of the gate's premise.
 
 It was a plausible story, it was consistent with every number then available,
 and it was \emph{wrong}. It also had the shape a wrong diagnosis usually has:
@@ -219,9 +216,8 @@ B that was several decibels adrift for a reason it had explained incorrectly.
 \keybox{what this cost, and what it bought}{%
 It cost the R1 arm-B column, the R2 arm-B column and the arm-B half of the seed
 spread --- three rungs of measurement, re-run, and it surfaced a numerical
-fragility that had been hidden by the compensation (\S\ref{sec:shipfails}). It bought a 3DGS arm that is 3DGS in both band-limits and not just one, so
-the control every later comparison rests on is the method and not a residual
-anti-aliasing term. Worth restating plainly: the between-arm comparison was the
+fragility that had been hidden by the compensation (\S\ref{sec:shipfails}). It bought a 3DGS arm that is 3DGS in both of its band-limits, so
+the control every later comparison rests on is the method itself. Worth restating plainly: the between-arm comparison was the
 one thing the earlier diagnosis insisted was safe, and it was the thing that was
 wrong.}
 
@@ -236,11 +232,10 @@ been attempted nine times and has failed nine times, always with a CUDA illegal
 memory access and never with an allocation error, at iterations spread from
 $3\,000$ to $12\,100$. What varies is \emph{when}, not \emph{whether}.
 
-Two things make the exclusion narrow, and not merely convenient. \texttt{ship} trains
+Two things make the exclusion narrow, and defensible. \texttt{ship} trains
 without incident on the \emph{multi-scale} protocol, so Table~\ref{tab:mtmt} is a
 full eight-scene comparison and the failure is specific to single-scale training.
-And it trains without incident on arm A, so the fragility belongs to the vanilla band-limit semantics and not to the scene, the data or
-the harness.
+And it trains without incident on arm A, so the fragility belongs to the vanilla band-limit semantics.
 
 It is excluded from the single-scale arm-B rows, and the protocol's rule for a
 scene that will not run is to record it and move on. The instrumentation that
@@ -383,8 +378,7 @@ $\seedSigma$\,dB is about half of that, so a single-seed L1 claim at an
 unfavourable scale has a margin of roughly $2\sigma$ and no more. A three-seed
 mean has a standard error of $\seedSigma/\sqrt{3}$ and is comfortable; a single run is adequate, but not generous. Both arms' reproductions in
 \S\ref{sec:table1} are single-seed results, and several of their margins are of
-the same order as this $\sigma$. They should be read as L1 attained, not as L1
-attained with room to spare.
+the same order as this $\sigma$. They should be read as L1 attained, with the margin that implies and no more.
 
 Note this figure is itself a consequence of \S\ref{sec:g2}: measured on the
 compensated arm it was $0.139$\,dB, and on the vanilla one it is
@@ -419,7 +413,7 @@ directions: 3DGS is ahead on \texttt{bonsai}, \texttt{counter} and
 plus the I-1 measurement of \S\ref{sec:instrumentresults} together require: these
 are well-conditioned full-orbit captures, the Nyquist floor binds, and where it
 binds the two filters are identical. It is a second confirmation of the
-instrument result, on real data, at the level of rendered quality and not of geometry, and it is the same reason no gain is available here for a method
+instrument result, on real data, at the level of rendered quality, and it is the same reason no gain is available here for a method
 that improves the filter only where the floor does not bind.
 
 \paragraph{On comparison to published figures.} None is made. The published
@@ -436,7 +430,7 @@ same free-tier hardware every later rung uses: $\rZeroItersPerSec$ iterations pe
 second on a Tesla T4, $\rZeroRenderFps$ rendered test views per second, and a
 peak of $\rZeroPeakVram$\,MB of VRAM. The last of these matters for scope: 16\,GB
 is nowhere near binding on the Blender scenes, so the compute envelope of
-\S\ref{ch:design} constrains the \emph{real} scenes and not these.
+\S\ref{ch:design} constrains the \emph{real} scenes.
 
 \section{Render speed, and how it was measured}
 \label{sec:fps}
@@ -453,7 +447,7 @@ slower, on a model with $\bOnePrimFewerPct\,\%$ fewer primitives, which is
 within the variation two training runs of the same configuration produce in
 primitive count alone. The filter's own construction costs $\bOneFilterSetup$\,s,
 paid once before the loop begins, and $\Lambda_k$
-is never touched inside it. So the claim of \S\ref{sec:implcost} rests on a measurement, not on an argument.
+is never touched inside it. So the claim of \S\ref{sec:implcost} rests on a measurement.
 
 \paragraph{The 3DGS row is missing, and why.} The benchmark mounts each arm's own
 trained model and scores whichever it finds. The vanilla arm-B model was to come
@@ -496,8 +490,7 @@ capture protocols of \S\ref{sec:stress}, at a total cost of two minutes.
   numerical precision. On the standard full orbit the floor dominates by a factor
   of three, and it still dominates under grazing and mixed-focal capture. Only
   the arc and the cone cross the line, which is the entire content of the
-  claim that this method is a capture-conditioning method and not a general
-  improvement. The percentages under each protocol are the fraction of
+  claim that this method is a capture-conditioning method. The percentages under each protocol are the fraction of
   primitives above the floor in the worst-constrained direction and in all
   directions.}
   \label{fig:floorbinding}
@@ -523,9 +516,7 @@ past unity only on the cone ($1.35$) and the pencil ($5.52$).
 
 On the standard benchmark the floor dominates by a factor of six, and the
 estimation term exceeds it on \textbf{zero} primitives, in \emph{any} direction,
-of \emph{every} scene. By Proposition~\ref{prop:reduction} that makes B1 \emph{be} Mip-Splatting on this benchmark, exactly and not
-approximately,
-which is worth stating plainly:
+of \emph{every} scene. By Proposition~\ref{prop:reduction} that makes B1 \emph{be} Mip-Splatting on this benchmark, exactly, which is worth stating plainly:
 
 \keybox{no gain is available on the standard Blender benchmark}{%
 The eight Blender scenes are 100-camera full orbits, the best-conditioned capture
@@ -592,10 +583,9 @@ prediction across a factor of eight:
 \keybox{the prediction has to be the cap form, and then it holds}{%
 Every measured anisotropy comes out above the two-view prediction of
 Equation~\eqref{eq:anisotropy}, and by roughly the same factor each time. The
-fact that the factor is roughly constant is the clue: this is one discrepancy
-observed five times, not five separate ones, and \S\ref{sec:capprediction} says
-what it is. A capture protocol is a whole distribution of cameras spread over an
-angular window, not two cameras sitting at its ends. For such a distribution the
+fact that the factor is roughly constant is the clue: this is one discrepancy observed five times, and \S\ref{sec:capprediction} says
+what it is. A capture protocol is a whole distribution of cameras spread over an angular window, where the two-
+view form places them at its two ends. For such a distribution the
 correct $\lambda_3/\lambda_1$ is asymptotically half the two-view value, which
 means the two-view form understates $\sigma_D/\sigma_L$ by a factor of
 $\sqrt{2}$.
@@ -628,8 +618,7 @@ median ratio of estimation term to floor from $0.16$ to $0.21$ --- a real shift,
 and still a factor of five below unity. Section~\ref{sec:table3} confirms it at
 the level of rendered quality on a protocol that genuinely downsamples half the
 cameras: the floor binds on every primitive and the two arms differ by
-$+0.017$\,dB. The honest reading is that the mixed-camera defect is a statement
-about the \emph{value} of $f_k$ and not about its isotropy, and that
+$+0.017$\,dB. The honest reading is that the mixed-camera defect is a statement about the \emph{value} of $f_k$, and that
 $2$--$4\times$ is not a wide enough focal spread to make it bind. Either the
 protocol needs a wider spread or the defect is real but small; this measurement
 does not distinguish those, and it is not reported as though it did.
@@ -656,7 +645,7 @@ does not distinguish those, and it is not reported as though it did.
 \keybox{the prediction here was parity, and it was recorded first}{%
 I-1 measured the Nyquist floor binding on $100\,\%$ of primitives on these
 captures (\S\ref{sec:instrumentresults}), and Proposition~\ref{prop:reduction}
-then makes B1 and Mip-Splatting \emph{identical}, not merely similar. So
+then makes B1 and Mip-Splatting \emph{identical}. So
 this table is not where the method is meant to win. It is where it must not
 lose. A gain here would indicate a bug, and the exact-reduction unit test is run
 inside the same session that produces these numbers, aborting the run if it
@@ -680,17 +669,14 @@ B1 densifies to within $0.2\,\%$ of Mip-Splatting's primitive count, which is
 Proposition~\ref{prop:reduction} arriving from a third direction: where the
 floor dominates the filter is the same filter, so the optimisation follows the
 same trajectory and produces the same model. The model on disk is the same size,
-and rendering is unaffected --- the filter is applied once at construction, not
-per frame (\S\ref{sec:fps}).
+and rendering is unaffected --- the filter is applied once at construction (\S\ref{sec:fps}).
 
 Training is another matter. B1 costs $2.8\times$ the peak VRAM and $1.32\times$
 the wall-clock time, for a result that is by construction identical. The
 accumulation of $\Lambda_k = \sum_n w_{nk}(J_nW_n)^{\!\top}\Sigma_{\mathrm{pix}}^{-1}(J_nW_n)$
 is a $3\times3$ symmetric matrix per primitive over every training camera, and
 the peak does not track the primitive count. \texttt{ficus} at $187$k primitives
-and \texttt{mic} at $406$k both peak near $13$\,GB, which is what a large
-transient in that accumulation looks like, and not what a
-persistent allocation looks like.
+and \texttt{mic} at $406$k both peak near $13$\,GB, which is what a large transient in that accumulation looks like.
 
 That is the honest cost line, and it is not a small one. A practitioner reading
 this table on a well-conditioned capture should not use B1: it is the same
@@ -706,14 +692,13 @@ aborted in \texttt{create\_from\_pcd} with a null point cloud, four seconds in.
 That is a harness defect, since fixed by ordering the job list so that adjacent
 jobs never share a scene.
 
-It is not re-run, and the reason is this table, not the schedule.
+It is not re-run, and the reason is this table.
 Mip-Splatting alone peaks at $14\,459$\,MB on \texttt{ship}, against a
 $15\,360$\,MB card. At the $2.8\times$ measured here, B1 on \texttt{ship} does
 not fit, and no ordering of the queue changes that. The paired parity figure is
 therefore over $\methodParityScenes$ scenes and says so.}
 
-\paragraph{Three bugs on the way here.} Requiring parity \emph{exactly}, and not merely approximately, turned the
-reduction theorem into a test, and the test
+\paragraph{Three bugs on the way here.} Requiring parity \emph{exactly} turned the reduction theorem into a test, and the test
 failed three times before it passed --- a clamp that was doing real work, a
 determinant computed in a way that lost precision at realistic scales, and an
 isotropic branch that re-derived a quantity it should have taken. Each produced
@@ -731,11 +716,10 @@ means.
 \input{generated/table-stress}
 
 \keybox{read the \emph{above floor} column before the $\Delta$ column}{%
-Proposition~\ref{prop:reduction} is not a prediction about this table, it is a
-constraint on it. Where the estimation term does not exceed the Nyquist floor in
-any direction, $\Sigma_{\mathrm{filt}} = f_k^2 I$ identically and B1 \emph{is}
-Mip-Splatting, not similar to it, the same filter, taking the same code path.
-On such a row $\Delta$ is a measurement of CUDA atomics and nothing else, and a non-zero value there would be evidence of a bug, not of a method. So the
+Proposition~\ref{prop:reduction} is a constraint on this table, which is a stronger thing than a prediction about
+it. Where the estimation term does not exceed the Nyquist floor in
+any direction, $\Sigma_{\mathrm{filt}} = f_k^2 I$ identically and B1 \emph{is} Mip-Splatting: the same filter, taking the same code path.
+On such a row $\Delta$ is a measurement of CUDA atomics and nothing else, and a non-zero value there would be evidence of a bug. So the
 diagnostic column decides whether the PSNR column is an experiment at all, which
 is why it is printed by the filter during training and carried here beside the result instead of reconstructed afterwards.}
 
@@ -752,9 +736,8 @@ anisotropy is $1.00\times$ to two decimals, and the two arms take the same code
 path. The measured differences over those $\stressFlatCount$ rows run from
 $\stressFlatMin$ to $\stressFlatMax$\,dB --- every one inside the harness's own
 run-to-run spread, and none
-exceeding $0.8\sigma$. That
-is not a weak result; it is the proposition holding, on five independently
-degraded captures, to the precision of the instrument.
+exceeding $0.8\sigma$. That is the proposition holding, on $\stressFlatCount$ independently degraded
+captures, to the precision of the instrument.
 
 The narrow pencil is the first capture in this project on which the filter
 actually engages. The estimation term exceeds the floor on $93\,\%$ of
@@ -789,14 +772,13 @@ without the second. What Table~\ref{tab:stress} establishes is that the
 \emph{mechanism} is the one the derivation names: the gain appears exactly where
 the estimation term overtakes the floor and nowhere else. What it does not
 establish, and what this figure makes plain, is that the method is useful at
-this operating point. A capture this degraded needs more cameras, not a better
-band-limit.}
+this operating point. A capture this degraded needs more cameras.}
 
 \keybox{the ordering was predicted before the runs, and it is the whole claim}{%
 Section~\ref{sec:anisotropy} does not predict that this method helps. It predicts
 \emph{where}: nowhere that the Nyquist floor dominates, and increasingly as the
 capture's angular span closes. A method that helped uniformly would contradict
-its own derivation, and \S\ref{ch:discussion} recorded that in advance as a reason for suspicion, not celebration. What the table shows is the
+its own derivation, and \S\ref{ch:discussion} recorded that in advance as a reason for suspicion. What the table shows is the
 predicted step: five rows inside the noise, one at four times it, and the step
 falls exactly at the span where the estimation term overtakes the floor. The conditioning column rises monotonically alongside it, through $1.17$,
 $1.22$, $1.48$, $2.47$, $4.11$ and $6.17\times$, and is measured on the same captures the PSNR is, at the cost
@@ -863,8 +845,7 @@ demonstrated on a full orbit, and this has now been measured for both, where bef
   \caption{B2 across the capture protocols. The same shape as
   Figure~\ref{fig:floorbinding}, in the angular domain instead of the spatial one: on a well-conditioned capture the criterion keeps every coefficient and
   the method reduces to its baseline, and it removes coefficients only where the
-  views cannot support them. A criterion that pruned on the full orbit would be
-  wrong, not economical.}
+  views cannot support them. A criterion that pruned on the full orbit would be wrong.}
   \label{fig:b2retention}
 \end{figure}
 
@@ -902,7 +883,7 @@ orbit and a 10-camera cone. On \texttt{lego}:
 
 At $\tau = 0.01$ the absolute form keeps everything on a full orbit and
 \emph{nothing} on either degraded protocol; at $\tau = 0.001$ it keeps $82\,\%$
-on the arc, which is nearly everything. It is a cliff, not a graded response.
+on the arc, which is nearly everything. It is a cliff.
 The condition number $\lambda_{\min}/\lambda_{\max}$ is scale-free and behaves as
 the criterion should at a single threshold, which is why it is the default in the
 implementation and why Equation~\eqref{eq:lmax} should be restated in that form.
@@ -912,7 +893,7 @@ This is a change to the method that only measurement could have produced, and it
 
 \input{generated/table-b2}
 
-Every cell in that table is identical across the three rows, and that is the result, not a failure to produce one. On the standard benchmark the
+Every cell in that table is identical across the three rows, and that is the result. On the standard benchmark the
 criterion retains $100\,\%$ of non-DC coefficients, so the masked model \emph{is} the control, the same file scored through the same
 render and metrics path, and magnitude pruning matched to the same fraction
 prunes nothing either. The $\tau$ sweep says the same thing from another direction:
@@ -961,8 +942,8 @@ asymmetry in the free control, and it is not small: B2 masks whole
 \emph{degrees}, removing coefficients in blocks of $2\ell+1$ nested from the top
 down, while free magnitude pruning ranks individual coefficients and keeps the
 largest anywhere. At the same budget that is strictly more freedom, so a loss
-against it is evidence about the \emph{structure} of the mask and not about the
-criterion, and the criterion is what is on trial. The first version of this
+against it is evidence about the \emph{structure} of the mask, while the criterion is what is
+on trial. The first version of this
 section noted the confound and left it, which was the right thing to notice and
 the wrong place to stop.
 
@@ -986,7 +967,7 @@ to call.
 
 What survives is narrower than what was claimed. The criterion still does what \S\ref{sec:b2scale} says it does: it responds
 gradually to the conditioning, retaining $100\,\%$, $62\,\%$ and $25\,\%$ as the
-capture degrades. That is a statement about the \emph{geometry}, measured and not in doubt. What is not
+capture degrades. That is a statement about the \emph{geometry}, measured and settled. What is not
 supported is the step from there to rendered quality at matched size. On the
 evidence here, identifiability is a good description of what the capture
 determines and a poor rule for deciding what to keep.
@@ -999,8 +980,7 @@ the same file written three times.
 
 \section{What these results do and do not establish}
 They establish a control. Both baselines now exist as this project's own
-measurements, on known hardware, from pinned commits, with the arm separation verified on the saved models, not argued from source. Every later
-comparison is against these numbers and not against the published ones, which is
+measurements, on known hardware, from pinned commits, with the arm separation verified on the saved models. Every later comparison is against these numbers, which is
 the L3 discipline of Table~\ref{tab:levels}.
 
 About the proposed method they establish four things and refute one. B1 is
@@ -1033,5 +1013,4 @@ is the one the derivation names.
 
 Every number in this chapter was produced on free cloud GPUs, within a weekly
 allowance that the project exhausted more than once. The ladder was designed around that constraint instead of in spite of it, The accounting of which rung cost what, which session died and why, and what the
-constraint forbade outright is set out in Appendix~\ref{app:harness}. The short version is that
-compute, not code, was the binding constraint throughout.
+constraint forbade outright is set out in Appendix~\ref{app:harness}. The short version is that compute was the binding constraint throughout.

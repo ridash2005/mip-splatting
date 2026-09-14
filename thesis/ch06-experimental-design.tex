@@ -81,7 +81,7 @@ principle: the multi-scale loader sets the field of view \emph{per frame},
 whereas the Blender reader takes one global \texttt{camera\_angle\_x}.
 
 The benefit is methodological: both arms share one dataloader, one metrics
-implementation and one LPIPS backbone (VGG), so any difference between them is the method and not the plumbing. The diff that separates the arms is
+implementation and one LPIPS backbone (VGG), so any difference between them is the method. The diff that separates the arms is
 enumerated in the kernel and asserted on every run, and a change outside it
 aborts the session before any training starts.
 
@@ -137,7 +137,7 @@ The third was added after \S\ref{sec:g2} found it missing.
   always asked about viewpoints it was not fitted from, and the six differ only
   in how much the capture knew. Two of them look alike on purpose: \emph{mixed
   focal} has the same camera positions as the full orbit and differs only in
-  that half the images are downsampled (drawn hollow), which is a defect of camera \emph{settings} and not of geometry; and \emph{grazing} keeps a wide
+  that half the images are downsampled (drawn hollow), which is a defect of camera \emph{settings}; and \emph{grazing} keeps a wide
   span but selects only high-incidence views, which a top-down drawing cannot
   show. The bottom row is where the capture becomes genuinely
   ill-conditioned.}
@@ -149,7 +149,7 @@ varying conditioning, which are constructed as camera subsets of images already
 downloaded --- no new data, no extra GPU time. Each protocol is versioned as a
 JSON index list and carries its \emph{measured} span, because a subset built
 with a nominal target of $6^\circ$ that comes out at $20^\circ$ is not the
-capture the prediction was made for, and the prediction must then be re-evaluated at the span that was built, not the one that was asked for.
+capture the prediction was made for, and the prediction must then be re-evaluated at the span that was built.
 
 \input{generated/table-protocols}
 

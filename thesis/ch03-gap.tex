@@ -103,9 +103,8 @@ quantity, which is the control for everything that follows.
 
 A due-diligence review was run before the stress suite, with one question: has
 anyone already made the \emph{3D} filter anisotropic or per-direction? The answer
-is partly yes, and the contribution stated in \S\ref{ch:intro} has been narrowed accordingly, not defended. Two of the five papers below change what this
-thesis may claim; the change is recorded here, in the chapter that sets up the
-gap, and not buried in the discussion.
+is partly yes, and the contribution stated in \S\ref{ch:intro} has been narrowed accordingly. Two of the five papers below change what this
+thesis may claim; the change is recorded here, in the chapter that sets up the gap, where a reader meets it first.
 
 \begin{table}[htbp]
   \centering
@@ -126,7 +125,7 @@ gap, and not buried in the discussion.
       & \textbf{Removes the novelty of ``an anisotropic 3D filter''.} What
         remains is the \emph{source} of the anisotropy: theirs is the view being
         rendered, this thesis's is the conditioning of the capture that was
-        available. The two are composable, not competing. \\
+        available. The two compose: a system could carry both. \\
     \addlinespace[2pt]
     \textbf{PUP 3D-GS} (CVPR 2025)
       & A second-order sensitivity of the photometric error in each primitive's
@@ -140,8 +139,7 @@ gap, and not buried in the discussion.
       & Fisher information over model parameters as an acquisition function for
         next-best-view selection.
       & Same statistical object, opposite direction of use: it chooses which
-        camera to \emph{acquire}; B1 takes the cameras as given. Changes the
-        dataset, not the primitive. \\
+        camera to \emph{acquire}; B1 takes the cameras as given. Changes the dataset and leaves the primitive alone. \\
     \addlinespace[2pt]
     \textbf{3DGS-MCMC} (NeurIPS 2024)
       & Recasts densify/prune/reset as MCMC sampling, removing the heuristics and

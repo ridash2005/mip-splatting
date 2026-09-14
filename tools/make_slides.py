@@ -456,8 +456,7 @@ def build(prs, D):
            "These three are shown because they are visually distinct from one "
            "another. Every scene measured under both arms shows the same "
            "thing, and all eight are stored as per-scene contact sheets in "
-           "results/qualitative/ so the selection can be audited rather than "
-           "trusted.", {})],
+           "results/qualitative/ so the selection can be audited.", {})],
          size=15, colour=INK_2, spacing=1.3)
 
     # 8 ----------------------------------------------------- the instruments
@@ -600,8 +599,8 @@ def build(prs, D):
         "one CSV by one command.",
     ]
     right = [
-        "Variable-length SH storage, so the angular mask memory saving is real rather "
-        "than notional \u2014 masking to zero does not shrink a fixed-width PLY.",
+        "Variable-length SH storage, so the angular mask memory saving lands on "
+        "disk \u2014 masking to zero leaves a fixed-width PLY the same size.",
         "Pose-noise sensitivity: \u039b inherits 3DGS's complete trust in SfM "
         "poses, and aggregation over views should degrade gracefully. That is a "
         "prediction, not a result.",
